@@ -3,6 +3,7 @@
 //typedef T RequestConsumer<T>(request: Request);
 
 import {Stream} from "../utils/stream";
+import {Request} from "./request";
 
 type RequestConsumer<T> = (request: Request) => T;
 
