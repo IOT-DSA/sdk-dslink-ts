@@ -1,5 +1,3 @@
-// part of dslink.requester;
-
 //typedef T RequestConsumer<T>(request: Request);
 
 import {Stream} from "../utils/stream";

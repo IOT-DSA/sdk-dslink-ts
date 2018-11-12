@@ -1,5 +1,3 @@
-// part of dslink.requester;
-
 /// request class handles raw response from responder
 import {Requester} from "./requester";
 
