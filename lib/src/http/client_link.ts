@@ -33,7 +33,7 @@ export class HttpClientLink  extends ClientLink {
 
   _wsConnection: WebSocketConnection;
 
-  static const saltNameMap: {[key: string]: int} = const {
+  static const saltNameMap: {[key: string]:number} = const {
     'salt': 0,
     'saltS': 1,
     'saltL': 2
@@ -42,7 +42,7 @@ export class HttpClientLink  extends ClientLink {
   /// 2 salts, salt and saltS
   final salts: string[] = new string[](3);
 
-  updateSalt(salt: string, [saltId: int = 0]) {
+  updateSalt(salt: string, [saltId:number = 0]) {
     salts[saltId] = salt;
   }
 
@@ -108,7 +108,7 @@ export class HttpClientLink  extends ClientLink {
     }
   }
 
-  _connDelay: int = 0;
+  _connDelay:number = 0;
 
   connDelay() {
     reconnectWSCount = 0;
@@ -128,7 +128,7 @@ export class HttpClientLink  extends ClientLink {
 
     client: HttpClient = new HttpClient();
 
-    client.badCertificateCallback = (cert: X509Certificate, host: string, port: int) {
+    client.badCertificateCallback = (cert: X509Certificate, host: string, port:number) {
       logger.info(formatLogMessage('Bad certificate for $host:$port'));
       logger.finest(formatLogMessage('Cert Issuer: ${cert.issuer}, ' +
           'Subject: ${cert.subject}'));
@@ -169,7 +169,7 @@ export class HttpClientLink  extends ClientLink {
 
       request.add(toUTF8(DsJson.encode(requestJson)));
       let response: HttpClientResponse = await request.close();
-      let merged: int[] = await response.fold(<int>[], foldList);
+      let merged:number[] = await response.fold(<int>[], foldList);
       let rslt: string = const Utf8Decoder().convert(merged);
       let serverConfig: object = DsJson.decode(rslt);
 
@@ -219,9 +219,9 @@ export class HttpClientLink  extends ClientLink {
     });
   }
 
-  _wsDelay: int = 0;
+  _wsDelay:number = 0;
 
-  reconnectWSCount: int = 0;
+  reconnectWSCount:number = 0;
   initWebsocket([reconnect: boolean = true]) async {
     if ( this._closed) return;
 

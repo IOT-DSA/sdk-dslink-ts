@@ -20,9 +20,9 @@ export class BrowserUserLink  extends ClientLink {
 
   enableAck: boolean;
 
-  static const saltNameMap: {[key: string]: int} = const {"salt": 0, "saltS": 1,};
+  static const saltNameMap: {[key: string]:number} = const {"salt": 0, "saltS": 1,};
 
-  updateSalt(salt: string, [saltId: int = 0]) {
+  updateSalt(salt: string, [saltId:number = 0]) {
     // TODO: implement updateSalt
   }
 
@@ -57,7 +57,7 @@ export class BrowserUserLink  extends ClientLink {
     initWebsocket(false);
   }
 
-  _wsDelay: int = 1;
+  _wsDelay:number = 1;
 
   initWebsocket([reconnect: boolean = true]) {
     var socket = new WebSocket("$wsUpdateUri?session=$session&format=$format");

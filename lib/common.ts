@@ -43,7 +43,7 @@ export interface Connection {
   pendingAcks: ListQueue<ConnectionAckGroup> = new ListQueue<
       ConnectionAckGroup>();
 
-  ack(ackId: int) {
+  ack(ackId:number) {
     findAckGroup: ConnectionAckGroup;
     for (ConnectionAckGroup ackGroup in pendingAcks) {
       if (ackGroup.ackId == ackId) {
@@ -55,7 +55,7 @@ export interface Connection {
     }
 
     if (findAckGroup != null) {
-      let ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+      let ts:number = (new DateTime.now()).millisecondsSinceEpoch;
       do {
         let ackGroup: ConnectionAckGroup = pendingAcks.removeFirst();
         ackGroup.ackAll(ackId, ts);
@@ -77,14 +77,14 @@ export class ProcessorResult  {
 }
 
 export class ConnectionAckGroup  {
-  ackId: int;
-  startTime: int;
-  expectedAckTime: int;
+  ackId:number;
+  startTime:number;
+  expectedAckTime:number;
   processors: ConnectionProcessor[];
 
   ConnectionAckGroup(this.ackId, this.startTime, this.processors);
 
-  ackAll(ackid: int, time: int) {
+  ackAll(ackid:number, time:number) {
     for (ConnectionProcessor processor in processors) {
       processor.ackReceived(ackId, startTime, time);
     }
@@ -142,7 +142,7 @@ export interface ClientLink extends BaseLink {
 
   /// shortPolling is only valid in http mode
   /// saltId: 0 salt, 1:saltS, 2:saltL
-  updateSalt(salt: string, [saltId: int = 0]);
+  updateSalt(salt: string, [saltId:number = 0]);
 
   get logName(): string { return null;}
 

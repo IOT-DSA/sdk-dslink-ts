@@ -280,7 +280,7 @@ export class Path  {
     if (path.endsWith('/')) {
       path = path.substring(0, path.length - 1);
     }
-    pos: int = path.lastIndexOf('/');
+    pos:number = path.lastIndexOf('/');
     if (pos < 0) {
       name = path;
       parentPath = '';

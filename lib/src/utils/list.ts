@@ -1,7 +1,7 @@
 // part of dslink.utils;
 
 export class ByteDataUtil  {
-  static list2Uint8List(input: int[]):Uint8List {
+  static list2Uint8List(input:number[]):Uint8List {
     if ( input instanceof Uint8List ) {
       return input;
     }
@@ -12,12 +12,12 @@ export class ByteDataUtil  {
     if (bytesList.length == 1) {
       return bytesList[0];
     }
-    totalLen: int = 0;
+    totalLen:number = 0;
     for (ByteData bytes in bytesList) {
       totalLen += bytes.lengthInBytes;
     }
     output: ByteData = new ByteData(totalLen);
-    pos: int = 0;
+    pos:number = 0;
     for (ByteData bytes in bytesList) {
       output.buffer.asUint8List(pos).setAll(0, toUint8List(bytes));
       pos += bytes.lengthInBytes;
@@ -34,7 +34,7 @@ export class ByteDataUtil  {
     return bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
   }
 
-  static fromList(input: int[]):ByteData {
+  static fromList(input:number[]):ByteData {
     if ( input instanceof Uint8List ) {
       return fromUint8List(input);
     }

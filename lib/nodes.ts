@@ -73,10 +73,10 @@ export class SingleNodeProvider  extends NodeProvider {
   }
 }
 
-export type NodeUpgradeFunction = (from: int) => void;
+export type NodeUpgradeFunction = (from:number) => void;
 
 export class UpgradableNode  extends SimpleNode {
-  final latestVersion: int;
+  final latestVersion:number;
   final upgrader: NodeUpgradeFunction;
 
   UpgradableNode(path: string, this.latestVersion, this.upgrader, [SimpleNodeProvider provider]) : super(path, provider);
@@ -127,7 +127,7 @@ export class LazyValueNode  extends SimpleNode {
     }
   }
 
-  subscriptionCount: int = 0;
+  subscriptionCount:number = 0;
 }
 
 /// Represents a Simple Callback Function

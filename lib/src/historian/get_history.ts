@@ -94,7 +94,7 @@ export class GetHistoryNode  extends SimpleNode {
       batchSize = 0;
     }
 
-    batchCount: int = batchSize.toInt();
+    batchCount:number = batchSize.toInt();
 
     tr: TimeRange = parseTimeRange(range);
     if (params["Real Time"] == true) {
@@ -113,7 +113,7 @@ export class GetHistoryNode  extends SimpleNode {
           yield [pair.toRow()];
         }
       } else {
-        let count: int = 0;
+        let count:number = 0;
         List<dynamic[]> buffer = [];
 
         await for (ValuePair row in pairs) {
@@ -152,8 +152,8 @@ export class GetHistoryNode  extends SimpleNode {
       return;
     }
 
-    lastTimestamp: int = -1;
-    totalTime: int = 0;
+    lastTimestamp:number = -1;
+    totalTime:number = 0;
 
     result: ValuePair;
 

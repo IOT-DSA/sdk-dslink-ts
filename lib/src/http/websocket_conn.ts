@@ -64,16 +64,16 @@ export class WebSocketConnection  extends Connection {
 
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link (>=60 seconds)
-  _dataReceiveCount: int = 0;
+  _dataReceiveCount:number = 0;
 
   static throughputEnabled: boolean = false;
 
-  static dataIn: int = 0;
-  static messageIn: int = 0;
-  static dataOut: int = 0;
-  static messageOut: int = 0;
-  static frameIn: int = 0;
-  static frameOut: int = 0;
+  static dataIn:number = 0;
+  static messageIn:number = 0;
+  static dataOut:number = 0;
+  static messageOut:number = 0;
+  static frameIn:number = 0;
+  static frameOut:number = 0;
 
   onPingTimer(Timer t) {
     if ( this._dataReceiveCount >= 3) {
@@ -212,7 +212,7 @@ export class WebSocketConnection  extends Connection {
         if (throughputEnabled) {
           for (object resp in m["responses"]) {
             if (resp["updates"] is List) {
-              let len: int = resp["updates"].length;
+              let len:number = resp["updates"].length;
               if (len > 0) {
                 messageIn += len;
               } else {
@@ -246,7 +246,7 @@ export class WebSocketConnection  extends Connection {
   }
 
   /// when nextMsgId = -1, ack is disabled
-  nextMsgId: int = 1;
+  nextMsgId:number = 1;
   _sending: boolean = false;
 
   _send() {
@@ -264,7 +264,7 @@ export class WebSocketConnection  extends Connection {
       m = {};
     }
     var pendingAck = <ConnectionProcessor>[];
-    ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+    ts:number = (new DateTime.now()).millisecondsSinceEpoch;
     rslt: ProcessorResult = this._responderChannel.getSendingData(ts, nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
@@ -273,7 +273,7 @@ export class WebSocketConnection  extends Connection {
         if (throughputEnabled) {
           for (object resp in rslt.messages) {
             if (resp["updates"] is List) {
-              let len: int = resp["updates"].length;
+              let len:number = resp["updates"].length;
               if (len > 0) {
                 messageOut += len;
               } else {

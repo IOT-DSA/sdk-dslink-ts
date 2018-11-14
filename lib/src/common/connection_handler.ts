@@ -1,27 +1,26 @@
-// part of dslink.common;
+
+const ACK_WAIT_COUNT = 16;
+const defaultCacheSize = 256;
 
 export interface ConnectionProcessor {
-  static const int ACK_WAIT_COUNT = 16;
-  static defaultCacheSize: int = 256;
-
-  void startSendingData(waitingAckId: int, currentTime: int);
-  void ackReceived(receiveAckId: int, startTime: int, currentTime: int);
+  startSendingData(waitingAckId: number, currentTime: number):void;
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number):void;
 }
 
-export interface ConnectionHandler {
+export abstract class ConnectionHandler {
   _conn: ConnectionChannel;
   _connListener: StreamSubscription;
   get connection(): ConnectionChannel { return this._conn;}
 
   set connection(conn: ConnectionChannel) {
     if ( this._connListener != null) {
-      _connListener.cancel();
-      _connListener = null;
-      _onDisconnected( this._conn);
+      this._connListener.cancel();
+      this._connListener = null;
+      this._onDisconnected( this._conn);
     }
-    _conn = conn;
-    _connListener = this._conn.onReceive.listen(onData);
-    _conn.onDisconnected.then( this._onDisconnected);
+    this._conn = conn;
+    this._connListener = this._conn.onReceive.listen(this.onData);
+    this._conn.onDisconnected.then( this._onDisconnected);
     // resend all requests after a connection
     if ( this._conn.connected) {
       onReconnected();
@@ -80,7 +79,7 @@ export interface ConnectionHandler {
   _pendingSend: boolean = false;
 
   /// gather all the changes from
-  getSendingData(currentTime: int, waitingAckId: int):ProcessorResult {
+  getSendingData(currentTime:number, waitingAckId:number):ProcessorResult {
     _pendingSend = false;
     processors: ConnectionProcessor[] = this._processors;
     _processors = [];

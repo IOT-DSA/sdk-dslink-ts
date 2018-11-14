@@ -24,7 +24,7 @@ export class BrowserECDHLink  extends ClientLink {
 
   enableAck: boolean = false;
 
-  static const saltNameMap: {[key: string]: int} = const {
+  static const saltNameMap: {[key: string]:number} = const {
     'salt': 0,
     'saltS': 1,
     'saltL': 2,
@@ -33,7 +33,7 @@ export class BrowserECDHLink  extends ClientLink {
   /// 2 salts, salt and saltS
   final salts: string[] = new string[](3);
 
-  updateSalt(salt: string, [saltId: int = 0]) {
+  updateSalt(salt: string, [saltId:number = 0]) {
     salts[saltId] = salt;
   }
 
@@ -76,7 +76,7 @@ export class BrowserECDHLink  extends ClientLink {
     }
   }
 
-  _connDelay: int = 1;
+  _connDelay:number = 1;
 
   connect() async {
     if ( this._closed) return;
@@ -132,7 +132,7 @@ export class BrowserECDHLink  extends ClientLink {
     }
   }
 
-  _wsDelay: int = 1;
+  _wsDelay:number = 1;
 
   initWebsocket([reconnect: boolean = true]) {
     if ( this._closed) return;

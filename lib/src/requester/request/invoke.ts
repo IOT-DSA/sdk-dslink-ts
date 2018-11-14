@@ -15,7 +15,7 @@ export class RequesterInvokeUpdate  extends RequesterUpdate {
   _rows: List[];
 
   get rows(): List[] {
-    colLen: int = -1;
+    colLen:number = -1;
     if (columns != null) {
       colLen = columns.length;
     }
@@ -91,7 +91,7 @@ export class InvokeController  implements RequestUpdater {
   lastStatus: string = StreamStatus.initialize;
 
   InvokeController(this.node, this.requester, params: object,
-      [maxPermission: int = Permission.CONFIG, RequestConsumer fetchRawReq]) {
+      [maxPermission:number = Permission.CONFIG, RequestConsumer fetchRawReq]) {
     _controller = new StreamController<RequesterInvokeUpdate>();
     _controller.done.then( this._onUnsubscribe);
     _stream = this._controller.stream;

@@ -28,7 +28,7 @@ export class Permission  {
     'never'
   ];
 
-  static const nameParser: {[key: string]: int} = const {
+  static const nameParser: {[key: string]:number} = const {
     'none': NONE,
     'list': LIST,
     'read': READ,
@@ -37,7 +37,7 @@ export class Permission  {
     'never': NEVER
   };
 
-  static parse(obj: object, defaultVal: int = NEVER):number {
+  static parse(obj: object, defaultVal:number = NEVER):number {
     if ( typeof obj === 'string' && nameParser.containsKey(obj)) {
       return nameParser[obj];
     }
@@ -46,9 +46,9 @@ export class Permission  {
 }
 
 export class PermissionList  {
-  idMatchs: {[key: string]: int} = {};
-  groupMatchs: {[key: string]: int} = {};
-  defaultPermission: int = Permission.NONE;
+  idMatchs: {[key: string]:number} = {};
+  groupMatchs: {[key: string]:number} = {};
+  defaultPermission:number = Permission.NONE;
 
   updatePermissions(data: List) {
     idMatchs.clear();
@@ -81,7 +81,7 @@ export class PermissionList  {
       return idMatchs[responder.reqId];
     }
 
-    rslt: int = Permission.NEVER;
+    rslt:number = Permission.NEVER;
     for (string group in responder.groups) {
       if (groupMatchs.containsKey(group)) {
         int v = groupMatchs[group];

@@ -55,7 +55,7 @@ export class SubscribeController  implements RequestUpdater {
 }
 
 export class SubscribeRequest  extends Request implements ConnectionProcessor {
-  lastSid: int = 0;
+  lastSid:number = 0;
 
   getNextSid():number {
     do {
@@ -74,7 +74,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
   final subscriptionIds: object<int, ReqSubscribeController> =
     new object<int, ReqSubscribeController>();
 
-  SubscribeRequest(requester: Requester, rid: int)
+  SubscribeRequest(requester: Requester, rid:number)
       : super(requester, rid, new SubscribeController(), null) {
     (updater as SubscribeController).request = this;
   }
@@ -100,7 +100,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
     if ( Array.isArray(updates) ) {
       for (object update in updates) {
         let path: string;
-        let sid: int = -1;
+        let sid:number = -1;
         let value: object;
         let ts: string;
         let meta: object;
@@ -149,7 +149,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
 
   _changedPaths: Set<string> = new Set<string>();
 
-  addSubscription(controller: ReqSubscribeController, level: int) {
+  addSubscription(controller: ReqSubscribeController, level:number) {
     path: string = controller.node.remotePath;
     subscriptions[path] = controller;
     subscriptionIds[controller.sid] = controller;
@@ -172,7 +172,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
   toRemove: object<int, ReqSubscribeController> =
     new object<int, ReqSubscribeController>();
 
-  startSendingData(currentTime: int, waitingAckId: int) {
+  startSendingData(currentTime:number, waitingAckId:number) {
     _pendingSending = false;
 
     if (waitingAckId != -1) {
@@ -202,7 +202,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
     }
     if (!toRemove.isEmpty) {
       let removeSids: List = [];
-      toRemove.forEach((sid: int, sub: ReqSubscribeController) {
+      toRemove.forEach((sid:number, sub: ReqSubscribeController) {
         if (sub.callbacks.isEmpty) {
           removeSids.add(sid);
           subscriptions.remove(sub.node.remotePath);
@@ -217,10 +217,10 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
   }
 
   _pendingSending: boolean = false;
-  _waitingAckCount: int = 0;
-  _lastWatingAckId: int = -1;
+  _waitingAckCount:number = 0;
+  _lastWatingAckId:number = -1;
 
-  ackReceived(receiveAckId: int, startTime: int, currentTime: int) {
+  ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
     if (receiveAckId == this._lastWatingAckId) {
       _waitingAckCount = 0;
     } else {
@@ -257,14 +257,14 @@ export class ReqSubscribeController  {
   final requester: Requester;
 
   callbacks: object<Function, int> = new object<Function, int>();
-  currentQos: int = -1;
-  sid: int;
+  currentQos:number = -1;
+  sid:number;
 
   ReqSubscribeController(this.node, this.requester) {
     sid = requester._subscription.getNextSid();
   }
 
-  void listen(callback(update: ValueUpdate), qos: int) {
+  void listen(callback(update: ValueUpdate), qos:number) {
     if (qos < 0 || qos > 3) {
       qos = 0;
     }
@@ -291,7 +291,7 @@ export class ReqSubscribeController  {
 
   void unlisten(callback(update: ValueUpdate)) {
     if (callbacks.containsKey(callback)) {
-      let cacheLevel: int = callbacks.remove(callback);
+      let cacheLevel:number = callbacks.remove(callback);
       if (callbacks.isEmpty) {
         requester._subscription.removeSubscription(this);
       } else if (cacheLevel == currentQos && currentQos > 1) {
@@ -301,7 +301,7 @@ export class ReqSubscribeController  {
   }
 
   updateQos():boolean {
-    maxQos: int = 0;
+    maxQos:number = 0;
 
     for (var qos in callbacks.values) {
       maxQos = (qos > maxQos ? qos : maxQos);

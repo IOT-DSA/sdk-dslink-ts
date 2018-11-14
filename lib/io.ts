@@ -113,7 +113,7 @@ export class HttpHelper  {
     }
     nonce: string = BASE64.encode(nonceData);
 
-    port: int = uri.port;
+    port:number = uri.port;
     if (port == 0) {
       port = uri.scheme == "wss" ? 443 : 80;
     }
@@ -174,8 +174,8 @@ export class HttpHelper  {
       if (accept == null) {
         error("Response did not contain a 'Sec-WebSocket-Accept' header");
       }
-      let expectedAccept: int[] = sha1.convert("$nonce$_webSocketGUID".codeUnits).bytes;
-      let receivedAccept: int[] = BASE64.decode(accept);
+      let expectedAccept:number[] = sha1.convert("$nonce$_webSocketGUID".codeUnits).bytes;
+      let receivedAccept:number[] = BASE64.decode(accept);
       if (expectedAccept.length != receivedAccept.length) {
         error("Response header 'Sec-WebSocket-Accept' is the wrong length");
       }
@@ -279,8 +279,8 @@ export class HttpHelper  {
 
   static tokenizeFieldValue(headerValue: string):string[] {
     tokens: string[] = new string[]();
-    start: int = 0;
-    index: int = 0;
+    start:number = 0;
+    index:number = 0;
     while (index < headerValue.length) {
       if (headerValue[index] == ",") {
         tokens.add(headerValue.substring(start, index));
@@ -345,7 +345,7 @@ Future<File> safeWriteAsString(targetFile: File, content: string,
       verifyJson: verifyJson);
 }
 
-Future<File> safeWriteAsBytes(targetFile: File, content: int[],
+Future<File> safeWriteAsBytes(targetFile: File, content:number[],
     {boolean verifyJson : false}) async {
   return this._safeWriteBase(
       targetFile, content,

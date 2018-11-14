@@ -2,7 +2,7 @@
 
 export class TimerFunctions  extends LinkedListEntry<TimerFunctions> {
   /// for better performance, use a low accuracy timer, ts50 is the floor of ts/50
-  final ts50: int;
+  final ts50:number;
   _functions: Function[] = new Function[]();
 
   TimerFunctions(this.ts50);
@@ -65,7 +65,7 @@ export class DsTimer  {
   static _functionsMap: object<Function, TimerFunctions> =
       new object<Function, TimerFunctions>();
 
-  static _getTimerFunctions(time50: int):TimerFunctions {
+  static _getTimerFunctions(time50:number):TimerFunctions {
     tf: TimerFunctions = _pendingTimerMap[time50];
 
     if (tf != null) {
@@ -100,7 +100,7 @@ export class DsTimer  {
     return tf;
   }
 
-  static _removeTimerFunctions(time50: int):TimerFunctions {
+  static _removeTimerFunctions(time50:number):TimerFunctions {
     if ( this._pendingTimer.isNotEmpty && this._pendingTimer.first.ts50 <= time50) {
       let rslt: TimerFunctions = this._pendingTimer.first;
       _pendingTimerMap.remove(rslt.ts50);
@@ -118,11 +118,11 @@ export class DsTimer  {
     return null;
   }
 
-  static _lastTimeRun: int = -1;
+  static _lastTimeRun:number = -1;
 
   /// do nothing if the callback is already in the list and will get called after 0 ~ N ms
-  static timerOnceBefore(callback: Function, ms: int) {
-    desiredTime50: int =
+  static timerOnceBefore(callback: Function, ms:number) {
+    desiredTime50:number =
         (((new DateTime.now()).millisecondsSinceEpoch + ms) / 50).ceil();
     if ( this._functionsMap.containsKey(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
@@ -143,8 +143,8 @@ export class DsTimer  {
   }
 
   /// do nothing if the callback is already in the list and will get called after N or more ms
-  static timerOnceAfter(callback: Function, ms: int) {
-    desiredTime50: int =
+  static timerOnceAfter(callback: Function, ms:number) {
+    desiredTime50:number =
         (((new DateTime.now()).millisecondsSinceEpoch + ms) / 50).ceil();
     if ( this._functionsMap.containsKey(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
@@ -164,10 +164,10 @@ export class DsTimer  {
   }
 
   /// do nothing if the callback is already in the list and will get called after M to N ms
-  static timerOnceBetween(callback: Function, after: int, before: int) {
-    desiredTime50_0: int =
+  static timerOnceBetween(callback: Function, after:number, before:number) {
+    desiredTime50_0:number =
         (((new DateTime.now()).millisecondsSinceEpoch + after) / 50).ceil();
-    desiredTime50_1: int =
+    desiredTime50_1:number =
         (((new DateTime.now()).millisecondsSinceEpoch + before) / 50).ceil();
     if ( this._functionsMap.containsKey(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
@@ -215,7 +215,7 @@ export class DsTimer  {
       }
     }
 
-    currentTime: int = (new DateTime.now()).millisecondsSinceEpoch;
+    currentTime:number = (new DateTime.now()).millisecondsSinceEpoch;
     _lastTimeRun = (currentTime / 50).floor();
     while ( this._removeTimerFunctions(_lastTimeRun) != null) {
       // run the timer functions, empty loop
@@ -246,7 +246,7 @@ export class DsTimer  {
     }
   }
 
-  static timerTs50: int = -1;
+  static timerTs50:number = -1;
   static timerTimer: Timer;
 
   // don't wait for the timer, run it now

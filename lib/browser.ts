@@ -109,7 +109,7 @@ export class LinkProvider  {
   onValueChange(path: string, {int cacheLevel: 1}):Stream<ValueUpdate> {
     listener: RespSubscribeListener;
     controller: StreamController<ValueUpdate>;
-    subs: int = 0;
+    subs:number = 0;
     controller = new StreamController<ValueUpdate>.broadcast(onListen: () {
       subs++;
       if (listener == null) {

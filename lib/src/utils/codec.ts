@@ -14,7 +14,7 @@ export class BinaryData  {
     this.bytes = bytes;
   }
 
-  BinaryData.fromList(list: int[]) {
+  BinaryData.fromList(list:number[]) {
     bytes = ByteDataUtil.fromList(list);
   }
 }
@@ -56,7 +56,7 @@ export interface DsCodec {
   /// input can be string or int[]
   object decodeStringFrame(input: string);
 
-  object decodeBinaryFrame(input: int[]);
+  object decodeBinaryFrame(input:number[]);
 }
 
 export interface DsJson {
@@ -103,7 +103,7 @@ export class DsJsonCodecImpl  extends DsCodec implements DsJson {
 
   _unsafeDecoder: JsonDecoder;
 
-  decodeBinaryFrame(bytes: int[]):object {
+  decodeBinaryFrame(bytes:number[]):object {
     return decodeStringFrame(const Utf8Decoder().convert(bytes));
   }
 
@@ -161,7 +161,7 @@ export class DsJsonCodecImpl  extends DsCodec implements DsJson {
 export class DsMsgPackCodecImpl  extends DsCodec {
   static instance: DsMsgPackCodecImpl = new DsMsgPackCodecImpl();
 
-  decodeBinaryFrame(input: int[]):object {
+  decodeBinaryFrame(input:number[]):object {
     data: Uint8List = ByteDataUtil.list2Uint8List(input);
     if ( this._unpacker == null) {
       _unpacker = new Unpacker(data.buffer, data.offsetInBytes);

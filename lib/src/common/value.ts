@@ -7,19 +7,19 @@ typedef T ValueCallback<T>(value);
 export class ValueUpdate  {
   /// DSA formatted timezone.
   static final string TIME_ZONE = () {
-    timeZoneOffset: int = (new DateTime.now()).timeZoneOffset.inMinutes;
+    timeZoneOffset:number = (new DateTime.now()).timeZoneOffset.inMinutes;
     string s = "+";
     if (timeZoneOffset < 0) {
       timeZoneOffset = -timeZoneOffset;
       s = "-";
     }
-    hh: int = timeZoneOffset ~/ 60;
-    mm: int = timeZoneOffset % 60;
+    hh:number = timeZoneOffset ~/ 60;
+    mm:number = timeZoneOffset % 60;
     return "$s${hh < 10 ? '0' : ''}$hh:${mm < 10 ? "0" : ''}$mm";
   }();
 
   static _lastTsStr: string;
-  static _lastTs: int = 0;
+  static _lastTs:number = 0;
   /// Generates a timestamp in the proper DSA format.
   static getTs():string {
     DateTime d = new DateTime.now();
@@ -32,7 +32,7 @@ export class ValueUpdate  {
   }
 
   /// The id of the ack we are waiting for.
-  waitingAck: int = -1;
+  waitingAck:number = -1;
 
   /// The value for this update.
   value: object;
@@ -54,7 +54,7 @@ export class ValueUpdate  {
   status: string;
 
   /// How many updates have happened since the last response.
-  count: int;
+  count:number;
 
   /// The sum value if one or more numeric values has been skipped.
   sum: num;

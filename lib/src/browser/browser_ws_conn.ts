@@ -54,7 +54,7 @@ export class WebSocketConnection  extends Connection {
 
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link
-  _dataReceiveCount: int = 0;
+  _dataReceiveCount:number = 0;
 
   onPingTimer(Timer t) {
     if ( this._dataReceiveCount >= 3) {
@@ -181,7 +181,7 @@ export class WebSocketConnection  extends Connection {
     }
   }
 
-  nextMsgId: int = 1;
+  nextMsgId:number = 1;
 
   _sending: boolean = false;
   _send() {
@@ -202,7 +202,7 @@ export class WebSocketConnection  extends Connection {
 
     var pendingAck = <ConnectionProcessor>[];
 
-    ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+    ts:number = (new DateTime.now()).millisecondsSinceEpoch;
     rslt: ProcessorResult = this._responderChannel.getSendingData(ts, nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {

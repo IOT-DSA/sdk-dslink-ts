@@ -34,10 +34,10 @@ export class NodeCryptoProvider  implements CryptoProvider {
   final random: DSRandom = new DSRandomImpl();
 
   _cachedPrivate: PrivateKey;
-  _cachedTime: int = -1;
+  _cachedTime:number = -1;
 
   Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
-    ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+    ts:number = (new DateTime.now()).millisecondsSinceEpoch;
 
     /// reuse same ECDH server pair for up to 1 minute
     if ( this._cachedPrivate == null ||

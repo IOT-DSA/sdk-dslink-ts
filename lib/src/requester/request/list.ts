@@ -219,7 +219,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
     }
   }
   waitToSend: boolean = false;
-  startSendingData(currentTime: int, waitingAckId: int) {
+  startSendingData(currentTime:number, waitingAckId:number) {
     if (!waitToSend) {
       return;
     }
@@ -228,7 +228,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
     waitToSend = false;
   }
 
-  ackReceived(receiveAckId: int, startTime: int, currentTime: int) {
+  ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
   }
 
   void _onListen(callback(update: RequesterListUpdate)) {

@@ -9,7 +9,7 @@ export class SetController  implements RequestUpdater {
   _request: Request;
 
   SetController(this.requester, this.path, this.value,
-      [maxPermission: int = Permission.CONFIG]) {
+      [maxPermission:number = Permission.CONFIG]) {
     var reqMap = <string, dynamic>{
       'method': 'set',
       'path': path,

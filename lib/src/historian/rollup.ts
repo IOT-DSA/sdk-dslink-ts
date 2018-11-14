@@ -64,7 +64,7 @@ export class AvgRollup  extends Rollup {
   dynamic total = 0.0;
 
   dynamic get value => total / count;
-  count: int = 0;
+  count:number = 0;
 }
 
 export class SumRollup  extends Rollup {

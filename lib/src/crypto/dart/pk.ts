@@ -64,7 +64,7 @@ export class DartCryptoProvider  implements CryptoProvider {
 
   _cachedPrivate: ECPrivateKey;
   _cachedPublic: ECPublicKey;
-  _cachedTime: int = -1;
+  _cachedTime:number = -1;
 
   Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
     if (ECDHIsolate.running) {
@@ -75,7 +75,7 @@ export class DartCryptoProvider  implements CryptoProvider {
         return ECDHIsolate._sendRequest(publicKeyRemote, null);
       }
     }
-    ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+    ts:number = (new DateTime.now()).millisecondsSinceEpoch;
 
     /// reuse same ECDH server pair for up to 1 minute
     if ( this._cachedPrivate == null ||
@@ -181,7 +181,7 @@ export class ECDHImpl  extends ECDH {
       bytes = bytes.sublist(bytes.length - 32);
     } else if (bytes.length < 32) {
       var newbytes = new Uint8List(32);
-      let dlen: int = 32 - bytes.length;
+      let dlen:number = 32 - bytes.length;
       for (int i = 0; i < bytes.length; ++i) {
         newbytes[i + dlen] = bytes[i];
       }
@@ -218,7 +218,7 @@ export class PublicKeyImpl  extends PublicKey {
   qHash64: string;
 
   PublicKeyImpl(this.ecPublicKey) {
-    bytes: int[] = ecPublicKey.Q.getEncoded(false);
+    bytes:number[] = ecPublicKey.Q.getEncoded(false);
     qBase64 = Base64.encode(bytes);
     sha256: SHA256Digest = new SHA256Digest();
     qHash64 = Base64.encode(sha256.process(bytes));
@@ -258,7 +258,7 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
 
   string get algorithmName => this._delegate.algorithmName;
 
-  DSRandomImpl([seed: int = -1]) {
+  DSRandomImpl([seed:number = -1]) {
     _aes = new AESFastEngine();
     _delegate = new BlockCtrRandom( this._aes);
     // use the native prng, but still need to use randmize to add more seed later
@@ -306,8 +306,8 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
   }
 
   addEntropy(str: string) {
-    utf: int[] = const Utf8Encoder().convert(str);
-    length2: int = (utf.length).ceil() * 16;
+    utf:number[] = const Utf8Encoder().convert(str);
+    length2:number = (utf.length).ceil() * 16;
     if (length2 > utf.length) {
       utf = utf.toList();
       while (length2 > utf.length) {
@@ -329,7 +329,7 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
   }
 }
 
-bytes2hex(bytes: int[]):string {
+bytes2hex(bytes:number[]):string {
   var result = new StringBuffer();
   for (var part in bytes) {
     result.write("${part < 16 ? "0" : ""}${part.toRadixString(16)}");
@@ -340,11 +340,11 @@ bytes2hex(bytes: int[]):string {
 /// BigInteger.toByteArray contains negative values, so we need a different version
 /// this version also remove the byte for sign, so it's not able to serialize negative number
 bigintToUint8List(input: BigInteger):Uint8List {
-  rslt: int[] = input.toByteArray();
+  rslt:number[] = input.toByteArray();
   if (rslt.length > 32 && rslt[0] == 0){
     rslt = rslt.sublist(1);
   }
-  len: int = rslt.length;
+  len:number = rslt.length;
   for (int i = 0; i < len; ++i) {
     if (rslt[i] < 0) {
       rslt[i] &= 0xff;

@@ -13,7 +13,7 @@ export interface IRemoteRequester {
 _jsonContentType: ContentType = new ContentType("application", "json", charset: "utf-8");
 
 updateResponseBeforeWrite(request: HttpRequest,
-    statusCode: int = HttpStatus.OK,
+    statusCode:number = HttpStatus.OK,
     contentType: ContentType,
     noContentType: boolean = false) {
   var response = request.response;

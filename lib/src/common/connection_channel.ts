@@ -17,7 +17,7 @@ export class PassiveChannel  implements ConnectionChannel {
     conn.requireSend();
   }
 
-  ProcessorResult getSendingData(currentTime: int, waitingAckId: int){
+  ProcessorResult getSendingData(currentTime:number, waitingAckId:number){
     if (handler != null) {
       let rslt: ProcessorResult = handler.getSendingData(currentTime, waitingAckId);
       //handler = null;

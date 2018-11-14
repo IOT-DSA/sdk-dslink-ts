@@ -2,14 +2,14 @@
 
 _cachedPrivate: ECPrivateKey;
 _cachedPublic: ECPublicKey;
-_cachedTime: int = -1;
+_cachedTime:number = -1;
 cachedPrivateStr: string;
 
-generate(publicKeyRemote: int[], oldPriKeyStr: string):dynamic[] {
+generate(publicKeyRemote:number[], oldPriKeyStr: string):dynamic[] {
   publicPointRemote: ECPoint = this._secp256r1.curve.decodePoint(publicKeyRemote);
   privateKey: ECPrivateKey;
   publicKey: ECPublicKey;
-  ts: int = (new DateTime.now()).millisecondsSinceEpoch;
+  ts:number = (new DateTime.now()).millisecondsSinceEpoch;
   if (cachedPrivateStr == null ||
       ts - this._cachedTime > 60000 ||
       oldPriKeyStr == cachedPrivateStr ||

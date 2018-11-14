@@ -137,7 +137,7 @@ export class RemoteNode  extends Node {
     return new ListController(this, requester);
   }
 
-  void _subscribe(requester: Requester, callback(update: ValueUpdate), qos: int) {
+  void _subscribe(requester: Requester, callback(update: ValueUpdate), qos:number) {
     if ( this._subscribeController == null) {
       _subscribeController = new ReqSubscribeController(this, requester);
     }
@@ -151,7 +151,7 @@ export class RemoteNode  extends Node {
   }
 
   _invoke(params: object, requester: Requester,
-    maxPermission: int = Permission.CONFIG, fetchRawReq: RequestConsumer):Stream<RequesterInvokeUpdate> {
+    maxPermission:number = Permission.CONFIG, fetchRawReq: RequestConsumer):Stream<RequesterInvokeUpdate> {
     return new InvokeController(
       this,
       requester,

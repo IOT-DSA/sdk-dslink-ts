@@ -251,10 +251,10 @@ export class Interval  {
 
   const Interval(this.duration);
 
-  Interval.forMilliseconds(ms: int) : this(new Duration(milliseconds: ms));
-  Interval.forSeconds(seconds: int) : this(new Duration(seconds: seconds));
-  Interval.forMinutes(minutes: int) : this(new Duration(minutes: minutes));
-  Interval.forHours(hours: int) : this(new Duration(hours: hours));
+  Interval.forMilliseconds(ms:number) : this(new Duration(milliseconds: ms));
+  Interval.forSeconds(seconds:number) : this(new Duration(seconds: seconds));
+  Interval.forMinutes(minutes:number) : this(new Duration(minutes: minutes));
+  Interval.forHours(hours:number) : this(new Duration(hours: hours));
 
   int get inMilliseconds => duration.inMilliseconds;
 }
@@ -335,13 +335,13 @@ export class Scheduler  {
     });
   }
 
-  static Future repeat(times: int, action()) async {
+  static Future repeat(times:number, action()) async {
     for (var i = 1; i <= times; i++) {
       await action();
     }
   }
 
-  static Future tick(times: int, interval: Interval, action()) async {
+  static Future tick(times:number, interval: Interval, action()) async {
     for (var i = 1; i <= times; i++) {
       await new Future.delayed(
           new Duration(milliseconds: interval.inMilliseconds));
@@ -447,15 +447,15 @@ const alphabet: string[] = const [
   "Z"
 ];
 
-const numbers: int[] = const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const numbers:number[] = const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const specials: string[] = const ["@", "=", "_", "+", "-", "!", "."];
 
 toUTF8(str: string):Uint8List {
-  length: int = str.length;
+  length:number = str.length;
   bytes: Uint8List = new Uint8List(length);
   for (int i = 0; i < length; i++) {
-    unit: int = str.codeUnitAt(i);
+    unit:number = str.codeUnitAt(i);
     if (unit >= 128) {
       return new Uint8List.fromList(const Utf8Encoder().convert(str));
     }

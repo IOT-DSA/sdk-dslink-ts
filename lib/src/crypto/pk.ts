@@ -19,7 +19,7 @@ setCryptoProvider(provider: CryptoProvider) {
 lockCryptoProvider() => this._isCryptoProviderLocked = true;
 
 export interface CryptoProvider {
-  static string sha256(list: int[]){
+  static string sha256(list:number[]){
     bytes: Uint8List = ByteDataUtil.list2Uint8List(list);
     return this._CRYPTO_PROVIDER.base64_sha256(bytes);
   }
