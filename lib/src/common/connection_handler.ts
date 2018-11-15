@@ -1,28 +1,31 @@
-
 const ACK_WAIT_COUNT = 16;
 const defaultCacheSize = 256;
 
 export interface ConnectionProcessor {
-  startSendingData(waitingAckId: number, currentTime: number):void;
-  ackReceived(receiveAckId: number, startTime: number, currentTime: number):void;
+  startSendingData(waitingAckId: number, currentTime: number): void;
+
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number): void;
 }
 
 export abstract class ConnectionHandler {
   _conn: ConnectionChannel;
   _connListener: StreamSubscription;
-  get connection(): ConnectionChannel { return this._conn;}
+
+  get connection(): ConnectionChannel {
+    return this._conn;
+  }
 
   set connection(conn: ConnectionChannel) {
-    if ( this._connListener != null) {
+    if (this._connListener != null) {
       this._connListener.cancel();
       this._connListener = null;
-      this._onDisconnected( this._conn);
+      this._onDisconnected(this._conn);
     }
     this._conn = conn;
     this._connListener = this._conn.onReceive.listen(this.onData);
-    this._conn.onDisconnected.then( this._onDisconnected);
+    this._conn.onDisconnected.then(this._onDisconnected);
     // resend all requests after a connection
-    if ( this._conn.connected) {
+    if (this._conn.connected) {
       onReconnected();
     } else {
       _conn.onConnected.then((conn) => onReconnected());
@@ -30,34 +33,35 @@ export abstract class ConnectionHandler {
   }
 
   _onDisconnected(conn: ConnectionChannel) {
-    if ( this._conn == conn) {
-      if ( this._connListener != null) {
-        _connListener.cancel();
-        _connListener = null;
+    if (this._conn == conn) {
+      if (this._connListener != null) {
+        this._connListener.cancel();
+        this._connListener = null;
       }
-      onDisconnected();
-      _conn = null;
+      this.onDisconnected();
+      this._conn = null;
     }
   }
 
-  void onDisconnected();
+  abstract onDisconnected(): void;
+
   onReconnected() {
-    if ( this._pendingSend) {
-      _conn.sendWhenReady(this);
+    if (this._pendingSend) {
+      this._conn.sendWhenReady(this);
     }
   }
 
-  void onData(List m);
+  abstract onData(m: any[]): void;
 
-  _toSendList: object[] = <object>[];
+  _toSendList: any[] = [];
 
-  addToSendList(object m) {
-    _toSendList.add(m);
-    if (!_pendingSend) {
-      if ( this._conn != null) {
-        _conn.sendWhenReady(this);
+  addToSendList(m: any) {
+    this._toSendList.push(m);
+    if (!this._pendingSend) {
+      if (this._conn != null) {
+        this._conn.sendWhenReady(this);
       }
-      _pendingSend = true;
+      this._pendingSend = true;
     }
   }
 
@@ -67,32 +71,32 @@ export abstract class ConnectionHandler {
   /// same processor won't be added to the list twice
   /// inside processor, send() data that only need to appear once per data frame
   addProcessor(processor: ConnectionProcessor) {
-    _processors.add(processor);
-    if (!_pendingSend) {
-      if ( this._conn != null) {
-        _conn.sendWhenReady(this);
+    this._processors.push(processor);
+    if (!this._pendingSend) {
+      if (this._conn != null) {
+        this._conn.sendWhenReady(this);
       }
-      _pendingSend = true;
+      this._pendingSend = true;
     }
   }
 
   _pendingSend: boolean = false;
 
   /// gather all the changes from
-  getSendingData(currentTime:number, waitingAckId:number):ProcessorResult {
-    _pendingSend = false;
-    processors: ConnectionProcessor[] = this._processors;
-    _processors = [];
-    for (ConnectionProcessor proc in processors) {
+  getSendingData(currentTime: number, waitingAckId: number): ProcessorResult {
+    this._pendingSend = false;
+    let processors: ConnectionProcessor[] = this._processors;
+    this._processors = [];
+    for (let proc of processors) {
       proc.startSendingData(currentTime, waitingAckId);
     }
-    rslt: object[] = this._toSendList;
-    _toSendList = [];
+    let rslt: any[] = this._toSendList;
+    this._toSendList = [];
     return new ProcessorResult(rslt, processors);
   }
 
   clearProcessors() {
-    _processors.length = 0;
-    _pendingSend = false;
+    this._processors.length = 0;
+    this._pendingSend = false;
   }
 }
