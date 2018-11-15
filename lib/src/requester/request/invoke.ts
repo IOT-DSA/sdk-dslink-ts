@@ -125,7 +125,7 @@ export class InvokeController  implements RequestUpdater {
 
   onUpdate(streamStatus: string, updates: List, columns: List, meta: object,
       let error: DSError) {
-    if (meta != null && meta['mode'] is string) {
+    if (meta != null && typeof meta['mode'] === 'string') {
       mode = meta['mode'];
     }
     // TODO: implement error

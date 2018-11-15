@@ -2,7 +2,7 @@
 
 // TODO: merge with defaultProfileMap in common lib
 export class DefaultDefNodes  {
-  static final _defaultDefs: object = {
+  static readonly _defaultDefs: object = {
     "node": {},
     "static": {},
     "getHistory": {
@@ -73,7 +73,7 @@ export class DefaultDefNodes  {
     }
   };
 
-  static final nameMap: {[key: string]: Node} = () {
+  static readonly nameMap: {[key: string]: Node} = () {
     var rslt = new {[key: string]: Node}();
     _defaultDefs.forEach((string k, object m) {
       let path: string = '/defs/profile/$k';
@@ -91,7 +91,7 @@ export class DefaultDefNodes  {
     return rslt;
   }();
 
-  static final pathMap: {[key: string]: Node} = () {
+  static readonly pathMap: {[key: string]: Node} = () {
     var rslt = new {[key: string]: Node}();
     nameMap.forEach((k, node) {
       if ( node instanceof RemoteNode ) {

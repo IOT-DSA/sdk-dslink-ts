@@ -470,7 +470,7 @@ export class LinkProvider  {
 
   /// A Method that a Custom Link Provider can override for changing how to choose a broker.
   /// By default this selects the first broker available.
-  Future<string> chooseBroker(brokers: Stream<string>) async {
+  Promise<string> chooseBroker(brokers: Stream<string>) async {
     return await brokers.first;
   }
 
@@ -678,7 +678,7 @@ export class LinkProvider  {
   Requester get requester => link.requester;
 
   /// Completes when the requester is ready for use.
-  Future<Requester> get onRequesterReady => link.onRequesterReady;
+  Promise<Requester> get onRequesterReady => link.onRequesterReady;
 
   /// Closes the link by disconnecting from the broker.
   /// You can call [connect] again once you have closed a link.

@@ -125,7 +125,7 @@ export class Requester extends ConnectionHandler {
     return stream;
   }
 
-  getNodeValue(path: string, timeoutMs: number = 0): Future<ValueUpdate> {
+  getNodeValue(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
     return new Promise((resolve, reject) => {
       let listener: ReqSubscribeListener;
       let timer: any;

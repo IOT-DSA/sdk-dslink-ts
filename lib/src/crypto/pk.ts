@@ -24,12 +24,12 @@ export interface CryptoProvider {
     return this._CRYPTO_PROVIDER.base64_sha256(bytes);
   }
 
-  DSRandom get random;
+  random:DSRandom;
 
-  Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH);
-  Future<ECDH> getSecret(publicKeyRemote: PublicKey);
+  Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH);
+  Promise<ECDH> getSecret(publicKeyRemote: PublicKey);
 
-  Future<PrivateKey> generate();
+  Promise<PrivateKey> generate();
   PrivateKey generateSync();
 
   PrivateKey loadFromString(str: string);
@@ -40,9 +40,9 @@ export interface CryptoProvider {
 }
 
 export interface ECDH {
-  string get encodedPublicKey;
+  encodedPublicKey:string;
 
-  static Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async =>
+  static Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async =>
     _CRYPTO_PROVIDER.assign(publicKeyRemote, old);
 
   string hashSalt(salt: string);
@@ -53,8 +53,8 @@ export interface ECDH {
 }
 
 export interface PublicKey {
-  string get qBase64;
-  string get qHash64;
+  qBase64:string;
+  qHash64:string;
 
   PublicKey();
 
@@ -71,9 +71,9 @@ export interface PublicKey {
 }
 
 export interface PrivateKey {
-  PublicKey get publicKey;
+  publicKey:PublicKey;
 
-  static Future<PrivateKey> generate() async =>
+  static Promise<PrivateKey> generate() async =>
     _CRYPTO_PROVIDER.generate();
 
   factory PrivateKey.generateSync() =>
@@ -84,12 +84,12 @@ export interface PrivateKey {
 
   string saveToString();
   /// get the secret from the remote public key
-  Future<ECDH> getSecret(tempKey: string);
+  Promise<ECDH> getSecret(tempKey: string);
 }
 
 export interface DSRandom {
   static DSRandom get instance => this._CRYPTO_PROVIDER.random;
-  boolean get needsEntropy;
+  needsEntropy:boolean;
 
   nextUint16():number {
     var data = new ByteData(2);

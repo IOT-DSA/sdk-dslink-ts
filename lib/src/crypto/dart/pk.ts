@@ -59,14 +59,14 @@ get _secp256r1(): ECDomainParameters {
 }
 
 export class DartCryptoProvider  implements CryptoProvider {
-  static final DartCryptoProvider INSTANCE = new DartCryptoProvider();
+  static readonly DartCryptoProvider INSTANCE = new DartCryptoProvider();
   final random: DSRandomImpl = new DSRandomImpl();
 
   _cachedPrivate: ECPrivateKey;
   _cachedPublic: ECPublicKey;
   _cachedTime:number = -1;
 
-  Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
+  Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
     if (ECDHIsolate.running) {
       if ( old instanceof ECDHImpl ) {
         return ECDHIsolate._sendRequest(
@@ -103,7 +103,7 @@ export class DartCryptoProvider  implements CryptoProvider {
     return new ECDHImpl( this._cachedPrivate, _cachedPublic, Q2);
   }
 
-  Future<ECDH> getSecret(publicKeyRemote: PublicKey) async {
+  Promise<ECDH> getSecret(publicKeyRemote: PublicKey) async {
     if (ECDHIsolate.running) {
       return ECDHIsolate._sendRequest(publicKeyRemote, "");
     }
@@ -126,7 +126,7 @@ export class DartCryptoProvider  implements CryptoProvider {
     return new ECDHImpl(pair.privateKey, pair.publicKey, Q2);
   }
 
-  Future<PrivateKey> generate() async {
+  Promise<PrivateKey> generate() async {
     return generateSync();
   }
 
@@ -211,7 +211,7 @@ export class ECDHImpl  extends ECDH {
 }
 
 export class PublicKeyImpl  extends PublicKey {
-  static final publicExp: BigInteger = new BigInteger(65537);
+  static readonly publicExp: BigInteger = new BigInteger(65537);
 
   ecPublicKey: ECPublicKey;
   qBase64: string;
@@ -241,7 +241,7 @@ export class PrivateKeyImpl  implements PrivateKey {
     return "${Base64.encode(bigintToUint8List(ecPrivateKey.d))} ${publicKey.qBase64}";
   }
 
-  Future<ECDHImpl> getSecret(key: string) async {
+  Promise<ECDHImpl> getSecret(key: string) async {
     ECPoint p = ecPrivateKey.parameters.curve.decodePoint(Base64.decode(key));
     publicKey: ECPublicKey = new ECPublicKey(p, this._secp256r1);
     var Q2 = publicKey.Q * ecPrivateKey.d;

@@ -19,11 +19,11 @@ export class WebSocketConnection  extends Connection {
 
   onRequestReadyCompleter: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
 
-  Future<ConnectionChannel> get onRequesterReady => onRequestReadyCompleter.future;
+  Promise<ConnectionChannel> get onRequesterReady => onRequestReadyCompleter.future;
 
   _onDisconnectedCompleter: Completer<boolean> = new Completer<boolean>();
 
-  Future<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
+  Promise<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
 
   final clientLink: ClientLink;
 
@@ -200,7 +200,7 @@ export class WebSocketConnection  extends Connection {
         dataIn += data.length;
       }
 
-      if (m["salt"] is string && clientLink != null) {
+      if (typeof m["salt"] === 'string' && clientLink != null) {
         clientLink.updateSalt(m["salt"]);
       }
 

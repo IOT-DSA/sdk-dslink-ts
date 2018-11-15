@@ -20,12 +20,12 @@ export class BinaryData  {
 }
 
 export interface DsCodec {
-  static final _codecs: {[key: string]: DsCodec} = {
+  static readonly _codecs: {[key: string]: DsCodec} = {
     "json": DsJson.instance,
     "msgpack": DsMsgPackCodecImpl.instance
   };
 
-  static final defaultCodec: DsCodec = DsJson.instance;
+  static readonly defaultCodec: DsCodec = DsJson.instance;
 
   static register(name: string, codec: DsCodec) {
     if (name != null && codec != null) {

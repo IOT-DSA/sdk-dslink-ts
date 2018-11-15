@@ -148,4 +148,5 @@ function dart2ts(file: string) {
   fs.writeFileSync(file.replace(/.dart$/, '.ts'), str);
 }
 
-walk('lib');
+walk('lib/src/responder');
+walk('lib/src/browser');

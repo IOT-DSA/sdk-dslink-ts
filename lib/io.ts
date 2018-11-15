@@ -37,7 +37,7 @@ export class HttpHelper  {
   /// [method] is the HTTP method.
   /// [url] is the URL to make the request to.
   /// [headers] specifies additional headers to set.
-  static Future<HttpClientRequest> createRequest(
+  static Promise<HttpClientRequest> createRequest(
     method: string,
     url: string, {
       {[key: string]: string} headers
@@ -50,7 +50,7 @@ export class HttpHelper  {
   }
 
   /// Reads the entire [response] as a list of bytes.
-  static Future<int[]> readBytesFromResponse(response: HttpClientResponse) async {
+  static Promise<int[]> readBytesFromResponse(response: HttpClientResponse) async {
     return await response.fold([], (a, b) {
       a.addAll(b);
       return a;
@@ -59,7 +59,7 @@ export class HttpHelper  {
 
   /// Fetches the specified [url] from HTTP.
   /// If [headers] is specified, the headers will be added onto the request.
-  static Future<string> fetchUrl(url: string, {{[key: string]: string} headers}) async {
+  static Promise<string> fetchUrl(url: string, {{[key: string]: string} headers}) async {
     var request = await createRequest("GET", url, headers: headers);
     var response = await request.close();
     return const Utf8Decoder().convert(await readBytesFromResponse(response));
@@ -67,18 +67,18 @@ export class HttpHelper  {
 
   /// Fetches the specified [url] from HTTP as JSON.
   /// If [headers] is specified, the headers will be added onto the request.
-  static Future<dynamic> fetchJSON(url: string, {{[key: string]: string} headers}) async {
+  static Promise<dynamic> fetchJSON(url: string, {{[key: string]: string} headers}) async {
     return const JsonDecoder().convert(await fetchUrl(url, headers: headers));
   }
 
-  static const _webSocketGUID: string = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+  static readonly _webSocketGUID: string = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-  static const enableStandardWebSocket: boolean =
+  static readonly enableStandardWebSocket: boolean =
     const boolean.fromEnvironment("calzone.build", defaultValue: false) ||
       const boolean.fromEnvironment("websocket.standard", defaultValue: true);
 
   /// Custom WebSocket Connection logic.
-  static Future<WebSocket> connectToWebSocket(
+  static Promise<WebSocket> connectToWebSocket(
       let url: string, {
       let protocols: Iterable<string>,
       let headers: {[key: string]: dynamic},
@@ -199,7 +199,7 @@ export class HttpHelper  {
     });
   }
 
-  static Future<WebSocket> upgradeToWebSocket(request: HttpRequest, [
+  static Promise<WebSocket> upgradeToWebSocket(request: HttpRequest, [
     protocolSelector(protocols: string[]),
     boolean useStandardWebSocket
   ]) {
@@ -224,7 +224,7 @@ export class HttpHelper  {
         new WebSocketException("Invalid WebSocket upgrade request"));
     }
 
-    upgrade(protocol: string):Future<WebSocket> {
+    upgrade(protocol: string):Promise<WebSocket> {
       // Send the upgrade response.
       response
         ..statusCode = HttpStatus.SWITCHING_PROTOCOLS
@@ -296,7 +296,7 @@ export class HttpHelper  {
 }
 
 /// Generates a random socket port.
-Future<int> getRandomSocketPort() async {
+Promise<int> getRandomSocketPort() async {
   var server = await ServerSocket.bind(InternetAddress.LOOPBACK_IP_V4.address, 0);
   var port = server.port;
   await server.close();
@@ -305,8 +305,8 @@ Future<int> getRandomSocketPort() async {
 
 final _separator = pathlib.separator;
 
-Future<File> this._safeWriteBase(targetFile: File, dynamic content,
-    Future<File> writeFunction(file: File, dynamic content),
+Promise<File> this._safeWriteBase(targetFile: File, dynamic content,
+    Promise<File> writeFunction(file: File, dynamic content),
     {boolean verifyJson : false}) async {
   final tempDirectory = await Directory.current.createTemp();
   final targetFileName = pathlib.basename(targetFile.path);
@@ -337,7 +337,7 @@ Future<File> this._safeWriteBase(targetFile: File, dynamic content,
   }
 }
 
-Future<File> safeWriteAsString(targetFile: File, content: string,
+Promise<File> safeWriteAsString(targetFile: File, content: string,
     {boolean verifyJson : false}) async {
   return this._safeWriteBase(
       targetFile, content,
@@ -345,7 +345,7 @@ Future<File> safeWriteAsString(targetFile: File, content: string,
       verifyJson: verifyJson);
 }
 
-Future<File> safeWriteAsBytes(targetFile: File, content:number[],
+Promise<File> safeWriteAsBytes(targetFile: File, content:number[],
     {boolean verifyJson : false}) async {
   return this._safeWriteBase(
       targetFile, content,

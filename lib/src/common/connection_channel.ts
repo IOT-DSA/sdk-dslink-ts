@@ -1,4 +1,4 @@
-// part of dslink.common;
+
 
 export class PassiveChannel  implements ConnectionChannel {
   final onReceiveController: StreamController<List> =
@@ -36,11 +36,11 @@ export class PassiveChannel  implements ConnectionChannel {
 
   final onDisconnectController: Completer<ConnectionChannel> =
       new Completer<ConnectionChannel>();
-  Future<ConnectionChannel> get onDisconnected => onDisconnectController.future;
+  Promise<ConnectionChannel> get onDisconnected => onDisconnectController.future;
 
   final onConnectController: Completer<ConnectionChannel> =
       new Completer<ConnectionChannel>();
-  Future<ConnectionChannel> get onConnected => onConnectController.future;
+  Promise<ConnectionChannel> get onConnected => onConnectController.future;
 
   updateConnect() {
     if (connected) return;

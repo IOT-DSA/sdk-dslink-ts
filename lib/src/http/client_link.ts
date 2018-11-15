@@ -5,7 +5,7 @@ export class HttpClientLink  extends ClientLink {
   _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
   _onConnectedCompleter: Completer = new Completer();
 
-  Future<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
+  Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
 
   Future get onConnected => this._onConnectedCompleter.future;
 
@@ -33,7 +33,7 @@ export class HttpClientLink  extends ClientLink {
 
   _wsConnection: WebSocketConnection;
 
-  static const saltNameMap: {[key: string]:number} = const {
+  static readonly saltNameMap: {[key: string]:number} = const {
     'salt': 0,
     'saltS': 1,
     'saltL': 2
@@ -191,7 +191,7 @@ export class HttpClientLink  extends ClientLink {
       enableAck = serverConfig.containsKey('version');
       remotePath = serverConfig['path'];
 
-      if (serverConfig['wsUri'] is string) {
+      if (typeof serverConfig['wsUri'] === 'string') {
         _wsUpdateUri = '${connUri.resolve(serverConfig['wsUri'])}?dsId=${Uri.encodeComponent(dsId)}'
             .replaceFirst('http', 'ws');
         if (home != null) {
@@ -199,7 +199,7 @@ export class HttpClientLink  extends ClientLink {
         }
       }
 
-      if (serverConfig['format'] is string) {
+      if (typeof serverConfig['format'] === 'string') {
         format = serverConfig['format'];
       }
     }().timeout(new Duration(minutes: 1), onTimeout:(){
@@ -309,7 +309,7 @@ export class HttpClientLink  extends ClientLink {
   }
 }
 
-Future<PrivateKey> getKeyFromFile(path: string) async {
+Promise<PrivateKey> getKeyFromFile(path: string) async {
   var file = new File(path);
 
   key: PrivateKey;

@@ -7,7 +7,7 @@ export "src/crypto/pk.dart";
 
 export interface IRemoteRequester {
   /// user when the requester is proxied to another responder
-  string get responderPath;
+  responderPath:string;
 }
 
 _jsonContentType: ContentType = new ContentType("application", "json", charset: "utf-8");

@@ -6,7 +6,7 @@ typedef T ValueCallback<T>(value);
 /// Represents an update to a value subscription.
 export class ValueUpdate  {
   /// DSA formatted timezone.
-  static final string TIME_ZONE = () {
+  static readonly string TIME_ZONE = () {
     timeZoneOffset:number = (new DateTime.now()).timeZoneOffset.inMinutes;
     string s = "+";
     if (timeZoneOffset < 0) {
@@ -89,7 +89,7 @@ export class ValueUpdate  {
         count = 0;
       }
 
-      if (meta["status"] is string) {
+      if (typeof meta["status"] === 'string') {
         status = meta["status"];
       }
 

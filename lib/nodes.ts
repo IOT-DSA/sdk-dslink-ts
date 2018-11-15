@@ -400,7 +400,7 @@ export class CallbackNode  extends SimpleNode implements WaitForMe {
 }
 
 export class NodeNamer  {
-  static final string[] BANNED_CHARS = [
+  static readonly string[] BANNED_CHARS = [
     r"%",
     r".",
     r"/",

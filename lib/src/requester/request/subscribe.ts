@@ -105,10 +105,10 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
         let ts: string;
         let meta: object;
         if ( (update != null && update instanceof Object) ) {
-          if (update['ts'] is string) {
+          if (typeof update['ts'] === 'string') {
             path = update['path'];
             ts = update['ts'];
-            if (update['path'] is string) {
+            if (typeof update['path'] === 'string') {
               path = update['path'];
             } else if (update['sid'] is int) {
               sid = update['sid'];
@@ -119,7 +119,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
           value = update['value'];
           meta = update;
         } else if ( Array.isArray(update) && update.length > 2) {
-          if (update[0] is string) {
+          if (typeof update[0] === 'string') {
             path = update[0];
           } else if (update[0] is int) {
             sid = update[0];

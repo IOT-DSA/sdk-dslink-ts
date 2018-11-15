@@ -77,7 +77,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
         let value: object;
         let removed: boolean = false;
         if ( (update != null && update instanceof Object) ) {
-          if (update['name'] is string) {
+          if (typeof update['name'] === 'string') {
             name = update['name'];
           } else {
             continue; // invalid response
@@ -88,7 +88,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
             value = update['value'];
           }
         } else if ( Array.isArray(update) ) {
-          if (update.length > 0 && update[0] is string) {
+          if (update.length > 0 && typeof update[0] === 'string') {
             name = update[0];
             if (update.length > 1) {
               value = update[1];
@@ -172,7 +172,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
     }
   }
 
-  static const _ignoreProfileProps: string[] = const [
+  static readonly _ignoreProfileProps: string[] = const [
     r'$is',
     r'$permission',
     r'$settings'

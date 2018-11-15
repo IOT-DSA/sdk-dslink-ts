@@ -33,7 +33,7 @@ export class ConfigSetting  {
 }
 
 export class Configs  {
-  static const _globalConfigs: object = const {
+  static readonly _globalConfigs: object = const {
     r'$is': const {'type': 'profile'},
     r'$interface': const {'type': 'interface'},
 
@@ -70,8 +70,8 @@ export class Configs  {
     // not serializable
   };
 
-  static final global: Configs = new Configs()..load( this._globalConfigs);
-  static final defaultConfig: ConfigSetting =
+  static readonly global: Configs = new Configs()..load( this._globalConfigs);
+  static readonly defaultConfig: ConfigSetting =
       new ConfigSetting.fromMap('', const {});
 
   static getConfig(name: string, profile: Node):ConfigSetting {

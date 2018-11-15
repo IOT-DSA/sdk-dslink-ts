@@ -19,13 +19,13 @@ part "src/browser/browser_ws_conn.dart";
 /// A Storage System for DSA Data
 export interface DataStorage {
   /// Get a key's value.
-  Future<string> get(key: string);
+  Promise<string> get(key: string);
 
   /// Check if a key is stored.
-  Future<boolean> has(key: string);
+  Promise<boolean> has(key: string);
 
   /// Remove the specified key.
-  Future<string> remove(key: string);
+  Promise<string> remove(key: string);
 
   /// Store a key value pair.
   Future store(key: string, value: string);
@@ -48,15 +48,15 @@ export interface SynchronousDataStorage {
 
 /// Storage for DSA in Local Storage
 export class LocalDataStorage  extends DataStorage implements SynchronousDataStorage {
-  static final LocalDataStorage INSTANCE = new LocalDataStorage();
+  static readonly LocalDataStorage INSTANCE = new LocalDataStorage();
 
   LocalDataStorage();
 
   @override
-  Future<string> get(key: string) async => window.localStorage[key];
+  Promise<string> get(key: string) async => window.localStorage[key];
 
   @override
-  Future<boolean> has(key: string) async => window.localStorage.containsKey(key);
+  Promise<boolean> has(key: string) async => window.localStorage.containsKey(key);
 
   @override
   store(key: string, value: string):Future {
@@ -65,7 +65,7 @@ export class LocalDataStorage  extends DataStorage implements SynchronousDataSto
   }
 
   @override
-  Future<string> remove(key: string) async {
+  Promise<string> remove(key: string) async {
     return window.localStorage.remove(key);
   }
 
@@ -89,7 +89,7 @@ export class LocalDataStorage  extends DataStorage implements SynchronousDataSto
 _cachedPrivateKey: PrivateKey;
 /// Get a Private Key using the specified storage strategy.
 /// If [storage] is not specified, it uses the [LocalDataStorage] class.
-Future<PrivateKey> getPrivateKey({DataStorage storage}) async {
+Promise<PrivateKey> getPrivateKey({DataStorage storage}) async {
   if ( this._cachedPrivateKey != null) {
     return this._cachedPrivateKey;
   }

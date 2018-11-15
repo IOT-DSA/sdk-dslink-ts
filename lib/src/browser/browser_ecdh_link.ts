@@ -7,7 +7,7 @@ export class BrowserECDHLink  extends ClientLink {
 
   Future get onConnected => this._onConnectedCompleter.future;
 
-  Future<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
+  Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
 
   final dsId: string;
   final token: string;
@@ -24,7 +24,7 @@ export class BrowserECDHLink  extends ClientLink {
 
   enableAck: boolean = false;
 
-  static const saltNameMap: {[key: string]:number} = const {
+  static readonly saltNameMap: {[key: string]:number} = const {
     'salt': 0,
     'saltS': 1,
     'saltL': 2,
@@ -109,7 +109,7 @@ export class BrowserECDHLink  extends ClientLink {
       let tempKey: string = serverConfig['tempKey'];
       _nonce = await privateKey.getSecret(tempKey);
 
-      if (serverConfig['wsUri'] is string) {
+      if (typeof serverConfig['wsUri'] === 'string') {
         _wsUpdateUri = '${connUri.resolve(serverConfig['wsUri'])}?dsId=$dsId'
             .replaceFirst('http', 'ws');
         if (tokenHash != null) {
@@ -120,7 +120,7 @@ export class BrowserECDHLink  extends ClientLink {
       // server start to support version since 1.0.4
       // and this is the version ack is added
       enableAck = serverConfig.containsKey('version');
-      if (serverConfig['format'] is string) {
+      if (typeof serverConfig['format'] === 'string') {
         format = serverConfig['format'];
       }
       initWebsocket(false);

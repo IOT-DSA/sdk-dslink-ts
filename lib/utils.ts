@@ -144,7 +144,7 @@ get logger(): Logger {
 
     rname: string = record.loggerName;
 
-    if (record.zone["dsa.logger.name"] is string) {
+    if (typeof record.zone["dsa.logger.name"] === 'string') {
       rname = record.zone["dsa.logger.name"];
     }
 
@@ -225,27 +225,27 @@ updateLogLevel(name: string) {
 }
 
 export class Interval  {
-  static final Interval ONE_MILLISECOND = new Interval.forMilliseconds(1);
-  static final Interval TWO_MILLISECONDS = new Interval.forMilliseconds(2);
-  static final Interval FOUR_MILLISECONDS = new Interval.forMilliseconds(4);
-  static final Interval EIGHT_MILLISECONDS = new Interval.forMilliseconds(8);
-  static final Interval SIXTEEN_MILLISECONDS = new Interval.forMilliseconds(16);
-  static final Interval THIRTY_MILLISECONDS = new Interval.forMilliseconds(30);
-  static final Interval FIFTY_MILLISECONDS = new Interval.forMilliseconds(50);
-  static final Interval ONE_HUNDRED_MILLISECONDS =
+  static readonly Interval ONE_MILLISECOND = new Interval.forMilliseconds(1);
+  static readonly Interval TWO_MILLISECONDS = new Interval.forMilliseconds(2);
+  static readonly Interval FOUR_MILLISECONDS = new Interval.forMilliseconds(4);
+  static readonly Interval EIGHT_MILLISECONDS = new Interval.forMilliseconds(8);
+  static readonly Interval SIXTEEN_MILLISECONDS = new Interval.forMilliseconds(16);
+  static readonly Interval THIRTY_MILLISECONDS = new Interval.forMilliseconds(30);
+  static readonly Interval FIFTY_MILLISECONDS = new Interval.forMilliseconds(50);
+  static readonly Interval ONE_HUNDRED_MILLISECONDS =
       new Interval.forMilliseconds(100);
-  static final Interval TWO_HUNDRED_MILLISECONDS =
+  static readonly Interval TWO_HUNDRED_MILLISECONDS =
       new Interval.forMilliseconds(200);
-  static final Interval THREE_HUNDRED_MILLISECONDS =
+  static readonly Interval THREE_HUNDRED_MILLISECONDS =
       new Interval.forMilliseconds(300);
-  static final Interval QUARTER_SECOND = new Interval.forMilliseconds(250);
-  static final Interval HALF_SECOND = new Interval.forMilliseconds(500);
-  static final Interval ONE_SECOND = new Interval.forSeconds(1);
-  static final Interval TWO_SECONDS = new Interval.forSeconds(2);
-  static final Interval THREE_SECONDS = new Interval.forSeconds(3);
-  static final Interval FOUR_SECONDS = new Interval.forSeconds(4);
-  static final Interval FIVE_SECONDS = new Interval.forSeconds(5);
-  static final Interval ONE_MINUTE = new Interval.forMinutes(1);
+  static readonly Interval QUARTER_SECOND = new Interval.forMilliseconds(250);
+  static readonly Interval HALF_SECOND = new Interval.forMilliseconds(500);
+  static readonly Interval ONE_SECOND = new Interval.forSeconds(1);
+  static readonly Interval TWO_SECONDS = new Interval.forSeconds(2);
+  static readonly Interval THREE_SECONDS = new Interval.forSeconds(3);
+  static readonly Interval FOUR_SECONDS = new Interval.forSeconds(4);
+  static readonly Interval FIVE_SECONDS = new Interval.forSeconds(5);
+  static readonly Interval ONE_MINUTE = new Interval.forMinutes(1);
 
   final duration: Duration;
 

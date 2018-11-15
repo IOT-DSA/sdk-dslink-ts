@@ -2,24 +2,24 @@
 
 export class Permission  {
   /// now allowed to do anything
-  static const int NONE = 0;
+  static readonly int NONE = 0;
 
   /// list node
-  static const int LIST = 1;
+  static readonly int LIST = 1;
 
   /// read node
-  static const int READ = 2;
+  static readonly int READ = 2;
 
   /// write attribute and value
-  static const int WRITE = 3;
+  static readonly int WRITE = 3;
 
   /// config the node
-  static const int CONFIG = 4;
+  static readonly int CONFIG = 4;
 
   /// something that can never happen
-  static const int NEVER = 5;
+  static readonly int NEVER = 5;
 
-  static const names: string[] = const [
+  static readonly names: string[] = const [
     'none',
     'list',
     'read',
@@ -28,7 +28,7 @@ export class Permission  {
     'never'
   ];
 
-  static const nameParser: {[key: string]:number} = const {
+  static readonly nameParser: {[key: string]:number} = const {
     'none': NONE,
     'list': LIST,
     'read': READ,
@@ -56,9 +56,9 @@ export class PermissionList  {
     defaultPermission = Permission.NONE;
     for (object obj in data) {
       if ( (obj != null && obj instanceof Object) ) {
-        if (obj['id'] is string) {
+        if (typeof obj['id'] === 'string') {
           idMatchs[obj['id']] = Permission.nameParser[obj['permission']];
-        } else if (obj['group'] is string) {
+        } else if (typeof obj['group'] === 'string') {
           if (obj['group'] == 'default') {
             defaultPermission = Permission.nameParser[obj['permission']];
           } else {

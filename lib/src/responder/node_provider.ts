@@ -35,7 +35,7 @@ export interface LocalNode extends Node {
   boolean get _hasListListener => _listChangeController?.hasListener ?? false;
 
   /// Node Provider
-  NodeProvider get provider;
+  provider:NodeProvider;
 
   /// Node Path
   final path: string;
@@ -264,5 +264,5 @@ export interface NodeProvider {
   Responder createResponder(dsId: string, sessionId: string);
 
   /// Get Permissions.
-  IPermissionManager get permissions;
+  permissions:IPermissionManager;
 }

@@ -1,7 +1,7 @@
 // part of dslink.historian;
 
 export interface Rollup {
-  dynamic get value;
+  value:dynamic;
 
   void add(dynamic input);
 

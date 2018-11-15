@@ -2,7 +2,7 @@
 
 export class RemoveController  implements RequestUpdater {
   final completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
-  Future<RequesterUpdate> get future => completer.future;
+  Promise<RequesterUpdate> get future => completer.future;
 
   final requester: Requester;
   final path: string;

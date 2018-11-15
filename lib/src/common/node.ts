@@ -187,10 +187,10 @@ export class Node  {
 /// Utility class for node and config/attribute paths.
 export class Path  {
   /// Regular Expression for invalid characters in paths.
-  static final invalidChar: RegExp = new RegExp(r'[\\\?\*|"<>:]');
+  static readonly invalidChar: RegExp = new RegExp(r'[\\\?\*|"<>:]');
 
   /// Regular Expression for invalid characters in names.
-  static final invalidNameChar: RegExp = new RegExp(r'[\/\\\?\*|"<>:]');
+  static readonly invalidNameChar: RegExp = new RegExp(r'[\/\\\?\*|"<>:]');
 
   static escapeName(str: string):string {
     if (str.contains(invalidNameChar)) {

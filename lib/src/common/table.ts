@@ -36,9 +36,9 @@ export class TableColumn  {
   static parseColumns(list: List):TableColumn[] {
     rslt: TableColumn[] = <TableColumn>[];
     for (object m in list) {
-      if ( (m != null && m instanceof Object) && m["name"] is string) {
+      if ( (m != null && m instanceof Object) && typeof m["name"] === 'string') {
         let type: string = "string";
-        if (m["type"] is string) {
+        if (typeof m["type"] === 'string') {
           type = m["type"];
         }
         rslt.add(new TableColumn(m["name"], type, m["default"]));

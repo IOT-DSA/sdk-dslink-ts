@@ -2,9 +2,9 @@
 
 /// a decoder class to decode malformed url encoded string
 export class UriComponentDecoder  {
-  static const _SPACE:number = 0x20;
-  static const _PERCENT:number = 0x25;
-  static const _PLUS:number = 0x2B;
+  static readonly _SPACE:number = 0x20;
+  static readonly _PERCENT:number = 0x25;
+  static readonly _PLUS:number = 0x2B;
 
   static decode(text: string):string {
     codes:number[] = new int[]();

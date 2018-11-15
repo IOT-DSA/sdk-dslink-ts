@@ -96,7 +96,7 @@ export class ECDHIsolate  {
 
   /// when oldprivate is '', don't use cache
   static _sendRequest(
-      let publicKeyRemote: PublicKey, oldprivate: string):Future<ECDH> {
+      let publicKeyRemote: PublicKey, oldprivate: string):Promise<ECDH> {
     var req = new ECDHIsolateRequest(publicKeyRemote, oldprivate);
     _requests.add(req);
     _checkRequest();
@@ -111,5 +111,5 @@ export class ECDHIsolateRequest  {
   ECDHIsolateRequest(this.publicKeyRemote, this.oldPrivate);
 
   _completer: Completer<ECDH> = new Completer<ECDH>();
-  Future<ECDH> get future => this._completer.future;
+  Promise<ECDH> get future => this._completer.future;
 }

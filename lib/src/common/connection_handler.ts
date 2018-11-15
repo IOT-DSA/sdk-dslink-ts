@@ -1,12 +1,6 @@
 const ACK_WAIT_COUNT = 16;
 const defaultCacheSize = 256;
 
-export interface ConnectionProcessor {
-  startSendingData(waitingAckId: number, currentTime: number): void;
-
-  ackReceived(receiveAckId: number, startTime: number, currentTime: number): void;
-}
-
 export abstract class ConnectionHandler {
   _conn: ConnectionChannel;
   _connListener: StreamSubscription;

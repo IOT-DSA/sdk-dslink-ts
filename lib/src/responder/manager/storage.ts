@@ -16,19 +16,19 @@ export interface IStorageManager {
 
   /// load all saved subscriptions
   /// should be called only during application initialization
-  Future<List<ISubscriptionNodeStorage[]>> loadSubscriptions();
+  Promise<List<ISubscriptionNodeStorage[]>> loadSubscriptions();
 }
 
 /// a storage container for one dslink
 /// different dslink will have different ISubscriptionResponderStorage
 export interface ISubscriptionResponderStorage {
-  string get responderPath;
+  responderPath:string;
 
   ISubscriptionNodeStorage getOrCreateValue(valuePath: string);
   void destroyValue(valuePath: string);
   /// load all saved subscriptions
   /// should be called only during application initialization
-  Future<ISubscriptionNodeStorage[]> load();
+  Promise<ISubscriptionNodeStorage[]> load();
   void destroy();
 }
 
@@ -69,13 +69,13 @@ export interface ISubscriptionNodeStorage {
 /// a storage class for general purpose key/value pair
 export interface IValueStorageBucket {
   IValueStorage getValueStorage(key: string);
-  Future<object> load();
+  Promise<object> load();
   void destroy();
 }
 
 /// basic value storage
 export interface IValueStorage {
-  string get key;
+  key:string;
   void setValue(value: object);
   Future getValueAsync();
   void destroy();

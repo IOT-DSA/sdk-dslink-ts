@@ -4,7 +4,7 @@
 export class BrowserUserLink  extends ClientLink {
   _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
 
-  Future<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
+  Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
 
   static session: string = DSRandom.instance.nextUint16().toRadixString(16) +
       DSRandom.instance.nextUint16().toRadixString(16) +
@@ -20,7 +20,7 @@ export class BrowserUserLink  extends ClientLink {
 
   enableAck: boolean;
 
-  static const saltNameMap: {[key: string]:number} = const {"salt": 0, "saltS": 1,};
+  static readonly saltNameMap: {[key: string]:number} = const {"salt": 0, "saltS": 1,};
 
   updateSalt(salt: string, [saltId:number = 0]) {
     // TODO: implement updateSalt

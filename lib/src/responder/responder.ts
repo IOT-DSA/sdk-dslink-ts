@@ -234,7 +234,7 @@ export class Responder  extends ConnectionHandler {
         let qos:number = 0;
         let sid:number = -1;
         if ( (p != null && p instanceof Object) ) {
-          if (p['path'] is string) {
+          if (typeof p['path'] === 'string') {
             pathstr = p['path'];
           } else {
             continue;

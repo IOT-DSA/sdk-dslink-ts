@@ -2,7 +2,7 @@
 
 export type NodeFactory = (path: string) => LocalNode;
 export type SimpleNodeFactory = (path: string) => SimpleNode;
-typedef Future<ByteData> IconResolver(name: string);
+typedef Promise<ByteData> IconResolver(name: string);
 
 /// A simple table result.
 /// This is used to return simple tables from an action.
@@ -17,7 +17,7 @@ export class SimpleTableResult  {
 }
 
 export interface WaitForMe {
-  Future get onLoaded;
+  onLoaded:Future;
 }
 
 /// An Asynchronous Table Result

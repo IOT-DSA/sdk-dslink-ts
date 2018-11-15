@@ -205,13 +205,13 @@ export class LinkProvider  {
 
   Requester get requester => link.requester;
 
-  Future<Requester> get onRequesterReady => link.onRequesterReady;
+  Promise<Requester> get onRequesterReady => link.onRequesterReady;
 
   LocalNode operator ~() => this["/"];
 }
 
 export class BrowserUtils  {
-  static Future<string> fetchBrokerUrlFromPath(
+  static Promise<string> fetchBrokerUrlFromPath(
       let path: string, otherwise: string) async {
     try {
       return (await HttpRequest.getString(path)).trim();

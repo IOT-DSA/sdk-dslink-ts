@@ -30,13 +30,13 @@ _hash(obj):string {
 }
 
 export class NodeCryptoProvider  implements CryptoProvider {
-  static final NodeCryptoProvider INSTANCE = new NodeCryptoProvider();
+  static readonly NodeCryptoProvider INSTANCE = new NodeCryptoProvider();
   final random: DSRandom = new DSRandomImpl();
 
   _cachedPrivate: PrivateKey;
   _cachedTime:number = -1;
 
-  Future<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
+  Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async {
     ts:number = (new DateTime.now()).millisecondsSinceEpoch;
 
     /// reuse same ECDH server pair for up to 1 minute
@@ -52,11 +52,11 @@ export class NodeCryptoProvider  implements CryptoProvider {
     return this._cachedPrivate.getSecret(publicKeyRemote.qBase64);
   }
 
-  Future<ECDH> getSecret(publicKeyRemote: PublicKey) async {
+  Promise<ECDH> getSecret(publicKeyRemote: PublicKey) async {
     return generateSync().getSecret(publicKeyRemote.qBase64);
   }
 
-  Future<PrivateKey> generate() async {
+  Promise<PrivateKey> generate() async {
     return generateSync();
   }
 
@@ -134,12 +134,12 @@ export class PrivateKeyImpl  implements PrivateKey {
     return this._urlSafe(_toObj(_privateKey["d"]).callMethod("toString", ["base64"])) + " ${publicKey.qBase64}";
   }
 
-  Future<ECDH> getSecret(key: string) async {
+  Promise<ECDH> getSecret(key: string) async {
     var buf = new JsObject(_context["Buffer"], [key, "base64"]);
     var point = _curve["Point"].callMethod("fromEncoded", ["prime256v1", buf]);
     var secret = this._privateKey.callMethod("getSharedSecret", [point]);
 
-    return new Future<ECDH>.value(
+    return new Promise<ECDH>.value(
       new ECDHImpl( this._toObj(secret), publicKey, this)
     );
   }

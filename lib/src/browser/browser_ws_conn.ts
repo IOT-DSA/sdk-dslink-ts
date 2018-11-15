@@ -12,11 +12,11 @@ export class WebSocketConnection  extends Connection {
   _onRequestReadyCompleter: Completer<ConnectionChannel> =
       new Completer<ConnectionChannel>();
 
-  Future<ConnectionChannel> get onRequesterReady =>
+  Promise<ConnectionChannel> get onRequesterReady =>
       _onRequestReadyCompleter.future;
 
   _onDisconnectedCompleter: Completer<boolean> = new Completer<boolean>();
-  Future<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
+  Promise<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
 
   final clientLink: ClientLink;
 
@@ -118,7 +118,7 @@ export class WebSocketConnection  extends Connection {
         m = codec.decodeBinaryFrame(bytes);
         logger.fine("$m");
 
-        if (m["salt"] is string) {
+        if (typeof m["salt"] === 'string') {
           clientLink.updateSalt(m["salt"]);
         }
         let needAck: boolean = false;
@@ -147,7 +147,7 @@ export class WebSocketConnection  extends Connection {
         close();
         return;
       }
-    } else if (e.data is string) {
+    } else if (typeof e.data === 'string') {
       try {
         m = codec.decodeStringFrame(e.data);
         logger.fine("$m");
