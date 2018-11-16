@@ -1,42 +1,21 @@
-// part of dslink.utils;
+import MsgPack from "msgpack-lite";
 
-export type _Encoder = (input: object) => object;
-export type _Reviver = (key: string, input: object) => object;
 
-export class BinaryData  {
-  /// used when only partial data is received
-  /// don"t merge them before it's finished
-  mergingList: ByteData[];
+export abstract class DsCodec {
+  static  _codecs: {[key: string]: DsCodec} ;
 
-  bytes: ByteData;
-
-  BinaryData(bytes: ByteData) {
-    this.bytes = bytes;
-  }
-
-  BinaryData.fromList(list:number[]) {
-    bytes = ByteDataUtil.fromList(list);
-  }
-}
-
-export interface DsCodec {
-  static readonly _codecs: {[key: string]: DsCodec} = {
-    "json": DsJson.instance,
-    "msgpack": DsMsgPackCodecImpl.instance
-  };
-
-  static readonly defaultCodec: DsCodec = DsJson.instance;
+  static defaultCodec: DsCodec ;
 
   static register(name: string, codec: DsCodec) {
     if (name != null && codec != null) {
-      _codecs[name] = codec;
+      DsCodec._codecs[name] = codec;
     }
   }
 
   static getCodec(name: string):DsCodec {
-    rslt: DsCodec = _codecs[name];
+    let rslt: DsCodec = DsCodec._codecs[name];
     if (rslt == null) {
-      return defaultCodec;
+      return DsCodec.defaultCodec;
     }
     return rslt;
   }
@@ -45,65 +24,59 @@ export interface DsCodec {
 
   get blankData(): object {
     if ( this._blankData == null) {
-      _blankData = encodeFrame({});
+      this._blankData = this.encodeFrame({});
     }
     return this._blankData;
   }
 
   /// output string or int[]
-  object encodeFrame(val: object);
+  abstract encodeFrame(val: any):any;
 
   /// input can be string or int[]
-  object decodeStringFrame(input: string);
+  abstract decodeStringFrame(input: string):any;
 
-  object decodeBinaryFrame(input:number[]);
+  abstract decodeBinaryFrame(input:Uint8Array):any;
 }
 
-export interface DsJson {
-  static instance: DsJsonCodecImpl = new DsJsonCodecImpl();
+export abstract class DsJson {
+  static instance: DsJsonCodecImpl;
 
-  static encode(val: object, {boolean pretty: false}):string {
-    return instance.encodeJson(val, pretty: pretty);
+  static encode(val: object, pretty: boolean = false):string {
+    return this.instance.encodeJson(val, pretty);
   }
 
-  static dynamic decode(str: string) {
-    return instance.decodeJson(str);
+  static decode(str: string):any {
+    return this.instance.decodeJson(str);
   }
 
-  string encodeJson(val: object, {boolean pretty: false});
+  abstract encodeJson(val: any, pretty?: boolean):string;
 
-  dynamic decodeJson(str: string);
+  abstract decodeJson(str: string):any;
 }
 
 export class DsJsonCodecImpl  extends DsCodec implements DsJson {
-  static dynamic _safeEncoder(value) {
-    return null;
-  }
-
-  encoder: JsonEncoder = new JsonEncoder( this._safeEncoder);
-
-  decoder: JsonDecoder = new JsonDecoder();
-  _prettyEncoder: JsonEncoder;
-
-  dynamic decodeJson(str: string) {
-    return decoder.convert(str);
-  }
-
-  encodeJson(val, {boolean pretty: false}):string {
-    JsonEncoder e = encoder;
-    if (pretty) {
-      if ( this._prettyEncoder == null) {
-        _prettyEncoder =
-            encoder = new JsonEncoder.withIndent("  ", this._safeEncoder);
+  static _safeEncoder(key: string, value: any): any {
+    if (typeof value === 'object') {
+      if (Object.isExtensible(value)) {
+        return value;
       }
-      e = this._prettyEncoder;
+      return null;
+    } else {
+      return value;
     }
-    return e.convert(val);
   }
 
-  _unsafeDecoder: JsonDecoder;
 
-  decodeBinaryFrame(bytes:number[]):object {
+   decodeJson(str: string):any {
+    return JSON.parse(str);
+  }
+
+  encodeJson(val:any,  pretty:boolean = false):string {
+    return JSON.stringify(val, DsJsonCodecImpl._safeEncoder, pretty?1:undefined);
+  }
+
+
+  decodeBinaryFrame(bytes:Uint8Array):object {
     return decodeStringFrame(const Utf8Decoder().convert(bytes));
   }
 
@@ -157,6 +130,7 @@ export class DsJsonCodecImpl  extends DsCodec implements DsJson {
 
   _unsafeEncoder: JsonEncoder;
 }
+DsJson.instance = new DsJsonCodecImpl();
 
 export class DsMsgPackCodecImpl  extends DsCodec {
   static instance: DsMsgPackCodecImpl = new DsMsgPackCodecImpl();
@@ -188,3 +162,10 @@ export class DsMsgPackCodecImpl  extends DsCodec {
     return pack(val);
   }
 }
+
+DsCodec._codecs={
+  "json": DsJson.instance,
+  "msgpack": DsMsgPackCodecImpl.instance
+};
+
+DsCodec.defaultCodec = DsJson.instance;
