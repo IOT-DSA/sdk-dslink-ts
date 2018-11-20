@@ -1,5 +1,5 @@
 import MsgPack from "msgpack-lite";
-import Base64 from "base64-js";
+import Base64 from "./base64";
 
 export function toBuffer(val: Uint8Array): Buffer {
   if (val instanceof Buffer) {
@@ -90,7 +90,7 @@ export class DsJsonCodecImpl extends DsCodec implements DsJson {
   static reviver(key: string, value: any): any {
     if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
       try {
-        return Base64.toByteArray(value.substring(7));
+        return Base64.decode(value.substring(7));
       } catch (err) {
         return null;
       }
@@ -100,7 +100,7 @@ export class DsJsonCodecImpl extends DsCodec implements DsJson {
 
   static replacer(key: string, value: any): any {
     if (value instanceof Uint8Array) {
-      return `\u001Bbytes:${Base64.fromByteArray(value)}`;
+      return `\u001Bbytes:${Base64.encode(value)}`;
     }
     return value;
   }
