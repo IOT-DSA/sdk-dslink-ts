@@ -135,7 +135,7 @@ export class HttpClientLink  extends ClientLink {
       return !strictTls;
     };
 
-    connUrl: string = '$_conn?dsId=${Uri.encodeComponent(dsId)}';
+    connUrl: string = '$_conn?dsId=${encodeURIComponent(dsId)}';
     if (home != null) {
       connUrl = '$connUrl&home=$home';
     }
@@ -192,7 +192,7 @@ export class HttpClientLink  extends ClientLink {
       remotePath = serverConfig['path'];
 
       if (typeof serverConfig['wsUri'] === 'string') {
-        _wsUpdateUri = '${connUri.resolve(serverConfig['wsUri'])}?dsId=${Uri.encodeComponent(dsId)}'
+        _wsUpdateUri = '${connUri.resolve(serverConfig['wsUri'])}?dsId=${encodeURIComponent(dsId)}'
             .replaceFirst('http', 'ws');
         if (home != null) {
           _wsUpdateUri = '$_wsUpdateUri&home=$home';
