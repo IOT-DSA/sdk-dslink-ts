@@ -1,50 +1,64 @@
+import {Completer, Stream} from "../utils/async";
+import {Connection, ConnectionChannel, ProcessorResult} from "./interfaces";
+import {ConnectionHandler} from "./connection_handler";
 
 
-export class PassiveChannel  implements ConnectionChannel {
-  final onReceiveController: StreamController<List> =
-      new StreamController<List>();
-  Stream<List> get onReceive => onReceiveController.stream;
+export class PassiveChannel implements ConnectionChannel {
+  onReceive: Stream<any[]> = new Stream<any[]>();
 
   _processors: Function[] = [];
 
-  final conn: Connection;
+  readonly conn: Connection;
 
-  PassiveChannel(this.conn, [this.connected = false]) {}
-
-  handler: ConnectionHandler;
-  sendWhenReady(handler: ConnectionHandler) {
-    this.handler = handler;
-    conn.requireSend();
+  constructor(conn: Connection, connected = false) {
+    this.conn = conn;
+    this.connected = connected;
   }
 
-  ProcessorResult getSendingData(currentTime:number, waitingAckId:number){
-    if (handler != null) {
-      let rslt: ProcessorResult = handler.getSendingData(currentTime, waitingAckId);
+  handler: ConnectionHandler;
+
+  sendWhenReady(handler: ConnectionHandler) {
+    this.handler = handler;
+    this.conn.requireSend();
+  }
+
+  getSendingData(currentTime: number, waitingAckId: number): ProcessorResult {
+    if (this.handler != null) {
+      let rslt: ProcessorResult = this.handler.getSendingData(currentTime, waitingAckId);
       //handler = null;
       return rslt;
     }
     return null;
   }
-  
+
   _isReady: boolean = false;
-  get isReady(): boolean { return this._isReady;}
+  get isReady(): boolean {
+    return this._isReady;
+  }
+
   set isReady(val: boolean) {
-    _isReady = val;
+    this._isReady = val;
   }
 
   connected: boolean = true;
 
-  final onDisconnectController: Completer<ConnectionChannel> =
-      new Completer<ConnectionChannel>();
-  Promise<ConnectionChannel> get onDisconnected => onDisconnectController.future;
+  readonly onDisconnectController: Completer<ConnectionChannel> =
+    new Completer<ConnectionChannel>();
 
-  final onConnectController: Completer<ConnectionChannel> =
-      new Completer<ConnectionChannel>();
-  Promise<ConnectionChannel> get onConnected => onConnectController.future;
+  get onDisconnected() {
+    return this.onDisconnectController.future
+  };
+
+  readonly onConnectController: Completer<ConnectionChannel> =
+    new Completer<ConnectionChannel>();
+
+  get onConnected() {
+    return this.onConnectController.future
+  };
 
   updateConnect() {
-    if (connected) return;
-    connected = true;
-    onConnectController.complete(this);
+    if (this.connected) return;
+    this.connected = true;
+    this.onConnectController.complete(this);
   }
 }

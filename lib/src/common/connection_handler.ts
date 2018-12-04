@@ -1,9 +1,12 @@
+import {ConnectionChannel, ConnectionProcessor, ProcessorResult} from "./interfaces";
+import {StreamSubscription} from "../utils/async";
+
 const ACK_WAIT_COUNT = 16;
 const defaultCacheSize = 256;
 
 export abstract class ConnectionHandler {
   _conn: ConnectionChannel;
-  _connListener: StreamSubscription;
+  _connListener: StreamSubscription<any[]>;
 
   get connection(): ConnectionChannel {
     return this._conn;
@@ -20,9 +23,9 @@ export abstract class ConnectionHandler {
     this._conn.onDisconnected.then(this._onDisconnected);
     // resend all requests after a connection
     if (this._conn.connected) {
-      onReconnected();
+      this.onReconnected();
     } else {
-      _conn.onConnected.then((conn) => onReconnected());
+      this._conn.onConnected.then((conn) => this.onReconnected());
     }
   }
 

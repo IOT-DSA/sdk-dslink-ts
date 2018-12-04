@@ -1,6 +1,6 @@
 //typedef T RequestConsumer<T>(request: Request);
 
-import {Stream} from "../utils/stream";
+import {Async} from "../utils/stream";
 import {Request} from "./request";
 
 type RequestConsumer<T> = (request: Request) => T;
@@ -58,7 +58,7 @@ export class Requester extends ConnectionHandler {
     }
   }
 
-  onError: Stream<DSError> = new Stream<DSError>();
+  onError: Async<DSError> = new Async<DSError>();
 
 
   lastRid = 0;
@@ -106,10 +106,10 @@ export class Requester extends ConnectionHandler {
     return new ReqSubscribeListener(this, path, callback);
   }
 
-  onValueChange(path: string, qos: number = 0): Stream<ValueUpdate> {
+  onValueChange(path: string, qos: number = 0): Async<ValueUpdate> {
     let listener: ReqSubscribeListener;
-    let stream: Stream<ValueUpdate>;
-    stream = new Stream<ValueUpdate>(() => {
+    let stream: Async<ValueUpdate>;
+    stream = new Async<ValueUpdate>(() => {
 
       if (listener == null) {
         listener = subscribe(path, (update: ValueUpdate) => {
@@ -173,13 +173,13 @@ export class Requester extends ConnectionHandler {
     node._unsubscribe(this, callback);
   }
 
-  list(path: string): Stream<RequesterListUpdate> {
+  list(path: string): Async<RequesterListUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     return node._list(this);
   }
 
   invoke(path: string, params: {[key: string]: any} = {},
-         maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer): Stream<RequesterInvokeUpdate> {
+         maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer): Async<RequesterInvokeUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     return node._invoke(params, this, maxPermission, fetchRawReq);
   }

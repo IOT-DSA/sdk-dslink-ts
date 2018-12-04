@@ -1,12 +1,12 @@
 // part of dslink.common;
 
-defaultProfileMap: object = {
+export const defaultProfileMap = {
   "node": {},
   "static": {},
   "getHistory": {
-    r"$invokable": "read",
-    r"$result": "table",
-    r"$params": [
+    "$invokable": "read",
+    "$result": "table",
+    "$params": [
       {"name": "Timerange", "type": "string", "editor": "daterange"},
       {
         "name": "Interval",
@@ -53,7 +53,7 @@ defaultProfileMap: object = {
         ])
       }
     ],
-    r"$columns": [
+    "$columns": [
       {"name": "timestamp", "type": "time"},
       {"name": "value", "type": "dynamic"}
     ]

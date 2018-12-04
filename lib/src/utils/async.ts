@@ -68,3 +68,24 @@ export class StreamSubscription<T> {
     }
   }
 }
+
+export class Completer<T> {
+  _resolve: Function;
+  _reject: Function;
+  readonly future = new Promise<T>((resolve, reject) => {
+    this._resolve = resolve;
+    this._reject = reject;
+  });
+
+  complete(val: T) {
+    if (this._resolve) {
+      this._resolve(val);
+    }
+  }
+
+  completeError(val: any) {
+    if (this._reject) {
+      this._reject(val);
+    }
+  }
+}
