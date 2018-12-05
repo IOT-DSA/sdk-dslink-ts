@@ -16,9 +16,9 @@ class _InvokeResponseUpdate {
 }
 
 export class InvokeResponse  extends Response {
-  final parentNode: LocalNode;
-  final node: LocalNode;
-  final name: string;
+  readonly parentNode: LocalNode;
+  readonly node: LocalNode;
+  readonly name: string;
 
   InvokeResponse(responder: Responder, rid:number, this.parentNode, this.node, this.name)
       : super(responder, rid, 'invoke');

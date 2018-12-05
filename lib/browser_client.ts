@@ -163,7 +163,7 @@ Promise<PrivateKey> getPrivateKey({DataStorage storage}) async {
 }
 
 _startStorageLock(lockKey: string, lockToken: string) {
-  onStorage(StorageEvent e) {
+  onStorage(e: StorageEvent) {
     if (e.key == lockKey) {
       window.localStorage[lockKey] = lockToken;
     }

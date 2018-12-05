@@ -1,11 +1,11 @@
 // part of dslink.requester;
 
 export class SetController  implements RequestUpdater {
-  final completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
+  readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
   Promise<RequesterUpdate> get future => completer.future;
-  final requester: Requester;
-  final path: string;
-  final value: object;
+  readonly requester: Requester;
+  readonly path: string;
+  readonly value: object;
   _request: Request;
 
   SetController(this.requester, this.path, this.value,

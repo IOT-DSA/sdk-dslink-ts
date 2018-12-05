@@ -6,7 +6,7 @@ export type InvokeCallback = (params: object, responder: Responder,
 /// definition nodes are serializable node that won"t change
 /// the only change will be a global upgrade
 export class DefinitionNode  extends LocalNodeImpl {
-  final provider: NodeProvider;
+  readonly provider: NodeProvider;
 
   DefinitionNode(path: string, this.provider) : super(path) {
     this.configs[r"$is"] = "static";

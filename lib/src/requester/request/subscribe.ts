@@ -68,10 +68,10 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
     return lastSid;
   }
 
-  final subscriptions: {[key: string]: ReqSubscribeController} =
+  readonly subscriptions: {[key: string]: ReqSubscribeController} =
     new {[key: string]: ReqSubscribeController}();
 
-  final subscriptionIds: object<int, ReqSubscribeController> =
+  readonly subscriptionIds: object<int, ReqSubscribeController> =
     new object<int, ReqSubscribeController>();
 
   SubscribeRequest(requester: Requester, rid:number)
@@ -253,8 +253,8 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
 }
 
 export class ReqSubscribeController  {
-  final node: RemoteNode;
-  final requester: Requester;
+  readonly node: RemoteNode;
+  readonly requester: Requester;
 
   callbacks: object<Function, int> = new object<Function, int>();
   currentQos:number = -1;

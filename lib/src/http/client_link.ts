@@ -11,10 +11,10 @@ export class HttpClientLink  extends ClientLink {
 
   remotePath: string;
 
-  final dsId: string;
-  final home: string;
-  final token: string;
-  final privateKey: PrivateKey;
+  readonly dsId: string;
+  readonly home: string;
+  readonly token: string;
+  readonly privateKey: PrivateKey;
 
   tokenHash: string;
 
@@ -22,7 +22,7 @@ export class HttpClientLink  extends ClientLink {
   responder: Responder;
 
   useStandardWebSocket: boolean = true;
-  final strictTls: boolean;
+  readonly strictTls: boolean;
 
   @override
   logName: string;
@@ -40,7 +40,7 @@ export class HttpClientLink  extends ClientLink {
   };
 
   /// 2 salts, salt and saltS
-  final salts: string[] = new string[](3);
+  readonly salts: string[] = new string[](3);
 
   updateSalt(salt: string, [saltId:number = 0]) {
     salts[saltId] = salt;

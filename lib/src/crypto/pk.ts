@@ -105,7 +105,7 @@ export interface DSRandom {
 }
 
 export class DummyECDH  implements ECDH {
-  final encodedPublicKey: string = "";
+  readonly encodedPublicKey: string = "";
 
   const DummyECDH();
 

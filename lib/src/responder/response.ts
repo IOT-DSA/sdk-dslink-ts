@@ -1,8 +1,8 @@
 // part of dslink.responder;
 
 export class Response  implements ConnectionProcessor {
-  final responder: Responder;
-  final rid:number;
+  readonly responder: Responder;
+  readonly rid:number;
   type: string;
   _sentStreamStatus: string = StreamStatus.initialize;
 

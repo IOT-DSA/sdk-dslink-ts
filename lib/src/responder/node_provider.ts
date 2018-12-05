@@ -38,7 +38,7 @@ export interface LocalNode extends Node {
   provider:NodeProvider;
 
   /// Node Path
-  final path: string;
+  readonly path: string;
 
   LocalNode(this.path);
 

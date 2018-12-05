@@ -31,7 +31,7 @@ _hash(obj):string {
 
 export class NodeCryptoProvider  implements CryptoProvider {
   static readonly NodeCryptoProvider INSTANCE = new NodeCryptoProvider();
-  final random: DSRandom = new DSRandomImpl();
+  readonly random: DSRandom = new DSRandomImpl();
 
   _cachedPrivate: PrivateKey;
   _cachedTime:number = -1;

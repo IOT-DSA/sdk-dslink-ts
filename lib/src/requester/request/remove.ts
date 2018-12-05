@@ -1,11 +1,11 @@
 // part of dslink.requester;
 
 export class RemoveController  implements RequestUpdater {
-  final completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
+  readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
   Promise<RequesterUpdate> get future => completer.future;
 
-  final requester: Requester;
-  final path: string;
+  readonly requester: Requester;
+  readonly path: string;
   _request: Request;
 
   RemoveController(this.requester, this.path) {

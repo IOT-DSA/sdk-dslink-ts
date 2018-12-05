@@ -11,7 +11,7 @@ class BroadcastStreamController<T> implements StreamController<T> {
   BroadcastStreamController([
     void onStartListen(),
     void onAllCancel(),
-    void onListen(callback(T value)),
+    void onListen(callback(value: T)),
     sync: boolean = false
   ]) {
     _controller = new StreamController<T>(sync: sync);
@@ -59,7 +59,7 @@ class BroadcastStreamController<T> implements StreamController<T> {
     }
   }
 
-  add(T t) {
+  add(t: T) {
     _controller.add(t);
     _stream.lastValue = t;
   }
@@ -111,8 +111,8 @@ class BroadcastStreamController<T> implements StreamController<T> {
 class CachedStreamWrapper<T> extends Stream<T> {
   T lastValue;
 
-  final _stream: Stream<T>;
-  final _onListen: Function;
+  readonly _stream: Stream<T>;
+  readonly _onListen: Function;
   CachedStreamWrapper(this._stream, this._onListen);
 
   @override
@@ -126,7 +126,7 @@ class CachedStreamWrapper<T> extends Stream<T> {
 
   @override
   StreamSubscription<T> listen(
-    void onData(T event), {
+    void onData(event: T), {
     onError: Function,
     void onDone(),
     boolean cancelOnError}) {

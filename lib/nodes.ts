@@ -15,8 +15,8 @@ part "src/nodes/json.dart";
 
 /// An Action for Deleting a Given Node
 export class DeleteActionNode  extends SimpleNode {
-  final targetPath: string;
-  final onDelete: Function;
+  readonly targetPath: string;
+  readonly onDelete: Function;
 
   /// When this action is invoked, [provider.removeNode] will be called with [targetPath].
   DeleteActionNode(path: string, provider: MutableNodeProvider, this.targetPath, {
@@ -44,7 +44,7 @@ typedef ActionFunction(params: {[key: string]: dynamic});
 
 /// A Simple Action Node
 export class SimpleActionNode  extends SimpleNode {
-  final function: ActionFunction;
+  readonly function: ActionFunction;
 
   /// When this action is invoked, the given [function] will be called with the parameters
   /// and then the result of the function will be returned.
@@ -56,7 +56,7 @@ export class SimpleActionNode  extends SimpleNode {
 
 /// A Node Provider for a Single Node
 export class SingleNodeProvider  extends NodeProvider {
-  final node: LocalNode;
+  readonly node: LocalNode;
 
   SingleNodeProvider(this.node);
 
@@ -76,8 +76,8 @@ export class SingleNodeProvider  extends NodeProvider {
 export type NodeUpgradeFunction = (from:number) => void;
 
 export class UpgradableNode  extends SimpleNode {
-  final latestVersion:number;
-  final upgrader: NodeUpgradeFunction;
+  readonly latestVersion:number;
+  readonly upgrader: NodeUpgradeFunction;
 
   UpgradableNode(path: string, this.latestVersion, this.upgrader, [SimpleNodeProvider provider]) : super(path, provider);
 

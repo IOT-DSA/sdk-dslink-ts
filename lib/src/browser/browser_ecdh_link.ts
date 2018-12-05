@@ -9,12 +9,12 @@ export class BrowserECDHLink  extends ClientLink {
 
   Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
 
-  final dsId: string;
-  final token: string;
+  readonly dsId: string;
+  readonly token: string;
 
-  final requester: Requester;
-  final responder: Responder;
-  final privateKey: PrivateKey;
+  readonly requester: Requester;
+  readonly responder: Responder;
+  readonly privateKey: PrivateKey;
 
   _nonce: ECDH;
 
@@ -31,7 +31,7 @@ export class BrowserECDHLink  extends ClientLink {
   };
 
   /// 2 salts, salt and saltS
-  final salts: string[] = new string[](3);
+  readonly salts: string[] = new string[](3);
 
   updateSalt(salt: string, [saltId:number = 0]) {
     salts[saltId] = salt;

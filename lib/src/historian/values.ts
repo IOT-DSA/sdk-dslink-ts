@@ -1,15 +1,15 @@
 // part of dslink.historian;
 
 export class HistorySummary  {
-  final first: ValuePair;
-  final last: ValuePair;
+  readonly first: ValuePair;
+  readonly last: ValuePair;
 
   HistorySummary(this.first, this.last);
 }
 
 export class ValuePair  {
-  final timestamp: string;
-  final dynamic value;
+  readonly timestamp: string;
+  readonly dynamic value;
 
   DateTime get time => DateTime.parse(timestamp);
 
@@ -21,8 +21,8 @@ export class ValuePair  {
 }
 
 export class TimeRange  {
-  final start: DateTime;
-  final end: DateTime;
+  readonly start: DateTime;
+  readonly end: DateTime;
 
   TimeRange(this.start, this.end);
 
@@ -38,10 +38,10 @@ export class TimeRange  {
 }
 
 export class ValueEntry  {
-  final group: string;
-  final path: string;
-  final timestamp: string;
-  final dynamic value;
+  readonly group: string;
+  readonly path: string;
+  readonly timestamp: string;
+  readonly dynamic value;
 
   ValueEntry(this.group, this.path, this.timestamp, this.value);
 

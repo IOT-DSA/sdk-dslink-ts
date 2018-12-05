@@ -1,11 +1,11 @@
 // part of dslink.responder;
 
 export class ConfigSetting  {
-  final name: string;
-  final type: string;
+  readonly name: string;
+  readonly type: string;
 
   /// need permission to read
-  final defaultValue: object;
+  readonly defaultValue: object;
 
   /// whether broker need to maintain the change of config value when ds link is offline
   // boolean maintain

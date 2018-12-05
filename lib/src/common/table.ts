@@ -62,13 +62,13 @@ export class Table  {
 }
 
 export class TableColumns  {
-  final columns: TableColumn[];
+  readonly columns: TableColumn[];
 
   TableColumns(this.columns);
 }
 
 export class TableMetadata  {
-  final meta: object;
+  readonly meta: object;
 
   TableMetadata(this.meta);
 }

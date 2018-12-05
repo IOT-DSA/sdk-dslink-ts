@@ -79,8 +79,8 @@ export class InvokeController  implements RequestUpdater {
     return null;
   }
 
-  final node: RemoteNode;
-  final requester: Requester;
+  readonly node: RemoteNode;
+  readonly requester: Requester;
 
   _controller: StreamController<RequesterInvokeUpdate>;
   _stream: Stream<RequesterInvokeUpdate>;

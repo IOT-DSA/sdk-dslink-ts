@@ -1,6 +1,7 @@
 import Denque from "denque";
 import {Stream} from "../utils/async";
 import {ConnectionHandler} from "./connection_handler";
+import {DsCodec} from "../utils/codec";
 
 export abstract class Connection {
   requesterChannel: ConnectionChannel;

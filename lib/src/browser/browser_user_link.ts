@@ -10,10 +10,10 @@ export class BrowserUserLink  extends ClientLink {
       DSRandom.instance.nextUint16().toRadixString(16) +
       DSRandom.instance.nextUint16().toRadixString(16) +
       DSRandom.instance.nextUint16().toRadixString(16);
-  final requester: Requester;
-  final responder: Responder;
+  readonly requester: Requester;
+  readonly responder: Responder;
 
-  final nonce: ECDH = const DummyECDH();
+  readonly nonce: ECDH = const DummyECDH();
   privateKey: PrivateKey;
 
   _wsConnection: WebSocketConnection;

@@ -1,5 +1,10 @@
 // part of dslink.browser_client;
 
+import {ClientLink, Connection, ConnectionChannel} from "../common/interfaces";
+import {PassiveChannel} from "../common/connection_channel";
+import {Completer} from "../utils/async";
+import {DsCodec} from "../utils/codec";
+
 export class WebSocketConnection  extends Connection {
   _responderChannel: PassiveChannel;
 
@@ -12,75 +17,79 @@ export class WebSocketConnection  extends Connection {
   _onRequestReadyCompleter: Completer<ConnectionChannel> =
       new Completer<ConnectionChannel>();
 
-  Promise<ConnectionChannel> get onRequesterReady =>
-      _onRequestReadyCompleter.future;
+   get onRequesterReady():Promise<ConnectionChannel>{return
+      this._onRequestReadyCompleter.future;}
 
   _onDisconnectedCompleter: Completer<boolean> = new Completer<boolean>();
-  Promise<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
+   get onDisconnected(): Promise<boolean> {return this._onDisconnectedCompleter.future;}
 
-  final clientLink: ClientLink;
+  readonly clientLink: ClientLink;
 
-  final socket: WebSocket;
+  readonly socket: WebSocket;
 
   onConnect: Function;
 
   /// clientLink is not needed when websocket works in server link
-  WebSocketConnection(this.socket, this.clientLink, {
-    this.onConnect,
-    boolean enableAck: false,
-    DsCodec useCodec
-  }) {
+  constructor(socket:WebSocket, clientLink:ClientLink,
+    onConnect:Function,
+     enableAck:boolean= false,
+     useCodec:DsCodec
+  ) {
+    super();
+    this.socket=socket;
+    this.clientLink=clientLink;
+    this.onConnect=onConnect;
     if (useCodec != null) {
-      codec = useCodec;
+      this.codec = useCodec;
     }
 
     if (!enableAck) {
-      nextMsgId = -1;
+      this.nextMsgId = -1;
     }
     socket.binaryType = "arraybuffer";
-    _responderChannel = new PassiveChannel(this);
-    _requesterChannel = new PassiveChannel(this);
-    socket.onMessage.listen( this._onData, onDone: _onDone);
-    socket.onClose.listen( this._onDone);
-    socket.onOpen.listen( this._onOpen);
+    this._responderChannel = new PassiveChannel(this);
+    this._requesterChannel = new PassiveChannel(this);
+    socket.onmessage = (event)=> {this._onData(event);};
+    socket.onclose = (event)=>{this._onDone(event);};
+    socket.onopen = (event)=>{this._onOpen(event);};
     // TODO, when it's used in client link, wait for the server to send {allowed} before complete this
-    _onRequestReadyCompleter.complete(new Future.value( this._requesterChannel));
+    setTimeout(()=>{this._onRequestReadyCompleter.complete(this._requesterChannel)}, 0);
 
-    pingTimer = new Timer.periodic(const Duration(seconds: 20), onPingTimer);
+    this.pingTimer = setInterval(()=>{this.onPingTimer();}, 20000);
   }
 
-  pingTimer: Timer;
+  pingTimer: any;
   _dataSent: boolean = false;
 
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link
   _dataReceiveCount:number = 0;
 
-  onPingTimer(Timer t) {
+  onPingTimer() {
     if ( this._dataReceiveCount >= 3) {
       close();
       return;
     }
-    _dataReceiveCount++;
+    this._dataReceiveCount++;
 
     if ( this._dataSent) {
-      _dataSent = false;
+      this._dataSent = false;
       return;
     }
-    addConnCommand(null, null);
+    this.addConnCommand(null, null);
   }
 
   requireSend() {
-    if (!_sending) {
-      _sending = true;
-      DsTimer.callLater( this._send);
+    if (!this._sending) {
+      this._sending = true;
+      setTimeout(()=>{ this._send();},0);
     }
   }
 
   _opened: boolean = false;
   get opened(): boolean { return this._opened;}
 
-  _onOpen(Event e) {
+  _onOpen(e:Event) {
     logger.info("Connected");
     _opened = true;
     if (onConnect != null) {
@@ -107,7 +116,7 @@ export class WebSocketConnection  extends Connection {
     requireSend();
   }
 
-  _onData(MessageEvent e) {
+  _onData(e: MessageEvent) {
     logger.fine("onData:");
     _dataReceiveCount = 0;
     object m;
@@ -254,11 +263,11 @@ export class WebSocketConnection  extends Connection {
   }
 
   _authError: boolean = false;
-  _onDone(object o) {
+  _onDone(o:any) {
     if ( o instanceof CloseEvent ) {
-      CloseEvent e = o;
+      let e = o;
       if (e.code == 1006) {
-        _authError = true;
+        this._authError = true;
       }
     }
 

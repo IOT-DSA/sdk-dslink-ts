@@ -308,8 +308,8 @@ final _separator = pathlib.separator;
 Promise<File> this._safeWriteBase(targetFile: File, dynamic content,
     Promise<File> writeFunction(file: File, dynamic content),
     {boolean verifyJson : false}) async {
-  final tempDirectory = await Directory.current.createTemp();
-  final targetFileName = pathlib.basename(targetFile.path);
+  readonly tempDirectory = await Directory.current.createTemp();
+  readonly targetFileName = pathlib.basename(targetFile.path);
 
   var tempFile = new File("${tempDirectory.path}$_separator${targetFileName}");
   tempFile = await writeFunction(tempFile, content);

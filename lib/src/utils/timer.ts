@@ -2,7 +2,7 @@
 
 export class TimerFunctions  extends LinkedListEntry<TimerFunctions> {
   /// for better performance, use a low accuracy timer, ts50 is the floor of ts/50
-  final ts50:number;
+  readonly ts50:number;
   _functions: Function[] = new Function[]();
 
   TimerFunctions(this.ts50);

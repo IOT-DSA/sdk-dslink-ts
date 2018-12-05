@@ -68,7 +68,7 @@ export class RemoteNodeCache  {
 }
 
 export class RemoteNode  extends Node {
-  final remotePath: string;
+  readonly remotePath: string;
   listed: boolean = false;
   name: string;
   _listController: ListController;

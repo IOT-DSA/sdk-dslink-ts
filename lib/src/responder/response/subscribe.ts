@@ -17,12 +17,12 @@ export class RespSubscribeListener  {
 export class SubscribeResponse  extends Response {
   SubscribeResponse(responder: Responder, rid:number) : super(responder, rid, 'subscribe');
 
-  final subscriptions: {[key: string]: RespSubscribeController} =
+  readonly subscriptions: {[key: string]: RespSubscribeController} =
     new {[key: string]: RespSubscribeController}();
-  final subsriptionids: object<int, RespSubscribeController> =
+  readonly subsriptionids: object<int, RespSubscribeController> =
     new object<int, RespSubscribeController>();
 
-  final changed: LinkedHashSet<RespSubscribeController> =
+  readonly changed: LinkedHashSet<RespSubscribeController> =
     new LinkedHashSet<RespSubscribeController>();
 
   add(path: string, node: LocalNode, sid:number, qos:number):RespSubscribeController {
@@ -182,8 +182,8 @@ export class SubscribeResponse  extends Response {
 }
 
 export class RespSubscribeController  {
-  final node: LocalNode;
-  final response: SubscribeResponse;
+  readonly node: LocalNode;
+  readonly response: SubscribeResponse;
   _listener: RespSubscribeListener;
   sid:number;
 

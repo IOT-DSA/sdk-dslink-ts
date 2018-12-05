@@ -25,9 +25,9 @@ export class WebSocketConnection  extends Connection {
 
   Promise<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
 
-  final clientLink: ClientLink;
+  readonly clientLink: ClientLink;
 
-  final socket: WebSocket;
+  readonly socket: WebSocket;
 
   _onDoneHandled: boolean = false;
 
@@ -75,7 +75,7 @@ export class WebSocketConnection  extends Connection {
   static frameIn:number = 0;
   static frameOut:number = 0;
 
-  onPingTimer(Timer t) {
+  onPingTimer(t: Timer) {
     if ( this._dataReceiveCount >= 3) {
       logger.finest('close stale connection');
       this.close();

@@ -60,7 +60,7 @@ get _secp256r1(): ECDomainParameters {
 
 export class DartCryptoProvider  implements CryptoProvider {
   static readonly DartCryptoProvider INSTANCE = new DartCryptoProvider();
-  final random: DSRandomImpl = new DSRandomImpl();
+  readonly random: DSRandomImpl = new DSRandomImpl();
 
   _cachedPrivate: ECPrivateKey;
   _cachedPublic: ECPublicKey;

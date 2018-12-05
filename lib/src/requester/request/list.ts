@@ -11,8 +11,8 @@ export class RequesterListUpdate  extends RequesterUpdate {
 }
 
 export class ListDefListener  {
-  final node: RemoteNode;
-  final requester: Requester;
+  readonly node: RemoteNode;
+  readonly requester: Requester;
 
   listener: StreamSubscription;
 
@@ -32,8 +32,8 @@ export class ListDefListener  {
 }
 
 export class ListController  implements RequestUpdater, ConnectionProcessor {
-  final node: RemoteNode;
-  final requester: Requester;
+  readonly node: RemoteNode;
+  readonly requester: Requester;
   _controller: BroadcastStreamController<RequesterListUpdate>;
 
   Stream<RequesterListUpdate> get stream => this._controller.stream;

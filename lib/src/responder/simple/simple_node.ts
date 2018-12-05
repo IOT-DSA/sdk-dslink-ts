@@ -88,8 +88,8 @@ export class AsyncTableResult  {
 
 /// A Live-Updating Table
 export class LiveTable  {
-  final columns: TableColumn[];
-  final rows: LiveTableRow[];
+  readonly columns: TableColumn[];
+  readonly rows: LiveTableRow[];
 
   LiveTable.create(this.columns, this.rows);
 
@@ -105,7 +105,7 @@ export class LiveTable  {
     }
   }
 
-  doOnClose(Function f) {
+  doOnClose(f: Function) {
     _onClose.add(f);
   }
 
@@ -200,8 +200,8 @@ export class LiveTable  {
 }
 
 export class LiveTableRow  {
-  final table: LiveTable;
-  final values: dynamic[];
+  readonly table: LiveTable;
+  readonly values: dynamic[];
 
   index:number = -1;
 
@@ -293,7 +293,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
   _iconResolver: IconResolver;
 
   /// All the nodes in this node provider.
-  final nodes: {[key: string]: LocalNode} = new {[key: string]: LocalNode}();
+  readonly nodes: {[key: string]: LocalNode} = new {[key: string]: LocalNode}();
 
   _resolverFactories: SimpleNodeFactory[] = [];
 
@@ -690,7 +690,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
 /// A Simple Node Implementation
 /// A flexible node implementation that should fit most use cases.
 export class SimpleNode  extends LocalNodeImpl {
-  final provider: SimpleNodeProvider;
+  readonly provider: SimpleNodeProvider;
 
   static  _encryptEngine: AESFastEngine;
   static  _encryptParams: KeyParameter;

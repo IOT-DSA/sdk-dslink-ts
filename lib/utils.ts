@@ -21,7 +21,7 @@ part "src/utils/promise_timeout.dart";
 
 typedef ExecutableFunction();
 typedef T Producer<T>();
-typedef Taker<T>(T value);
+typedef Taker<T>(value: T);
 typedef TwoTaker<A, B>(A a, B b);
 
 /// The DSA Version
@@ -247,7 +247,7 @@ export class Interval  {
   static readonly Interval FIVE_SECONDS = new Interval.forSeconds(5);
   static readonly Interval ONE_MINUTE = new Interval.forMinutes(1);
 
-  final duration: Duration;
+  readonly duration: Duration;
 
   const Interval(this.duration);
 
@@ -264,7 +264,7 @@ export interface Disposable {
 }
 
 export class FunctionDisposable  extends Disposable {
-  final function: ExecutableFunction;
+  readonly function: ExecutableFunction;
 
   FunctionDisposable(this.function);
 

@@ -34,8 +34,8 @@ export interface ISubscriptionResponderStorage {
 
 /// the storage of one value
 export interface ISubscriptionNodeStorage {
-  final path: string;
-  final storage: ISubscriptionResponderStorage;
+  readonly path: string;
+  readonly storage: ISubscriptionResponderStorage;
   qos:number;
   ISubscriptionNodeStorage(this.path, this.storage);
 

@@ -47,7 +47,7 @@ export class Responder  extends ConnectionHandler {
    
   }
 
-  final _responses: object<int, Response> = new object<int, Response>();
+  readonly _responses: object<int, Response> = new object<int, Response>();
 
   get openResponseCount(): number {
     return this._responses.length;
@@ -60,7 +60,7 @@ export class Responder  extends ConnectionHandler {
   _subscription: SubscribeResponse;
 
   /// caching of nodes
-  final nodeProvider: NodeProvider;
+  readonly nodeProvider: NodeProvider;
 
   Responder(this.nodeProvider, [this.reqId]) {
     _subscription = new SubscribeResponse(this, 0);
