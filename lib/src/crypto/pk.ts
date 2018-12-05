@@ -20,7 +20,7 @@ lockCryptoProvider() => this._isCryptoProviderLocked = true;
 
 export interface CryptoProvider {
   static string sha256(list:number[]){
-    bytes: Uint8List = ByteDataUtil.list2Uint8List(list);
+    bytes: Uint8Array = ByteDataUtil.list2Uint8Array(list);
     return this._CRYPTO_PROVIDER.base64_sha256(bytes);
   }
 
@@ -34,9 +34,9 @@ export interface CryptoProvider {
 
   PrivateKey loadFromString(str: string);
 
-  PublicKey getKeyFromBytes(bytes: Uint8List);
+  PublicKey getKeyFromBytes(bytes: Uint8Array);
 
-  string base64_sha256(bytes: Uint8List);
+  string base64_sha256(bytes: Uint8Array);
 }
 
 export interface ECDH {
@@ -58,7 +58,7 @@ export interface PublicKey {
 
   PublicKey();
 
-  factory PublicKey.fromBytes(bytes: Uint8List) =>
+  factory PublicKey.fromBytes(bytes: Uint8Array) =>
     _CRYPTO_PROVIDER.getKeyFromBytes(bytes);
 
   getDsId(prefix: string):string {

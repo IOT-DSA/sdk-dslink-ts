@@ -28,9 +28,9 @@ export abstract class DsCodec {
     return rslt;
   }
 
-  _blankData: object;
+  _blankData: any;
 
-  get blankData(): object {
+  get blankData(): any {
     if (this._blankData == null) {
       this._blankData = this.encodeFrame({});
     }

@@ -708,8 +708,8 @@ export class SimpleNode  extends LocalNodeImpl {
     _encryptEngine.reset();
     _encryptEngine.init(true, this._encryptParams);
 
-    utf8bytes: Uint8List = UTF8.encode(str);
-    block: Uint8List = new Uint8List((utf8bytes.length + 31 )~/32 * 32);
+    utf8bytes: Uint8Array = UTF8.encode(str);
+    block: Uint8Array = new Uint8Array((utf8bytes.length + 31 )~/32 * 32);
     block.setRange(0, utf8bytes.length, utf8bytes);
     return '\u001Bpw:${Base64.encode( this._encryptEngine.process(block))}';
   }

@@ -154,14 +154,14 @@ export class DartCryptoProvider  implements CryptoProvider {
     }
   }
 
-  getKeyFromBytes(bytes: Uint8List):PublicKey {
+  getKeyFromBytes(bytes: Uint8Array):PublicKey {
     ECPoint Q = this._secp256r1.curve.decodePoint(bytes);
     return new PublicKeyImpl(new ECPublicKey(Q, this._secp256r1));
   }
 
-  base64_sha256(bytes: Uint8List):string {
+  base64_sha256(bytes: Uint8Array):string {
     sha256: SHA256Digest = new SHA256Digest();
-    hashed: Uint8List = sha256.process(new Uint8List.fromList(bytes));
+    hashed: Uint8Array = sha256.process(new Uint8Array.fromList(bytes));
     return Base64.encode(hashed);
   }
 }
@@ -169,18 +169,18 @@ export class DartCryptoProvider  implements CryptoProvider {
 export class ECDHImpl  extends ECDH {
   string get encodedPublicKey => Base64.encode( this._ecPublicKey.Q.getEncoded(false));
 
-  bytes: Uint8List;
+  bytes: Uint8Array;
 
   _ecPrivateKey: ECPrivateKey;
   _ecPublicKey: ECPublicKey;
 
   ECDHImpl(this._ecPrivateKey, this._ecPublicKey, ECPoint Q2) {
     //var Q2 = this._ecPublicKeyRemote.Q * this._ecPrivateKey.d;
-    bytes = bigintToUint8List(Q2.x.toBigInteger());
+    bytes = bigintToUint8Array(Q2.x.toBigInteger());
     if (bytes.length > 32) {
       bytes = bytes.sublist(bytes.length - 32);
     } else if (bytes.length < 32) {
-      var newbytes = new Uint8List(32);
+      var newbytes = new Uint8Array(32);
       let dlen:number = 32 - bytes.length;
       for (int i = 0; i < bytes.length; ++i) {
         newbytes[i + dlen] = bytes[i];
@@ -193,8 +193,8 @@ export class ECDHImpl  extends ECDH {
   }
 
   hashSalt(salt: string):string {
-    encoded: Uint8List = toUTF8(salt);
-    raw: Uint8List = new Uint8List(encoded.length + bytes.length);
+    encoded: Uint8Array = toUTF8(salt);
+    raw: Uint8Array = new Uint8Array(encoded.length + bytes.length);
     int i;
     for (i = 0; i < encoded.length; i++) {
       raw[i] = encoded[i];
@@ -238,7 +238,7 @@ export class PrivateKeyImpl  implements PrivateKey {
   }
 
   saveToString():string {
-    return "${Base64.encode(bigintToUint8List(ecPrivateKey.d))} ${publicKey.qBase64}";
+    return "${Base64.encode(bigintToUint8Array(ecPrivateKey.d))} ${publicKey.qBase64}";
   }
 
   Promise<ECDHImpl> getSecret(key: string) async {
@@ -281,9 +281,9 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
       r.nextInt(256),
       r.nextInt(256)
     ];
-    final key = new KeyParameter(new Uint8List.fromList(keyBytes));
+    final key = new KeyParameter(new Uint8Array.fromList(keyBytes));
     r = new Math.Random((new DateTime.now()).millisecondsSinceEpoch);
-    final iv = new Uint8List.fromList([
+    final iv = new Uint8Array.fromList([
       r.nextInt(256),
       r.nextInt(256),
       r.nextInt(256),
@@ -315,9 +315,9 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
       }
     }
 
-    final bytes = new Uint8List.fromList(utf);
+    final bytes = new Uint8Array.fromList(utf);
 
-    final out = new Uint8List(16);
+    final out = new Uint8Array(16);
     for (var offset = 0; offset < bytes.lengthInBytes;) {
       var len = this._aes.processBlock(bytes, offset, out, 0);
       offset += len;
@@ -339,7 +339,7 @@ bytes2hex(bytes:number[]):string {
 
 /// BigInteger.toByteArray contains negative values, so we need a different version
 /// this version also remove the byte for sign, so it's not able to serialize negative number
-bigintToUint8List(input: BigInteger):Uint8List {
+bigintToUint8Array(input: BigInteger):Uint8Array {
   rslt:number[] = input.toByteArray();
   if (rslt.length > 32 && rslt[0] == 0){
     rslt = rslt.sublist(1);
@@ -350,5 +350,5 @@ bigintToUint8List(input: BigInteger):Uint8List {
       rslt[i] &= 0xff;
     }
   }
-  return new Uint8List.fromList(rslt);
+  return new Uint8Array.fromList(rslt);
 }

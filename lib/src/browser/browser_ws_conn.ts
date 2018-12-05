@@ -91,40 +91,40 @@ export class WebSocketConnection  extends Connection {
 
   _onOpen(e:Event) {
 //    logger.info("Connected");
-    _opened = true;
-    if (onConnect != null) {
-      onConnect();
+    this._opened = true;
+    if (this.onConnect != null) {
+      this.onConnect();
     }
-    _responderChannel.updateConnect();
-    _requesterChannel.updateConnect();
-    socket.sendString("{}");
-    requireSend();
+    this._responderChannel.updateConnect();
+    this._requesterChannel.updateConnect();
+    this.socket.send(this.codec.blankData);
+    this.requireSend();
   }
 
   /// special server command that need to be merged into message
   /// now only 2 possible value, salt, allowed
-  _msgCommand: object;
+  _msgCommand: {[key:string]:any};
 
   /// add server command, will be called only when used as server connection
   addConnCommand(key: string, value: object) {
     if ( this._msgCommand == null) {
-      _msgCommand = {};
+      this._msgCommand = {};
     }
     if (key != null) {
-      _msgCommand[key] = value;
+      this._msgCommand[key] = value;
     }
-    requireSend();
+    this.requireSend();
   }
 
   _onData(e: MessageEvent) {
 //    logger.fine("onData:");
-    _dataReceiveCount = 0;
-    object m;
-    if (e.data is ByteBuffer) {
+    this._dataReceiveCount = 0;
+    let m:{[key:string]:any};
+    if (e.data instanceof ArrayBuffer) {
       try {
-        let bytes: Uint8List = (e.data as ByteBuffer).asUint8List();
+        let bytes: Uint8Array = (e.data as ByteBuffer).asUint8Array();
 
-        m = codec.decodeBinaryFrame(bytes);
+        m = this.codec.decodeBinaryFrame(bytes);
 //        logger.fine("$m");
 
         if (typeof m["salt"] === 'string') {
@@ -250,7 +250,7 @@ export class WebSocketConnection  extends Connection {
 //      logger.fine("send: $m");
       var encoded = codec.encodeFrame(m);
       if (encoded is int[]) {
-        encoded = ByteDataUtil.list2Uint8List(encoded as int[]);
+        encoded = ByteDataUtil.list2Uint8Array(encoded as int[]);
       }
       try {
         socket.send(encoded);

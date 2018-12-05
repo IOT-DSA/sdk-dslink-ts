@@ -78,12 +78,12 @@ export class NodeCryptoProvider  implements CryptoProvider {
     return new PrivateKeyImpl(new PublicKeyImpl( this._toObj(publicKey)), this._toObj(privateKey));
   }
 
-  getKeyFromBytes(bytes: Uint8List):PublicKey {
+  getKeyFromBytes(bytes: Uint8Array):PublicKey {
     var buf = listToBuf(bytes);
     return new PublicKeyImpl( this._toObj(_curve["Point"].callMethod("fromEncoded", ["prime256v1", buf])));
   }
 
-  base64_sha256(bytes: Uint8List):string {
+  base64_sha256(bytes: Uint8Array):string {
     return this._hash(listToBuf(bytes));
   }
 }
@@ -155,7 +155,7 @@ export class DSRandomImpl  extends DSRandom {
   void addEntropy(str: string) {}
 }
 
-listToBuf(bytes: Uint8List):JsObject {
+listToBuf(bytes: Uint8Array):JsObject {
   var length = bytes.length;
   var buf = new JsObject(_context["Buffer"], [length]);
 

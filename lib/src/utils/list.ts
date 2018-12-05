@@ -1,11 +1,11 @@
 // part of dslink.utils;
 
 export class ByteDataUtil  {
-  static list2Uint8List(input:number[]):Uint8List {
-    if ( input instanceof Uint8List ) {
+  static list2Uint8Array(input:number[]):Uint8Array {
+    if ( input instanceof Uint8Array ) {
       return input;
     }
-    return new Uint8List.fromList(input);
+    return new Uint8Array.fromList(input);
   }
   
   static mergeBytes(bytesList: ByteData[]):ByteData {
@@ -19,25 +19,25 @@ export class ByteDataUtil  {
     output: ByteData = new ByteData(totalLen);
     pos:number = 0;
     for (ByteData bytes in bytesList) {
-      output.buffer.asUint8List(pos).setAll(0, toUint8List(bytes));
+      output.buffer.asUint8Array(pos).setAll(0, toUint8Array(bytes));
       pos += bytes.lengthInBytes;
     }
     return output;
   }
 
-  static fromUint8List(uintsList: Uint8List):ByteData {
+  static fromUint8Array(uintsList: Uint8Array):ByteData {
     return uintsList.buffer
         .asByteData(uintsList.offsetInBytes, uintsList.lengthInBytes);
   }
 
-  static toUint8List(bytes: ByteData):Uint8List {
-    return bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+  static toUint8Array(bytes: ByteData):Uint8Array {
+    return bytes.buffer.asUint8Array(bytes.offsetInBytes, bytes.lengthInBytes);
   }
 
   static fromList(input:number[]):ByteData {
-    if ( input instanceof Uint8List ) {
-      return fromUint8List(input);
+    if ( input instanceof Uint8Array ) {
+      return fromUint8Array(input);
     }
-    return fromUint8List(new Uint8List.fromList(input));
+    return fromUint8Array(new Uint8Array.fromList(input));
   }
 }

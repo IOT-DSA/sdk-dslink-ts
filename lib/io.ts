@@ -107,7 +107,7 @@ export class HttpHelper  {
 
     random: Random = new Random();
     // Generate 16 random bytes.
-    nonceData: Uint8List = new Uint8List(16);
+    nonceData: Uint8Array = new Uint8Array(16);
     for (int i = 0; i < 16; i++) {
       nonceData[i] = random.nextInt(256);
     }

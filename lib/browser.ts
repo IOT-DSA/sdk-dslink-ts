@@ -222,7 +222,7 @@ export class BrowserUtils  {
 
   static createBinaryUrl(input: ByteData,
       {string type: "application/octet-stream"}):string {
-    data: Uint8List = ByteDataUtil.toUint8List(input);
+    data: Uint8Array = ByteDataUtil.toUint8Array(input);
     return "data:${type};base64,${Base64.encode(data)}";
   }
 }

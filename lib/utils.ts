@@ -451,13 +451,13 @@ const numbers:number[] = const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const specials: string[] = const ["@", "=", "_", "+", "-", "!", "."];
 
-toUTF8(str: string):Uint8List {
+toUTF8(str: string):Uint8Array {
   length:number = str.length;
-  bytes: Uint8List = new Uint8List(length);
+  bytes: Uint8Array = new Uint8Array(length);
   for (int i = 0; i < length; i++) {
     unit:number = str.codeUnitAt(i);
     if (unit >= 128) {
-      return new Uint8List.fromList(const Utf8Encoder().convert(str));
+      return new Uint8Array.fromList(const Utf8Encoder().convert(str));
     }
     bytes[i] = unit;
   }
