@@ -90,7 +90,7 @@ export class WebSocketConnection  extends Connection {
   get opened(): boolean { return this._opened;}
 
   _onOpen(e:Event) {
-    logger.info("Connected");
+//    logger.info("Connected");
     _opened = true;
     if (onConnect != null) {
       onConnect();
@@ -117,7 +117,7 @@ export class WebSocketConnection  extends Connection {
   }
 
   _onData(e: MessageEvent) {
-    logger.fine("onData:");
+//    logger.fine("onData:");
     _dataReceiveCount = 0;
     object m;
     if (e.data is ByteBuffer) {
@@ -125,7 +125,7 @@ export class WebSocketConnection  extends Connection {
         let bytes: Uint8List = (e.data as ByteBuffer).asUint8List();
 
         m = codec.decodeBinaryFrame(bytes);
-        logger.fine("$m");
+//        logger.fine("$m");
 
         if (typeof m["salt"] === 'string') {
           clientLink.updateSalt(m["salt"]);
@@ -152,14 +152,14 @@ export class WebSocketConnection  extends Connection {
           }
         }
       } catch (err, stack) {
-        logger.severe("error in onData", err, stack);
+//        logger.severe("error in onData", err, stack);
         close();
         return;
       }
     } else if (typeof e.data === 'string') {
       try {
         m = codec.decodeStringFrame(e.data);
-        logger.fine("$m");
+//        logger.fine("$m");
 
         let needAck: boolean = false;
         if (m["responses"] is List && (m["responses"] as List).length > 0) {
@@ -183,7 +183,7 @@ export class WebSocketConnection  extends Connection {
           }
         }
       } catch (err) {
-        logger.severe(err);
+//        logger.severe(err);
         close();
         return;
       }
@@ -198,7 +198,7 @@ export class WebSocketConnection  extends Connection {
     if (socket.readyState != WebSocket.OPEN) {
       return;
     }
-    logger.fine("browser sending");
+//    logger.fine("browser sending");
     needSend: boolean = false;
     object m;
     if ( this._msgCommand != null) {
@@ -247,7 +247,7 @@ export class WebSocketConnection  extends Connection {
       }
 
 
-      logger.fine("send: $m");
+//      logger.fine("send: $m");
       var encoded = codec.encodeFrame(m);
       if (encoded is int[]) {
         encoded = ByteDataUtil.list2Uint8List(encoded as int[]);
@@ -255,7 +255,7 @@ export class WebSocketConnection  extends Connection {
       try {
         socket.send(encoded);
       } catch (e) {
-        logger.severe('Unable to send on socket', e);
+//        logger.severe('Unable to send on socket', e);
         close();
       }
       _dataSent = true;
@@ -271,7 +271,7 @@ export class WebSocketConnection  extends Connection {
       }
     }
 
-    logger.fine("socket disconnected");
+//    logger.fine("socket disconnected");
 
     if (!_requesterChannel.onReceiveController.isClosed) {
       _requesterChannel.onReceiveController.close();

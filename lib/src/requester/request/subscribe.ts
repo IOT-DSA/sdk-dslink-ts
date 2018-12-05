@@ -163,7 +163,7 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
       toRemove[subscriptions[path].sid] = subscriptions[path];
       prepareSending();
     } else if (subscriptionIds.containsKey(controller.sid)) {
-      logger.severe(
+//      logger.severe(
           'unexpected remoteSubscription in the requester, sid: ${controller
               .sid}');
     }

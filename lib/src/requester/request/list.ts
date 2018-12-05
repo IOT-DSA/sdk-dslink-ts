@@ -180,7 +180,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
 
   _onProfileUpdate(update: RequesterListUpdate) {
     if ( this._profileLoader == null) {
-      logger.finest('warning, unexpected state of profile loading');
+//      logger.finest('warning, unexpected state of profile loading');
       return;
     }
     _profileLoader.cancel();

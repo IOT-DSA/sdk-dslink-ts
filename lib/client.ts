@@ -272,7 +272,7 @@ export class LinkProvider  {
       if (!file.existsSync()) {
         file.createSync(recursive: true);
       }
-      logger.clearListeners();
+//      logger.clearListeners();
       let out: IOSink = this._logFileOut = file.openWrite(mode: FileMode.APPEND);
       logger.onRecord.listen((record) {
         out.writeln("[${new DateTime.now()}][${record.level.name}] ${record.message}");
@@ -399,7 +399,7 @@ export class LinkProvider  {
       }
 
       if (dslinkJson == null) {
-        logger.severe("Invalid dslink.json", e);
+//        logger.severe("Invalid dslink.json", e);
         if (exitOnFailure) {
           exit(1);
         } else {
@@ -569,11 +569,11 @@ export class LinkProvider  {
         await discovery.init();
         try {
           var broker = await chooseBroker(discovery.discover());
-          logger.info("Discovered Broker at ${broker}");
+//          logger.info("Discovered Broker at ${broker}");
           brokerUrl = broker;
           doRun();
         } catch (e, stack) {
-          logger.severe("Failed to discover a broker.", e, stack);
+//          logger.severe("Failed to discover a broker.", e, stack);
           exit(1);
         }
       });

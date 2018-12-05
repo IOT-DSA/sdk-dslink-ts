@@ -12,7 +12,7 @@ export class RemoteNodeCache  {
 
     if (node == null) {
       if (( this._nodes.length % 1000) == 0) {
-        logger.fine("Node Cache hit ${_nodes.length} nodes in size.");
+//        logger.fine("Node Cache hit ${_nodes.length} nodes in size.");
       }
 
       if (path.startsWith("defs")) {

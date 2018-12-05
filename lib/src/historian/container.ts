@@ -19,7 +19,7 @@ export class DatabaseNode  extends SimpleNode {
           }
           break;
         } catch (e, stack) {
-          logger.severe(
+//          logger.severe(
             "Failed to connect to database for ${path}",
             e,
             stack

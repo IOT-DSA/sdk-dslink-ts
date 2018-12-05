@@ -42,7 +42,7 @@ export class WebSocketConnection  extends Connection {
     socket.listen(
         onData,
         onDone: _onDone,
-        onError: (err) => logger.warning(
+        onError: (err) =>// logger.warning(
             formatLogMessage('Error listening to socket'), err));
     socket.add(codec.blankData);
     if (!enableAck) {
@@ -77,7 +77,7 @@ export class WebSocketConnection  extends Connection {
 
   onPingTimer(t: Timer) {
     if ( this._dataReceiveCount >= 3) {
-      logger.finest('close stale connection');
+//      logger.finest('close stale connection');
       this.close();
       return;
     }
@@ -131,10 +131,10 @@ export class WebSocketConnection  extends Connection {
       try {
         m = codec.decodeBinaryFrame(data as int[]);
         if (logger.isLoggable(Level.FINEST)) {
-          logger.finest(formatLogMessage("receive: ${m}"));
+//          logger.finest(formatLogMessage("receive: ${m}"));
         }
       } catch (err, stack) {
-        logger.fine(
+//        logger.fine(
           formatLogMessage("Failed to decode binary data in WebSocket Connection"),
           err,
           stack
@@ -184,10 +184,10 @@ export class WebSocketConnection  extends Connection {
       try {
         m = codec.decodeStringFrame(data);
         if (logger.isLoggable(Level.FINEST)) {
-          logger.finest(formatLogMessage("receive: ${m}"));
+//          logger.finest(formatLogMessage("receive: ${m}"));
         }
       } catch (err, stack) {
-        logger.severe(
+//        logger.severe(
           formatLogMessage("Failed to decode string data from WebSocket Connection"),
           err,
           stack
@@ -328,7 +328,7 @@ export class WebSocketConnection  extends Connection {
     encoded: object = codec.encodeFrame(m);
 
     if (logger.isLoggable(Level.FINEST)) {
-      logger.finest(formatLogMessage("send: $m"));
+//      logger.finest(formatLogMessage("send: $m"));
     }
 
     if (throughputEnabled) {
@@ -337,13 +337,13 @@ export class WebSocketConnection  extends Connection {
       } else if (encoded is int[]) {
         dataOut += encoded.length;
       } else {
-        logger.warning(formatLogMessage("invalid data frame"));
+//        logger.warning(formatLogMessage("invalid data frame"));
       }
     }
     try {
       socket.add(encoded);
     } catch (e) {
-      logger.severe(formatLogMessage('Error writing to socket'), e);
+//      logger.severe(formatLogMessage('Error writing to socket'), e);
       close();
     }
   }
@@ -358,7 +358,7 @@ export class WebSocketConnection  extends Connection {
     _onDoneHandled = true;
 
     if (printDisconnectedMessage) {
-      logger.info(formatLogMessage("Disconnected"));
+//      logger.info(formatLogMessage("Disconnected"));
     }
 
     if (!_requesterChannel.onReceiveController.isClosed) {

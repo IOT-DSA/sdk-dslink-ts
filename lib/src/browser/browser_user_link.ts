@@ -77,7 +77,7 @@ export class BrowserUserLink  extends ClientLink {
       });
     }
     _wsConnection.onDisconnected.then((connection) {
-      logger.info("Disconnected");
+//      logger.info("Disconnected");
       if ( this._wsConnection == null) {
         // connection is closed
         return;

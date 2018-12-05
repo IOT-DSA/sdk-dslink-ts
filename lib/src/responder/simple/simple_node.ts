@@ -65,7 +65,7 @@ export class AsyncTableResult  {
       if (response == null) {
         response = resp;
       } else {
-        logger.warning("can not use same AsyncTableResult twice");
+//        logger.warning("can not use same AsyncTableResult twice");
       }
     }
 
@@ -567,7 +567,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
     }
 
     if (oldNode != null) {
-      logger.fine("Found old node for ${path}: Copying subscriptions.");
+//      logger.fine("Found old node for ${path}: Copying subscriptions.");
 
       for (ValueUpdateCallback func in oldNode.callbacks.keys) {
         node.subscribe(func, oldNode.callbacks[func]);

@@ -86,7 +86,7 @@ export class BrowserECDHLink  extends ClientLink {
       connUrl = '$connUrl$tokenHash';
     }
     connUri: Uri = Uri.parse(connUrl);
-    logger.info('Connecting: $connUri');
+//    logger.info('Connecting: $connUri');
     try {
       let requestJson: object = {
         'publicKey': privateKey.publicKey.qBase64,
@@ -160,7 +160,7 @@ export class BrowserECDHLink  extends ClientLink {
       });
     }
     _wsConnection.onDisconnected.then((authError) {
-      logger.info('Disconnected');
+//      logger.info('Disconnected');
       if ( this._closed) return;
 
       if ( this._wsConnection._opened) {

@@ -129,8 +129,8 @@ export class HttpClientLink  extends ClientLink {
     client: HttpClient = new HttpClient();
 
     client.badCertificateCallback = (cert: X509Certificate, host: string, port:number) {
-      logger.info(formatLogMessage('Bad certificate for $host:$port'));
-      logger.finest(formatLogMessage('Cert Issuer: ${cert.issuer}, ' +
+//      logger.info(formatLogMessage('Bad certificate for $host:$port'));
+//      logger.finest(formatLogMessage('Cert Issuer: ${cert.issuer}, ' +
           'Subject: ${cert.subject}'));
       return !strictTls;
     };
@@ -143,7 +143,7 @@ export class HttpClientLink  extends ClientLink {
       connUrl = '$connUrl$tokenHash';
     }
     connUri: Uri = Uri.parse(connUrl);
-    logger.info(formatLogMessage("Connecting to ${_conn}"));
+//    logger.info(formatLogMessage("Connecting to ${_conn}"));
 
     // TODO: This runZoned is due to a bug in the DartVM
     // https://github.com/dart-lang/sdk/issues/31275
@@ -164,8 +164,8 @@ export class HttpClientLink  extends ClientLink {
         requestJson['linkData'] = linkData;
       }
 
-      logger.finest(formatLogMessage("Handshake Request: ${requestJson}"));
-      logger.fine(formatLogMessage("ID: ${dsId}"));
+//      logger.finest(formatLogMessage("Handshake Request: ${requestJson}"));
+//      logger.fine(formatLogMessage("ID: ${dsId}"));
 
       request.add(toUTF8(DsJson.encode(requestJson)));
       let response: HttpClientResponse = await request.close();
@@ -173,7 +173,7 @@ export class HttpClientLink  extends ClientLink {
       let rslt: string = const Utf8Decoder().convert(merged);
       let serverConfig: object = DsJson.decode(rslt);
 
-      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
+//      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
 
       saltNameMap.forEach((name, idx) {
         //read salts
@@ -210,9 +210,9 @@ export class HttpClientLink  extends ClientLink {
       await initWebsocket(false);
     }, onError: (e, s) {
       if (logger.level <= Level.FINER ) {
-        logger.warning("Client socket crashed: $e $s");
+//        logger.warning("Client socket crashed: $e $s");
       } else {
-        logger.warning("Client socket crashed: $e");
+//        logger.warning("Client socket crashed: $e");
       }
       client.close();
       connDelay();
@@ -250,7 +250,7 @@ export class HttpClientLink  extends ClientLink {
           useCodec: DsCodec.getCodec(format)
       );
 
-      logger.info(formatLogMessage("Connected"));
+//      logger.info(formatLogMessage("Connected"));
       if (!_onConnectedCompleter.isCompleted) {
         _onConnectedCompleter.complete();
       }
@@ -276,7 +276,7 @@ export class HttpClientLink  extends ClientLink {
         initWebsocket();
       });
     } catch (error, stack) {
-      logger.fine(
+//      logger.fine(
         formatLogMessage("Error while initializing WebSocket"),
         error,
         stack
