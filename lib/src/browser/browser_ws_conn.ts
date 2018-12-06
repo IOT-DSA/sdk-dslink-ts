@@ -122,13 +122,13 @@ export class WebSocketConnection  extends Connection {
     let m:{[key:string]:any};
     if (e.data instanceof ArrayBuffer) {
       try {
-        let bytes: Uint8Array = (e.data as ByteBuffer).asUint8Array();
+        let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
 //        logger.fine("$m");
 
         if (typeof m["salt"] === 'string') {
-          clientLink.updateSalt(m["salt"]);
+          this.clientLink.updateSalt(m["salt"]);
         }
         let needAck: boolean = false;
         if (m["responses"] is List && (m["responses"] as List).length > 0) {

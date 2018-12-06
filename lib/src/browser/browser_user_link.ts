@@ -22,7 +22,7 @@ export class BrowserUserLink  extends ClientLink {
 
   static readonly saltNameMap: {[key: string]:number} = const {"salt": 0, "saltS": 1,};
 
-  updateSalt(salt: string, [saltId:number = 0]) {
+  updateSalt(salt: string) {
     // TODO: implement updateSalt
   }
 

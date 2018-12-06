@@ -33,17 +33,11 @@ export class HttpClientLink  extends ClientLink {
 
   _wsConnection: WebSocketConnection;
 
-  static readonly saltNameMap: {[key: string]:number} = const {
-    'salt': 0,
-    'saltS': 1,
-    'saltL': 2
-  };
 
-  /// 2 salts, salt and saltS
-  readonly salts: string[] = new string[](3);
+   salt: string;
 
-  updateSalt(salt: string, [saltId:number = 0]) {
-    salts[saltId] = salt;
+  updateSalt(salt: string) {
+    salt = salt;
   }
 
   _wsUpdateUri: string;
@@ -175,10 +169,9 @@ export class HttpClientLink  extends ClientLink {
 
 //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
 
-      saltNameMap.forEach((name, idx) {
-        //read salts
-        salts[idx] = serverConfig[name];
-      });
+      //read salt
+      salt = serverConfig['salt'];
+
       let tempKey: string = serverConfig['tempKey'];
       if (tempKey == null) {
         // trusted client, don't do ECDH handshake
@@ -234,7 +227,7 @@ export class HttpClientLink  extends ClientLink {
 
     try {
       let wsUrl: string = '$_wsUpdateUri&auth=${_nonce.hashSalt(
-          salts[0])}&format=$format';
+          salt)}&format=$format';
       if (tokenHash != null) {
         wsUrl = '$wsUrl$tokenHash';
       }

@@ -24,17 +24,10 @@ export class BrowserECDHLink  extends ClientLink {
 
   enableAck: boolean = false;
 
-  static readonly saltNameMap: {[key: string]:number} = const {
-    'salt': 0,
-    'saltS': 1,
-    'saltL': 2,
-  };
+  salt: string ;
 
-  /// 2 salts, salt and saltS
-  readonly salts: string[] = new string[](3);
-
-  updateSalt(salt: string, [saltId:number = 0]) {
-    salts[saltId] = salt;
+  updateSalt(salt: string) {
+    salt = salt;
   }
 
   _wsUpdateUri: string;
@@ -102,10 +95,10 @@ export class BrowserECDHLink  extends ClientLink {
           mimeType: 'application/json',
           sendData: DsJson.encode(requestJson));
       let serverConfig: object = DsJson.decode(request.responseText);
-      saltNameMap.forEach((name, idx) {
-        //read salts
-        salts[idx] = serverConfig[name];
-      });
+
+      //read salt
+      salt = serverConfig['salt'];
+
       let tempKey: string = serverConfig['tempKey'];
       _nonce = await privateKey.getSecret(tempKey);
 
@@ -137,7 +130,7 @@ export class BrowserECDHLink  extends ClientLink {
   initWebsocket([reconnect: boolean = true]) {
     if ( this._closed) return;
     wsUrl: string = '$_wsUpdateUri&auth=${_nonce.hashSalt(
-        salts[0])}&format=$format';
+        salt)}&format=$format';
     var socket = new WebSocket(wsUrl);
     _wsConnection =
     new WebSocketConnection(socket, this, enableAck: enableAck, onConnect: () {

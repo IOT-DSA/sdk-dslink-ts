@@ -139,9 +139,7 @@ export interface ServerLink extends BaseLink {
 export abstract class ClientLink extends BaseLink {
   privateKey: PrivateKey;
 
-  /// shortPolling is only valid in http mode
-  /// saltId: 0 salt, 1:saltS, 2:saltL
-  abstract updateSalt(salt: string, saltId: number): void;
+  abstract updateSalt(salt: string): void;
 
   get logName(): string {
     return null;
