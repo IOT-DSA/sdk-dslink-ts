@@ -228,7 +228,7 @@ export class Responder  extends ConnectionHandler {
   }
 
   subscribe(object m) {
-    if (m['paths'] is List) {
+    if (Array.isArray(m['paths'])) {
       for (object p in m['paths']) {
         let pathstr: string;
         let qos:number = 0;
@@ -299,7 +299,7 @@ export class Responder  extends ConnectionHandler {
   }
 
   unsubscribe(object m) {
-    if (m['sids'] is List) {
+    if (Array.isArray(m['sids'])) {
       for (object sid in m['sids']) {
         if ( typeof sid === 'number' ) {
           _subscription.remove(sid);

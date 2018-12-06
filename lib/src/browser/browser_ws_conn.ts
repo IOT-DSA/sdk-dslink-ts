@@ -131,13 +131,13 @@ export class WebSocketConnection  extends Connection {
           this.clientLink.updateSalt(m["salt"]);
         }
         let needAck: boolean = false;
-        if (m["responses"] is List && (m["responses"] as List).length > 0) {
+        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
           // send responses to requester channel
-          _requesterChannel.onReceiveController.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m["responses"]);
         }
 
-        if (m["requests"] is List && (m["requests"] as List).length > 0) {
+        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
           needAck = true;
           // send requests to responder channel
           _responderChannel.onReceiveController.add(m["requests"]);
@@ -162,13 +162,13 @@ export class WebSocketConnection  extends Connection {
 //        logger.fine("$m");
 
         let needAck: boolean = false;
-        if (m["responses"] is List && (m["responses"] as List).length > 0) {
+        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
           // send responses to requester channel
           _requesterChannel.onReceiveController.add(m["responses"]);
         }
 
-        if (m["requests"] is List && (m["requests"] as List).length > 0) {
+        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
           needAck = true;
           // send requests to responder channel
           _responderChannel.onReceiveController.add(m["requests"]);

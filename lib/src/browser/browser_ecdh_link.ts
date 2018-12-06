@@ -27,7 +27,7 @@ export class BrowserECDHLink  extends ClientLink {
   salt: string ;
 
   updateSalt(salt: string) {
-    salt = salt;
+    this.salt = salt;
   }
 
   _wsUpdateUri: string;

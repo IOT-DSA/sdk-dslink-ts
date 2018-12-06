@@ -150,23 +150,23 @@ export class WebSocketConnection  extends Connection {
       data = null;
 
       let needAck: boolean = false;
-      if (m["responses"] is List && (m["responses"] as List).length > 0) {
+      if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
         needAck = true;
         // send responses to requester channel
         _requesterChannel.onReceiveController.add(m["responses"]);
 
         if (throughputEnabled) {
-          messageIn += (m["responses"] as List).length;
+          messageIn += m["responses"].length;
         }
       }
 
-      if (m["requests"] is List && (m["requests"] as List).length > 0) {
+      if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
         needAck = true;
         // send requests to responder channel
         _responderChannel.onReceiveController.add(m["requests"]);
 
         if (throughputEnabled) {
-          messageIn += (m["requests"] as List).length;
+          messageIn += m["requests"].length;
         }
       }
 
@@ -205,13 +205,13 @@ export class WebSocketConnection  extends Connection {
       }
 
       let needAck: boolean = false;
-      if (m["responses"] is List && (m["responses"] as List).length > 0) {
+      if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
         needAck = true;
         // send responses to requester channel
         _requesterChannel.onReceiveController.add(m["responses"]);
         if (throughputEnabled) {
           for (object resp in m["responses"]) {
-            if (resp["updates"] is List) {
+            if (Array.isArray(resp["updates"])) {
               let len:number = resp["updates"].length;
               if (len > 0) {
                 messageIn += len;
@@ -225,7 +225,7 @@ export class WebSocketConnection  extends Connection {
         }
       }
 
-      if (m["requests"] is List && (m["requests"] as List).length > 0) {
+      if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
         needAck = true;
         // send requests to responder channel
         _responderChannel.onReceiveController.add(m["requests"]);
@@ -272,7 +272,7 @@ export class WebSocketConnection  extends Connection {
         needSend = true;
         if (throughputEnabled) {
           for (object resp in rslt.messages) {
-            if (resp["updates"] is List) {
+            if (Array.isArray(resp["updates"])) {
               let len:number = resp["updates"].length;
               if (len > 0) {
                 messageOut += len;
