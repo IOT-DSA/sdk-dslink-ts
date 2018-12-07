@@ -1,108 +1,142 @@
-// part of dslink.browser_client;
-
 /// a client link for both http and ws
-export class BrowserUserLink  extends ClientLink {
+import {ClientLink, ECDH} from "../common/interfaces";
+import {Completer} from "../utils/async";
+import {Requester} from "../requester/requester";
+import {DSRandom} from "../crypto/random";
+import {Responder} from "../responder/responder";
+import {PrivateKey} from "../crypto/pk";
+import {WebSocketConnection} from "./browser_ws_conn";
+import {DsCodec} from "../utils/codec";
+
+
+export class DummyECDH implements ECDH {
+  readonly encodedPublicKey: string = "";
+
+  hashSalt(salt: string): string {
+    return '';
+  }
+
+  verifySalt(salt: string, hash: string): boolean {
+    return true;
+  }
+}
+
+export class BrowserUserLink extends ClientLink {
   _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
 
-  Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
+  get onRequesterReady(): Promise<Requester> {
+    return this._onRequesterReadyCompleter.future;
+  };
 
-  static session: string = DSRandom.instance.nextUint16().toRadixString(16) +
-      DSRandom.instance.nextUint16().toRadixString(16) +
-      DSRandom.instance.nextUint16().toRadixString(16) +
-      DSRandom.instance.nextUint16().toRadixString(16);
+  static session: string = DSRandom.instance.nextUint16().toString(16) +
+    DSRandom.instance.nextUint16().toString(16) +
+    DSRandom.instance.nextUint16().toString(16) +
+    DSRandom.instance.nextUint16().toString(16);
   readonly requester: Requester;
   readonly responder: Responder;
 
-  readonly nonce: ECDH = const DummyECDH();
+  readonly nonce: ECDH = new DummyECDH();
   privateKey: PrivateKey;
 
   _wsConnection: WebSocketConnection;
 
   enableAck: boolean;
 
-  static readonly saltNameMap: {[key: string]:number} = const {"salt": 0, "saltS": 1,};
 
   updateSalt(salt: string) {
-    // TODO: implement updateSalt
+    // do nothing
   }
 
   wsUpdateUri: string;
   format: string = "json";
 
-  BrowserUserLink({nodeProvider: NodeProvider,
-  boolean isRequester: true,
-  boolean isResponder: true,
-  this.wsUpdateUri,
-  this.enableAck: false,
-  string format})
-      : requester = isRequester ? new Requester() : null,
-        responder = (isResponder && nodeProvider != null)
-            ? new Responder(nodeProvider)
-            : null {
+
+  constructor(nodeProvider: NodeProvider, wsUpdateUri: string,
+              isRequester = true,
+              isResponder = false,
+              format = 'msgpack') {
+    super();
     if (wsUpdateUri.startsWith("http")) {
       wsUpdateUri = "ws${wsUpdateUri.substring(4)}";
     }
+    this.requester = isRequester ? new Requester() : null;
+    this.responder = (isResponder && nodeProvider != null)
+      ? new Responder(nodeProvider) : null;
 
-    if (format != null) {
-      this.format = format;
-    }
+    this.wsUpdateUri = wsUpdateUri;
+    this.format = format;
 
-    if (window.location.hash.contains("dsa_json")) {
+    if (window.location.hash.includes("dsa_json")) {
       this.format = "json";
     }
   }
 
+
   connect() {
-    lockCryptoProvider();
-    initWebsocket(false);
+    this.initWebsocket(false);
   }
 
-  _wsDelay:number = 1;
+  _wsDelay: number = 1;
 
-  initWebsocket([reconnect: boolean = true]) {
-    var socket = new WebSocket("$wsUpdateUri?session=$session&format=$format");
-    _wsConnection = new WebSocketConnection(
-        socket, this, enableAck: enableAck, useCodec: DsCodec.getCodec(format));
+  _initSocketTimer: any;
 
-    if (responder != null) {
-      responder.connection = this._wsConnection.responderChannel;
+  initWebsocketLater(ms: number) {
+    if (this._initSocketTimer) return;
+    this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
+  }
+
+  initWebsocket(reconnect = true) {
+    this._initSocketTimer = null;
+    var socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
+    this._wsConnection = new WebSocketConnection(
+      socket, this, null, DsCodec.getCodec(this.format));
+
+    if (this.responder != null) {
+      this.responder.connection = this._wsConnection.responderChannel;
     }
 
-    if (requester != null) {
-      _wsConnection.onRequesterReady.then((channel) {
-        requester.connection = channel;
-        if (!_onRequesterReadyCompleter.isCompleted) {
-          _onRequesterReadyCompleter.complete(requester);
+    if (this.requester != null) {
+      this._wsConnection.onRequesterReady.then((channel) => {
+        this.requester.connection = channel;
+        if (!this._onRequesterReadyCompleter.isCompleted) {
+          this._onRequesterReadyCompleter.complete(this.requester);
         }
       });
     }
-    _wsConnection.onDisconnected.then((connection) {
+    this._wsConnection.onDisconnected.then((connection) => {
 //      logger.info("Disconnected");
-      if ( this._wsConnection == null) {
+      if (this._wsConnection == null) {
         // connection is closed
         return;
       }
-      if ( this._wsConnection._opened) {
-        _wsDelay = 1;
-        initWebsocket(false);
+      if (this._wsConnection._opened) {
+        this._wsDelay = 1;
+        this.initWebsocket(false);
       } else if (reconnect) {
-        DsTimer.timerOnceAfter(initWebsocket, this._wsDelay * 1000);
-        if ( this._wsDelay < 60) _wsDelay++;
+        this.initWebsocketLater(this._wsDelay * 1000);
+        if (this._wsDelay < 60) this._wsDelay++;
       } else {
-        _wsDelay = 5;
-        DsTimer.timerOnceAfter(initWebsocket, 5000);
+        this._wsDelay = 5;
+        this.initWebsocketLater(5000);
       }
     });
   }
+
   reconnect() {
-    if ( this._wsConnection != null) {
-      _wsConnection.socket.close();
+
+    if (this._wsConnection != null) {
+      this._wsConnection.socket.close();
     }
   }
+
   close() {
-    if ( this._wsConnection != null) {
-      _wsConnection.close();
-      _wsConnection = null;
+    if (this._initSocketTimer) {
+      clearTimeout(this._initSocketTimer);
+      this._initSocketTimer = null;
+    }
+    if (this._wsConnection != null) {
+      this._wsConnection.close();
+      this._wsConnection = null;
     }
   }
 }

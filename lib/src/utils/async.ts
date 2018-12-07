@@ -34,7 +34,7 @@ export class Stream<T> {
   }
 
   add(val: T): boolean {
-    if (Object.is(this._value, val)) {
+    if (this.isClosed) {
       return false;
     }
     this._value = val;
@@ -48,6 +48,14 @@ export class Stream<T> {
       listener(this._value);
     }
     this._updating = false;
+  }
+
+  isClosed = false;
+
+  close() {
+    if (!this.isClosed) {
+      this._listeners.clear();
+    }
   }
 }
 
@@ -72,6 +80,7 @@ export class StreamSubscription<T> {
 export class Completer<T> {
   _resolve: Function;
   _reject: Function;
+  isCompleted = false;
   readonly future = new Promise<T>((resolve, reject) => {
     this._resolve = resolve;
     this._reject = reject;
@@ -81,6 +90,7 @@ export class Completer<T> {
     if (this._resolve) {
       this._resolve(val);
     }
+    this.isCompleted = true;
   }
 
   completeError(val: any) {

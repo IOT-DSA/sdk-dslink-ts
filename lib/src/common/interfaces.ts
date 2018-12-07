@@ -2,6 +2,17 @@ import Denque from "denque";
 import {Stream} from "../utils/async";
 import {ConnectionHandler} from "./connection_handler";
 import {DsCodec} from "../utils/codec";
+import {PublicKey} from "../crypto/pk";
+
+export abstract class ECDH {
+  encodedPublicKey: string;
+
+  abstract hashSalt(salt: string): string;
+
+  verifySalt(salt: string, hash: string): boolean {
+    return this.hashSalt(salt) == hash;
+  }
+}
 
 export abstract class Connection {
   requesterChannel: ConnectionChannel;

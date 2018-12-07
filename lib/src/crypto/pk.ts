@@ -39,18 +39,7 @@ export interface CryptoProvider {
   string base64_sha256(bytes: Uint8Array);
 }
 
-export interface ECDH {
-  encodedPublicKey:string;
 
-  static Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH) async =>
-    _CRYPTO_PROVIDER.assign(publicKeyRemote, old);
-
-  string hashSalt(salt: string);
-
-  verifySalt(salt: string, hash: string):boolean {
-    return hashSalt(salt) == hash;
-  }
-}
 
 export interface PublicKey {
   qBase64:string;
@@ -87,33 +76,4 @@ export interface PrivateKey {
   Promise<ECDH> getSecret(tempKey: string);
 }
 
-export interface DSRandom {
-  static DSRandom get instance => this._CRYPTO_PROVIDER.random;
-  needsEntropy:boolean;
 
-  nextUint16():number {
-    var data = new ByteData(2);
-    data.setUint8(0, nextUint8());
-    data.setUint8(1, nextUint8());
-
-    return data.getUint16(0);
-  }
-
-  int nextUint8();
-
-  void addEntropy(str: string);
-}
-
-export class DummyECDH  implements ECDH {
-  readonly encodedPublicKey: string = "";
-
-  const DummyECDH();
-
-  hashSalt(salt: string):string {
-    return '';
-  }
-
-  verifySalt(salt: string, hash: string):boolean {
-    return true;
-  }
-}

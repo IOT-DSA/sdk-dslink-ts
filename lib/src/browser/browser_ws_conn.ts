@@ -1,27 +1,40 @@
-// part of dslink.browser_client;
-
-import {ClientLink, Connection, ConnectionChannel} from "../common/interfaces";
+import {
+  ClientLink,
+  Connection,
+  ConnectionAckGroup,
+  ConnectionChannel,
+  ConnectionProcessor,
+  ProcessorResult
+} from "../common/interfaces";
 import {PassiveChannel} from "../common/connection_channel";
 import {Completer} from "../utils/async";
 import {DsCodec} from "../utils/codec";
 
-export class WebSocketConnection  extends Connection {
+export class WebSocketConnection extends Connection {
   _responderChannel: PassiveChannel;
 
-  get responderChannel(): ConnectionChannel { return this._responderChannel;}
+  get responderChannel(): ConnectionChannel {
+    return this._responderChannel;
+  }
 
   _requesterChannel: PassiveChannel;
 
-  get requesterChannel(): ConnectionChannel { return this._requesterChannel;}
+  get requesterChannel(): ConnectionChannel {
+    return this._requesterChannel;
+  }
 
   _onRequestReadyCompleter: Completer<ConnectionChannel> =
-      new Completer<ConnectionChannel>();
+    new Completer<ConnectionChannel>();
 
-   get onRequesterReady():Promise<ConnectionChannel>{return
-      this._onRequestReadyCompleter.future;}
+  get onRequesterReady(): Promise<ConnectionChannel> {
+    return this._onRequestReadyCompleter.future;
+  }
 
   _onDisconnectedCompleter: Completer<boolean> = new Completer<boolean>();
-   get onDisconnected(): Promise<boolean> {return this._onDisconnectedCompleter.future;}
+
+  get onDisconnected(): Promise<boolean> {
+    return this._onDisconnectedCompleter.future;
+  }
 
   readonly clientLink: ClientLink;
 
@@ -30,32 +43,38 @@ export class WebSocketConnection  extends Connection {
   onConnect: Function;
 
   /// clientLink is not needed when websocket works in server link
-  constructor(socket:WebSocket, clientLink:ClientLink,
-    onConnect:Function,
-     enableAck:boolean= false,
-     useCodec:DsCodec
+  constructor(socket: WebSocket, clientLink: ClientLink,
+              onConnect: Function,
+              useCodec: DsCodec
   ) {
     super();
-    this.socket=socket;
-    this.clientLink=clientLink;
-    this.onConnect=onConnect;
+    this.socket = socket;
+    this.clientLink = clientLink;
+    this.onConnect = onConnect;
     if (useCodec != null) {
       this.codec = useCodec;
     }
 
-    if (!enableAck) {
-      this.nextMsgId = -1;
-    }
     socket.binaryType = "arraybuffer";
     this._responderChannel = new PassiveChannel(this);
     this._requesterChannel = new PassiveChannel(this);
-    socket.onmessage = (event)=> {this._onData(event);};
-    socket.onclose = (event)=>{this._onDone(event);};
-    socket.onopen = (event)=>{this._onOpen(event);};
+    socket.onmessage = (event) => {
+      this._onData(event);
+    };
+    socket.onclose = (event) => {
+      this._onDone(event);
+    };
+    socket.onopen = (event) => {
+      this._onOpen(event);
+    };
     // TODO, when it's used in client link, wait for the server to send {allowed} before complete this
-    setTimeout(()=>{this._onRequestReadyCompleter.complete(this._requesterChannel)}, 0);
+    setTimeout(() => {
+      this._onRequestReadyCompleter.complete(this._requesterChannel)
+    }, 0);
 
-    this.pingTimer = setInterval(()=>{this.onPingTimer();}, 20000);
+    this.pingTimer = setInterval(() => {
+      this.onPingTimer();
+    }, 20000);
   }
 
   pingTimer: any;
@@ -63,16 +82,16 @@ export class WebSocketConnection  extends Connection {
 
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link
-  _dataReceiveCount:number = 0;
+  _dataReceiveCount: number = 0;
 
   onPingTimer() {
-    if ( this._dataReceiveCount >= 3) {
+    if (this._dataReceiveCount >= 3) {
       close();
       return;
     }
     this._dataReceiveCount++;
 
-    if ( this._dataSent) {
+    if (this._dataSent) {
       this._dataSent = false;
       return;
     }
@@ -82,14 +101,18 @@ export class WebSocketConnection  extends Connection {
   requireSend() {
     if (!this._sending) {
       this._sending = true;
-      setTimeout(()=>{ this._send();},0);
+      setTimeout(() => {
+        this._send();
+      }, 0);
     }
   }
 
   _opened: boolean = false;
-  get opened(): boolean { return this._opened;}
+  get opened(): boolean {
+    return this._opened;
+  }
 
-  _onOpen(e:Event) {
+  _onOpen(e: Event) {
 //    logger.info("Connected");
     this._opened = true;
     if (this.onConnect != null) {
@@ -103,11 +126,11 @@ export class WebSocketConnection  extends Connection {
 
   /// special server command that need to be merged into message
   /// now only 2 possible value, salt, allowed
-  _msgCommand: {[key:string]:any};
+  _msgCommand: { [key: string]: any };
 
   /// add server command, will be called only when used as server connection
   addConnCommand(key: string, value: object) {
-    if ( this._msgCommand == null) {
+    if (this._msgCommand == null) {
       this._msgCommand = {};
     }
     if (key != null) {
@@ -119,7 +142,7 @@ export class WebSocketConnection  extends Connection {
   _onData(e: MessageEvent) {
 //    logger.fine("onData:");
     this._dataReceiveCount = 0;
-    let m:{[key:string]:any};
+    let m: { [key: string]: any };
     if (e.data instanceof ArrayBuffer) {
       try {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
@@ -140,131 +163,131 @@ export class WebSocketConnection  extends Connection {
         if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
           needAck = true;
           // send requests to responder channel
-          _responderChannel.onReceiveController.add(m["requests"]);
+          this._responderChannel.onReceive.add(m["requests"]);
         }
-        if (m["ack"] is int) {
-          ack(m["ack"]);
+        if (typeof m["ack"] === 'number') {
+          this.ack(m["ack"]);
         }
         if (needAck) {
           let msgId: object = m["msg"];
           if (msgId != null) {
-            addConnCommand("ack", msgId);
+            this.addConnCommand("ack", msgId);
           }
         }
-      } catch (err, stack) {
+      } catch (err) {
 //        logger.severe("error in onData", err, stack);
-        close();
+        this.close();
         return;
       }
     } else if (typeof e.data === 'string') {
       try {
-        m = codec.decodeStringFrame(e.data);
+        m = this.codec.decodeStringFrame(e.data);
 //        logger.fine("$m");
 
         let needAck: boolean = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
           // send responses to requester channel
-          _requesterChannel.onReceiveController.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m["responses"]);
         }
 
         if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
           needAck = true;
           // send requests to responder channel
-          _responderChannel.onReceiveController.add(m["requests"]);
+          this._responderChannel.onReceive.add(m["requests"]);
         }
-        if (m["ack"] is int) {
-          ack(m["ack"]);
+        if (typeof m["ack"] == "number") {
+          this.ack(m["ack"]);
         }
         if (needAck) {
           let msgId: object = m["msg"];
           if (msgId != null) {
-            addConnCommand("ack", msgId);
+            this.addConnCommand("ack", msgId);
           }
         }
       } catch (err) {
 //        logger.severe(err);
-        close();
+        this.close();
         return;
       }
     }
   }
 
-  nextMsgId:number = 1;
+  nextMsgId: number = 1;
 
   _sending: boolean = false;
+
   _send() {
-    _sending = false;
-    if (socket.readyState != WebSocket.OPEN) {
+    this._sending = false;
+    if (this.socket.readyState != WebSocket.OPEN) {
       return;
     }
 //    logger.fine("browser sending");
-    needSend: boolean = false;
-    object m;
-    if ( this._msgCommand != null) {
+    let needSend = false;
+    let m: { [key: string]: any };
+    if (this._msgCommand != null) {
       m = this._msgCommand;
       needSend = true;
-      _msgCommand = null;
+      this._msgCommand = null;
     } else {
       m = {};
     }
 
-    var pendingAck = <ConnectionProcessor>[];
+    let pendingAck: ConnectionProcessor[] = [];
 
-    ts:number = (new DateTime.now()).millisecondsSinceEpoch;
-    rslt: ProcessorResult = this._responderChannel.getSendingData(ts, nextMsgId);
+    let ts: number = (new Date()).getTime();
+    let rslt: ProcessorResult = this._responderChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
         m["responses"] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
-        pendingAck.addAll(rslt.processors);
+        pendingAck = pendingAck.concat(rslt.processors);
       }
     }
-    rslt = this._requesterChannel.getSendingData(ts, nextMsgId);
+    rslt = this._requesterChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
         m["requests"] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
-        pendingAck.addAll(rslt.processors);
+        pendingAck = pendingAck.concat(rslt.processors);
       }
     }
 
     if (needSend) {
-      if (nextMsgId != -1) {
+      if (this.nextMsgId != -1) {
         if (pendingAck.length > 0) {
-          pendingAcks.add(new ConnectionAckGroup(nextMsgId, ts, pendingAck));
+          this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
-        m["msg"] = nextMsgId;
-        if (nextMsgId < 0x7FFFFFFF) {
-          ++nextMsgId;
+        m["msg"] = this.nextMsgId;
+        if (this.nextMsgId < 0x7FFFFFFF) {
+          ++this.nextMsgId;
         } else {
-          nextMsgId = 1;
+          this.nextMsgId = 1;
         }
       }
 
 
 //      logger.fine("send: $m");
-      var encoded = codec.encodeFrame(m);
-      if (encoded is int[]) {
-        encoded = ByteDataUtil.list2Uint8Array(encoded as int[]);
-      }
+      var encoded = this.codec.encodeFrame(m);
+
       try {
-        socket.send(encoded);
+        this.socket.send(encoded);
       } catch (e) {
 //        logger.severe('Unable to send on socket', e);
-        close();
+        this.close();
       }
-      _dataSent = true;
+      this._dataSent = true;
     }
   }
 
   _authError: boolean = false;
-  _onDone(o:any) {
-    if ( o instanceof CloseEvent ) {
+
+  _onDone(o?: any) {
+    if (o instanceof CloseEvent) {
       let e = o;
       if (e.code == 1006) {
         this._authError = true;
@@ -273,35 +296,36 @@ export class WebSocketConnection  extends Connection {
 
 //    logger.fine("socket disconnected");
 
-    if (!_requesterChannel.onReceiveController.isClosed) {
-      _requesterChannel.onReceiveController.close();
+    if (!this._requesterChannel.onReceive.isClosed) {
+      this._requesterChannel.onReceive.close();
     }
 
-    if (!_requesterChannel.onDisconnectController.isCompleted) {
-      _requesterChannel.onDisconnectController.complete( this._requesterChannel);
+    if (!this._requesterChannel.onDisconnectController.isCompleted) {
+      this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
     }
 
-    if (!_responderChannel.onReceiveController.isClosed) {
-      _responderChannel.onReceiveController.close();
+    if (!this._responderChannel.onReceive.isClosed) {
+      this._responderChannel.onReceive.close();
     }
 
-    if (!_responderChannel.onDisconnectController.isCompleted) {
-      _responderChannel.onDisconnectController.complete( this._responderChannel);
+    if (!this._responderChannel.onDisconnectController.isCompleted) {
+      this._responderChannel.onDisconnectController.complete(this._responderChannel);
     }
 
-    if (!_onDisconnectedCompleter.isCompleted) {
-      _onDisconnectedCompleter.complete( this._authError);
+    if (!this._onDisconnectedCompleter.isCompleted) {
+      this._onDisconnectedCompleter.complete(this._authError);
     }
-    if (pingTimer != null) {
-      pingTimer.cancel();
+    if (this.pingTimer != null) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
     }
   }
 
   close() {
-    if (socket.readyState == WebSocket.OPEN ||
-        socket.readyState == WebSocket.CONNECTING) {
-      socket.close();
+    if (this.socket.readyState == WebSocket.OPEN ||
+      this.socket.readyState == WebSocket.CONNECTING) {
+      this.socket.close();
     }
-    _onDone();
+    this._onDone();
   }
 }
