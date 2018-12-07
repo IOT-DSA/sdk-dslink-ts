@@ -4,6 +4,8 @@ let randomBytesImpl: (len: number) => Uint8Array;
 
 waitingModules.push(new Promise(async function (resolve, reject) {
   if (typeof window === 'undefined') {
+    // use dynamic load of the library so parcel will compile crypto module separately
+    // thus browser will not need to load 300KB crypto lib
     const crypto = await import('crypto');
     randomBytesImpl = function (len: number) {
       return crypto.randomBytes(len);

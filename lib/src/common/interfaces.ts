@@ -2,7 +2,10 @@ import Denque from "denque";
 import {Stream} from "../utils/async";
 import {ConnectionHandler} from "./connection_handler";
 import {DsCodec} from "../utils/codec";
-import {PublicKey} from "../crypto/pk";
+import {PrivateKey, PublicKey} from "../crypto/pk";
+import {LocalNode} from "../responder/node_provider";
+import {Responder} from "../responder/responder";
+import {Requester} from "../requester/requester";
 
 export abstract class ECDH {
   encodedPublicKey: string;
@@ -121,7 +124,7 @@ export interface ConnectionChannel {
 }
 
 /// Base Class for Links
-export interface BaseLink {
+export abstract class BaseLink {
   requester: Requester;
 
   responder: Responder;
@@ -131,11 +134,11 @@ export interface BaseLink {
   /// trigger when requester channel is Ready
   onRequesterReady: Promise<Requester>;
 
-  close(): void;
+  abstract close(): void;
 }
 
 /// Base Class for Server Link implementations.
-export interface ServerLink extends BaseLink {
+export abstract class ServerLink extends BaseLink {
   /// dsId or username
   dsId: string;
 
@@ -143,7 +146,7 @@ export interface ServerLink extends BaseLink {
 
   publicKey: PublicKey;
 
-  close(): void;
+  abstract close(): void;
 }
 
 /// Base Class for Client Link implementations.
@@ -293,6 +296,29 @@ export class Unspecified {
 
 /// Marks something as being unspecified.
 const unspecified: Unspecified = new Unspecified();
+
+export interface IPermissionManager {
+  getPermission(path: string, resp: Responder): number;
+}
+
+/// Provides Nodes for a responder.
+/// A single node provider can be reused by multiple responder.
+export interface NodeProvider {
+  /// Gets an existing node.
+  getNode(path: string): LocalNode;
+
+  /// Gets a node at the given [path] if it exists.
+  /// If it does not exist, create a new node and return it.
+  ///
+  /// When [addToTree] is false, the node will not be inserted into the node provider.
+  getOrCreateNode(path: string, addToTree?: boolean): LocalNode;
+
+/// Create a Responder
+  createResponder(dsId: string, sessionId: string): Responder;
+
+/// Get Permissions.
+  permissions: IPermissionManager;
+}
 
 /// Unspecified means that something has never been set.
 

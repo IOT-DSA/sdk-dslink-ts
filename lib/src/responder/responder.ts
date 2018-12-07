@@ -1,6 +1,8 @@
 // part of dslink.responder;
 
 /// a responder for one connection
+import {ConnectionHandler} from "../common/connection_handler";
+
 export class Responder  extends ConnectionHandler {
   /// reqId can be a dsId or a user name
   reqId: string;

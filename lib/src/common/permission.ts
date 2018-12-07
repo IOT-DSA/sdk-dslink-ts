@@ -2,24 +2,24 @@
 
 export class Permission  {
   /// now allowed to do anything
-  static readonly int NONE = 0;
+  static readonly  NONE = 0;
 
   /// list node
-  static readonly int LIST = 1;
+  static readonly  LIST = 1;
 
   /// read node
-  static readonly int READ = 2;
+  static readonly  READ = 2;
 
   /// write attribute and value
-  static readonly int WRITE = 3;
+  static readonly  WRITE = 3;
 
   /// config the node
-  static readonly int CONFIG = 4;
+  static readonly  CONFIG = 4;
 
   /// something that can never happen
-  static readonly int NEVER = 5;
+  static readonly  NEVER = 5;
 
-  static readonly names: string[] = const [
+  static readonly names: string[] =  [
     'none',
     'list',
     'read',
@@ -28,18 +28,18 @@ export class Permission  {
     'never'
   ];
 
-  static readonly nameParser: {[key: string]:number} = const {
-    'none': NONE,
-    'list': LIST,
-    'read': READ,
-    'write': WRITE,
-    'config': CONFIG,
-    'never': NEVER
+  static readonly nameParser: {[key: string]:number} =  {
+    'none': Permission.NONE,
+    'list': Permission.LIST,
+    'read': Permission.READ,
+    'write': Permission.WRITE,
+    'config': Permission.CONFIG,
+    'never': Permission.NEVER
   };
 
-  static parse(obj: object, defaultVal:number = NEVER):number {
-    if ( typeof obj === 'string' && nameParser.containsKey(obj)) {
-      return nameParser[obj];
+  static parse(obj: any, defaultVal:number = Permission.NEVER):number {
+    if ( typeof obj === 'string' && Permission.nameParser.hasOwnProperty(obj)) {
+      return Permission.nameParser[obj];
     }
     return defaultVal;
   }

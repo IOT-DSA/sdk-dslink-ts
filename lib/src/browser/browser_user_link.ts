@@ -1,12 +1,13 @@
 /// a client link for both http and ws
-import {ClientLink, ECDH} from "../common/interfaces";
+import {ClientLink, ECDH, NodeProvider} from "../common/interfaces";
 import {Completer} from "../utils/async";
 import {Requester} from "../requester/requester";
-import {DSRandom} from "../crypto/random";
+
 import {Responder} from "../responder/responder";
 import {PrivateKey} from "../crypto/pk";
 import {WebSocketConnection} from "./browser_ws_conn";
 import {DsCodec} from "../utils/codec";
+
 
 
 export class DummyECDH implements ECDH {
@@ -28,10 +29,7 @@ export class BrowserUserLink extends ClientLink {
     return this._onRequesterReadyCompleter.future;
   };
 
-  static session: string = DSRandom.instance.nextUint16().toString(16) +
-    DSRandom.instance.nextUint16().toString(16) +
-    DSRandom.instance.nextUint16().toString(16) +
-    DSRandom.instance.nextUint16().toString(16);
+  static session: string = Math.random().toString(16).substr(2,8);
   readonly requester: Requester;
   readonly responder: Responder;
 
@@ -60,8 +58,9 @@ export class BrowserUserLink extends ClientLink {
       wsUpdateUri = "ws${wsUpdateUri.substring(4)}";
     }
     this.requester = isRequester ? new Requester() : null;
-    this.responder = (isResponder && nodeProvider != null)
-      ? new Responder(nodeProvider) : null;
+    // responder is supported in the browser dslink
+    // this.responder = (isResponder && nodeProvider != null)
+    //   ? new Responder(nodeProvider) : null;
 
     this.wsUpdateUri = wsUpdateUri;
     this.format = format;

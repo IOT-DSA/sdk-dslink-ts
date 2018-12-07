@@ -239,30 +239,3 @@ export interface LocalNode extends Node {
   load(map: {[key: string]: dynamic}) {
   }
 }
-
-/// Provides Nodes for a responder.
-/// A single node provider can be reused by multiple responder.
-export interface NodeProvider {
-  /// Gets an existing node.
-  LocalNode getNode(path: string);
-
-  /// Gets a node at the given [path] if it exists.
-  /// If it does not exist, create a new node and return it.
-  ///
-  /// When [addToTree] is false, the node will not be inserted into the node provider.
-  LocalNode getOrCreateNode(path: string, [addToTree: boolean = true]);
-
-  /// Gets an existing node, or creates a dummy node for a requester to listen on.
-  LocalNode operator [](path: string) {
-    return getNode(path);
-  }
-
-  /// Get the root node.
-  LocalNode operator ~() => getOrCreateNode("/", false);
-
-  /// Create a Responder
-  Responder createResponder(dsId: string, sessionId: string);
-
-  /// Get Permissions.
-  permissions:IPermissionManager;
-}
