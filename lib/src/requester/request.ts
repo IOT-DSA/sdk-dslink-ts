@@ -1,10 +1,11 @@
 /// request class handles raw response from responder
-import {Requester} from "./requester";
+import {Requester, RequestUpdater} from "./requester";
+import {DSError, StreamStatus} from "../common/interfaces";
 
 export class Request {
   readonly requester: Requester;
   readonly rid: number;
-  readonly data: {[key: string]: any};
+  readonly data: { [key: string]: any };
 
   /// raw request callback
   readonly updater: RequestUpdater;
@@ -13,7 +14,7 @@ export class Request {
     return this._isClosed;
   }
 
-  constructor(requester: Requester, rid: number, updater: RequestUpdater, data: {[key: string]: any}) {
+  constructor(requester: Requester, rid: number, updater: RequestUpdater, data: { [key: string]: any }) {
     this.requester = requester;
     this.rid = rid;
     this.updater = updater;
@@ -27,11 +28,11 @@ export class Request {
     this.requester.addToSendList(this.data);
   }
 
-  addReqParams(m: {[key: string]: any}) {
+  addReqParams(m: { [key: string]: any }) {
     this.requester.addToSendList({'rid': this.rid, 'params': m});
   }
 
-  _update(m: {[key: string]: any}) {
+  _update(m: { [key: string]: any }) {
     if (typeof m["stream"] === 'string') {
       this.streamStatus = m["stream"];
     }
@@ -54,7 +55,7 @@ export class Request {
     let error: DSError;
     if (m.containsKey("error") && m["error"] instanceof Object) {
       error = DSError.fromMap(m["error"]);
-      this.requester._errorController.add(error);
+      this.requester.onError.add(error);
     }
 
     this.updater.onUpdate(this.streamStatus, updates, columns, meta, error);
