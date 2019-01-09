@@ -147,9 +147,8 @@ export class ValueUpdate {
     }
 
     return new ValueUpdate(
-      this.value,
+      this.value, this.ts,
       {
-        ts: this.ts,
         status: this.status,
         count: this.count
       }
