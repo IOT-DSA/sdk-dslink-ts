@@ -10,7 +10,7 @@ import {DSError} from "../common/interfaces";
 type RequestConsumer<T> = (request: Request) => T;
 
 export interface RequestUpdater {
-  onUpdate(status: string, updates: any[], columns: any[], meta: object, error: DSError): void;
+  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any}, error: DSError): void;
 
   onDisconnect(): void;
 

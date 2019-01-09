@@ -1,44 +1,34 @@
-// part of dslink.requester;
+import {Cancelable} from "../../utils/async";
+import {Request} from "../request";
+import {Requester, RequestUpdater} from "../requester";
+import {ConnectionProcessor, DSError} from "../../common/interfaces";
+import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
+import {RemoteNode} from "../node_cache";
+import {ACK_WAIT_COUNT} from "../../common/connection_handler";
 
-export class ReqSubscribeListener  implements StreamSubscription {
+export class ReqSubscribeListener implements Cancelable {
   callback: ValueUpdateCallback;
   requester: Requester;
   path: string;
 
-  ReqSubscribeListener(this.requester, this.path, this.callback);
+  constructor(requester: Requester, path: string, callback: ValueUpdateCallback) {
+    this.requester = requester;
+    this.path = path;
+    this.callback = callback;
+  }
 
-  cancel():Future {
-    if (callback != null) {
-      requester.unsubscribe(path, callback);
-      callback = null;
+  cancel() {
+    if (this.callback != null) {
+      this.requester.unsubscribe(this.path, this.callback);
+      this.callback = null;
     }
-    return null;
   }
-
-  // TODO: define a custom class to replace StreamSubscription
-  asFuture(futureValue):Future {
-    return null;
-  }
-
-  get isPaused(): boolean { return false;}
-
-  void onData(void handleData(data)) {}
-
-  void onDone(void handleDone()) {}
-
-  void onError(handleError: Function) {}
-
-  void pause([Future resumeSignal]) {}
-
-  void resume() {}
 }
 
 /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
-export class SubscribeController  implements RequestUpdater {
+export class SubscribeController implements RequestUpdater {
   request: SubscribeRequest;
-
-  SubscribeController();
 
   onDisconnect() {
     // TODO: implement onDisconnect
@@ -48,80 +38,77 @@ export class SubscribeController  implements RequestUpdater {
     // TODO: implement onReconnect
   }
 
-  onUpdate(status: string, updates: List, columns: List, meta: object,
-      let error: DSError) {
+  onUpdate(status: string, updates: any[], columns: any[], meta: { [key: string]: any },
+           error: DSError) {
     // do nothing
   }
 }
 
-export class SubscribeRequest  extends Request implements ConnectionProcessor {
-  lastSid:number = 0;
+export class SubscribeRequest extends Request implements ConnectionProcessor {
+  lastSid: number = 0;
 
-  getNextSid():number {
+  getNextSid(): number {
     do {
-      if (lastSid < 0x7FFFFFFF) {
-        ++lastSid;
+      if (this.lastSid < 0x7FFFFFFF) {
+        ++this.lastSid;
       } else {
-        lastSid = 1;
+        this.lastSid = 1;
       }
-    } while (subscriptionIds.containsKey(lastSid));
-    return lastSid;
+    } while (this.subscriptionIds.has(this.lastSid));
+    return this.lastSid;
   }
 
-  readonly subscriptions: {[key: string]: ReqSubscribeController} =
-    new {[key: string]: ReqSubscribeController}();
+  readonly subscriptions: Map<string, ReqSubscribeController> = new Map();
 
-  readonly subscriptionIds: object<int, ReqSubscribeController> =
-    new object<int, ReqSubscribeController>();
+  readonly subscriptionIds: Map<number, ReqSubscribeController> = new Map();
 
-  SubscribeRequest(requester: Requester, rid:number)
-      : super(requester, rid, new SubscribeController(), null) {
-    (updater as SubscribeController).request = this;
+  constructor(requester: Requester, rid: number) {
+    super(requester, rid, new SubscribeController(), null);
+    (this.updater as SubscribeController).request = this;
   }
 
-  @override
   resend() {
-    prepareSending();
+    this.prepareSending();
   }
 
-  @override
   _close(error: DSError) {
-    if (subscriptions.isNotEmpty) {
-      _changedPaths.addAll(subscriptions.keys);
+    if (this.subscriptions.size > 0) {
+      for (let [key, s] of this.subscriptions) {
+        this._changedPaths.add(key);
+      }
     }
-    _waitingAckCount = 0;
-    _lastWatingAckId = -1;
-    _sendingAfterAck = false;
+    this._waitingAckCount = 0;
+    this._lastWatingAckId = -1;
+    this._sendingAfterAck = false;
   }
 
-  @override
-  _update(object m) {
-    updates: List = m['updates'];
-    if ( Array.isArray(updates) ) {
-      for (object update in updates) {
+  _update(m: { [key: string]: any }) {
+    let updates = m['updates'];
+    if (Array.isArray(updates)) {
+      for (let update of updates) {
         let path: string;
-        let sid:number = -1;
-        let value: object;
+        let sid: number = -1;
+        let value: { [key: string]: any };
         let ts: string;
-        let meta: object;
-        if ( (update != null && update instanceof Object) ) {
+        let options: { [key: string]: any };
+        if ((update != null && update instanceof Object)) {
           if (typeof update['ts'] === 'string') {
             path = update['path'];
             ts = update['ts'];
             if (typeof update['path'] === 'string') {
               path = update['path'];
-            } else if (update['sid'] is int) {
+            } else if (typeof update['sid'] === 'number') {
               sid = update['sid'];
             } else {
               continue; // invalid response
             }
           }
           value = update['value'];
-          meta = update;
-        } else if ( Array.isArray(update) && update.length > 2) {
+          options = update;
+        } else if (Array.isArray(update) && update.length > 2) {
           if (typeof update[0] === 'string') {
             path = update[0];
-          } else if (update[0] is int) {
+          } else if (typeof update[0] === 'number') {
             sid = update[0];
           } else {
             continue; // invalid response
@@ -134,13 +121,13 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
 
         let controller: ReqSubscribeController;
         if (path != null) {
-          controller = subscriptions[path];
+          controller = this.subscriptions.get(path);
         } else if (sid > -1) {
-          controller = subscriptionIds[sid];
+          controller = this.subscriptionIds.get(sid);
         }
 
         if (controller != null) {
-          var valueUpdate = new ValueUpdate(value, ts: ts, meta: meta);
+          var valueUpdate = new ValueUpdate(value, ts, options);
           controller.addValue(valueUpdate);
         }
       }
@@ -148,167 +135,169 @@ export class SubscribeRequest  extends Request implements ConnectionProcessor {
   }
 
   _changedPaths: Set<string> = new Set<string>();
+  toRemove: Map<number, ReqSubscribeController> = new Map();
 
-  addSubscription(controller: ReqSubscribeController, level:number) {
-    path: string = controller.node.remotePath;
-    subscriptions[path] = controller;
-    subscriptionIds[controller.sid] = controller;
-    prepareSending();
-    _changedPaths.add(path);
+  addSubscription(controller: ReqSubscribeController, level: number) {
+    let path: string = controller.node.remotePath;
+    this.subscriptions.set(path, controller);
+    this.subscriptionIds.set(controller.sid, controller);
+    this.prepareSending();
+    this._changedPaths.add(path);
   }
 
   removeSubscription(controller: ReqSubscribeController) {
-    path: string = controller.node.remotePath;
-    if (subscriptions.containsKey(path)) {
-      toRemove[subscriptions[path].sid] = subscriptions[path];
-      prepareSending();
-    } else if (subscriptionIds.containsKey(controller.sid)) {
+    let path: string = controller.node.remotePath;
+    if (this.subscriptions.has(path)) {
+      this.toRemove.set(this.subscriptions.get(path).sid, this.subscriptions.get(path));
+      this.prepareSending();
+    } else if (this.subscriptionIds.has(controller.sid)) {
 //      logger.severe(
-          'unexpected remoteSubscription in the requester, sid: ${controller
-              .sid}');
+//           'unexpected remoteSubscription in the requester, sid: ${controller
+//               .sid}');
     }
   }
 
-  toRemove: object<int, ReqSubscribeController> =
-    new object<int, ReqSubscribeController>();
 
-  startSendingData(currentTime:number, waitingAckId:number) {
-    _pendingSending = false;
+  startSendingData(currentTime: number, waitingAckId: number) {
+    this._pendingSending = false;
 
     if (waitingAckId != -1) {
-      _waitingAckCount++;
-      _lastWatingAckId = waitingAckId;
+      this._waitingAckCount++;
+      this._lastWatingAckId = waitingAckId;
     }
 
-    if (requester.connection == null) {
+    if (this.requester.connection == null) {
       return;
     }
-    toAdd: List = [];
+    let toAdd: any[] = [];
 
-    processingPaths: Set<string> = this._changedPaths;
-    _changedPaths = new Set<string>();
-    for (string path in processingPaths) {
-      if (subscriptions.containsKey(path)) {
-        let sub: ReqSubscribeController = subscriptions[path];
-        object m = {'path': path, 'sid': sub.sid};
+    let processingPaths: Set<string> = this._changedPaths;
+    this._changedPaths = new Set<string>();
+    for (let path in processingPaths) {
+      if (this.subscriptions.has(path)) {
+        let sub: ReqSubscribeController = this.subscriptions.get(path);
+        let m: any = {'path': path, 'sid': sub.sid};
         if (sub.currentQos > 0) {
           m['qos'] = sub.currentQos;
         }
-        toAdd.add(m);
+        toAdd.push(m);
       }
     }
-    if (!toAdd.isEmpty) {
-      requester._sendRequest({'method': 'subscribe', 'paths': toAdd}, null);
+    if (toAdd.length > 0) {
+      this.requester._sendRequest({'method': 'subscribe', 'paths': toAdd}, null);
     }
-    if (!toRemove.isEmpty) {
-      let removeSids: List = [];
-      toRemove.forEach((sid:number, sub: ReqSubscribeController) {
-        if (sub.callbacks.isEmpty) {
-          removeSids.add(sid);
-          subscriptions.remove(sub.node.remotePath);
-          subscriptionIds.remove(sub.sid);
+    if (this.toRemove.size > 0) {
+      let removeSids: any[] = [];
+      for (let [sid, sub] of this.toRemove) {
+        if (sub.callbacks.size === 0) {
+          removeSids.push(sid);
+          this.subscriptions.delete(sub.node.remotePath);
+          this.subscriptionIds.delete(sub.sid);
           sub._destroy();
         }
-      });
-      requester._sendRequest(
-          {'method': 'unsubscribe', 'sids': removeSids}, null);
-      toRemove.clear();
+      }
+      this.requester._sendRequest(
+        {'method': 'unsubscribe', 'sids': removeSids}, null);
+      this.toRemove.clear();
     }
   }
 
   _pendingSending: boolean = false;
-  _waitingAckCount:number = 0;
-  _lastWatingAckId:number = -1;
+  _waitingAckCount: number = 0;
+  _lastWatingAckId: number = -1;
 
-  ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
     if (receiveAckId == this._lastWatingAckId) {
-      _waitingAckCount = 0;
+      this._waitingAckCount = 0;
     } else {
-      _waitingAckCount--;
+      this._waitingAckCount--;
     }
 
-    if ( this._sendingAfterAck) {
-      _sendingAfterAck = false;
-      prepareSending();
+    if (this._sendingAfterAck) {
+      this._sendingAfterAck = false;
+      this.prepareSending();
     }
   }
 
   _sendingAfterAck: boolean = false;
 
   prepareSending() {
-    if ( this._sendingAfterAck) {
+    if (this._sendingAfterAck) {
       return;
     }
 
-    if ( this._waitingAckCount > ConnectionProcessor.ACK_WAIT_COUNT) {
-      _sendingAfterAck = true;
+    if (this._waitingAckCount > ACK_WAIT_COUNT) {
+      this._sendingAfterAck = true;
       return;
     }
 
-    if (!_pendingSending) {
-      _pendingSending = true;
-      requester.addProcessor(this);
+    if (!this._pendingSending) {
+      this._pendingSending = true;
+      this.requester.addProcessor(this);
     }
   }
 }
 
-export class ReqSubscribeController  {
+export class ReqSubscribeController {
   readonly node: RemoteNode;
   readonly requester: Requester;
 
-  callbacks: object<Function, int> = new object<Function, int>();
-  currentQos:number = -1;
-  sid:number;
+  callbacks: Map<(update: ValueUpdate) => void, number> = new Map<(update: ValueUpdate) => void, number>();
+  currentQos: number = -1;
+  sid: number;
 
-  ReqSubscribeController(this.node, this.requester) {
-    sid = requester._subscription.getNextSid();
+  constructor(node: RemoteNode, requester: Requester) {
+    this.node = node;
+    this.requester = requester;
+    this.sid = requester._subscription.getNextSid();
   }
 
-  void listen(callback(update: ValueUpdate), qos:number) {
+  listen(callback: (update: ValueUpdate) => void, qos: number) {
     if (qos < 0 || qos > 3) {
       qos = 0;
     }
-    qosChanged: boolean = false;
+    let qosChanged = false;
 
-    if (callbacks.containsKey(callback)) {
-      callbacks[callback] = qos;
-      qosChanged = updateQos();
+    if (this.callbacks.has(callback)) {
+      this.callbacks.set(callback, qos);
+      qosChanged = this.updateQos();
     } else {
-      callbacks[callback] = qos;
-      if (qos > currentQos) {
+      this.callbacks.set(callback, qos);
+      if (qos > this.currentQos) {
         qosChanged = true;
-        currentQos = qos;
+        this.currentQos = qos;
       }
-      if ( this._lastUpdate != null) {
-        callback( this._lastUpdate);
+      if (this._lastUpdate != null) {
+        callback(this._lastUpdate);
       }
     }
 
     if (qosChanged) {
-      requester._subscription.addSubscription(this, currentQos);
+      this.requester._subscription.addSubscription(this, this.currentQos);
     }
   }
 
-  void unlisten(callback(update: ValueUpdate)) {
-    if (callbacks.containsKey(callback)) {
-      let cacheLevel:number = callbacks.remove(callback);
-      if (callbacks.isEmpty) {
-        requester._subscription.removeSubscription(this);
-      } else if (cacheLevel == currentQos && currentQos > 1) {
-        updateQos();
+  unlisten(callback: (update: ValueUpdate) => void) {
+    if (this.callbacks.has(callback)) {
+      let cacheLevel = this.callbacks.get(callback);
+      this.callbacks.delete(callback);
+      if (this.callbacks.size === 0) {
+        this.requester._subscription.removeSubscription(this);
+      } else if (cacheLevel == this.currentQos && this.currentQos > 1) {
+        this.updateQos();
       }
     }
   }
 
-  updateQos():boolean {
-    maxQos:number = 0;
+  updateQos(): boolean {
+    let maxQos: number = 0;
 
-    for (var qos in callbacks.values) {
+    for (let qos of this.callbacks.values()) {
       maxQos = (qos > maxQos ? qos : maxQos);
     }
 
-    if (maxQos != currentQos) {
-      currentQos = maxQos;
+    if (maxQos != this.currentQos) {
+      this.currentQos = maxQos;
       return true;
     }
     return false;
@@ -317,14 +306,15 @@ export class ReqSubscribeController  {
   _lastUpdate: ValueUpdate;
 
   addValue(update: ValueUpdate) {
-    _lastUpdate = update;
-    for (Function callback in callbacks.keys.toList()) {
-      callback( this._lastUpdate);
+    this._lastUpdate = update;
+
+    for (let callback of Array.from(this.callbacks.keys())) {
+      callback(this._lastUpdate);
     }
   }
 
   _destroy() {
-    callbacks.clear();
-    node._subscribeController = null;
+    this.callbacks.clear();
+    this.node._subscribeController = null;
   }
 }

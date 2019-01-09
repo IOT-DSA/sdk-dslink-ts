@@ -1,6 +1,5 @@
-type ValueUpdateCallback = (update: ValueUpdate) => any;
-
-type ValueCallback<T> = (value: T) => any;
+export type ValueUpdateCallback = (update: ValueUpdate) => any;
+export type ValueCallback<T> = (value: T) => any;
 
 const TIME_ZONE = (function () {
   let timeZoneOffset: number = (new Date()).getTimezoneOffset();
@@ -62,16 +61,13 @@ export class ValueUpdate {
   /// The timestamp for when this value update was created.
   created: Date;
 
-  constructor(value: any, options?:
-    {
-      ts?: string,
-      status?: string,
-      count?: number
-    }) {
+  constructor(value: any, ts?: string, options?: { status?: string, count?: number }) {
+    if (ts) {
+      this.ts = ts;
+    } else {
+      this.ts = ValueUpdate.getTs();
+    }
     if (options) {
-      if (options.ts) {
-        this.ts = options.ts;
-      }
       if (options.status) {
         this.status = options.status;
       }
@@ -79,10 +75,6 @@ export class ValueUpdate {
         this.count = options.count;
       }
     }
-    if (!this.ts) {
-      this.ts = ValueUpdate.getTs();
-    }
-
     this.created = new Date();
 
   }
@@ -144,7 +136,7 @@ export class ValueUpdate {
   }
 
   /// could be the value or the key stored by ValueStorage
-  storedData: object;
+  storedData: { [key: string]: any };
 
   _cloned: boolean = false;
 

@@ -59,7 +59,11 @@ export class Stream<T> {
   }
 }
 
-export class StreamSubscription<T> {
+export interface Cancelable {
+  cancel(): void;
+}
+
+export class StreamSubscription<T> implements Cancelable {
   _stream: Stream<T>;
   _listener: Listener<T>;
 
