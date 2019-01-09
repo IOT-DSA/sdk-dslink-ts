@@ -1,16 +1,27 @@
-// part of dslink.requester;
+import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Request} from "../Request";
+import {Completer} from "../../utils/async";
+import {Permission} from "../../common/permission";
+import {DSError} from "../../common/interfaces";
 
-export class SetController  implements RequestUpdater {
+export class SetController implements RequestUpdater {
   readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
-  Promise<RequesterUpdate> get future => completer.future;
+
+  get future() {
+    return this.completer.future;
+  }
+
   readonly requester: Requester;
   readonly path: string;
-  readonly value: object;
+  readonly value: any;
   _request: Request;
 
-  SetController(this.requester, this.path, this.value,
-      [maxPermission:number = Permission.CONFIG]) {
-    var reqMap = <string, dynamic>{
+  constructor(requester: Requester, path: string, value: any, maxPermission: number = Permission.CONFIG) {
+    this.requester = requester;
+    this.path = path;
+    this.value = value;
+
+    let reqMap: any = {
       'method': 'set',
       'path': path,
       'value': value
@@ -20,15 +31,17 @@ export class SetController  implements RequestUpdater {
       reqMap['permit'] = Permission.names[maxPermission];
     }
 
-    _request = requester._sendRequest(reqMap, this);
+    this._request = requester._sendRequest(reqMap, this);
   }
 
-  onUpdate(status: string, updates: List, columns: List, meta: object, error: DSError) {
+  onUpdate(status: string, updates: any[], columns: any[], meta: object, error: DSError) {
     // TODO implement error
-    completer.complete(new RequesterUpdate(status));
+    this.completer.complete(new RequesterUpdate(status));
   }
 
-  void onDisconnect() {}
+  onDisconnect() {
+  }
 
-  void onReconnect() {}
+  onReconnect() {
+  }
 }
