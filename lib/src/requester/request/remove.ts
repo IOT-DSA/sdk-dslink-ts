@@ -1,28 +1,39 @@
-// part of dslink.requester;
+import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Request} from "../Request";
+import {Completer} from "../../utils/async";
+import {DSError} from "../../common/interfaces";
 
-export class RemoveController  implements RequestUpdater {
+export class RemoveController implements RequestUpdater {
   readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
-  Promise<RequesterUpdate> get future => completer.future;
+
+  get future() {
+    return this.completer.future;
+  }
 
   readonly requester: Requester;
   readonly path: string;
   _request: Request;
 
-  RemoveController(this.requester, this.path) {
-    var reqMap = <string, dynamic>{
+  constructor(requester: Requester, path: string) {
+    this.requester = requester;
+    this.path = path;
+
+    let reqMap = {
       'method': 'remove',
       'path': path
     };
 
-    _request = requester._sendRequest(reqMap, this);
+    this._request = requester._sendRequest(reqMap, this);
   }
 
-  onUpdate(status: string, updates: List, columns: List, meta: object, error: DSError) {
+  onUpdate(status: string, updates: any[], columns: any[], meta: object, error: DSError) {
     // TODO implement error
-    completer.complete(new RequesterUpdate(status));
+    this.completer.complete(new RequesterUpdate(status));
   }
 
-  void onDisconnect() {}
+  onDisconnect() {
+  }
 
-  void onReconnect() {}
+  onReconnect() {
+  }
 }
