@@ -1,73 +1,85 @@
-// part of dslink.requester;
-
 /// manage cached nodes for requester
-/// TODO: cleanup nodes that are no longer in use
-export class RemoteNodeCache  {
-  _nodes: {[key: string]: RemoteNode} = new {[key: string]: RemoteNode}();
+import {Node} from "../common/node";
+import {DefaultDefNodes} from "./default_defs";
+import {ListController, RequesterListUpdate} from "./request/list";
+import {ReqSubscribeController} from "./request/subscribe";
+import {ValueUpdate} from "../common/value";
+import {Requester} from "./requester";
+import {Stream} from "../utils/async";
+import {Permission} from "../common/permission";
+import {InvokeController, RequesterInvokeUpdate} from "./request/invoke";
 
-  RemoteNodeCache() {}
+export class RemoteNodeCache {
+  _nodes: Map<string, RemoteNode> = new Map();
 
-  getRemoteNode(path: string):RemoteNode {
-    var node = _nodes[path];
+  RemoteNodeCache() {
+  }
+
+  getRemoteNode(path: string): RemoteNode {
+    let node = this._nodes.get(path);
 
     if (node == null) {
-      if (( this._nodes.length % 1000) == 0) {
-//        logger.fine("Node Cache hit ${_nodes.length} nodes in size.");
+      if ((this._nodes.size % 1000) === 0) {
+//        logger.fine("Node Cache hit ${this._nodes.length} nodes in size.");
       }
 
       if (path.startsWith("defs")) {
-        node = _nodes[path] = new RemoteDefNode(path);
+        let node = new RemoteDefNode(path);
+        this._nodes.set(path, node);
       } else {
-        node = _nodes[path] = new RemoteNode(path);
+        let node = new RemoteNode(path);
+        this._nodes.set(path, node);
       }
     }
 
     return node;
   }
 
-  Iterable<string> get cachedNodePaths => this._nodes.keys;
+  cachedNodePaths() {
+    return this._nodes.keys;
+  }
 
-  isNodeCached(path: string):boolean {
-    return this._nodes.containsKey(path);
+  isNodeCached(path: string): boolean {
+    return this._nodes.has(path);
   }
 
   clearCachedNode(path: string) {
-    _nodes.remove(path);
+    this._nodes.delete(path);
   }
 
   clear() {
-    _nodes.clear();
+    this._nodes.clear();
   }
 
-  getDefNode(path: string, defName: string):Node {
-    if (DefaultDefNodes.nameMap.containsKey(defName)) {
+  getDefNode(path: string, defName: string): Node {
+    if (DefaultDefNodes.nameMap.hasOwnProperty(defName)) {
       return DefaultDefNodes.nameMap[defName];
     }
-    return getRemoteNode(path);
+    return this.getRemoteNode(path);
   }
 
   /// update node with a map.
-  updateRemoteChildNode(parent: RemoteNode, name: string, object m):RemoteNode {
-    path: string;
-    if (parent.remotePath == '/') {
-      path = '/$name';
+  updateRemoteChildNode(parent: RemoteNode, name: string, m: any): RemoteNode {
+    let path: string;
+    if (parent.remotePath === '/') {
+      path = `/${name}`;
     } else {
-      path = '${parent.remotePath}/$name';
+      path = `${parent.remotePath}/${name}`;
     }
-    rslt: RemoteNode;
-    if ( this._nodes.containsKey(path)) {
-      rslt = _nodes[path];
+    let rslt: RemoteNode;
+    if (this._nodes.has(path)) {
+      rslt = this._nodes.get(path);
       rslt.updateRemoteChildData(m, this);
     } else {
       rslt = new RemoteNode(path);
-      _nodes[path] = rslt;
+      this._nodes.set(path, rslt);
       rslt.updateRemoteChildData(m, this);
     }
     return rslt;
   }
 }
 
-export class RemoteNode  extends Node {
+export class RemoteNode extends Node {
   readonly remotePath: string;
   listed: boolean = false;
   name: string;
@@ -79,7 +91,7 @@ export class RemoteNode  extends Node {
   }
 
   get hasValueUpdate(): boolean {
-    if ( this._subscribeController == null) {
+    if (this._subscribeController == null) {
       return false;
     }
 
@@ -87,71 +99,72 @@ export class RemoteNode  extends Node {
   }
 
   get lastValueUpdate(): ValueUpdate {
-    if (hasValueUpdate) {
+    if (this.hasValueUpdate) {
       return this._subscribeController._lastUpdate;
     } else {
       return null;
     }
   }
 
-  RemoteNode(this.remotePath) {
-    _getRawName();
+  constructor(remotePath: string) {
+    super();
+    this.remotePath = remotePath;
+    this._getRawName();
   }
 
   _getRawName() {
-    if (remotePath == '/') {
-      name = '/';
+    if (this.remotePath === '/') {
+      this.name = '/';
     } else {
-      name = remotePath
-        .split('/')
-        .last;
+      this.name = this.remotePath
+        .split('/').pop();
     }
   }
 
   /// node data is not ready until all profile and mixins are updated
-  isUpdated():boolean {
-    if (!isSelfUpdated()) {
+  isUpdated(): boolean {
+    if (!this.isSelfUpdated()) {
       return false;
     }
 
-    if ( profile instanceof RemoteNode && !(profile as RemoteNode).isSelfUpdated()) {
+    if (this.profile instanceof RemoteNode && !(this.profile as RemoteNode).isSelfUpdated()) {
       return false;
     }
     return true;
   }
 
   /// whether the node's own data is updated
-  isSelfUpdated():boolean {
+  isSelfUpdated(): boolean {
     return this._listController != null && this._listController.initialized;
   }
 
-  _list(requester: Requester):Stream<RequesterListUpdate> {
-    if ( this._listController == null) {
-      _listController = createListController(requester);
+  _list(requester: Requester): Stream<RequesterListUpdate> {
+    if (this._listController == null) {
+      this._listController = this.createListController(requester);
     }
     return this._listController.stream;
   }
 
   /// need a factory function for children class to override
-  createListController(requester: Requester):ListController {
+  createListController(requester: Requester): ListController {
     return new ListController(this, requester);
   }
 
-  void _subscribe(requester: Requester, callback(update: ValueUpdate), qos:number) {
-    if ( this._subscribeController == null) {
-      _subscribeController = new ReqSubscribeController(this, requester);
+  _subscribe(requester: Requester, callback: (update: ValueUpdate) => void, qos: number) {
+    if (this._subscribeController == null) {
+      this._subscribeController = new ReqSubscribeController(this, requester);
     }
-    _subscribeController.listen(callback, qos);
+    this._subscribeController.listen(callback, qos);
   }
 
-  void _unsubscribe(requester: Requester, callback(update: ValueUpdate)) {
-    if ( this._subscribeController != null) {
-      _subscribeController.unlisten(callback);
+  _unsubscribe(requester: Requester, callback: (update: ValueUpdate) => void) {
+    if (this._subscribeController != null) {
+      this._subscribeController.unlisten(callback);
     }
   }
 
   _invoke(params: object, requester: Requester,
-    maxPermission:number = Permission.CONFIG, fetchRawReq: RequestConsumer):Stream<RequesterInvokeUpdate> {
+          maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer): Stream<RequesterInvokeUpdate> {
     return new InvokeController(
       this,
       requester,
@@ -162,48 +175,51 @@ export class RemoteNode  extends Node {
   }
 
   /// used by list api to update simple data for children
-  updateRemoteChildData(object m, cache: RemoteNodeCache) {
-    childPathPre: string;
-    if (remotePath == '/') {
+  updateRemoteChildData(m: any, cache: RemoteNodeCache) {
+    let childPathPre: string;
+    if (this.remotePath === '/') {
       childPathPre = '/';
     } else {
-      childPathPre = '$remotePath/';
+      childPathPre = `${this.remotePath}/`;
     }
-
-    m.forEach((key: string, value) {
-      if (key.startsWith(r'$')) {
-        configs[key] = value;
+    for (let key in m) {
+      let value = m[key];
+      if (key.startsWith('$')) {
+        this.configs.set(key, value);
       } else if (key.startsWith('@')) {
-        attributes[key] = value;
-      } else if ( (value != null && value instanceof Object) ) {
-        let node: Node = cache.getRemoteNode('$childPathPre/$key');
-        children[key] = node;
-        if ( node instanceof RemoteNode ) {
+        this.attributes.set(key, value);
+      } else if ((value != null && value instanceof Object)) {
+        let node: Node = cache.getRemoteNode(`${childPathPre}/${key}`);
+        this.children.set(key, node);
+        if (node instanceof RemoteNode) {
           node.updateRemoteChildData(value, cache);
         }
       }
-    });
+    }
   }
 
   /// clear all configs attributes and children
   resetNodeCache() {
-    configs.clear();
-    attributes.clear();
-    children.clear();
+    this.configs.clear();
+    this.attributes.clear();
+    this.children.clear();
   }
 
-  save({boolean includeValue: true}):object {
-    var map = {};
-    map.addAll(configs);
-    map.addAll(attributes);
-    for (string key in children.keys) {
-      let node: Node = children[key];
-      map[key] = node is RemoteNode ? node.save() : node.getSimpleMap();
+  save(includeValue = true): { [key: string]: any } {
+    let map: { [key: string]: any } = {};
+    for (let [key, value] of this.configs) {
+      map[key] = value;
+    }
+    for (let [key, value] of this.attributes) {
+      map[key] = value;
+    }
+    for (let [key, node] of this.children) {
+      map[key] = node instanceof RemoteNode ? node.save() : node.getSimpleMap();
     }
 
     if (includeValue &&
-      _subscribeController != null &&
-      _subscribeController._lastUpdate != null) {
+      this._subscribeController != null &&
+      this._subscribeController._lastUpdate != null) {
       map["?value"] = this._subscribeController._lastUpdate.value;
       map["?value_timestamp"] = this._subscribeController._lastUpdate.ts;
     }
@@ -212,6 +228,8 @@ export class RemoteNode  extends Node {
   }
 }
 
-export class RemoteDefNode  extends RemoteNode {
-  RemoteDefNode(path: string) : super(path);
+export class RemoteDefNode extends RemoteNode {
+  constructor(path: string) {
+    super(path);
+  }
 }

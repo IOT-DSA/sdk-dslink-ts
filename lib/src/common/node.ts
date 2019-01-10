@@ -5,7 +5,7 @@ export class Node {
     if (nameOrPath.includes('/')) {
       let names = nameOrPath.split('/');
       nameOrPath = names.pop();
-      while (nameOrPath == '' && names.length) {
+      while (nameOrPath === '' && names.length) {
         nameOrPath = names.pop();
       }
     }

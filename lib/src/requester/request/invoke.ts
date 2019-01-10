@@ -1,4 +1,8 @@
-// part of dslink.requester;
+import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Request} from "../Request";
+import {Completer} from "../../utils/async";
+import {Permission} from "../../common/permission";
+import {DSError} from "../../common/interfaces";
 
 export class RequesterInvokeUpdate  extends RequesterUpdate {
   rawColumns: List;

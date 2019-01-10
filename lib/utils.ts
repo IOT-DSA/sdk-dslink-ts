@@ -1,5 +1,10 @@
-/// Common Utilities for DSA Components
-library dslink.utils;
+
+
+export function buildEnumType(values: string[]){
+  return `enum[${values.join(",")}]`;
+}
+
+
 
 import "dart:async";
 import "dart:convert";
@@ -366,7 +371,7 @@ export class Scheduler  {
   }
 }
 
-string buildEnumType(values: Iterable<string>) => "enum[${values.join(",")}]";
+
 
 parseEnumType(type: string):string[] {
   if (!type.startsWith("enum[") || !type.endsWith("]")) {

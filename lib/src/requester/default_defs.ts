@@ -1,24 +1,28 @@
 // part of dslink.requester;
 
 // TODO: merge with defaultProfileMap in common lib
-export class DefaultDefNodes  {
-  static readonly _defaultDefs: object = {
+import {buildEnumType} from "../../utils";
+import {RemoteDefNode, RemoteNode} from "./node_cache";
+import {Node} from '../common/node';
+
+export class DefaultDefNodes {
+  static readonly _defaultDefs: any = {
     "node": {},
     "static": {},
     "getHistory": {
-      r"$invokable": "read",
-      r"$result": "table",
-      r"$params": [
+      "$invokable": "read",
+      "$result": "table",
+      "$params": [
         {
           "name": "Timerange",
           "type": "string",
-          "editor": "daterange"
+          "edito": "daterange"
         },
         {
           "name": "Interval",
           "type": "enum",
           "default": "none",
-          "editor": buildEnumType([
+          "edito": buildEnumType([
             "default",
             "none",
             "1Y",
@@ -60,7 +64,7 @@ export class DefaultDefNodes  {
           ])
         }
       ],
-      r"$columns": [
+      "$columns": [
         {
           "name": "timestamp",
           "type": "time"
@@ -73,31 +77,36 @@ export class DefaultDefNodes  {
     }
   };
 
-  static readonly nameMap: {[key: string]: Node} = () {
-    var rslt = new {[key: string]: Node}();
-    _defaultDefs.forEach((string k, object m) {
-      let path: string = '/defs/profile/$k';
+  static readonly nameMap: { [key: string]: Node } = (function () {
+    let rslt: { [key: string]: Node } = {};
+    for (let k in DefaultDefNodes._defaultDefs) {
+      let m: any = DefaultDefNodes._defaultDefs[k];
+      let path = `/defs/profile/${k}`;
       let node: RemoteDefNode = new RemoteDefNode(path);
-      m.forEach((string n, object v) {
-        if (n.startsWith(r'$')) {
-          node.configs[n] = v;
+
+      for (let n in m) {
+        let v: any = DefaultDefNodes._defaultDefs[k];
+
+        if (n.startsWith('$')) {
+          node.configs.set(n, v);
         } else if (n.startsWith('@')) {
-          node.attributes[n] = v;
+          node.attributes.set(n, v);
         }
-      });
+      }
       node.listed = true;
       rslt[k] = node;
-    });
+    }
     return rslt;
-  }();
+  })();
 
-  static readonly pathMap: {[key: string]: Node} = () {
-    var rslt = new {[key: string]: Node}();
-    nameMap.forEach((k, node) {
-      if ( node instanceof RemoteNode ) {
+  static readonly pathMap: { [key: string]: Node } = (function () {
+    let rslt: { [key: string]: Node } = {};
+    for (let k in DefaultDefNodes.nameMap) {
+      let node = DefaultDefNodes.nameMap[k];
+      if (node instanceof RemoteNode) {
         rslt[node.remotePath] = node;
       }
-    });
+    }
     return rslt;
-  }();
+  })();
 }

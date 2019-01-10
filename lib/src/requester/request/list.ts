@@ -1,58 +1,68 @@
-// part of dslink.requester;
+import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Request} from "../Request";
+import {Completer, Stream, StreamSubscription} from "../../utils/async";
+import {Permission} from "../../common/permission";
+import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interfaces";
+import {RemoteNode} from "../node_cache";
+import {ValueUpdate} from "../../common/value";
 
-export class RequesterListUpdate  extends RequesterUpdate {
+export class RequesterListUpdate extends RequesterUpdate {
   /// this is only a list of changed fields
   /// when changes is null, means everything could have been changed
   changes: string[];
   node: RemoteNode;
 
-  RequesterListUpdate(this.node, this.changes, streamStatus: string)
-      : super(streamStatus);
+  constructor(node: RemoteNode, changes: string[], streamStatus: string) {
+    super(streamStatus);
+    this.node = node;
+    this.changes = changes;
+
+  }
 }
 
-export class ListDefListener  {
+export class ListDefListener {
   readonly node: RemoteNode;
   readonly requester: Requester;
 
-  listener: StreamSubscription;
+  listener: StreamSubscription<any>;
 
   ready: boolean = false;
 
-  ListDefListener(this.node, this.requester,
-      void callback(RequesterListUpdate)) {
-    listener = requester.list(node.remotePath).listen((update: RequesterListUpdate) {
-      ready = update.streamStatus != StreamStatus.initialize;
+  constructor(node: RemoteNode, requester: Requester,
+              callback: (update: RequesterListUpdate) => void) {
+    this.node = node;
+    this.requester = requester;
+    this.listener = requester.list(node.remotePath).listen((update: RequesterListUpdate) => {
+      this.ready = update.streamStatus !== StreamStatus.initialize;
       callback(update);
     });
   }
 
   cancel() {
-    listener.cancel();
+    this.listener.cancel();
   }
 }
 
 export class ListController  implements RequestUpdater, ConnectionProcessor {
   readonly node: RemoteNode;
   readonly requester: Requester;
-  _controller: BroadcastStreamController<RequesterListUpdate>;
-
-  Stream<RequesterListUpdate> get stream => this._controller.stream;
+  stream = new Stream<RequesterListUpdate>(this.onStartListen, this._onAllCancel, this._onListen);
   request: Request;
 
-  ListController(this.node, this.requester) {
-    _controller = new BroadcastStreamController<RequesterListUpdate>(
-        onStartListen, this._onAllCancel, _onListen);
+  constructor(node: RemoteNode, requester: Requester) {
+    this.node = node;
+    this.requester = requester;
   }
 
   get initialized(): boolean {
-    return request != null && request.streamStatus != StreamStatus.initialize;
+    return this.request != null && this.request.streamStatus != StreamStatus.initialize;
   }
 
   disconnectTs: string;
 
   onDisconnect() {
-    disconnectTs = ValueUpdate.getTs();
-    node.configs[r'$disconnectedTs'] = disconnectTs;
+    this.disconnectTs = ValueUpdate.getTs();
+    this.node.configs[r'$disconnectedTs'] = disconnectTs;
     _controller.add(new RequesterListUpdate(
         node, [r'$disconnectedTs'], request.streamStatus));
   }
@@ -212,12 +222,12 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
     _pendingRemoveDef = false;
   }
 
-  onStartListen() {
+  onStartListen=() =>{
     if (request == null && !waitToSend) {
       waitToSend = true;
       requester.addProcessor(this);
     }
-  }
+  };
   waitToSend: boolean = false;
   startSendingData(currentTime:number, waitingAckId:number) {
     if (!waitToSend) {
@@ -231,7 +241,7 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
   ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
   }
 
-  void _onListen(callback(update: RequesterListUpdate)) {
+   _onListen = (callback:(update: RequesterListUpdate)=>void) => {
     if ( this._ready && request != null) {
       DsTimer.callLater(() {
         if (request == null) {
@@ -253,9 +263,9 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
     }
   }
 
-  _onAllCancel() {
-    _destroy();
-  }
+  _onAllCancel=()=> {
+    this._destroy();
+  };
 
   _destroy() {
     waitToSend = false;
