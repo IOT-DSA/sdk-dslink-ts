@@ -1,6 +1,6 @@
 {
   "extends": [
-    "tslint:latest",
+    "tslint:latest"
   ],
   "rules": {
     "no-unnecessary-type-assertion-2": true,
@@ -156,6 +156,7 @@
     "no-console": false,
     "no-debugger": false,
     "no-empty-interface": false,
+    "no-empty": false,
     "no-eval": false,
     "no-object-literal-type-assertion": false,
     "no-shadowed-variable": false,
@@ -181,6 +182,7 @@
     "no-reference": false,
     "object-literal-sort-keys": false,
     "one-variable-per-declaration": false,
-    "only-arrow-functions": false
+    "only-arrow-functions": false,
+    "no-string-literal": false
   }
 }
