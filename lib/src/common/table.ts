@@ -1,49 +1,53 @@
-// part of dslink.common;
-
-export class TableColumn  {
+export class TableColumn {
   type: string;
   name: string;
-  defaultValue: object;
+  defaultValue: any;
 
-  TableColumn(this.name, this.type, [this.defaultValue]);
+  constructor(name: string, type: string, defaultValue: any) {
+    this.name = name;
+    this.type = type;
+    this.defaultValue = defaultValue;
+  }
 
-  getData():{[key: string]: dynamic} {
-    var rslt = <string, dynamic>{
-      "type": type,
-      "name": name
+  getData(): { [key: string]: any } {
+    let rslt: any = {
+      "type": this.type,
+      "name": this.name
     };
 
-    if (defaultValue != null) {
-      rslt["default"] = defaultValue;
+    if (this.defaultValue != null) {
+      rslt["default"] = this.defaultValue;
     }
     return rslt;
   }
 
   /// convert tableColumns into List of object
-  static List<{[key: string]: dynamic}> serializeColumns(list: List) {
-    var rslts = <{[key: string]: dynamic}>[];
-    for (object m in list) {
-      if (m is {[key: string]: dynamic}) {
-        rslts.add(m);
-      } else if ( m instanceof TableColumn ) {
-        rslts.add(m.getData());
+  static serializeColumns(list: any[]): { [key: string]: any }[] {
+    let rslts: { [key: string]: any }[] = [];
+    for (let m of list) {
+      if (m instanceof Object) {
+        if (m instanceof TableColumn) {
+          rslts.push(m.getData());
+        } else {
+          rslts.push(m);
+        }
       }
     }
     return rslts;
   }
 
   /// parse List of object into TableColumn
-  static parseColumns(list: List):TableColumn[] {
-    rslt: TableColumn[] = <TableColumn>[];
-    for (object m in list) {
-      if ( (m != null && m instanceof Object) && typeof m["name"] === 'string') {
-        let type: string = "string";
+  static parseColumns(list: any[]): TableColumn[] {
+    let rslt: TableColumn[] = [];
+    for (let m of list) {
+      if ((m != null && m instanceof Object) && typeof m["name"] === 'string') {
+        let type = "string";
         if (typeof m["type"] === 'string') {
           type = m["type"];
         }
-        rslt.add(new TableColumn(m["name"], type, m["default"]));
-      } else if ( m instanceof TableColumn ) {
-        rslt.add(m);
+        rslt.push(new TableColumn(m["name"], type, m["default"]));
+      } else if (m instanceof TableColumn) {
+        rslt.push(m);
       } else {
         // invalid column data
         return null;
@@ -53,22 +57,30 @@ export class TableColumn  {
   }
 }
 
-export class Table  {
+export class Table {
   columns: TableColumn[];
-  rows: List[];
-  meta: object;
+  rows: any[];
+  meta: { [key: string]: any };
 
-  Table(this.columns, this.rows, {this.meta});
+  constructor(columns: TableColumn[], rows: any[], meta: { [key: string]: any }) {
+    this.columns = columns;
+    this.rows = rows;
+    this.meta = meta;
+  }
 }
 
-export class TableColumns  {
+export class TableColumns {
   readonly columns: TableColumn[];
 
-  TableColumns(this.columns);
+  constructor(columns: TableColumn[]) {
+    this.columns = columns;
+  }
 }
 
-export class TableMetadata  {
-  readonly meta: object;
+export class TableMetadata {
+  readonly meta: { [key: string]: any };
 
-  TableMetadata(this.meta);
+  constructor(meta: { [key: string]: any }) {
+    this.meta = meta;
+  }
 }
