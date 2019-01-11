@@ -5,6 +5,7 @@ import {Permission} from "../../common/permission";
 import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interfaces";
 import {RemoteNode} from "../node_cache";
 import {ValueUpdate} from "../../common/value";
+import {DsTimer} from "../../utils/timer";
 
 export class RequesterListUpdate extends RequesterUpdate {
   /// this is only a list of changed fields
@@ -43,61 +44,62 @@ export class ListDefListener {
   }
 }
 
-export class ListController  implements RequestUpdater, ConnectionProcessor {
+export class ListController implements RequestUpdater, ConnectionProcessor {
   readonly node: RemoteNode;
   readonly requester: Requester;
-  stream = new Stream<RequesterListUpdate>(this.onStartListen, this._onAllCancel, this._onListen);
+  stream: Stream<RequesterListUpdate>;
   request: Request;
 
   constructor(node: RemoteNode, requester: Requester) {
     this.node = node;
     this.requester = requester;
+    this.stream = new Stream<RequesterListUpdate>(this.onStartListen, this._onAllCancel, this._onListen);
   }
 
   get initialized(): boolean {
-    return this.request != null && this.request.streamStatus != StreamStatus.initialize;
+    return this.request != null && this.request.streamStatus !== StreamStatus.initialize;
   }
 
   disconnectTs: string;
 
   onDisconnect() {
     this.disconnectTs = ValueUpdate.getTs();
-    this.node.configs[r'$disconnectedTs'] = disconnectTs;
-    _controller.add(new RequesterListUpdate(
-        node, [r'$disconnectedTs'], request.streamStatus));
+    this.node.configs.set('$disconnectedTs', this.disconnectTs);
+    this.stream.add(new RequesterListUpdate(
+      this.node, ['$disconnectedTs'], this.request.streamStatus));
   }
 
   onReconnect() {
-    if (disconnectTs != null) {
-      node.configs.remove(r'$disconnectedTs');
-      disconnectTs = null;
-      changes.add(r'$disconnectedTs');
+    if (this.disconnectTs != null) {
+      this.node.configs.delete('$disconnectedTs');
+      this.disconnectTs = null;
+      this.changes.add('$disconnectedTs');
     }
   }
 
-  changes: LinkedHashSet<string> = new LinkedHashSet<string>();
+  changes: Set<string> = new Set<string>();
 
-  onUpdate(streamStatus: string, updates: List, columns: List, meta: object,
-      let error: DSError) {
-    reseted: boolean = false;
+  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: object,
+           error: DSError) {
+    let reseted = false;
     // TODO implement error handling
     if (updates != null) {
-      for (object update in updates) {
+      for (let update of updates) {
         let name: string;
-        let value: object;
-        let removed: boolean = false;
-        if ( (update != null && update instanceof Object) ) {
+        let value: any;
+        let removed = false;
+        if (update != null && update instanceof Object) {
           if (typeof update['name'] === 'string') {
             name = update['name'];
           } else {
             continue; // invalid response
           }
-          if (update['change'] == 'remove') {
+          if (update['change'] === 'remove') {
             removed = true;
           } else {
             value = update['value'];
           }
-        } else if ( Array.isArray(update) ) {
+        } else if (Array.isArray(update)) {
           if (update.length > 0 && typeof update[0] === 'string') {
             name = update[0];
             if (update.length > 1) {
@@ -109,109 +111,111 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
         } else {
           continue; // invalid response
         }
-        if (name.startsWith(r'$')) {
+        if (name.startsWith('$')) {
           if (!reseted &&
-              (name == r'$is' ||
-                  name == r'$base' ||
-                  (name == r'$disconnectedTs' && typeof value === 'string' ))) {
+            (name === '$is' || name === '$base' ||
+              (name === '$disconnectedTs' && typeof value === 'string'))) {
             reseted = true;
-            node.resetNodeCache();
+            this.node.resetNodeCache();
           }
-          if (name == r'$is') {
-            loadProfile(value);
+          if (name === '$is') {
+            this.loadProfile(value);
           }
-          changes.add(name);
+          this.changes.add(name);
           if (removed) {
-            node.configs.remove(name);
+            this.node.configs.delete(name);
           } else {
-            node.configs[name] = value;
+            this.node.configs.set(name, value);
           }
         } else if (name.startsWith('@')) {
-          changes.add(name);
+          this.changes.add(name);
           if (removed) {
-            node.attributes.remove(name);
+            this.node.attributes.delete(name);
           } else {
-            node.attributes[name] = value;
+            this.node.attributes.set(name, value);
           }
         } else {
-          changes.add(name);
+          this.changes.add(name);
           if (removed) {
-            node.children.remove(name);
-          } else if ( (value != null && value instanceof Object) ) {
+            this.node.children.delete(name);
+          } else if (value != null && value instanceof Object) {
             // TODO, also wait for children $is
-            node.children[name] =
-                requester.nodeCache.updateRemoteChildNode(node, name, value);
+            this.node.children.set(name,
+              this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
           }
         }
       }
-      if (request.streamStatus != StreamStatus.initialize) {
-        node.listed = true;
+      if (this.request.streamStatus !== StreamStatus.initialize) {
+        this.node.listed = true;
       }
-      if ( this._pendingRemoveDef) {
-        _checkRemoveDef();
+      if (this._pendingRemoveDef) {
+        this._checkRemoveDef();
       }
-      onProfileUpdated();
+      this.onProfileUpdated();
     }
   }
 
   _profileLoader: ListDefListener;
 
   loadProfile(defName: string) {
-    _ready = true;
-    defPath: string = defName;
+    this._ready = true;
+    let defPath = defName;
     if (!defPath.startsWith('/')) {
-      let base: object = node.configs[r'$base'];
-      if ( typeof base === 'string' ) {
+      let base: object = this.node.configs.get('$base');
+      if (typeof base === 'string') {
         defPath = '$base/defs/profile/$defPath';
       } else {
         defPath = '/defs/profile/$defPath';
       }
     }
-    if (node.profile is RemoteNode &&
-        (node.profile as RemoteNode).remotePath == defPath) {
+    if (this.node.profile instanceof RemoteNode &&
+      (this.node.profile as RemoteNode).remotePath === defPath) {
       return;
     }
-    node.profile = requester.nodeCache.getDefNode(defPath, defName);
-    if (defName == 'node') {
+    this.node.profile = this.requester.nodeCache.getDefNode(defPath, defName);
+    if (defName === 'node') {
       return;
     }
-    if ((node.profile is RemoteNode) && !(node.profile as RemoteNode).listed) {
-      _ready = false;
-      _profileLoader =
-      new ListDefListener(node.profile, requester, this._onProfileUpdate);
+    if ((this.node.profile instanceof RemoteNode) && !(this.node.profile as RemoteNode).listed) {
+      this._ready = false;
+      this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }
   }
 
-  static readonly _ignoreProfileProps: string[] = const [
-    r'$is',
-    r'$permission',
-    r'$settings'
+  static readonly _ignoreProfileProps: string[] = [
+    '$is',
+    '$permission',
+    '$settings'
   ];
 
   _onProfileUpdate(update: RequesterListUpdate) {
-    if ( this._profileLoader == null) {
+    if (this._profileLoader == null) {
 //      logger.finest('warning, unexpected state of profile loading');
       return;
     }
-    _profileLoader.cancel();
-    _profileLoader = null;
-    changes.addAll(
-        update.changes.where((str) => !_ignoreProfileProps.contains(str)));
-    _ready = true;
-    onProfileUpdated();
+    this._profileLoader.cancel();
+    this._profileLoader = null;
+    for (let change of update.changes) {
+      if (!ListController._ignoreProfileProps.includes(change)) {
+        this.changes.add(change);
+      }
+    }
+
+    this._ready = true;
+    this.onProfileUpdated();
   }
 
   _ready: boolean = true;
 
   onProfileUpdated() {
-    if ( this._ready) {
-      if (request.streamStatus != StreamStatus.initialize) {
-        _controller.add(new RequesterListUpdate(
-            node, changes.toList(), request.streamStatus));
-        changes.clear();
+    if (this._ready) {
+      if (this.request.streamStatus !== StreamStatus.initialize) {
+        this.stream.add(new RequesterListUpdate(
+          this.node, Array.from(this.changes), this.request.streamStatus));
+        this.changes.clear();
       }
-      if (request.streamStatus == StreamStatus.closed) {
-        _controller.close();
+      if (this.request.streamStatus === StreamStatus.closed) {
+        this.stream.close();
       }
     }
   }
@@ -219,66 +223,72 @@ export class ListController  implements RequestUpdater, ConnectionProcessor {
   _pendingRemoveDef: boolean = false;
 
   _checkRemoveDef() {
-    _pendingRemoveDef = false;
+    this._pendingRemoveDef = false;
   }
 
-  onStartListen=() =>{
-    if (request == null && !waitToSend) {
-      waitToSend = true;
-      requester.addProcessor(this);
+  onStartListen = () => {
+    if (this.request == null && !this.waitToSend) {
+      this.waitToSend = true;
+      this.requester.addProcessor(this);
     }
   };
   waitToSend: boolean = false;
-  startSendingData(currentTime:number, waitingAckId:number) {
-    if (!waitToSend) {
+
+  startSendingData(currentTime: number, waitingAckId: number) {
+    if (!this.waitToSend) {
       return;
     }
-    request = requester._sendRequest(
-              {'method': 'list', 'path': node.remotePath}, this);
-    waitToSend = false;
+    this.request = this.requester._sendRequest(
+      {'method': 'list', 'path': this.node.remotePath}, this);
+    this.waitToSend = false;
   }
 
-  ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
   }
 
-   _onListen = (callback:(update: RequesterListUpdate)=>void) => {
-    if ( this._ready && request != null) {
-      DsTimer.callLater(() {
-        if (request == null) {
+  _onListen = (callback: (update: RequesterListUpdate) => void) => {
+    if (this._ready && this.request != null) {
+      setTimeout(() => {
+        if (this.request == null) {
           return;
         }
 
-        var changes = <string>[];
-        changes
-          ..addAll(node.configs.keys)
-          ..addAll(node.attributes.keys)
-          ..addAll(node.children.keys);
+        let changes: string[] = [];
+        for (let [key, v] of this.node.configs) {
+          changes.push(key);
+        }
+        for (let [key, v] of this.node.attributes) {
+          changes.push(key);
+        }
+        for (let [key, v] of this.node.children) {
+          changes.push(key);
+        }
         let update: RequesterListUpdate = new RequesterListUpdate(
-          node,
+          this.node,
           changes,
-          request.streamStatus
+          this.request.streamStatus
         );
         callback(update);
-      });
+      }, 0);
     }
-  }
+  };
 
-  _onAllCancel=()=> {
+  _onAllCancel = () => {
     this._destroy();
   };
 
   _destroy() {
-    waitToSend = false;
-    if ( this._profileLoader != null) {
-      _profileLoader.cancel();
-      _profileLoader = null;
+    this.waitToSend = false;
+    if (this._profileLoader != null) {
+      this._profileLoader.cancel();
+      this._profileLoader = null;
     }
-    if (request != null) {
-      requester.closeRequest(request);
-      request = null;
+    if (this.request != null) {
+      this.requester.closeRequest(this.request);
+      this.request = null;
     }
 
-    _controller.close();
-    node._listController = null;
+    this.stream.close();
+    this.node._listController = null;
   }
 }

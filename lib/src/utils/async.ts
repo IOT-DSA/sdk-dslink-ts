@@ -1,3 +1,5 @@
+import {RequesterListUpdate} from "../requester/request/list";
+
 type Listener<T> = (value: T) => void;
 
 
@@ -6,18 +8,23 @@ export class Stream<T> {
   _updating = false;
   _value: T;
 
-  _onListen: () => void;
-  _onCancel: () => void;
+  _onStartListen: () => void;
+  _onAllCancel: () => void;
+  _onListen: (listener: Listener<T>) => void;
 
-  constructor(onListen?: () => void, onCancel?: () => void) {
+  constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void) {
+    this._onStartListen = onStartListen;
+    this._onAllCancel = onAllCancel;
     this._onListen = onListen;
-    this._onCancel = onCancel;
   }
 
   listen(listener: Listener<T>): StreamSubscription<T> {
     this._listeners.add(listener);
-    if (this._onListen && this._listeners.size === 1) {
-      this._onListen();
+    if (this._onStartListen && this._listeners.size === 1) {
+      this._onStartListen();
+    }
+    if (this._onListen) {
+      this._onListen(listener);
     }
     if (!this._updating) {
       // skip extra update if it's already in updating iteration
@@ -28,8 +35,8 @@ export class Stream<T> {
 
   unlisten(listener: Listener<T>) {
     this._listeners.delete(listener);
-    if (this._onCancel && this._listeners.size === 0) {
-      this._onCancel();
+    if (this._onAllCancel && this._listeners.size === 0) {
+      this._onAllCancel();
     }
   }
 
@@ -54,6 +61,7 @@ export class Stream<T> {
 
   close() {
     if (!this.isClosed) {
+      this.isClosed = true;
       this._listeners.clear();
     }
   }
