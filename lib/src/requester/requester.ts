@@ -7,7 +7,7 @@ import {RemoteNodeCache} from "./node_cache";
 import {SubscribeRequest} from "./request/subscribe";
 import {DSError} from "../common/interfaces";
 
-type RequestConsumer<T> = (request: Request) => T;
+export type RequestConsumer<T> = (request: Request) => T;
 
 export interface RequestUpdater {
   onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any}, error: DSError): void;

@@ -3,7 +3,7 @@ export class TableColumn {
   name: string;
   defaultValue: any;
 
-  constructor(name: string, type: string, defaultValue: any) {
+  constructor(name: string, type: string, defaultValue?: any) {
     this.name = name;
     this.type = type;
     this.defaultValue = defaultValue;
@@ -59,10 +59,10 @@ export class TableColumn {
 
 export class Table {
   columns: TableColumn[];
-  rows: any[];
+  rows: any[][];
   meta: { [key: string]: any };
 
-  constructor(columns: TableColumn[], rows: any[], meta: { [key: string]: any }) {
+  constructor(columns: TableColumn[], rows: any[][], meta: { [key: string]: any }) {
     this.columns = columns;
     this.rows = rows;
     this.meta = meta;

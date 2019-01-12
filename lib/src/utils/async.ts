@@ -11,6 +11,7 @@ export class Stream<T> {
   _onStartListen: () => void;
   _onAllCancel: () => void;
   _onListen: (listener: Listener<T>) => void;
+  _onClose: () => void;
 
   constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void) {
     this._onStartListen = onStartListen;
@@ -63,6 +64,9 @@ export class Stream<T> {
     if (!this.isClosed) {
       this.isClosed = true;
       this._listeners.clear();
+      if (this._onClose){
+        this._onClose();
+      }
     }
   }
 }
