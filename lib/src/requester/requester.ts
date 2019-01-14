@@ -1,11 +1,17 @@
-//typedef T RequestConsumer<T>(request: Request);
+// typedef T RequestConsumer<T>(request: Request);
 
-import {Stream} from "../utils/async";
+import {Stream, StreamSubscription} from "../utils/async";
 import {Request} from "./request";
 import {ConnectionHandler} from "../common/connection_handler";
-import {RemoteNodeCache} from "./node_cache";
-import {SubscribeRequest} from "./request/subscribe";
-import {DSError} from "../common/interfaces";
+import {RemoteNode, RemoteNodeCache} from "./node_cache";
+import {ReqSubscribeListener, SubscribeRequest} from "./request/subscribe";
+import {DSError, ProcessorResult, StreamStatus} from "../common/interfaces";
+import {ValueUpdate} from "../common/value";
+import {ListController, RequesterListUpdate} from "./request/list";
+import {Permission} from "../common/permission";
+import {RequesterInvokeUpdate} from "./request/invoke";
+import {SetController} from "./request/set";
+import {RemoveController} from "./request/remove";
 
 export type RequestConsumer<T> = (request: Request) => T;
 
@@ -41,7 +47,7 @@ export class Requester extends ConnectionHandler {
   }
 
   get subscriptionCount(): number {
-    return this._subscription.subscriptions.length;
+    return this._subscription.subscriptions.size;
   }
 
   get openRequestCount(): number {
@@ -49,7 +55,7 @@ export class Requester extends ConnectionHandler {
   }
 
   onData(list: any[]) {
-    for (let resp: any of list) {
+    for (let resp of list) {
       if ((resp != null && resp instanceof Object)) {
         this._onReceiveUpdate(resp);
       }
@@ -104,7 +110,7 @@ export class Requester extends ConnectionHandler {
   }
 
   subscribe(path: string, callback: (update: ValueUpdate) => void,
-            qos?: number = 0): ReqSubscribeListener {
+            qos: number = 0): ReqSubscribeListener {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     node._subscribe(this, callback, qos);
     return new ReqSubscribeListener(this, path, callback);
@@ -116,7 +122,7 @@ export class Requester extends ConnectionHandler {
     stream = new Stream<ValueUpdate>(() => {
 
       if (listener == null) {
-        listener = subscribe(path, (update: ValueUpdate) => {
+        listener = this.subscribe(path, (update: ValueUpdate) => {
           stream.add(update);
         }, qos);
       }
@@ -152,16 +158,15 @@ export class Requester extends ConnectionHandler {
             listener.cancel();
             listener = null;
           }
-          reject(new TimeoutException("failed to receive value", timeoutMs));
+          reject(new Error(`failed to receive value, timeout: ${timeoutMs}ms`));
         }, timeoutMs);
       }
     });
   }
 
   getRemoteNode(path: string): Promise<RemoteNode> {
-    let sub: StreamSubscription;
     return new Promise((resolve, reject) => {
-      sub = this.list(path).listen((update) => {
+      let sub = this.list(path).listen((update) => {
         resolve(update.node);
 
         if (sub != null) {
@@ -183,28 +188,28 @@ export class Requester extends ConnectionHandler {
   }
 
   invoke(path: string, params: {[key: string]: any} = {},
-         maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer): Stream<RequesterInvokeUpdate> {
+         maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>): Stream<RequesterInvokeUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     return node._invoke(params, this, maxPermission, fetchRawReq);
   }
 
   set(path: string, value: object,
       maxPermission: number = Permission.CONFIG): Promise<RequesterUpdate> {
-    return new SetController(this, path, value, maxPermission).promise;
+    return new SetController(this, path, value, maxPermission).future;
   }
 
   remove(path: string): Promise<RequesterUpdate> {
-    return new RemoveController(this, path).promise;
+    return new RemoveController(this, path).future;
   }
 
   /// close the request from requester side and notify responder
   closeRequest(request: Request) {
     if (this._requests.has(request.rid)) {
-      if (request.streamStatus != StreamStatus.closed) {
+      if (request.streamStatus !== StreamStatus.closed) {
         this.addToSendList({'method': 'close', 'rid': request.rid});
       }
       this._requests.delete(request.rid);
-      request._close();
+      request.close();
     }
   }
 
@@ -220,7 +225,7 @@ export class Requester extends ConnectionHandler {
       if (req.rid <= this.lastRid && !(req.updater instanceof ListController)) {
         req._close(DSError.DISCONNECTED);
       } else {
-        newRequests[req.rid] = req;
+        newRequests.set(req.rid, req);
         req.updater.onDisconnect();
       }
     }

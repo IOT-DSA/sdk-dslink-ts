@@ -4,7 +4,7 @@ import {DefaultDefNodes} from "./default_defs";
 import {ListController, RequesterListUpdate} from "./request/list";
 import {ReqSubscribeController} from "./request/subscribe";
 import {ValueUpdate} from "../common/value";
-import {Requester} from "./requester";
+import {RequestConsumer, Requester} from "./requester";
 import {Stream} from "../utils/async";
 import {Permission} from "../common/permission";
 import {InvokeController, RequesterInvokeUpdate} from "./request/invoke";
@@ -164,7 +164,7 @@ export class RemoteNode extends Node {
   }
 
   _invoke(params: object, requester: Requester,
-          maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer): Stream<RequesterInvokeUpdate> {
+          maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>): Stream<RequesterInvokeUpdate> {
     return new InvokeController(
       this,
       requester,

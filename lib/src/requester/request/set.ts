@@ -27,7 +27,7 @@ export class SetController implements RequestUpdater {
       'value': value
     };
 
-    if (maxPermission != Permission.CONFIG) {
+    if (maxPermission !== Permission.CONFIG) {
       reqMap['permit'] = Permission.names[maxPermission];
     }
 
