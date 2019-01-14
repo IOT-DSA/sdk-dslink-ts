@@ -9,7 +9,6 @@ import {WebSocketConnection} from "./browser_ws_conn";
 import {DsCodec} from "../utils/codec";
 
 
-
 export class DummyECDH implements ECDH {
   readonly encodedPublicKey: string = "";
 
@@ -27,9 +26,9 @@ export class BrowserUserLink extends ClientLink {
 
   get onRequesterReady(): Promise<Requester> {
     return this._onRequesterReadyCompleter.future;
-  };
+  }
 
-  static session: string = Math.random().toString(16).substr(2,8);
+  static session: string = Math.random().toString(16).substr(2, 8);
   readonly requester: Requester;
   readonly responder: Responder;
 
@@ -55,7 +54,7 @@ export class BrowserUserLink extends ClientLink {
               format = 'msgpack') {
     super();
     if (wsUpdateUri.startsWith("http")) {
-      wsUpdateUri = "ws${wsUpdateUri.substring(4)}";
+      wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
     }
     this.requester = isRequester ? new Requester() : null;
     // responder is supported in the browser dslink
@@ -86,7 +85,7 @@ export class BrowserUserLink extends ClientLink {
 
   initWebsocket(reconnect = true) {
     this._initSocketTimer = null;
-    var socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
+    let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
     this._wsConnection = new WebSocketConnection(
       socket, this, null, DsCodec.getCodec(this.format));
 

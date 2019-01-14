@@ -69,7 +69,7 @@ export class WebSocketConnection extends Connection {
     };
     // TODO, when it's used in client link, wait for the server to send {allowed} before complete this
     setTimeout(() => {
-      this._onRequestReadyCompleter.complete(this._requesterChannel)
+      this._onRequestReadyCompleter.complete(this._requesterChannel);
     }, 0);
 
     this.pingTimer = setInterval(() => {
@@ -153,7 +153,7 @@ export class WebSocketConnection extends Connection {
         if (typeof m["salt"] === 'string') {
           this.clientLink.updateSalt(m["salt"]);
         }
-        let needAck: boolean = false;
+        let needAck = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
           // send responses to requester channel
@@ -184,7 +184,7 @@ export class WebSocketConnection extends Connection {
         m = this.codec.decodeStringFrame(e.data);
 //        logger.fine("$m");
 
-        let needAck: boolean = false;
+        let needAck = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
           // send responses to requester channel
@@ -196,7 +196,7 @@ export class WebSocketConnection extends Connection {
           // send requests to responder channel
           this._responderChannel.onReceive.add(m["requests"]);
         }
-        if (typeof m["ack"] == "number") {
+        if (typeof m["ack"] === "number") {
           this.ack(m["ack"]);
         }
         if (needAck) {
@@ -219,7 +219,7 @@ export class WebSocketConnection extends Connection {
 
   _send() {
     this._sending = false;
-    if (this.socket.readyState != WebSocket.OPEN) {
+    if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
 //    logger.fine("browser sending");
@@ -258,7 +258,7 @@ export class WebSocketConnection extends Connection {
     }
 
     if (needSend) {
-      if (this.nextMsgId != -1) {
+      if (this.nextMsgId !== -1) {
         if (pendingAck.length > 0) {
           this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
@@ -272,7 +272,7 @@ export class WebSocketConnection extends Connection {
 
 
 //      logger.fine("send: $m");
-      var encoded = this.codec.encodeFrame(m);
+      let encoded = this.codec.encodeFrame(m);
 
       try {
         this.socket.send(encoded);
@@ -288,8 +288,7 @@ export class WebSocketConnection extends Connection {
 
   _onDone(o?: any) {
     if (o instanceof CloseEvent) {
-      let e = o;
-      if (e.code == 1006) {
+      if (o.code === 1006) {
         this._authError = true;
       }
     }
@@ -322,8 +321,8 @@ export class WebSocketConnection extends Connection {
   }
 
   close() {
-    if (this.socket.readyState == WebSocket.OPEN ||
-      this.socket.readyState == WebSocket.CONNECTING) {
+    if (this.socket.readyState === WebSocket.OPEN ||
+      this.socket.readyState === WebSocket.CONNECTING) {
       this.socket.close();
     }
     this._onDone();
