@@ -48,7 +48,7 @@ export class BrowserUserLink extends ClientLink {
   format: string = "json";
 
 
-  constructor(nodeProvider: NodeProvider, wsUpdateUri: string,
+  constructor( wsUpdateUri: string,
               isRequester = true,
               isResponder = false,
               format = 'msgpack') {

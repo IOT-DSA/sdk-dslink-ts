@@ -3,3 +3,5 @@
 /tool/**/*.js
 node_modules
 /.idea
+/temp
+/.cache
