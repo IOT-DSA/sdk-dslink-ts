@@ -1,5 +1,3 @@
-// typedef T RequestConsumer<T>(request: Request);
-
 import {RequesterUpdate, RequestUpdater} from "./interface";
 import {Stream, StreamSubscription} from "../utils/async";
 import {Request} from "./request";

@@ -92,7 +92,17 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
         let value: { [key: string]: any };
         let ts: string;
         let options: { [key: string]: any };
-        if ((update != null && update instanceof Object)) {
+        if (Array.isArray(update) && update.length > 2) {
+          if (typeof update[0] === 'string') {
+            path = update[0];
+          } else if (typeof update[0] === 'number') {
+            sid = update[0];
+          } else {
+            continue; // invalid response
+          }
+          value = update[1];
+          ts = update[2];
+        } else if (update != null && update instanceof Object) {
           if (typeof update['ts'] === 'string') {
             path = update['path'];
             ts = update['ts'];
@@ -106,16 +116,6 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
           }
           value = update['value'];
           options = update;
-        } else if (Array.isArray(update) && update.length > 2) {
-          if (typeof update[0] === 'string') {
-            path = update[0];
-          } else if (typeof update[0] === 'number') {
-            sid = update[0];
-          } else {
-            continue; // invalid response
-          }
-          value = update[1];
-          ts = update[2];
         } else {
           continue; // invalid response
         }
