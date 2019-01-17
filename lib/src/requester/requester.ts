@@ -40,7 +40,7 @@ export class Requester extends ConnectionHandler {
     return this._requests.size;
   }
 
-  onData(list: any[]) {
+  onData = (list: any[]) =>{
     if (Array.isArray(list)) {
       for (let resp of list) {
         if ((resp != null && resp instanceof Object)) {
@@ -48,7 +48,7 @@ export class Requester extends ConnectionHandler {
         }
       }
     }
-  }
+  };
 
   _onReceiveUpdate(m: any) {
     if (typeof m['rid'] === 'number' && this._requests.has(m['rid'])) {

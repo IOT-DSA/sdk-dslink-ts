@@ -152,9 +152,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
       this.toRemove.set(this.subscriptions.get(path).sid, this.subscriptions.get(path));
       this.prepareSending();
     } else if (this.subscriptionIds.has(controller.sid)) {
-//      logger.severe(
-//           'unexpected remoteSubscription in the requester, sid: ${controller
-//               .sid}');
+      console.error(`unexpected remoteSubscription in the requester, sid: ${controller.sid}`);
     }
   }
 

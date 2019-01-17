@@ -182,7 +182,7 @@ export class RemoteNode extends Node {
     } else {
       childPathPre = `${this.remotePath}/`;
     }
-    for (let key of m) {
+    for (let key in m) {
       let value = m[key];
       if (key.startsWith('$')) {
         this.configs.set(key, value);
@@ -235,7 +235,7 @@ export class RemoteDefNode extends RemoteNode {
 }
 
 export class DefaultDefNodes {
-  static readonly _defaultDefs: any = {
+  static readonly _defaultDefs: { [key: string]: any } = {
     "node": {},
     "static": {},
     "getHistory": {
@@ -308,12 +308,12 @@ export class DefaultDefNodes {
 
   static readonly nameMap: { [key: string]: Node } = (function () {
     let rslt: { [key: string]: Node } = {};
-    for (let k of DefaultDefNodes._defaultDefs) {
-      let m: any = DefaultDefNodes._defaultDefs[k];
+    for (let k in DefaultDefNodes._defaultDefs) {
+      let m = DefaultDefNodes._defaultDefs[k];
       let path = `/defs/profile/${k}`;
       let node: RemoteDefNode = new RemoteDefNode(path);
 
-      for (let n of m) {
+      for (let n in m) {
         let v: any = DefaultDefNodes._defaultDefs[k];
 
         if (n.startsWith('$')) {
@@ -330,7 +330,7 @@ export class DefaultDefNodes {
 
   static readonly pathMap: { [key: string]: Node } = (function () {
     let rslt: { [key: string]: Node } = {};
-    for (let k of DefaultDefNodes.nameMap) {
+    for (let k in DefaultDefNodes.nameMap) {
       let node = DefaultDefNodes.nameMap[k];
       if (node instanceof RemoteNode) {
         rslt[node.remotePath] = node;

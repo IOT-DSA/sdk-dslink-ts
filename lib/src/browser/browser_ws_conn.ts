@@ -175,7 +175,7 @@ export class WebSocketConnection extends Connection {
           }
         }
       } catch (err) {
-//        logger.severe("error in onData", err, stack);
+        console.error("error in onData", err, stack);
         this.close();
         return;
       }
@@ -206,7 +206,7 @@ export class WebSocketConnection extends Connection {
           }
         }
       } catch (err) {
-//        logger.severe(err);
+        console.error(err);
         this.close();
         return;
       }
@@ -277,7 +277,7 @@ export class WebSocketConnection extends Connection {
       try {
         this.socket.send(encoded);
       } catch (e) {
-//        logger.severe('Unable to send on socket', e);
+        console.error('Unable to send on socket', e);
         this.close();
       }
       this._dataSent = true;

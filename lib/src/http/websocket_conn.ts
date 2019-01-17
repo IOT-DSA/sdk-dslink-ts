@@ -187,7 +187,7 @@ export class WebSocketConnection  extends Connection {
 //          logger.finest(formatLogMessage("receive: ${m}"));
         }
       } catch (err, stack) {
-//        logger.severe(
+        console.error(
           formatLogMessage("Failed to decode string data from WebSocket Connection"),
           err,
           stack
@@ -343,7 +343,7 @@ export class WebSocketConnection  extends Connection {
     try {
       socket.add(encoded);
     } catch (e) {
-//      logger.severe(formatLogMessage('Error writing to socket'), e);
+      console.error(formatLogMessage('Error writing to socket'), e);
       close();
     }
   }

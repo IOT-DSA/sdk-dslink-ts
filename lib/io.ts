@@ -321,7 +321,7 @@ Promise<File> this._safeWriteBase(targetFile: File, dynamic content,
       JSON.decode(readContent);
     } on FormatException catch (e, s) {
       canOverwriteOriginalFile = false;
-//      logger.severe(
+      console.error(
          "Couldn't parse JSON after trying to write ${targetFile.path}", e, s);
     }
   }
@@ -331,8 +331,8 @@ Promise<File> this._safeWriteBase(targetFile: File, dynamic content,
     tempDirectory.delete();
     return tempFile;
   } else {
-//    logger.severe(
-        "${targetFile.path} wasn't saved, the original will be preserved");
+    console.error(
+        `${targetFile.path} wasn't saved, the original will be preserved`);
     return targetFile;
   }
 }

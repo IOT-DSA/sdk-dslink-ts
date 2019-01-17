@@ -20,7 +20,7 @@ export abstract class ConnectionHandler {
     }
     this._conn = conn;
     this._connListener = this._conn.onReceive.listen(this.onData);
-    this._conn.onDisconnected.then(this._onDisconnected);
+    this._conn.onDisconnected.then((conn) => this._onDisconnected(conn));
     // resend all requests after a connection
     if (this._conn.connected) {
       this.onReconnected();
@@ -30,7 +30,7 @@ export abstract class ConnectionHandler {
   }
 
   _onDisconnected(conn: ConnectionChannel) {
-    if (this._conn == conn) {
+    if (this._conn === conn) {
       if (this._connListener != null) {
         this._connListener.cancel();
         this._connListener = null;

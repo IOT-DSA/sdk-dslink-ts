@@ -399,7 +399,7 @@ export class LinkProvider  {
       }
 
       if (dslinkJson == null) {
-//        logger.severe("Invalid dslink.json", e);
+        console.error("Invalid dslink.json", e);
         if (exitOnFailure) {
           exit(1);
         } else {
@@ -573,7 +573,7 @@ export class LinkProvider  {
           brokerUrl = broker;
           doRun();
         } catch (e, stack) {
-//          logger.severe("Failed to discover a broker.", e, stack);
+          console.error("Failed to discover a broker.", e, stack);
           exit(1);
         }
       });
