@@ -23,7 +23,7 @@ export class ValueUpdate {
   /// Generates a timestamp in the proper DSA format.
   static getTs(): string {
     let d = new Date();
-    if (d.getTime() == this._lastTs) {
+    if (d.getTime() === this._lastTs) {
       return this._lastTsStr;
     }
     ValueUpdate._lastTs = d.getTime();
@@ -62,6 +62,7 @@ export class ValueUpdate {
   created: Date;
 
   constructor(value: any, ts?: string, options?: { status?: string, count?: number }) {
+    this.value = value;
     if (ts) {
       this.ts = ts;
     } else {
@@ -76,7 +77,6 @@ export class ValueUpdate {
       }
     }
     this.created = new Date();
-
   }
 
   static merge(oldUpdate: ValueUpdate, newUpdate: ValueUpdate) {
