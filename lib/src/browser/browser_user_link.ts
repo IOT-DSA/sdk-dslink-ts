@@ -45,12 +45,12 @@ export class BrowserUserLink extends ClientLink {
   }
 
   wsUpdateUri: string;
-  format: string = "json";
+  format: string;
 
 
-  constructor( wsUpdateUri: string,
+  constructor(wsUpdateUri: string,
               isRequester = true,
-              isResponder = false,
+              // isResponder = false,
               format = 'msgpack') {
     super();
     if (wsUpdateUri.startsWith("http")) {

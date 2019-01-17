@@ -1,4 +1,4 @@
-import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Requester } from "../requester";
 import {Request} from "../Request";
 import {Completer, Stream, StreamSubscription} from "../../utils/async";
 import {Permission} from "../../common/permission";
@@ -6,6 +6,7 @@ import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interface
 import {RemoteNode} from "../node_cache";
 import {ValueUpdate} from "../../common/value";
 import {DsTimer} from "../../utils/timer";
+import {RequesterUpdate} from "../interface";
 
 export class RequesterListUpdate extends RequesterUpdate {
   /// this is only a list of changed fields

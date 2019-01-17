@@ -1,8 +1,9 @@
-import {Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {Requester} from "../requester";
 import {Request} from "../Request";
 import {Completer} from "../../utils/async";
 import {Permission} from "../../common/permission";
 import {DSError} from "../../common/interfaces";
+import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class SetController implements RequestUpdater {
   readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();

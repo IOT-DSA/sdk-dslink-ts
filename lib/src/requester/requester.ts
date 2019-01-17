@@ -1,5 +1,6 @@
 // typedef T RequestConsumer<T>(request: Request);
 
+import {RequesterUpdate, RequestUpdater} from "./interface";
 import {Stream, StreamSubscription} from "../utils/async";
 import {Request} from "./request";
 import {ConnectionHandler} from "../common/connection_handler";
@@ -13,23 +14,8 @@ import {RequesterInvokeUpdate} from "./request/invoke";
 import {SetController} from "./request/set";
 import {RemoveController} from "./request/remove";
 
+
 export type RequestConsumer<T> = (request: Request) => T;
-
-export interface RequestUpdater {
-  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any}, error: DSError): void;
-
-  onDisconnect(): void;
-
-  onReconnect(): void;
-}
-
-export class RequesterUpdate {
-  readonly streamStatus: string;
-
-  constructor(streamStatus: string) {
-    this.streamStatus = streamStatus;
-  }
-}
 
 export class Requester extends ConnectionHandler {
   _requests: Map<number, Request> = new Map<number, Request>();
@@ -55,9 +41,11 @@ export class Requester extends ConnectionHandler {
   }
 
   onData(list: any[]) {
-    for (let resp of list) {
-      if ((resp != null && resp instanceof Object)) {
-        this._onReceiveUpdate(resp);
+    if (Array.isArray(list)) {
+      for (let resp of list) {
+        if ((resp != null && resp instanceof Object)) {
+          this._onReceiveUpdate(resp);
+        }
       }
     }
   }
@@ -89,12 +77,12 @@ export class Requester extends ConnectionHandler {
     return rslt;
   }
 
-  sendRequest(m: {[key: string]: any}, updater: RequestUpdater) {
+  sendRequest(m: { [key: string]: any }, updater: RequestUpdater) {
     return this._sendRequest(m, updater);
   }
 
 
-  _sendRequest(m: {[key: string]: any}, updater: RequestUpdater): Request {
+  _sendRequest(m: { [key: string]: any }, updater: RequestUpdater): Request {
     m['rid'] = this.getNextRid();
     let req: Request;
     if (updater != null) {
@@ -187,7 +175,7 @@ export class Requester extends ConnectionHandler {
     return node._list(this);
   }
 
-  invoke(path: string, params: {[key: string]: any} = {},
+  invoke(path: string, params: { [key: string]: any } = {},
          maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>): Stream<RequesterInvokeUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     return node._invoke(params, this, maxPermission, fetchRawReq);

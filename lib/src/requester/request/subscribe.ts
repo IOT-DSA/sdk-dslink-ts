@@ -1,10 +1,11 @@
 import {Cancelable} from "../../utils/async";
 import {Request} from "../request";
-import {Requester, RequestUpdater} from "../requester";
+import {Requester} from "../requester";
 import {ConnectionProcessor, DSError} from "../../common/interfaces";
 import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
 import {RemoteNode} from "../node_cache";
 import {ACK_WAIT_COUNT} from "../../common/connection_handler";
+import {RequestUpdater} from "../interface";
 
 export class ReqSubscribeListener implements Cancelable {
   callback: ValueUpdateCallback;
@@ -87,7 +88,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     if (Array.isArray(updates)) {
       for (let update of updates) {
         let path: string;
-        let sid: number = -1;
+        let sid = -1;
         let value: { [key: string]: any };
         let ts: string;
         let options: { [key: string]: any };
@@ -127,7 +128,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
         }
 
         if (controller != null) {
-          var valueUpdate = new ValueUpdate(value, ts, options);
+          let valueUpdate = new ValueUpdate(value, ts, options);
           controller.addValue(valueUpdate);
         }
       }
@@ -161,7 +162,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
   startSendingData(currentTime: number, waitingAckId: number) {
     this._pendingSending = false;
 
-    if (waitingAckId != -1) {
+    if (waitingAckId !== -1) {
       this._waitingAckCount++;
       this._lastWatingAckId = waitingAckId;
     }
@@ -207,7 +208,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
   _lastWatingAckId: number = -1;
 
   ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
-    if (receiveAckId == this._lastWatingAckId) {
+    if (receiveAckId === this._lastWatingAckId) {
       this._waitingAckCount = 0;
     } else {
       this._waitingAckCount--;
@@ -283,20 +284,20 @@ export class ReqSubscribeController {
       this.callbacks.delete(callback);
       if (this.callbacks.size === 0) {
         this.requester._subscription.removeSubscription(this);
-      } else if (cacheLevel == this.currentQos && this.currentQos > 1) {
+      } else if (cacheLevel === this.currentQos && this.currentQos > 1) {
         this.updateQos();
       }
     }
   }
 
   updateQos(): boolean {
-    let maxQos: number = 0;
+    let maxQos = 0;
 
     for (let qos of this.callbacks.values()) {
       maxQos = (qos > maxQos ? qos : maxQos);
     }
 
-    if (maxQos != this.currentQos) {
+    if (maxQos !== this.currentQos) {
       this.currentQos = maxQos;
       return true;
     }

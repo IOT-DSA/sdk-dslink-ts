@@ -1,10 +1,11 @@
-import {RequestConsumer, Requester, RequesterUpdate, RequestUpdater} from "../requester";
+import {RequestConsumer, Requester} from "../requester";
 import {Request} from "../Request";
 import {Completer, Stream} from "../../utils/async";
 import {Permission} from "../../common/permission";
 import {DSError, StreamStatus} from "../../common/interfaces";
 import {TableColumn} from "../../common/table";
 import {RemoteNode} from "../node_cache";
+import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class RequesterInvokeUpdate extends RequesterUpdate {
   rawColumns: any[];
