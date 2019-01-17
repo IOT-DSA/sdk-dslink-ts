@@ -174,7 +174,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
 
     let processingPaths: Set<string> = this._changedPaths;
     this._changedPaths = new Set<string>();
-    for (let path in processingPaths) {
+    for (let path of processingPaths) {
       if (this.subscriptions.has(path)) {
         let sub: ReqSubscribeController = this.subscriptions.get(path);
         let m: any = {'path': path, 'sid': sub.sid};

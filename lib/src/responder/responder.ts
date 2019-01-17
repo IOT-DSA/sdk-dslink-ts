@@ -22,7 +22,7 @@ export class Responder  extends ConnectionHandler {
     }
     storage = s;
     if (storage != null && nodes != null) {
-      for (ISubscriptionNodeStorage node in nodes) {
+      for (ISubscriptionNodeStorage node of nodes) {
         var values = node.getLoadedValues();
         let localnode: LocalNode = nodeProvider.getOrCreateNode(node.path, false);
         let controller: RespSubscribeController = this._subscription.add(
@@ -78,14 +78,14 @@ export class Responder  extends ConnectionHandler {
       _responses[response.rid] = response;
       if ( this._traceCallbacks != null) {
         let update: ResponseTrace = response.getTraceData();
-        for (ResponseTraceCallback callback in _traceCallbacks) {
+        for (ResponseTraceCallback callback of _traceCallbacks) {
           callback(update);
         }
       }
     } else {
       if ( this._traceCallbacks != null) {
         let update: ResponseTrace = response.getTraceData(''); // no logged change is needed
-        for (ResponseTraceCallback callback in _traceCallbacks) {
+        for (ResponseTraceCallback callback of _traceCallbacks) {
           callback(update);
         }
       }
@@ -95,7 +95,7 @@ export class Responder  extends ConnectionHandler {
 
   void traceResponseRemoved(response: Response){
     update: ResponseTrace = response.getTraceData('-');
-    for (ResponseTraceCallback callback in _traceCallbacks) {
+    for (ResponseTraceCallback callback of _traceCallbacks) {
       callback(update);
     }
   }
@@ -105,7 +105,7 @@ export class Responder  extends ConnectionHandler {
     if (disabled){
       return;
     }
-    for (object resp in list) {
+    for (object resp of list) {
       if ( (resp != null && resp instanceof Object) ) {
         _onReceiveRequest(resp);
       }
@@ -231,7 +231,7 @@ export class Responder  extends ConnectionHandler {
 
   subscribe(object m) {
     if (Array.isArray(m['paths'])) {
-      for (object p in m['paths']) {
+      for (object p of m['paths']) {
         let pathstr: string;
         let qos:number = 0;
         let sid:number = -1;
@@ -302,7 +302,7 @@ export class Responder  extends ConnectionHandler {
 
   unsubscribe(object m) {
     if (Array.isArray(m['sids'])) {
-      for (object sid in m['sids']) {
+      for (object sid of m['sids']) {
         if ( typeof sid === 'number' ) {
           _subscription.remove(sid);
         }

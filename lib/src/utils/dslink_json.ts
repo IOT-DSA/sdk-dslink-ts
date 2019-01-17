@@ -49,7 +49,7 @@ export class DSLinkJSON  {
     map["engines"] = engines;
     map["configs"] = configs;
     map["getDependencies"] = getDependencies;
-    for (var key in map.keys.toList()) {
+    for (var key of map.keys.toList()) {
       if (map[key] == null) {
         map.remove(key);
       }

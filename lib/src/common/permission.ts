@@ -54,7 +54,7 @@ export class PermissionList  {
     idMatchs.clear();
     groupMatchs.clear();
     defaultPermission = Permission.NONE;
-    for (object obj in data) {
+    for (object obj of data) {
       if ( (obj != null && obj instanceof Object) ) {
         if (typeof obj['id'] === 'string') {
           idMatchs[obj['id']] = Permission.nameParser[obj['permission']];
@@ -82,7 +82,7 @@ export class PermissionList  {
     }
 
     rslt:number = Permission.NEVER;
-    for (string group in responder.groups) {
+    for (string group of responder.groups) {
       if (groupMatchs.containsKey(group)) {
         int v = groupMatchs[group];
         if (v < rslt) {

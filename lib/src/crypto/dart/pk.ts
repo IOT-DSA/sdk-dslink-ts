@@ -331,7 +331,7 @@ export class DSRandomImpl  extends SecureRandomBase implements DSRandom {
 
 bytes2hex(bytes:number[]):string {
   var result = new StringBuffer();
-  for (var part in bytes) {
+  for (var part of bytes) {
     result.write("${part < 16 ? "0" : ""}${part.toRadixString(16)}");
   }
   return result.toString();

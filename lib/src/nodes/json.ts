@@ -37,7 +37,7 @@ export class DsaJsonNode  extends SimpleNode {
     JsonDiff.fullDiff: DiffNode = differ.diff();
 
     apply(JsonDiff.diff: DiffNode, node: DsaJsonNode) {
-      for (string key in diff.added.keys) {
+      for (string key in diff.added) {
         var name = NodeNamer.createName(key);
         provider.addNode(
           "${node.path}/${name}",
@@ -46,13 +46,13 @@ export class DsaJsonNode  extends SimpleNode {
         node.updateList(r"$is");
       }
 
-      for (string key in diff.removed.keys) {
+      for (string key in diff.removed) {
         var name = NodeNamer.createName(key);
 
         provider.removeNode("${node.path}/${name}");
       }
 
-      for (string key in diff.changed.keys) {
+      for (string key in diff.changed) {
         var name = NodeNamer.createName(key);
 
         let child: DsaJsonNode = node.getChild(name);
@@ -67,7 +67,7 @@ export class DsaJsonNode  extends SimpleNode {
         }
       }
 
-      for (string key in diff.node.keys) {
+      for (string key in diff.node) {
         var name = NodeNamer.createName(key);
 
         let child: DsaJsonNode = node.getChild(name);
@@ -124,7 +124,7 @@ export class DsaJsonNode  extends SimpleNode {
           r"$is": "json"
         };
 
-        for (string key in value.keys) {
+        for (string key in value) {
           m[NodeNamer.createName(key)] = create(value[key]);
         }
 

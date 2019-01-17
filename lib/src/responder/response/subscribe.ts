@@ -55,7 +55,7 @@ export class SubscribeResponse  extends Response {
 
       if (responder._traceCallbacks != null) {
         let update: ResponseTrace = new ResponseTrace(path, 'subscribe', 0, '+');
-        for (ResponseTraceCallback callback in responder._traceCallbacks) {
+        for (ResponseTraceCallback callback of responder._traceCallbacks) {
           callback(update);
         }
       }
@@ -72,7 +72,7 @@ export class SubscribeResponse  extends Response {
       if (responder._traceCallbacks != null) {
         let update: ResponseTrace = new ResponseTrace(
             controller.node.path, 'subscribe', 0, '-');
-        for (ResponseTraceCallback callback in responder._traceCallbacks) {
+        for (ResponseTraceCallback callback of responder._traceCallbacks) {
           callback(update);
         }
       }
@@ -98,7 +98,7 @@ export class SubscribeResponse  extends Response {
     }
 
     updates: List = new List();
-    for (RespSubscribeController controller in changed) {
+    for (RespSubscribeController controller of changed) {
       updates.addAll(controller.process(waitingAckId));
     }
     responder.updateResponse(this, updates);
@@ -160,7 +160,7 @@ export class SubscribeResponse  extends Response {
     });
     subscriptions.clear();
     if (pendingControllers != null) {
-      for (RespSubscribeController controller in pendingControllers) {
+      for (RespSubscribeController controller of pendingControllers) {
         subscriptions[controller.node.path] = controller;
       }
     }
@@ -270,7 +270,7 @@ export class RespSubscribeController  {
         // cache is no longer valid, fallback to rollup mode
         _isCacheValid = false;
         lastValue = new ValueUpdate(null, ts: '');
-        for (ValueUpdate update in lastValues) {
+        for (ValueUpdate update of lastValues) {
           lastValue.mergeAdd(update);
         }
         lastValues.length = 0;
@@ -316,12 +316,12 @@ export class RespSubscribeController  {
   process(waitingAckId:number):List {
     rslts: List = new List();
     if ( this._caching && this._isCacheValid) {
-      for (ValueUpdate lastValue in lastValues) {
+      for (ValueUpdate lastValue of lastValues) {
         rslts.add([sid, lastValue.value, lastValue.ts]);
       }
 
       if ( this._qosLevel > 0) {
-        for (ValueUpdate update in lastValues) {
+        for (ValueUpdate update of lastValues) {
           update.waitingAck = waitingAckId;
         }
       }
@@ -350,7 +350,7 @@ export class RespSubscribeController  {
     valueRemoved: boolean = false;
     if (!waitingValues.isEmpty && waitingValues.first.waitingAck != ackId) {
       let matchUpdate: ValueUpdate;
-      for (ValueUpdate update in waitingValues) {
+      for (ValueUpdate update of waitingValues) {
         if (update.waitingAck == ackId) {
           matchUpdate = update;
           break;

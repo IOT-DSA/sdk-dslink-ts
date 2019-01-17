@@ -105,7 +105,7 @@ export class DsTimer  {
       let rslt: TimerFunctions = this._pendingTimer.first;
       _pendingTimerMap.remove(rslt.ts50);
       rslt.unlink();
-      for (Function fun in rslt._functions) {
+      for (Function fun of rslt._functions) {
         _functionsMap.remove(fun);
         try{
           fun();
@@ -207,7 +207,7 @@ export class DsTimer  {
 
     _callbacks = new List();
 
-    for (var f in runnings) {
+    for (var f of runnings) {
       try{
         f();
       } catch(err,stack) {

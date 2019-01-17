@@ -447,7 +447,7 @@ export class NodeNamer  {
         }
       }
 
-      for (string bannedChar in BANNED_CHARS) {
+      for (string bannedChar of BANNED_CHARS) {
         if (char == bannedChar) {
           var e = char.codeUnitAt(0).toRadixString(16);
           out.write("%${e}".toUpperCase());

@@ -138,7 +138,7 @@ export class ListResponse  extends Response {
         updateIs = [r'$is', 'node'];
       }
     } else {
-      for (string change in changes) {
+      for (string change of changes) {
         let update: object;
         if (change.startsWith(r'$')) {
           if ( this._permission != Permission.CONFIG) {

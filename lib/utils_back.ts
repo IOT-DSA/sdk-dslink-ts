@@ -160,7 +160,7 @@ get logger(): Logger {
       rname = null;
     }
 
-    for (string line in lines) {
+    for (string line of lines) {
       let msg: string = "";
 
       if (enableSequenceNumbers) {
@@ -215,7 +215,7 @@ updateLogLevel(name: string) {
   }
 
   levels: {[key: string]: Level} = {};
-  for (var l in Level.LEVELS) {
+  for (var l of Level.LEVELS) {
     levels[l.name] = l;
   }
 

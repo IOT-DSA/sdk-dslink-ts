@@ -13,12 +13,12 @@ export class ByteDataUtil  {
       return bytesList[0];
     }
     totalLen:number = 0;
-    for (ByteData bytes in bytesList) {
+    for (ByteData bytes of bytesList) {
       totalLen += bytes.lengthInBytes;
     }
     output: ByteData = new ByteData(totalLen);
     pos:number = 0;
-    for (ByteData bytes in bytesList) {
+    for (ByteData bytes of bytesList) {
       output.buffer.asUint8Array(pos).setAll(0, toUint8Array(bytes));
       pos += bytes.lengthInBytes;
     }

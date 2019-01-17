@@ -73,7 +73,7 @@ export class InvokeResponse  extends Response {
       return;
     }
 
-    for (_InvokeResponseUpdate update in pendingData) {
+    for (_InvokeResponseUpdate update of pendingData) {
       List<{[key: string]: dynamic}> outColumns;
       if (update.columns != null) {
         outColumns = TableColumn.serializeColumns(update.columns);

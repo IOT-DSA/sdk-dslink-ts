@@ -145,7 +145,7 @@ export class LiveTable  {
 
   reindex() {
     var i = 0;
-    for (LiveTableRow row in rows) {
+    for (LiveTableRow row of rows) {
       row.index = i;
       i++;
     }
@@ -317,7 +317,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
     }
 
     if ( this._resolverFactories.isNotEmpty) {
-      for (var f in _resolverFactories) {
+      for (var f of _resolverFactories) {
         var node = f(path);
         if (node != null) {
           return node;
@@ -537,7 +537,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
     }
 
     if (registerChildren) {
-      for (SimpleNode c in node.children.values) {
+      for (SimpleNode c of node.children.values) {
         setNode(c.path, c);
       }
     }
@@ -569,7 +569,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
     if (oldNode != null) {
 //      logger.fine("Found old node for ${path}: Copying subscriptions.");
 
-      for (ValueUpdateCallback func in oldNode.callbacks.keys) {
+      for (ValueUpdateCallback func in oldNode.callbacks) {
         node.subscribe(func, oldNode.callbacks[func]);
       }
 
@@ -631,7 +631,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
           baseSlashFreq == countCharacterFrequency(x, "/");
       }).toList();
 
-      for (string target in targets) {
+      for (string target of targets) {
         removeNode(target);
       }
     }
@@ -677,7 +677,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
       }
 
       buff.writeln();
-      for (var child in node.children.values) {
+      for (var child of node.children.values) {
         doNode(child, depth + 1);
       }
     }
@@ -864,7 +864,7 @@ export class SimpleNode  extends LocalNodeImpl {
     } else if ( (rslt != null && rslt instanceof Object) ) {
       var columns = [];
       var out = [];
-      for (var x in rslt.keys) {
+      for (var x in rslt) {
         columns.add({
           "name": x,
           "type": "dynamic"

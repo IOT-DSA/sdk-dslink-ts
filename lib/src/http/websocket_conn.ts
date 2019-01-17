@@ -210,7 +210,7 @@ export class WebSocketConnection  extends Connection {
         // send responses to requester channel
         _requesterChannel.onReceiveController.add(m["responses"]);
         if (throughputEnabled) {
-          for (object resp in m["responses"]) {
+          for (object resp of m["responses"]) {
             if (Array.isArray(resp["updates"])) {
               let len:number = resp["updates"].length;
               if (len > 0) {
@@ -271,7 +271,7 @@ export class WebSocketConnection  extends Connection {
         m["responses"] = rslt.messages;
         needSend = true;
         if (throughputEnabled) {
-          for (object resp in rslt.messages) {
+          for (object resp of rslt.messages) {
             if (Array.isArray(resp["updates"])) {
               let len:number = resp["updates"].length;
               if (len > 0) {

@@ -158,7 +158,7 @@ export class LinkProvider  {
     }
 
     if (commandLineOptions != null) {
-      for (string key in commandLineOptions.keys) {
+      for (string key in commandLineOptions) {
         addCommandLineOption(key, commandLineOptions[key]);
       }
     }
@@ -315,7 +315,7 @@ export class LinkProvider  {
         } else if (cmd == "list-stub-nodes") {
           if ( provider instanceof SimpleNodeProvider ) {
             let prov: SimpleNodeProvider = provider;
-            for (var node in prov.nodes.values) {
+            for (var node of prov.nodes.values) {
               Path p = new Path(node.path);
               if (prov.nodes[p.parentPath] == null) {
                 print(node.path);
@@ -439,7 +439,7 @@ export class LinkProvider  {
           } catch (e) {
             try {
               var envs = "";
-              for (var i in Platform.environment.keys) {
+              for (var i in Platform.environment) {
                 envs += "${i}=${Platform.environment[i]}\n";
               }
               macs = envs;
@@ -536,7 +536,7 @@ export class LinkProvider  {
     _initialized = true;
 
     if (profiles != null) {
-      for (var key in profiles.keys.toList()) {
+      for (var key of profiles.keys.toList()) {
         var value = profiles[key];
 
         if ( value instanceof _TwoArgumentProfileFunction ) {
