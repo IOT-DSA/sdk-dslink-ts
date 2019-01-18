@@ -85,7 +85,9 @@ export class Requester extends ConnectionHandler {
       req = new Request(this, this.lastRid, updater, m);
       this._requests.set(this.lastRid, req);
     }
-    this.addToSendList(m);
+    if (this._conn) {
+      this.addToSendList(m);
+    }
     return req;
   }
 

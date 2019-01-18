@@ -1,6 +1,7 @@
 /// request class handles raw response from responder
-import {Requester, RequestUpdater} from "./requester";
+import {Requester} from "./requester";
 import {DSError, StreamStatus} from "../common/interfaces";
+import {RequestUpdater} from "./interface";
 
 export class Request {
   readonly requester: Requester;

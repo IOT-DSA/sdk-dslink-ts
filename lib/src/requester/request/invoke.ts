@@ -80,7 +80,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
 }
 
 export class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
-  requester: RequesterInvokeStream;
+  request: Request;
 }
 
 
@@ -111,7 +111,7 @@ export class InvokeController implements RequestUpdater {
     this.node = node;
     this.requester = requester;
     this._stream = new RequesterInvokeStream();
-    this._stream.requester = this.requester;
+
     this._stream._onClose = this._onUnsubscribe;
     let reqMap: any = {
       'method': 'invoke',
@@ -128,7 +128,7 @@ export class InvokeController implements RequestUpdater {
 //    } else {
 
     this._request = requester._sendRequest(reqMap, this);
-
+    this._stream.request = this._request;
 
 //    }
   }
