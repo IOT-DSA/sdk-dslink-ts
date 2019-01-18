@@ -27,7 +27,7 @@ export class Stream<T> {
     if (this._onListen) {
       this._onListen(listener);
     }
-    if (!this._updating) {
+    if (this._value !== undefined && !this._updating) {
       // skip extra update if it's already in updating iteration
       listener(this._value);
     }

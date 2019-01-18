@@ -8,12 +8,10 @@ import {DSError, ProcessorResult, StreamStatus} from "../common/interfaces";
 import {ValueUpdate} from "../common/value";
 import {ListController, RequesterListUpdate} from "./request/list";
 import {Permission} from "../common/permission";
-import {RequesterInvokeUpdate} from "./request/invoke";
+import {RequesterInvokeStream, RequesterInvokeUpdate} from "./request/invoke";
 import {SetController} from "./request/set";
 import {RemoveController} from "./request/remove";
 
-
-export type RequestConsumer<T> = (request: Request) => T;
 
 export class Requester extends ConnectionHandler {
   _requests: Map<number, Request> = new Map<number, Request>();
@@ -75,12 +73,12 @@ export class Requester extends ConnectionHandler {
     return rslt;
   }
 
-  sendRequest(m: { [key: string]: any }, updater: RequestUpdater) {
+  sendRequest(m: {[key: string]: any}, updater: RequestUpdater) {
     return this._sendRequest(m, updater);
   }
 
 
-  _sendRequest(m: { [key: string]: any }, updater: RequestUpdater): Request {
+  _sendRequest(m: {[key: string]: any}, updater: RequestUpdater): Request {
     m['rid'] = this.getNextRid();
     let req: Request;
     if (updater != null) {
@@ -173,10 +171,14 @@ export class Requester extends ConnectionHandler {
     return node._list(this).listen(callback);
   }
 
-  invoke(path: string, params: { [key: string]: any } = {},
-         maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>): Stream<RequesterInvokeUpdate> {
+  invoke(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
+         maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
-    return node._invoke(params, this, maxPermission, fetchRawReq);
+    let stream = node._invoke(params, this, maxPermission);
+    if (callback) {
+      stream.listen(callback);
+    }
+    return stream;
   }
 
   set(path: string, value: object,

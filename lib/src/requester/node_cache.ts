@@ -3,10 +3,10 @@ import {Node} from "../common/node";
 import {ListController, RequesterListUpdate} from "./request/list";
 import {ReqSubscribeController} from "./request/subscribe";
 import {ValueUpdate} from "../common/value";
-import {RequestConsumer, Requester} from "./requester";
+import {Requester} from "./requester";
 import {Stream} from "../utils/async";
 import {Permission} from "../common/permission";
-import {InvokeController, RequesterInvokeUpdate} from "./request/invoke";
+import {InvokeController, RequesterInvokeStream, RequesterInvokeUpdate} from "./request/invoke";
 import {buildEnumType} from "../../utils";
 
 export class RemoteNodeCache {
@@ -164,13 +164,12 @@ export class RemoteNode extends Node {
   }
 
   _invoke(params: object, requester: Requester,
-          maxPermission: number = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>): Stream<RequesterInvokeUpdate> {
+          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     return new InvokeController(
       this,
       requester,
       params,
-      maxPermission,
-      fetchRawReq
+      maxPermission
     )._stream;
   }
 
@@ -205,8 +204,8 @@ export class RemoteNode extends Node {
     this.children.clear();
   }
 
-  save(includeValue = true): { [key: string]: any } {
-    let map: { [key: string]: any } = {};
+  save(includeValue = true): {[key: string]: any} {
+    let map: {[key: string]: any} = {};
     for (let [key, value] of this.configs) {
       map[key] = value;
     }
@@ -235,7 +234,7 @@ export class RemoteDefNode extends RemoteNode {
 }
 
 export class DefaultDefNodes {
-  static readonly _defaultDefs: { [key: string]: any } = {
+  static readonly _defaultDefs: {[key: string]: any} = {
     "node": {},
     "static": {},
     "getHistory": {
@@ -306,8 +305,8 @@ export class DefaultDefNodes {
     }
   };
 
-  static readonly nameMap: { [key: string]: Node } = (function () {
-    let rslt: { [key: string]: Node } = {};
+  static readonly nameMap: {[key: string]: Node} = (function () {
+    let rslt: {[key: string]: Node} = {};
     for (let k in DefaultDefNodes._defaultDefs) {
       let m = DefaultDefNodes._defaultDefs[k];
       let path = `/defs/profile/${k}`;
@@ -328,8 +327,8 @@ export class DefaultDefNodes {
     return rslt;
   })();
 
-  static readonly pathMap: { [key: string]: Node } = (function () {
-    let rslt: { [key: string]: Node } = {};
+  static readonly pathMap: {[key: string]: Node} = (function () {
+    let rslt: {[key: string]: Node} = {};
     for (let k in DefaultDefNodes.nameMap) {
       let node = DefaultDefNodes.nameMap[k];
       if (node instanceof RemoteNode) {

@@ -1,4 +1,4 @@
-import {RequestConsumer, Requester} from "../requester";
+import {Requester} from "../requester";
 import {Request} from "../Request";
 import {Completer, Stream} from "../../utils/async";
 import {Permission} from "../../common/permission";
@@ -12,11 +12,11 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
   columns: TableColumn[];
   updates: any[];
   error: DSError;
-  meta: { [key: string]: any };
+  meta: {[key: string]: any};
 
   constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
               streamStatus: string,
-              meta: { [key: string]: any }, error?: DSError) {
+              meta: {[key: string]: any}, error?: DSError) {
     super(streamStatus);
     this.updates = updates;
     this.rawColumns = rawColumns;
@@ -79,6 +79,11 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
   }
 }
 
+export class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
+  requester: RequesterInvokeStream;
+}
+
+
 export class InvokeController implements RequestUpdater {
   static getNodeColumns(node: RemoteNode): TableColumn[] {
     let columns = node.getConfig('$columns');
@@ -94,7 +99,7 @@ export class InvokeController implements RequestUpdater {
   readonly node: RemoteNode;
   readonly requester: Requester;
 
-  _stream: Stream<RequesterInvokeUpdate>;
+  _stream: RequesterInvokeStream;
   _request: Request;
   _cachedColumns: TableColumn[];
 
@@ -102,10 +107,11 @@ export class InvokeController implements RequestUpdater {
   lastStatus: string = StreamStatus.initialize;
 
   constructor(node: RemoteNode, requester: Requester, params: object,
-              maxPermission = Permission.CONFIG, fetchRawReq?: RequestConsumer<any>) {
+              maxPermission = Permission.CONFIG) {
     this.node = node;
     this.requester = requester;
-    this._stream = new Stream<RequesterInvokeUpdate>();
+    this._stream = new RequesterInvokeStream();
+    this._stream.requester = this.requester;
     this._stream._onClose = this._onUnsubscribe;
     let reqMap: any = {
       'method': 'invoke',
@@ -123,9 +129,7 @@ export class InvokeController implements RequestUpdater {
 
     this._request = requester._sendRequest(reqMap, this);
 
-    if (fetchRawReq != null) {
-      fetchRawReq(this._request);
-    }
+
 //    }
   }
 
@@ -135,7 +139,7 @@ export class InvokeController implements RequestUpdater {
     }
   };
 
-  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: { [key: string]: any },
+  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {[key: string]: any},
            error: DSError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];
