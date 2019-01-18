@@ -907,7 +907,7 @@ export class SimpleNode  extends LocalNodeImpl {
 
         r.onClose = (_) {
           if (sub != null) {
-            sub.cancel();
+            sub.close();
           }
         };
 
@@ -948,7 +948,7 @@ export class SimpleNode  extends LocalNodeImpl {
 
         r.onClose = (_) {
           if (sub != null) {
-            sub.cancel();
+            sub.close();
           }
         };
 
@@ -1000,7 +1000,7 @@ export class SimpleNode  extends LocalNodeImpl {
 
           r.onClose = (_) {
             if (sub != null) {
-              sub.cancel();
+              sub.close();
             }
           };
 

@@ -6,7 +6,7 @@ link.connect();
 
 let subscription = link.requester.subscribe('/sys/dataOutPerSecond', (data) => {
   console.log(data);
-  subscription.cancel();
+  subscription.close();
 });
 
 let list = link.requester.list('/sys', (data) => {

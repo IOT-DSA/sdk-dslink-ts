@@ -293,7 +293,7 @@ export class LinkProvider  {
       let sub: StreamSubscription;
       sub = file.watch(events: FileSystemEvent.DELETE).listen((_) {
         close();
-        sub.cancel();
+        sub.close();
 
         if ( this._logFileOut != null) {
           try {
@@ -493,7 +493,7 @@ export class LinkProvider  {
     }, onCancel: () {
       subs--;
       if (subs == 0) {
-        listener.cancel();
+        listener.close();
         listener = null;
       }
     });

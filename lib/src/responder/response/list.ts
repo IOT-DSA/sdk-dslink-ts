@@ -240,7 +240,7 @@ export class ListResponse  extends Response {
   }
 
   _close() {
-    _nodeChangeListener.cancel();
+    _nodeChangeListener.close();
   }
 
   /// for the broker trace action

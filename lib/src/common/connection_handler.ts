@@ -14,7 +14,7 @@ export abstract class ConnectionHandler {
 
   set connection(conn: ConnectionChannel) {
     if (this._connListener != null) {
-      this._connListener.cancel();
+      this._connListener.close();
       this._connListener = null;
       this._onDisconnected(this._conn);
     }
@@ -32,7 +32,7 @@ export abstract class ConnectionHandler {
   _onDisconnected(conn: ConnectionChannel) {
     if (this._conn === conn) {
       if (this._connListener != null) {
-        this._connListener.cancel();
+        this._connListener.close();
         this._connListener = null;
       }
       this.onDisconnected();

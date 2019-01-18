@@ -120,7 +120,7 @@ export class LinkProvider  {
     }, onCancel: () {
       subs--;
       if (subs == 0) {
-        listener.cancel();
+        listener.close();
         listener = null;
       }
     });

@@ -6,7 +6,7 @@ export class RespSubscribeListener  {
 
   RespSubscribeListener(this.node, this.callback);
 
-  cancel() {
+  close() {
     if (callback != null) {
       node.unsubscribe(callback);
       callback = null;
@@ -407,6 +407,6 @@ export class RespSubscribeController  {
       storageM.destroyValue(node.path);
       _storage = null;
     }
-    _listener.cancel();
+    _listener.close();
   }
 }

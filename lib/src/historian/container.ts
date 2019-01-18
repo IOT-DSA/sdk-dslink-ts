@@ -169,7 +169,7 @@ export class WatchPathNode  extends SimpleNode {
         sub();
       } else {
         if (valueSub != null) {
-          valueSub.cancel();
+          valueSub.close();
           valueSub = null;
         }
       }
@@ -187,7 +187,7 @@ export class WatchPathNode  extends SimpleNode {
   sub() {
     if (!isPublishOnly) {
       if (valueSub != null) {
-        valueSub.cancel();
+        valueSub.close();
         valueSub = null;
       }
 

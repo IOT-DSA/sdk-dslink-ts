@@ -18,7 +18,7 @@ export class ReqSubscribeListener implements Cancelable {
     this.callback = callback;
   }
 
-  cancel() {
+  close() {
     if (this.callback != null) {
       this.requester.unsubscribe(this.path, this.callback);
       this.callback = null;

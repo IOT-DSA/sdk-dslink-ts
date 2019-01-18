@@ -40,8 +40,8 @@ export class ListDefListener {
     });
   }
 
-  cancel() {
-    this.listener.cancel();
+  close() {
+    this.listener.close();
   }
 }
 
@@ -194,7 +194,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 //      logger.finest('warning, unexpected state of profile loading');
       return;
     }
-    this._profileLoader.cancel();
+    this._profileLoader.close();
     this._profileLoader = null;
     for (let change of update.changes) {
       if (!ListController._ignoreProfileProps.includes(change)) {
@@ -281,7 +281,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   _destroy() {
     this.waitToSend = false;
     if (this._profileLoader != null) {
-      this._profileLoader.cancel();
+      this._profileLoader.close();
       this._profileLoader = null;
     }
     if (this.request != null) {

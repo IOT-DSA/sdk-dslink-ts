@@ -119,7 +119,7 @@ export class Requester extends ConnectionHandler {
       }
     }, () => {
       if (listener) {
-        listener.cancel();
+        listener.close();
         listener = null;
       }
     });
@@ -134,7 +134,7 @@ export class Requester extends ConnectionHandler {
         resolve(update);
 
         if (listener != null) {
-          listener.cancel();
+          listener.close();
           listener = null;
         }
         if (timer) {
@@ -146,7 +146,7 @@ export class Requester extends ConnectionHandler {
         timer = setTimeout(() => {
           timer = null;
           if (listener) {
-            listener.cancel();
+            listener.close();
             listener = null;
           }
           reject(new Error(`failed to receive value, timeout: ${timeoutMs}ms`));
@@ -161,7 +161,7 @@ export class Requester extends ConnectionHandler {
         resolve(update.node);
 
         if (sub != null) {
-          sub.cancel();
+          sub.close();
         }
       });
     });

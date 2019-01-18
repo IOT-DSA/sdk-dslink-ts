@@ -72,7 +72,7 @@ export class Stream<T> {
 }
 
 export interface Cancelable {
-  cancel(): void;
+  close(): void;
 }
 
 export class StreamSubscription<T> implements Cancelable {
@@ -84,7 +84,7 @@ export class StreamSubscription<T> implements Cancelable {
     this._listener = listener;
   }
 
-  cancel() {
+  close() {
     if (this._stream && this._listener) {
       this._stream.unlisten(this._listener);
       this._stream = null;
