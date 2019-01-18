@@ -1,4 +1,4 @@
-import {Requester } from "../requester";
+import {Requester} from "../requester";
 import {Request} from "../Request";
 import {Completer, Stream, StreamSubscription} from "../../utils/async";
 import {Permission} from "../../common/permission";
@@ -6,7 +6,7 @@ import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interface
 import {RemoteNode} from "../node_cache";
 import {ValueUpdate} from "../../common/value";
 import {DsTimer} from "../../utils/timer";
-import {RequesterUpdate} from "../interface";
+import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class RequesterListUpdate extends RequesterUpdate {
   /// this is only a list of changed fields
@@ -34,7 +34,7 @@ export class ListDefListener {
               callback: (update: RequesterListUpdate) => void) {
     this.node = node;
     this.requester = requester;
-    this.listener = requester.list(node.remotePath).listen((update: RequesterListUpdate) => {
+    this.listener = requester.list(node.remotePath, (update: RequesterListUpdate) => {
       this.ready = update.streamStatus !== StreamStatus.initialize;
       callback(update);
     });
@@ -89,7 +89,16 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
         let name: string;
         let value: any;
         let removed = false;
-        if (update != null && update instanceof Object) {
+        if (Array.isArray(update)) {
+          if (update.length > 0 && typeof update[0] === 'string') {
+            name = update[0];
+            if (update.length > 1) {
+              value = update[1];
+            }
+          } else {
+            continue; // invalid response
+          }
+        } else if (update != null && update instanceof Object) {
           if (typeof update['name'] === 'string') {
             name = update['name'];
           } else {
@@ -99,15 +108,6 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
             removed = true;
           } else {
             value = update['value'];
-          }
-        } else if (Array.isArray(update)) {
-          if (update.length > 0 && typeof update[0] === 'string') {
-            name = update[0];
-            if (update.length > 1) {
-              value = update[1];
-            }
-          } else {
-            continue; // invalid response
           }
         } else {
           continue; // invalid response

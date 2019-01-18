@@ -319,7 +319,7 @@ export class LinkProvider  {
               Path p = new Path(node.path);
               if (prov.nodes[p.parentPath] == null) {
                 print(node.path);
-              } else if (!prov.nodes[p.parentPath].children.hasOwnProperty(p.name)) {
+              } else if (!prov.nodes[p.parentPath].children.has(p.name)) {
                 print(node.path);
               }
             }
