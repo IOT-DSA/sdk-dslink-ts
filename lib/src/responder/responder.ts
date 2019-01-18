@@ -119,7 +119,7 @@ export class Responder  extends ConnectionHandler {
         updateInvoke(m);
         return;
       } else {
-        if ( this._responses.containsKey(m['rid'])) {
+        if ( this._responses.hasOwnProperty(m['rid'])) {
           if (method == 'close') {
             close(m);
           }
@@ -418,7 +418,7 @@ export class Responder  extends ConnectionHandler {
       return;
     }
 
-    if (!m.containsKey('value')) {
+    if (!m.hasOwnProperty('value')) {
       closeResponse(m['rid'], error: DSError.INVALID_VALUE);
       return;
     }
@@ -517,7 +517,7 @@ export class Responder  extends ConnectionHandler {
   close(object m) {
     if (m['rid'] is int) {
       let rid:number = m['rid'];
-      if ( this._responses.containsKey(rid)) {
+      if ( this._responses.hasOwnProperty(rid)) {
         _responses[rid]._close();
         let resp: Response = this._responses.remove(rid);
         if ( this._traceCallbacks != null) {

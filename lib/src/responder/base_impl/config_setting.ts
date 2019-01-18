@@ -12,8 +12,8 @@ export class ConfigSetting  {
 
   ConfigSetting(this.name, this.type, {this.defaultValue});
   ConfigSetting.fromMap(this.name, object m)
-      : type = m.containsKey('type') ? m['type'] : 'string',
-        defaultValue = m.containsKey('default') ? m['default'] : null {}
+      : type = m.hasOwnProperty('type') ? m['type'] : 'string',
+        defaultValue = m.hasOwnProperty('default') ? m['default'] : null {}
 
   setConfig(value: object, node: LocalNodeImpl, responder: Responder):DSError {
     if (node.configs[name] != value) {
@@ -24,7 +24,7 @@ export class ConfigSetting  {
   }
 
   removeConfig(node: LocalNodeImpl, responder: Responder):DSError {
-    if (node.configs.containsKey(name)) {
+    if (node.configs.hasOwnProperty(name)) {
       node.configs.remove(name);
       node.updateList(name);
     }
@@ -75,10 +75,10 @@ export class Configs  {
       new ConfigSetting.fromMap('', const {});
 
   static getConfig(name: string, profile: Node):ConfigSetting {
-    if (global.configs.containsKey(name)) {
+    if (global.configs.hasOwnProperty(name)) {
       return global.configs[name];
     }
-    if ( profile instanceof DefinitionNode && profile.configs.containsKey(name)) {
+    if ( profile instanceof DefinitionNode && profile.configs.hasOwnProperty(name)) {
       return profile.configs[name];
     }
     return defaultConfig;

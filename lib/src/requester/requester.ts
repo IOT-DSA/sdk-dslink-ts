@@ -1,5 +1,5 @@
 import {RequesterUpdate, RequestUpdater} from "./interface";
-import {Stream, StreamSubscription} from "../utils/async";
+import {Listener, Stream, StreamSubscription} from "../utils/async";
 import {Request} from "./request";
 import {ConnectionHandler} from "../common/connection_handler";
 import {RemoteNode, RemoteNodeCache} from "./node_cache";
@@ -38,7 +38,7 @@ export class Requester extends ConnectionHandler {
     return this._requests.size;
   }
 
-  onData = (list: any[]) =>{
+  onData = (list: any[]) => {
     if (Array.isArray(list)) {
       for (let resp of list) {
         if ((resp != null && resp instanceof Object)) {
@@ -102,6 +102,11 @@ export class Requester extends ConnectionHandler {
     return new ReqSubscribeListener(this, path, callback);
   }
 
+  unsubscribe(path: string, callback: (update: ValueUpdate) => void) {
+    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
+    node._unsubscribe(this, callback);
+  }
+
   onValueChange(path: string, qos: number = 0): Stream<ValueUpdate> {
     let listener: ReqSubscribeListener;
     let stream: Stream<ValueUpdate>;
@@ -152,7 +157,7 @@ export class Requester extends ConnectionHandler {
 
   getRemoteNode(path: string): Promise<RemoteNode> {
     return new Promise((resolve, reject) => {
-      let sub = this.list(path).listen((update) => {
+      let sub = this.list(path, (update) => {
         resolve(update.node);
 
         if (sub != null) {
@@ -163,14 +168,9 @@ export class Requester extends ConnectionHandler {
 
   }
 
-  unsubscribe(path: string, callback: (update: ValueUpdate) => void) {
+  list(path: string, callback: Listener<RequesterListUpdate>): StreamSubscription<RequesterListUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
-    node._unsubscribe(this, callback);
-  }
-
-  list(path: string): Stream<RequesterListUpdate> {
-    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
-    return node._list(this);
+    return node._list(this).listen(callback);
   }
 
   invoke(path: string, params: { [key: string]: any } = {},

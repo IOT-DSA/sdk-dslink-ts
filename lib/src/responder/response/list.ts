@@ -73,7 +73,7 @@ export class ListResponse  extends Response {
     if ( this._disconnectSent && !changes.contains(r'$disconnectedTs')) {
       _disconnectSent = false;
       updateConfigs.add({'name': r'$disconnectedTs', 'change': 'remove'});
-      if (node.configs.containsKey(r'$disconnectedTs')) {
+      if (node.configs.hasOwnProperty(r'$disconnectedTs')) {
         node.configs.remove(r'$disconnectedTs');
       }
     }
@@ -155,7 +155,7 @@ export class ListResponse  extends Response {
               }
             } 
           }
-          if (node.configs.containsKey(change)) {
+          if (node.configs.hasOwnProperty(change)) {
             update = [change, node.configs[change]];
           } else {
             update = {'name': change, 'change': 'remove'};
@@ -164,14 +164,14 @@ export class ListResponse  extends Response {
             updateConfigs.add(update);
           }
         } else if (change.startsWith(r'@')) {
-          if (node.attributes.containsKey(change)) {
+          if (node.attributes.hasOwnProperty(change)) {
             update = [change, node.attributes[change]];
           } else {
             update = {'name': change, 'change': 'remove'};
           }
           updateAttributes.add(update);
         } else {
-          if (node.children.containsKey(change)) {
+          if (node.children.hasOwnProperty(change)) {
             let simpleMap: object = node.children[change].getSimpleMap();
              if ( this._permission != Permission.CONFIG) {
                let invokePermission:number = Permission.parse(simpleMap[r'$invokable']);

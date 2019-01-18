@@ -309,7 +309,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
   }
 
   _getNode(path: string, {boolean allowStubs: false}):LocalNode {
-    if (nodes.containsKey(path)) {
+    if (nodes.hasOwnProperty(path)) {
       let node: SimpleNode = nodes[path];
       if (allowStubs || node._stub == false) {
         return node;
@@ -342,7 +342,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
         if (!po.isRoot) {
           let parent: LocalNode = getNode(po.parentPath);
 
-          if (parent != null && !parent.children.containsKey(po.name)) {
+          if (parent != null && !parent.children.hasOwnProperty(po.name)) {
             parent.addChild(po.name, node);
             parent.listChangeController.add(po.name);
             node.listChangeController.add(r"$is");
@@ -559,7 +559,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
 
     if (node == null) {
       let profile: string = m[r'$is'];
-      if ( this._profiles.containsKey(profile)) {
+      if ( this._profiles.hasOwnProperty(profile)) {
         node = _profiles[profile](path);
       } else {
         node = getOrCreateNode(path, true, false);
@@ -844,7 +844,7 @@ export class SimpleNode  extends LocalNodeImpl {
     }
 
     var rtype = "values";
-    if (configs.containsKey(r"$result")) {
+    if (configs.hasOwnProperty(r"$result")) {
       rtype = configs[r"$result"];
     }
 
@@ -924,7 +924,7 @@ export class SimpleNode  extends LocalNodeImpl {
             r.update(v.toList(), StreamStatus.open);
           } else if ( (v != null && v instanceof Object) ) {
             var meta;
-            if (v.containsKey("__META__")) {
+            if (v.hasOwnProperty("__META__")) {
               meta = v["__META__"];
             }
             r.update([v], StreamStatus.open, meta);
@@ -1017,7 +1017,7 @@ export class SimpleNode  extends LocalNodeImpl {
               r.update(v.toList());
             } else if ( (v != null && v instanceof Object) ) {
               var meta;
-              if (v.containsKey("__META__")) {
+              if (v.hasOwnProperty("__META__")) {
                 meta = v["__META__"];
               }
               r.update([v], StreamStatus.open, meta);
@@ -1196,12 +1196,12 @@ export class SimpleNode  extends LocalNodeImpl {
   }
 
   /// Checks if this node has the specified config.
-  boolean hasConfig(name: string) => configs.containsKey(
+  boolean hasConfig(name: string) => configs.hasOwnProperty(
       name.startsWith(r"$") ? name : '\$' + name
   );
 
   /// Checks if this node has the specified attribute.
-  boolean hasAttribute(name: string) => attributes.containsKey(
+  boolean hasAttribute(name: string) => attributes.hasOwnProperty(
       name.startsWith("@") ? name : '@' + name
   );
 
@@ -1305,23 +1305,23 @@ export class SimpleHiddenNode  extends SimpleNode {
       r'$hidden': true
     };
 
-    if (configs.containsKey(r'$is')) {
+    if (configs.hasOwnProperty(r'$is')) {
       rslt[r'$is'] = configs[r'$is'];
     }
 
-    if (configs.containsKey(r'$type')) {
+    if (configs.hasOwnProperty(r'$type')) {
       rslt[r'$type'] = configs[r'$type'];
     }
 
-    if (configs.containsKey(r'$name')) {
+    if (configs.hasOwnProperty(r'$name')) {
       rslt[r'$name'] = configs[r'$name'];
     }
 
-    if (configs.containsKey(r'$invokable')) {
+    if (configs.hasOwnProperty(r'$invokable')) {
       rslt[r'$invokable'] = configs[r'$invokable'];
     }
 
-    if (configs.containsKey(r'$writable')) {
+    if (configs.hasOwnProperty(r'$writable')) {
       rslt[r'$writable'] = configs[r'$writable'];
     }
     return rslt;

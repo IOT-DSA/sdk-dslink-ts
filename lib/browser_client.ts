@@ -56,7 +56,7 @@ export class LocalDataStorage  extends DataStorage implements SynchronousDataSto
   Promise<string> get(key: string) async => window.localStorage[key];
 
   @override
-  Promise<boolean> has(key: string) async => window.localStorage.containsKey(key);
+  Promise<boolean> has(key: string) async => window.localStorage.hasOwnProperty(key);
 
   @override
   store(key: string, value: string):Future {
@@ -80,7 +80,7 @@ export class LocalDataStorage  extends DataStorage implements SynchronousDataSto
   }
 
   @override
-  boolean hasSync(key: string) => window.localStorage.containsKey(key);
+  boolean hasSync(key: string) => window.localStorage.hasOwnProperty(key);
 
   @override
   string getSync(key: string) => window.localStorage[key];

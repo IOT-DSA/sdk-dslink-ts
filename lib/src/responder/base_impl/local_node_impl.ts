@@ -69,7 +69,7 @@ export interface LocalNodeImpl extends LocalNode {
 
   setAttribute(name: string, value: object, responder: Responder,
       let response: Response):Response {
-    if (!attributes.containsKey(name) || attributes[name] != value) {
+    if (!attributes.hasOwnProperty(name) || attributes[name] != value) {
       attributes[name] = value;
       updateList(name);
 
@@ -82,7 +82,7 @@ export interface LocalNodeImpl extends LocalNode {
 
   removeAttribute(name: string, responder: Responder,
       let response: Response):Response {
-    if (attributes.containsKey(name)) {
+    if (attributes.hasOwnProperty(name)) {
       attributes.remove(name);
       updateList(name);
 

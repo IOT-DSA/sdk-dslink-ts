@@ -77,13 +77,13 @@ export class PermissionList  {
     if ( this._FORCE_CONFIG) {
       return Permission.CONFIG;
     }
-    if (idMatchs.containsKey(responder.reqId)) {
+    if (idMatchs.hasOwnProperty(responder.reqId)) {
       return idMatchs[responder.reqId];
     }
 
     rslt:number = Permission.NEVER;
     for (string group of responder.groups) {
-      if (groupMatchs.containsKey(group)) {
+      if (groupMatchs.hasOwnProperty(group)) {
         int v = groupMatchs[group];
         if (v < rslt) {
           // choose the lowest permission from all matched group

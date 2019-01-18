@@ -112,7 +112,7 @@ export class BrowserECDHLink  extends ClientLink {
 
       // server start to support version since 1.0.4
       // and this is the version ack is added
-      enableAck = serverConfig.containsKey('version');
+      enableAck = serverConfig.hasOwnProperty('version');
       if (typeof serverConfig['format'] === 'string') {
         format = serverConfig['format'];
       }

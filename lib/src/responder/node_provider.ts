@@ -53,7 +53,7 @@ export interface LocalNode extends Node {
 
   /// Unsubscribe the given [callback] from this node.
   unsubscribe(callback: ValueUpdateCallback) {
-    if (callbacks.containsKey(callback)) {
+    if (callbacks.hasOwnProperty(callback)) {
       callbacks.remove(callback);
     }
   }

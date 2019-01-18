@@ -53,7 +53,7 @@ export class Request {
       this.requester._requests.delete(this.rid);
     }
     let error: DSError;
-    if (m.containsKey("error") && m["error"] instanceof Object) {
+    if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
       error = DSError.fromMap(m["error"]);
       this.requester.onError.add(error);
     }

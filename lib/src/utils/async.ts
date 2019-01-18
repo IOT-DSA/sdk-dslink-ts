@@ -1,6 +1,6 @@
 import {RequesterListUpdate} from "../requester/request/list";
 
-type Listener<T> = (value: T) => void;
+export type Listener<T> = (value: T) => void;
 
 
 export class Stream<T> {

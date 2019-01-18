@@ -319,7 +319,7 @@ export class LinkProvider  {
               Path p = new Path(node.path);
               if (prov.nodes[p.parentPath] == null) {
                 print(node.path);
-              } else if (!prov.nodes[p.parentPath].children.containsKey(p.name)) {
+              } else if (!prov.nodes[p.parentPath].children.hasOwnProperty(p.name)) {
                 print(node.path);
               }
             }
@@ -640,7 +640,7 @@ export class LinkProvider  {
     if (dslinkJson != null &&
         dslinkJson["configs"] is object &&
         dslinkJson["configs"][key] is object &&
-        dslinkJson["configs"][key].containsKey("value")) {
+        dslinkJson["configs"][key].hasOwnProperty("value")) {
       return dslinkJson["configs"][key]["value"];
     }
     return null;

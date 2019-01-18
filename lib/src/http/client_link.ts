@@ -181,7 +181,7 @@ export class HttpClientLink  extends ClientLink {
       }
       // server start to support version since 1.0.4
       // and this is the version ack is added
-      enableAck = serverConfig.containsKey('version');
+      enableAck = serverConfig.hasOwnProperty('version');
       remotePath = serverConfig['path'];
 
       if (typeof serverConfig['wsUri'] === 'string') {

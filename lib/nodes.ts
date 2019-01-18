@@ -83,7 +83,7 @@ export class UpgradableNode  extends SimpleNode {
 
   @override
   onCreated() {
-    if (configs.containsKey(r"$version")) {
+    if (configs.hasOwnProperty(r"$version")) {
       var version = configs[r"$version"];
       if (version != latestVersion) {
         upgrader(version);
@@ -224,7 +224,7 @@ export class ResolvingNodeProvider  extends SimpleNodeProvider {
 
     if (node == null) {
       let profile: string = m[r'$is'];
-      if (profileMap.containsKey(profile)) {
+      if (profileMap.hasOwnProperty(profile)) {
         node = profileMap[profile](path);
       } else {
         node = new CallbackNode(path);

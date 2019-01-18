@@ -124,7 +124,7 @@ export class DsTimer  {
   static timerOnceBefore(callback: Function, ms:number) {
     desiredTime50:number =
         (((new DateTime.now()).millisecondsSinceEpoch + ms) / 50).ceil();
-    if ( this._functionsMap.containsKey(callback)) {
+    if ( this._functionsMap.hasOwnProperty(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
       if (existTf.ts50 <= desiredTime50) {
         return;
@@ -146,7 +146,7 @@ export class DsTimer  {
   static timerOnceAfter(callback: Function, ms:number) {
     desiredTime50:number =
         (((new DateTime.now()).millisecondsSinceEpoch + ms) / 50).ceil();
-    if ( this._functionsMap.containsKey(callback)) {
+    if ( this._functionsMap.hasOwnProperty(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
       if (existTf.ts50 >= desiredTime50) {
         return;
@@ -169,7 +169,7 @@ export class DsTimer  {
         (((new DateTime.now()).millisecondsSinceEpoch + after) / 50).ceil();
     desiredTime50_1:number =
         (((new DateTime.now()).millisecondsSinceEpoch + before) / 50).ceil();
-    if ( this._functionsMap.containsKey(callback)) {
+    if ( this._functionsMap.hasOwnProperty(callback)) {
       let existTf: TimerFunctions = _functionsMap[callback];
       if (existTf.ts50 >= desiredTime50_0 && existTf.ts50 <= desiredTime50_1) {
         return;
