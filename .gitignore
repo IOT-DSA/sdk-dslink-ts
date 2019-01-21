@@ -1,6 +1,8 @@
 *.map
+*.dart
 /lib/**/*.js
 /tool/**/*.js
+/example/ts/**/*.js
 node_modules
 /.idea
 /temp
