@@ -29,8 +29,8 @@ export class BrowserUserLink extends ClientLink {
   }
 
   static session: string = Math.random().toString(16).substr(2, 8);
-  readonly requester: Requester;
-  readonly responder: Responder;
+  readonly requester: Requester = new Requester();
+//  readonly responder: Responder;
 
   readonly nonce: ECDH = new DummyECDH();
   privateKey: PrivateKey;
@@ -49,17 +49,11 @@ export class BrowserUserLink extends ClientLink {
 
 
   constructor(wsUpdateUri: string,
-              isRequester = true,
-              // isResponder = false,
               format = 'msgpack') {
     super();
     if (wsUpdateUri.startsWith("http")) {
       wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
     }
-    this.requester = isRequester ? new Requester() : null;
-    // responder is supported in the browser dslink
-    // this.responder = (isResponder && nodeProvider != null)
-    //   ? new Responder(nodeProvider) : null;
 
     this.wsUpdateUri = wsUpdateUri;
     this.format = format;
@@ -89,9 +83,9 @@ export class BrowserUserLink extends ClientLink {
     this._wsConnection = new WebSocketConnection(
       socket, this, null, DsCodec.getCodec(this.format));
 
-    if (this.responder != null) {
-      this.responder.connection = this._wsConnection.responderChannel;
-    }
+    // if (this.responder != null) {
+    //   this.responder.connection = this._wsConnection.responderChannel;
+    // }
 
     if (this.requester != null) {
       this._wsConnection.onRequesterReady.then((channel) => {

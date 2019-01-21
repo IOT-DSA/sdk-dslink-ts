@@ -1,5 +1,4 @@
-
-let link = new DSLink('ws://192.168.0.9:8080/ws', true, 'json');
+let link = new DSLink('ws://192.168.0.9:8080/ws', 'json');
 link.connect();
 
 let subscription = link.requester.subscribe('/sys/dataOutPerSecond', (data) => {

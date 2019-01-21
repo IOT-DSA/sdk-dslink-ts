@@ -8790,20 +8790,17 @@ exports.DummyECDH = DummyECDH;
 
 class BrowserUserLink extends interfaces_1.ClientLink {
   constructor(wsUpdateUri) {
-    let isRequester = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    let format = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'msgpack';
+    let format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'msgpack';
     super();
     this._onRequesterReadyCompleter = new async_1.Completer();
+    this.requester = new requester_1.Requester(); //  readonly responder: Responder;
+
     this.nonce = new DummyECDH();
     this._wsDelay = 1;
 
     if (wsUpdateUri.startsWith("http")) {
       wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
     }
-
-    this.requester = isRequester ? new requester_1.Requester() : null; // responder is supported in the browser dslink
-    // this.responder = (isResponder && nodeProvider != null)
-    //   ? new Responder(nodeProvider) : null;
 
     this.wsUpdateUri = wsUpdateUri;
     this.format = format;
@@ -8833,11 +8830,9 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     let reconnect = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
     this._initSocketTimer = null;
     let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-    this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format));
-
-    if (this.responder != null) {
-      this.responder.connection = this._wsConnection.responderChannel;
-    }
+    this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format)); // if (this.responder != null) {
+    //   this.responder.connection = this._wsConnection.responderChannel;
+    // }
 
     if (this.requester != null) {
       this._wsConnection.onRequesterReady.then(channel => {
