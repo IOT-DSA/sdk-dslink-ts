@@ -18,6 +18,7 @@
     "msgpack-lite": "^0.1.26"
   },
   "scripts": {
-    "basic": "parcel example/basic.html --out-dir temp --open --no-source-maps "
+    "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
+    "build": "parcel build lib/browser.ts --no-minify"
   }
 }

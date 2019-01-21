@@ -1,4 +1,4 @@
-import {BrowserUserLink} from "../lib/src/browser/browser_user_link";
+import {BrowserUserLink} from "../../lib/src/browser/browser_user_link";
 
 
 let link = new BrowserUserLink('ws://192.168.0.9:8080/ws', true, 'json');
