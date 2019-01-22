@@ -3640,7 +3640,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
 exports.BrowserUserLink = BrowserUserLink;
-},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser_ws_conn":"3FSK","../utils/codec":"TRmg"}],"YnW4":[function(require,module,exports) {
+},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser_ws_conn":"3FSK","../utils/codec":"TRmg"}],"txRo":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3654,4 +3654,4 @@ if (Object.isExtensible(window)) {
 }
 
 exports.DSLink = browser_user_link_1.BrowserUserLink;
-},{"./src/browser/browser_user_link":"0BdU"}]},{},["YnW4"], null)
+},{"./src/browser/browser_user_link":"0BdU"}]},{},["txRo"], null)
