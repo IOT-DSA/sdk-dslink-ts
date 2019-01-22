@@ -8896,6 +8896,10 @@ Object.defineProperty(exports, "__esModule", {
 
 const browser_user_link_1 = require("./src/browser/browser_user_link");
 
-window.DSLink = browser_user_link_1.BrowserUserLink;
+if (Object.isExtensible(window)) {
+  window.DSLink = browser_user_link_1.BrowserUserLink;
+}
+
+exports.DSLink = browser_user_link_1.BrowserUserLink;
 },{"./src/browser/browser_user_link":"0BdU"}]},{},["YnW4"], null)
 //# sourceMappingURL=/browser.map

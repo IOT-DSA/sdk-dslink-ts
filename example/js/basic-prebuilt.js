@@ -1,5 +1,3 @@
-const {DSLink} = require('dslink-js/browser');
-
 let link = new DSLink('ws://localhost:8080/ws', 'json');
 link.connect();
 

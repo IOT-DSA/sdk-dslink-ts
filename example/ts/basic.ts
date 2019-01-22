@@ -1,7 +1,6 @@
-import {BrowserUserLink} from "../../lib/src/browser/browser_user_link";
+import {DSLink} from "../../lib/web";
 
-
-let link = new BrowserUserLink('ws://192.168.0.9:8080/ws', 'json');
+let link = new DSLink('ws://localhost:8080/ws', 'json');
 link.connect();
 
 let subscription = link.requester.subscribe('/sys/dataOutPerSecond', (data) => {
