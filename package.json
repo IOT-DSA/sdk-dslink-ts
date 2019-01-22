@@ -1,4 +1,14 @@
 {
+  "name":"dslink-js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IOT-DSA/sdk-dslink-ts.git"
+  },
+  "author": {
+    "name": "Rick Zhou",
+    "email": "rinick@gmail.com"
+  },
   "devDependencies": {
     "@types/base64-js": "^1.2.5",
     "@types/chai": "^4.1.5",
@@ -19,6 +29,7 @@
   },
   "scripts": {
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
-    "build": "parcel build lib/browser.ts --no-minify"
+    "build": "parcel build lib/browser.ts --no-minify",
+    "build-node": "parcel build lib/browser.ts --out-dir ./ --no-minify --target node --no-source-maps "
   }
 }
