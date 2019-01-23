@@ -1,4 +1,4 @@
-const {DSLink} = require('dslink-js/web');
+const {DSLink} = require('dslink-js/lib/web');
 
 let link = new DSLink('ws://localhost:8080/ws', 'json');
 link.connect();
