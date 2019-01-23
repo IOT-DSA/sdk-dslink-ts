@@ -212,7 +212,7 @@ class ListController {
                 this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
                 this.changes.clear();
             }
-            if (this.request.streamStatus === interfaces_1.StreamStatus.closed) {
+            if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
                 this.stream.close();
             }
         }

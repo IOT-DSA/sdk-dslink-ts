@@ -215,7 +215,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
           this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
-      if (this.request.streamStatus === StreamStatus.closed) {
+      if (this.request && this.request.streamStatus === StreamStatus.closed) {
         this.stream.close();
       }
     }
