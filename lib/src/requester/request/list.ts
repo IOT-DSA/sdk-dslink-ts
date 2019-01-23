@@ -164,9 +164,9 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     if (!defPath.startsWith('/')) {
       let base: object = this.node.configs.get('$base');
       if (typeof base === 'string') {
-        defPath = '$base/defs/profile/$defPath';
+        defPath = `${base}/defs/profile/${defPath}`;
       } else {
-        defPath = '/defs/profile/$defPath';
+        defPath = `/defs/profile/${defPath}`;
       }
     }
     if (this.node.profile instanceof RemoteNode &&
@@ -189,7 +189,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     '$settings'
   ];
 
-  _onProfileUpdate(update: RequesterListUpdate) {
+  _onProfileUpdate = (update: RequesterListUpdate) => {
     if (this._profileLoader == null) {
 //      logger.finest('warning, unexpected state of profile loading');
       return;
@@ -204,7 +204,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
     this._ready = true;
     this.onProfileUpdated();
-  }
+  };
 
   _ready: boolean = true;
 

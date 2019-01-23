@@ -100,7 +100,7 @@ new ListQueue();
 _sendRequest(let, publicKeyRemote, PublicKey, oldprivate, string);
 Promise < ECDH > {
     var: req = new ECDHIsolateRequest(publicKeyRemote, oldprivate),
-    _requests: .add(req),
+    _requests, : .add(req),
     return: req.future
 };
 class ECDHIsolateRequest {

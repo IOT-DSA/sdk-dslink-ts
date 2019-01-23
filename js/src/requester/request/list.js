@@ -31,6 +31,21 @@ exports.ListDefListener = ListDefListener;
 class ListController {
     constructor(node, requester) {
         this.changes = new Set();
+        this._onProfileUpdate = (update) => {
+            if (this._profileLoader == null) {
+                //      logger.finest('warning, unexpected state of profile loading');
+                return;
+            }
+            this._profileLoader.close();
+            this._profileLoader = null;
+            for (let change of update.changes) {
+                if (!ListController._ignoreProfileProps.includes(change)) {
+                    this.changes.add(change);
+                }
+            }
+            this._ready = true;
+            this.onProfileUpdated();
+        };
         this._ready = true;
         this._pendingRemoveDef = false;
         this.onStartListen = () => {
@@ -172,10 +187,10 @@ class ListController {
         if (!defPath.startsWith('/')) {
             let base = this.node.configs.get('$base');
             if (typeof base === 'string') {
-                defPath = '$base/defs/profile/$defPath';
+                defPath = `${base}/defs/profile/${defPath}`;
             }
             else {
-                defPath = '/defs/profile/$defPath';
+                defPath = `/defs/profile/${defPath}`;
             }
         }
         if (this.node.profile instanceof node_cache_1.RemoteNode &&
@@ -190,21 +205,6 @@ class ListController {
             this._ready = false;
             this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
         }
-    }
-    _onProfileUpdate(update) {
-        if (this._profileLoader == null) {
-            //      logger.finest('warning, unexpected state of profile loading');
-            return;
-        }
-        this._profileLoader.close();
-        this._profileLoader = null;
-        for (let change of update.changes) {
-            if (!ListController._ignoreProfileProps.includes(change)) {
-                this.changes.add(change);
-            }
-        }
-        this._ready = true;
-        this.onProfileUpdated();
     }
     onProfileUpdated() {
         if (this._ready) {

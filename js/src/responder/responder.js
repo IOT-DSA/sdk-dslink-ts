@@ -160,7 +160,7 @@ _onReceiveRequest(object, m);
     closeResponse(m['rid'], error, DSError.INVALID_METHOD);
 }
 /// close the response from responder side and notify requester
-closeResponse(rid, number, { response: Response, DSError: error });
+closeResponse(rid, number, { response: Response, DSError, error });
 {
     if (response != null) {
         if (_responses[response.rid] != response) {
@@ -179,9 +179,9 @@ closeResponse(rid, number, { response: Response, DSError: error });
     addToSendList(m);
 }
 void updateResponse(response, Response, updates, List, {
-    let: streamStatus, string,
-    let: columns, dynamic: [],
-    let: meta, object,
+    let, streamStatus: string,
+    let, columns: dynamic[],
+    let, meta: object,
     void: handleMap(object, m)
 });
 {
@@ -282,7 +282,7 @@ subscribe(object, m);
 }
 _getNode(Path, p, func, Taker < LocalNode > , onError, TwoTaker(), {
     try: {
-        let: node, LocalNode = nodeProvider.getOrCreateNode(p.path, false),
+        let, node: LocalNode = nodeProvider.getOrCreateNode(p.path, false),
         if(node) { }, instanceof: WaitForMe
     }
 });

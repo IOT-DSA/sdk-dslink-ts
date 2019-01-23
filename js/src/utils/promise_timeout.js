@@ -1,8 +1,8 @@
 "use strict";
 // part of dslink.utils;
-awaitWithTimeout(future, Future, timeoutMs, number, { Function: onTimeout, null: ,
-    Function: onSuccessAfterTimeout, null: ,
-    Function: onErrorAfterTimeout, null:  });
+awaitWithTimeout(future, Future, timeoutMs, number, { Function, onTimeout: null,
+    Function, onSuccessAfterTimeout: null,
+    Function, onErrorAfterTimeout: null });
 Future;
 {
     completer: Completer = new Completer();

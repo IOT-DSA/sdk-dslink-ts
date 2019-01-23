@@ -155,7 +155,7 @@ parsedArguments == null ? null : parsedArguments[name];
 /// - setting broker urls
 /// - loading dslink.json files
 /// - loading or creating private keys
-configure({ argp: ArgParser, OptionResultsHandler: optionsHandler });
+configure({ argp: ArgParser, OptionResultsHandler, optionsHandler });
 boolean;
 {
     _configured = true;
@@ -409,12 +409,12 @@ Promise < string > chooseBroker(brokers, Stream(), async, {
 /// Retrieves a Broadcast Stream which subscribes to [path] with the specified [cacheLevel].
 /// The node is only subscribed if there is at least one stream subscription.
 /// When the stream subscription count goes to 0, the node is unsubscribed from.
-onValueChange(path, string, { int: cacheLevel, 1:  });
+onValueChange(path, string, { int, cacheLevel: 1 });
 Stream < ValueUpdate > {
     listener: RespSubscribeListener,
     controller: StreamController(),
     subs: number = 0,
-    controller = new StreamController(broadcast(onListen, () => {
+    controller = new StreamController().broadcast(onListen, () => {
         subs++;
         if (listener == null) {
             listener = this[path].subscribe((update) => {
@@ -427,7 +427,7 @@ Stream < ValueUpdate > {
             listener.close();
             listener = null;
         }
-    })),
+    }),
     return: controller.stream
 };
 /// Gets the value for [path] and forcibly updates the value to the same exact value.
@@ -489,7 +489,7 @@ init();
     if (this._discoverBroker) {
         var discovery = new BrokerDiscoveryClient();
         new Future((), async, {
-            await: discovery.init(),
+            await, discovery, : .init(),
             try: {
                 var: broker = await chooseBroker(discovery.discover()),
                 //          logger.info("Discovered Broker at ${broker}");

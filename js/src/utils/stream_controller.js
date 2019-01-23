@@ -62,7 +62,7 @@ addError(error, object, stackTrace, StackTrace);
 {
     _controller.addError(error, stackTrace);
 }
-addStream(source, Stream < T > , { boolean: cancelOnError, true:  });
+addStream(source, Stream < T > , { boolean, cancelOnError: true });
 Future;
 {
     return this._controller.addStream(source, cancelOnError, cancelOnError);
@@ -150,7 +150,7 @@ boolean;
 StreamSubscription < T > listen(void onData(event, T), {
     onError: Function,
     void: onDone(),
-    boolean: cancelOnError
+    boolean, cancelOnError
 });
 {
     if (this._onListen != null) {

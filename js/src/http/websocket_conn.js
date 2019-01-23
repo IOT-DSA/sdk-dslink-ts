@@ -24,7 +24,7 @@ clientLink: ClientLink;
 socket: WebSocket;
 _onDoneHandled: boolean = false;
 /// clientLink is not needed when websocket works in server link
-WebSocketConnection(this.socket, { this: .clientLink, boolean: enableTimeout, false: , boolean: enableAck, true: , DsCodec: useCodec });
+WebSocketConnection(this.socket, { this: .clientLink, boolean, enableTimeout: false, boolean, enableAck: true, DsCodec, useCodec });
 {
     if (useCodec != null) {
         codec = useCodec;

@@ -154,8 +154,8 @@ Stream < ValuePair > {
 };
 Stream < ValuePair > calculateHistory(range, TimeRange, interval, Duration, rollup, Rollup);
 async * {
-    if(interval, inMilliseconds) { }
-} <= 0;
+    if(interval) { }, : .inMilliseconds <= 0
+};
 {
     yield * fetchHistoryData(range);
     return;

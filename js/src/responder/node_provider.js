@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 get;
 listChangeController();
 BroadcastStreamController < string > {
-    if(_listChangeController) { }
-} == null;
+    if() { }, : ._listChangeController == null
+};
 {
     _listChangeController = new BroadcastStreamController(() => {
         onStartListListen();
@@ -85,7 +85,7 @@ boolean;
     return this._valueReady;
 }
 /// Updates this node's value to the specified [value].
-updateValue(update, object, { boolean: force, false:  });
+updateValue(update, object, { boolean, force: false });
 {
     _valueReady = true;
     if (update instanceof ValueUpdate) {

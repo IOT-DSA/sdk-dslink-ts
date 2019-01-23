@@ -81,7 +81,7 @@ window.localStorage[key];
 _cachedPrivateKey: PrivateKey;
 /// Get a Private Key using the specified storage strategy.
 /// If [storage] is not specified, it uses the [LocalDataStorage] class.
-Promise < PrivateKey > getPrivateKey({ DataStorage: storage });
+Promise < PrivateKey > getPrivateKey({ DataStorage, storage });
 async;
 {
     if (this._cachedPrivateKey != null) {

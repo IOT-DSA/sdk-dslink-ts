@@ -28,7 +28,7 @@ exports.DeleteActionNode = DeleteActionNode;
 (path, provider);
 /// When this action is invoked, [provider.removeNode] will be called with the parent of this action.
 DeleteActionNode.forParent(path, string, provider, MutableNodeProvider, {
-    Function: onDelete
+    Function, onDelete
 });
 this(path, provider, new Path(path).parentPath, onDelete, onDelete);
 /// Handles an action invocation and deletes the target path.
@@ -135,7 +135,7 @@ exports.ResolvingNodeProvider = ResolvingNodeProvider;
 }
 profiles;
 super(defaultNodes, profiles);
-getNode(path, string, { onLoaded: Completer < CallbackNode > , boolean: forceHandle, false:  });
+getNode(path, string, { onLoaded: Completer < CallbackNode > , boolean, forceHandle: false });
 LocalNode;
 {
     node: LocalNode = super.getNode(path);

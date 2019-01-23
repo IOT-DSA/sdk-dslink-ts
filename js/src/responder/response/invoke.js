@@ -10,8 +10,8 @@ exports.InvokeResponse = InvokeResponse;
 pendingData: _InvokeResponseUpdate[] = new _InvokeResponseUpdate[]();
 _hasSentColumns: boolean = false;
 /// update data for the responder stream
-updateStream(updates, List, { columns: List, string: streamStatus, StreamStatus: .open,
-    let: meta, object, boolean: autoSendColumns, true:  });
+updateStream(updates, List, { columns: List, string, streamStatus: StreamStatus.open,
+    let, meta: object, boolean, autoSendColumns: true });
 {
     if (meta != null && meta['mode'] == 'refresh') {
         pendingData.length = 0;

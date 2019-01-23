@@ -41,9 +41,9 @@ formats: List = ['msgpack', 'json'];
 /// format received from broker
 format: string = 'json';
 BrowserECDHLink(this._conn, dsIdPrefix, string, privateKey, PrivateKey, { nodeProvider: NodeProvider,
-    boolean: isRequester, true: ,
-    boolean: isResponder, true: ,
-    this: .token, List: formats });
+    boolean, isRequester: true,
+    boolean, isResponder: true,
+    this: .token, List, formats });
 privateKey = privateKey,
     dsId = '$dsIdPrefix${privateKey.publicKey.qHash64}',
     requester = isRequester ? new Requester() : null,

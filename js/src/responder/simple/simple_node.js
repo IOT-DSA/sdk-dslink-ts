@@ -208,16 +208,20 @@ class SysGetIconNode extends SimpleNode {
 exports.SysGetIconNode = SysGetIconNode;
 (path, provider) => {
     configs.addAll({
-        r: "$invokable", "read": ,
-        r: "$params", [{
-            "name": "Icon",
-            "type": "string"
-        }]: ,
-        r: "$columns", [{
-            "name": "Data",
-            "type": "binary"
-        }]: ,
-        r: "$result", "table": 
+        r, "$invokable": "read",
+        r, "$params": [
+            {
+                "name": "Icon",
+                "type": "string"
+            }
+        ],
+        r, "$columns": [
+            {
+                "name": "Data",
+                "type": "binary"
+            }
+        ],
+        r, "$result": "table"
     });
 };
 onInvoke(params, { [key]: string, dynamic });
@@ -442,7 +446,7 @@ updateValue(path, string, value, object);
     node.updateValue(value);
 }
 /// Sets the given [node] to the given [path].
-setNode(path, string, node, SimpleNode, { boolean: registerChildren, false:  });
+setNode(path, string, node, SimpleNode, { boolean, registerChildren: false });
 {
     if (path == '/' || !path.startsWith('/'))
         return null;
@@ -523,7 +527,7 @@ SimpleNode;
     }
     return node;
 }
-removeNode(path, string, { boolean: recurse, true:  });
+removeNode(path, string, { boolean, recurse: true });
 {
     if (path == '/' || !path.startsWith('/'))
         return;
@@ -577,7 +581,7 @@ Responder;
 {
     return new Responder(this, dsId);
 }
-toString({ boolean: showInstances, false:  });
+toString({ boolean, showInstances: false });
 string;
 {
     var buff = new StringBuffer();
@@ -1157,7 +1161,7 @@ remove();
 /// Add this node to the given node.
 /// If [input] is a string, it is interpreted as a node path and resolved to a node.
 /// If [input] is a [SimpleNode], it will be attached to that.
-attach(input, { string: name });
+attach(input, { string, name });
 {
     if (name == null) {
         name = this.name;
@@ -1258,7 +1262,7 @@ getSimpleMap();
 {
     var rslt = , dynamic;
      > {
-        r: '$hidden', true: 
+        r, '$hidden': true
     };
     if (configs.hasOwnProperty(r, '$is')) {
         rslt[r];

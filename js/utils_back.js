@@ -279,7 +279,7 @@ exports.Scheduler = Scheduler;
         throw new Exception("Invalid Interval: ${interval}");
     }
     return new Timer.periodic(duration, (timer), async, {
-        await: runZoned(action, zoneValues, { "dslink.scheduler.timer": timer })
+        await
     });
 }
 Disposable;
@@ -375,7 +375,7 @@ List < { [key]: string, dynamic } > buildActionIO(types, { [key]: string, string
     }).toList();
 }
 _random: Random = new Random();
-generateBasicId({ int: length, 30:  });
+generateBasicId({ int, length: 30 });
 string;
 {
     var r0 = new Random();
@@ -399,7 +399,7 @@ string;
     }
     return buffer.toString();
 }
-generateToken({ int: length, 50:  });
+generateToken({ int, length: 50 });
 string;
 {
     var r0 = new Random();

@@ -8,7 +8,7 @@ let subscription = link.requester.subscribe('/sys/dataOutPerSecond', (data) => {
   subscription.close();
 });
 
-let list = link.requester.list('/sys', (data) => {
+let list = link.requester.list('/data', (data) => {
   console.log(data);
 });
 

@@ -83,9 +83,11 @@ const boolean, fromEnvironment;
 true;
 ;
 Promise < WebSocket > connectToWebSocket(let, url, string, {
-    let: protocols,
-    let: headers
-}, { [key]: string, dynamic }, let, httpClient, HttpClient, boolean, useStandardWebSocket);
+    let, protocols: Iterable < string > ,
+    let, headers: { [key]: string, dynamic },
+    let, httpClient: HttpClient,
+    boolean, useStandardWebSocket
+});
 async;
 {
     uri: Uri = Uri.parse(url);
@@ -118,8 +120,8 @@ async;
     _client: HttpClient = httpClient == null ? (new HttpClient()
         ..badCertificateCallback = (a, b, c) => true) : httpClient;
     return this._client.openUrl("GET", uri).then((request) => async, {
-        if(uri, userInfo) { }
-    } != null && !uri.userInfo.isEmpty);
+        if(uri) { }, : .userInfo != null && !uri.userInfo.isEmpty
+    });
     {
         // If the URL contains user information use that for basic
         // authorization.
@@ -207,13 +209,14 @@ Promise < WebSocket > upgradeToWebSocket(request, HttpRequest, [
     upgrade(protocol, string);
     Promise < WebSocket > {
         // Send the upgrade response.
-        response: 
+        response,
+        : 
             ..statusCode = HttpStatus.SWITCHING_PROTOCOLS
             ..headers.add(HttpHeaders.CONNECTION, "Upgrade")
             ..headers.add(HttpHeaders.UPGRADE, "websocket"),
-        let: key, string = request.headers.value("Sec-WebSocket-Key"),
-        let: accept, string = BASE64.encode(sha1.convert("$key$_webSocketGUID".codeUnits).bytes),
-        response: .headers.add("Sec-WebSocket-Accept", accept),
+        let, key: string = request.headers.value("Sec-WebSocket-Key"),
+        let, accept: string = BASE64.encode(sha1.convert("$key$_webSocketGUID".codeUnits).bytes),
+        response, : .headers.add("Sec-WebSocket-Accept", accept),
         if(protocol) { }
     } != null;
     {
@@ -284,7 +287,7 @@ async;
 }
 final;
 _separator = pathlib.separator;
-Promise < File > this._safeWriteBase(targetFile, File, dynamic, content, Promise < File > writeFunction(file, File, dynamic, content), { boolean: verifyJson, false:  });
+Promise < File > this._safeWriteBase(targetFile, File, dynamic, content, Promise < File > writeFunction(file, File, dynamic, content), { boolean, verifyJson: false });
 async;
 {
     tempDirectory = await Directory.current.createTemp();
@@ -319,7 +322,7 @@ async;
         return targetFile;
     }
 }
-Promise < File > safeWriteAsString(targetFile, File, content, string, { boolean: verifyJson, false:  });
+Promise < File > safeWriteAsString(targetFile, File, content, string, { boolean, verifyJson: false });
 async;
 {
     return this._safeWriteBase(targetFile, content, (File), f, content);
@@ -328,7 +331,7 @@ async;
     verifyJson;
     ;
 }
-Promise < File > safeWriteAsBytes(targetFile, File, content, number[], { boolean: verifyJson, false:  });
+Promise < File > safeWriteAsBytes(targetFile, File, content, number[], { boolean, verifyJson: false });
 async;
 {
     return this._safeWriteBase(targetFile, content, (File), f, content);

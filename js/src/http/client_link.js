@@ -49,15 +49,15 @@ formats: List = ['msgpack', 'json'];
 format: string = 'json';
 HttpClientLink(this._conn, dsIdPrefix, string, privateKey, PrivateKey, {
     nodeProvider: NodeProvider,
-    boolean: isRequester, true: ,
-    boolean: isResponder, true: ,
+    boolean, isRequester: true,
+    boolean, isResponder: true,
     overrideRequester: Requester,
     overrideResponder: Responder,
     this: .strictTls, false: ,
     this: .home,
     this: .token,
     this: .linkData,
-    List: formats
+    List, formats
 });
 privateKey = privateKey,
     dsId = '${Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}';
@@ -136,8 +136,8 @@ async;
     // When it is fixed, we should go back to a regular try-catch
     runZoned((), async, {
         await() { }, : {
-            let: request, HttpClientRequest = await client.postUrl(connUri),
-            let: requestJson, object = {
+            let, request: HttpClientRequest = await client.postUrl(connUri),
+            let, requestJson: object = {
                 'publicKey': privateKey.publicKey.qBase64,
                 'isRequester': requester != null,
                 'isResponder': responder != null,

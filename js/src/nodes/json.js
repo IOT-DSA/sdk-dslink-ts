@@ -109,7 +109,7 @@ object;
         if ((value != null && value instanceof Object)) {
             var m = , dynamic;
              > {
-                r: "$is", "json": 
+                r, "$is": "json"
             };
             for (string; key in value;) {
                 m[NodeNamer.createName(key)] = create(value[key]);
@@ -125,8 +125,8 @@ object;
         }
         else {
             return {
-                r: "$is", "json": ,
-                r: "$type", _guessType(value) { },
+                r, "$is": "json",
+                r, "$type": _guessType(value),
                 "?_json": value
             };
         }
