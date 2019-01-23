@@ -126,11 +126,10 @@ export class Requester extends ConnectionHandler {
     return stream;
   }
 
-  getNodeValue(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
+  subscribeOnce(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
     return new Promise((resolve, reject) => {
-      let listener: ReqSubscribeListener;
       let timer: any;
-      listener = this.subscribe(path, (update: ValueUpdate) => {
+      let listener = this.subscribe(path, (update: ValueUpdate) => {
         resolve(update);
 
         if (listener != null) {
@@ -155,7 +154,7 @@ export class Requester extends ConnectionHandler {
     });
   }
 
-  getRemoteNode(path: string): Promise<RemoteNode> {
+  listOnce(path: string): Promise<RemoteNode> {
     return new Promise((resolve, reject) => {
       let sub = this.list(path, (update) => {
         resolve(update.node);

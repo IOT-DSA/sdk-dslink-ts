@@ -100,11 +100,10 @@ class Requester extends connection_handler_1.ConnectionHandler {
         });
         return stream;
     }
-    getNodeValue(path, timeoutMs = 0) {
+    subscribeOnce(path, timeoutMs = 0) {
         return new Promise((resolve, reject) => {
-            let listener;
             let timer;
-            listener = this.subscribe(path, (update) => {
+            let listener = this.subscribe(path, (update) => {
                 resolve(update);
                 if (listener != null) {
                     listener.close();
@@ -127,7 +126,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
             }
         });
     }
-    getRemoteNode(path) {
+    listOnce(path) {
         return new Promise((resolve, reject) => {
             let sub = this.list(path, (update) => {
                 resolve(update.node);
