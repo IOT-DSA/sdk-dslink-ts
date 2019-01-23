@@ -5318,8 +5318,7 @@ class DsCodec {
 exports.DsCodec = DsCodec;
 
 class DsJson {
-  static encode(val) {
-    let pretty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  static encode(val, pretty = false) {
     return this.instance.encodeJson(val, pretty);
   }
 
@@ -5348,8 +5347,7 @@ class DsJsonCodecImpl extends DsCodec {
     return JSON.parse(str);
   }
 
-  encodeJson(val) {
-    let pretty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  encodeJson(val, pretty = false) {
     return JSON.stringify(val, DsJsonCodecImpl._safeEncoder, pretty ? 1 : undefined);
   }
 
@@ -5553,8 +5551,7 @@ ErrorPhase.response = "response";
 exports.ErrorPhase = ErrorPhase;
 
 class DSError {
-  constructor(type) {
-    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  constructor(type, options = {}) {
     this.type = type;
     this.msg = options.msg;
     this.detail = options.detail;
@@ -5984,14 +5981,6 @@ exports.ConnectionHandler = ConnectionHandler;
 },{"./interfaces":"N9NG"}],"QClj":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 }); /// Base Class for any and all nodes in the SDK.
@@ -6100,21 +6089,12 @@ class Node {
 
 
   forEachChild(callback) {
-    for (let _ref of this.children) {
-      var _ref2 = _slicedToArray(_ref, 2);
-
-      let name = _ref2[0];
-      let node = _ref2[1];
+    for (let [name, node] of this.children) {
       callback(name, node);
     }
 
     if (this.profile != null) {
-      for (let _ref3 of this.profile.children) {
-        var _ref4 = _slicedToArray(_ref3, 2);
-
-        let name = _ref4[0];
-        let node = _ref4[1];
-
+      for (let [name, node] of this.profile.children) {
         if (!this.children.has(name)) {
           callback(name, node);
         }
@@ -6123,21 +6103,12 @@ class Node {
   }
 
   forEachConfig(callback) {
-    for (let _ref5 of this.configs) {
-      var _ref6 = _slicedToArray(_ref5, 2);
-
-      let name = _ref6[0];
-      let val = _ref6[1];
+    for (let [name, val] of this.configs) {
       callback(name, val);
     }
 
     if (this.profile != null) {
-      for (let _ref7 of this.profile.configs) {
-        var _ref8 = _slicedToArray(_ref7, 2);
-
-        let name = _ref8[0];
-        let val = _ref8[1];
-
+      for (let [name, val] of this.profile.configs) {
         if (!this.children.has(name)) {
           callback(name, val);
         }
@@ -6146,21 +6117,12 @@ class Node {
   }
 
   forEachAttribute(callback) {
-    for (let _ref9 of this.attributes) {
-      var _ref10 = _slicedToArray(_ref9, 2);
-
-      let name = _ref10[0];
-      let val = _ref10[1];
+    for (let [name, val] of this.attributes) {
       callback(name, val);
     }
 
     if (this.profile != null) {
-      for (let _ref11 of this.profile.attributes) {
-        var _ref12 = _slicedToArray(_ref11, 2);
-
-        let name = _ref12[0];
-        let val = _ref12[1];
-
+      for (let [name, val] of this.profile.attributes) {
         if (!this.children.has(name)) {
           callback(name, val);
         }
@@ -6351,9 +6313,7 @@ class Path {
   } /// Merges the [base] path with this path.
 
 
-  mergeBasePath(base) {
-    let force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
+  mergeBasePath(base, force = false) {
     if (base == null) {
       return;
     }
@@ -6553,14 +6513,6 @@ exports.RequesterUpdate = RequesterUpdate;
 },{}],"duux":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -6608,6 +6560,27 @@ exports.ListDefListener = ListDefListener;
 class ListController {
   constructor(node, requester) {
     this.changes = new Set();
+
+    this._onProfileUpdate = update => {
+      if (this._profileLoader == null) {
+        //      logger.finest('warning, unexpected state of profile loading');
+        return;
+      }
+
+      this._profileLoader.close();
+
+      this._profileLoader = null;
+
+      for (let change of update.changes) {
+        if (!ListController._ignoreProfileProps.includes(change)) {
+          this.changes.add(change);
+        }
+      }
+
+      this._ready = true;
+      this.onProfileUpdated();
+    };
+
     this._ready = true;
     this._pendingRemoveDef = false;
 
@@ -6629,27 +6602,15 @@ class ListController {
 
           let changes = [];
 
-          for (let _ref of this.node.configs) {
-            var _ref2 = _slicedToArray(_ref, 2);
-
-            let key = _ref2[0];
-            let v = _ref2[1];
+          for (let [key, v] of this.node.configs) {
             changes.push(key);
           }
 
-          for (let _ref3 of this.node.attributes) {
-            var _ref4 = _slicedToArray(_ref3, 2);
-
-            let key = _ref4[0];
-            let v = _ref4[1];
+          for (let [key, v] of this.node.attributes) {
             changes.push(key);
           }
 
-          for (let _ref5 of this.node.children) {
-            var _ref6 = _slicedToArray(_ref5, 2);
-
-            let key = _ref6[0];
-            let v = _ref6[1];
+          for (let [key, v] of this.node.children) {
             changes.push(key);
           }
 
@@ -6778,9 +6739,9 @@ class ListController {
       let base = this.node.configs.get('$base');
 
       if (typeof base === 'string') {
-        defPath = '$base/defs/profile/$defPath';
+        defPath = `${base}/defs/profile/${defPath}`;
       } else {
-        defPath = '/defs/profile/$defPath';
+        defPath = `/defs/profile/${defPath}`;
       }
     }
 
@@ -6798,26 +6759,6 @@ class ListController {
       this._ready = false;
       this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }
-  }
-
-  _onProfileUpdate(update) {
-    if (this._profileLoader == null) {
-      //      logger.finest('warning, unexpected state of profile loading');
-      return;
-    }
-
-    this._profileLoader.close();
-
-    this._profileLoader = null;
-
-    for (let change of update.changes) {
-      if (!ListController._ignoreProfileProps.includes(change)) {
-        this.changes.add(change);
-      }
-    }
-
-    this._ready = true;
-    this.onProfileUpdated();
   }
 
   onProfileUpdated() {
@@ -6875,14 +6816,6 @@ ListController._ignoreProfileProps = ['$is', '$permission', '$settings'];
 exports.ListController = ListController;
 },{"../../utils/async":"bajV","../../common/interfaces":"N9NG","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
 "use strict";
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -6960,12 +6893,7 @@ class SubscribeRequest extends request_1.Request {
 
   _close(error) {
     if (this.subscriptions.size > 0) {
-      for (let _ref of this.subscriptions) {
-        var _ref2 = _slicedToArray(_ref, 2);
-
-        let key = _ref2[0];
-        let s = _ref2[1];
-
+      for (let [key, s] of this.subscriptions) {
         this._changedPaths.add(key);
       }
     }
@@ -7095,12 +7023,7 @@ class SubscribeRequest extends request_1.Request {
     if (this.toRemove.size > 0) {
       let removeSids = [];
 
-      for (let _ref3 of this.toRemove) {
-        var _ref4 = _slicedToArray(_ref3, 2);
-
-        let sid = _ref4[0];
-        let sub = _ref4[1];
-
+      for (let [sid, sub] of this.toRemove) {
         if (sub.callbacks.size === 0) {
           removeSids.push(sid);
           this.subscriptions.delete(sub.node.remotePath);
@@ -7241,9 +7164,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 class Permission {
-  static parse(obj) {
-    let defaultVal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Permission.NEVER;
-
+  static parse(obj, defaultVal = Permission.NEVER) {
     if (typeof obj === 'string' && Permission.nameParser.hasOwnProperty(obj)) {
       return Permission.nameParser[obj];
     }
@@ -7537,8 +7458,7 @@ class RequesterInvokeStream extends async_1.Stream {}
 exports.RequesterInvokeStream = RequesterInvokeStream;
 
 class InvokeController {
-  constructor(node, requester, params) {
-    let maxPermission = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : permission_1.Permission.CONFIG;
+  constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
     this.mode = 'stream';
     this.lastStatus = interfaces_1.StreamStatus.initialize;
 
@@ -7636,14 +7556,6 @@ function buildEnumType(values) {
 exports.buildEnumType = buildEnumType;
 },{}],"jg7K":[function(require,module,exports) {
 "use strict";
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -7825,8 +7737,7 @@ class RemoteNode extends node_1.Node {
     }
   }
 
-  _invoke(params, requester) {
-    let maxPermission = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : permission_1.Permission.CONFIG;
+  _invoke(params, requester, maxPermission = permission_1.Permission.CONFIG) {
     return new invoke_1.InvokeController(this, requester, params, maxPermission)._stream;
   } /// used by list api to update simple data for children
 
@@ -7865,31 +7776,18 @@ class RemoteNode extends node_1.Node {
     this.children.clear();
   }
 
-  save() {
-    let includeValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+  save(includeValue = true) {
     let map = {};
 
-    for (let _ref of this.configs) {
-      var _ref2 = _slicedToArray(_ref, 2);
-
-      let key = _ref2[0];
-      let value = _ref2[1];
+    for (let [key, value] of this.configs) {
       map[key] = value;
     }
 
-    for (let _ref3 of this.attributes) {
-      var _ref4 = _slicedToArray(_ref3, 2);
-
-      let key = _ref4[0];
-      let value = _ref4[1];
+    for (let [key, value] of this.attributes) {
       map[key] = value;
     }
 
-    for (let _ref5 of this.children) {
-      var _ref6 = _slicedToArray(_ref5, 2);
-
-      let key = _ref6[0];
-      let node = _ref6[1];
+    for (let [key, node] of this.children) {
       map[key] = node instanceof RemoteNode ? node.save() : node.getSimpleMap();
     }
 
@@ -8000,8 +7898,7 @@ const permission_1 = require("../../common/permission");
 const interface_1 = require("../interface");
 
 class SetController {
-  constructor(requester, path, value) {
-    let maxPermission = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : permission_1.Permission.CONFIG;
+  constructor(requester, path, value, maxPermission = permission_1.Permission.CONFIG) {
     this.completer = new async_1.Completer();
     this.requester = requester;
     this.path = path;
@@ -8076,14 +7973,6 @@ class RemoveController {
 exports.RemoveController = RemoveController;
 },{"../../utils/async":"bajV","../interface":"wq45"}],"9L6c":[function(require,module,exports) {
 "use strict";
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8189,8 +8078,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     return this.nodeCache.isNodeCached(path);
   }
 
-  subscribe(path, callback) {
-    let qos = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  subscribe(path, callback, qos = 0) {
     let node = this.nodeCache.getRemoteNode(path);
 
     node._subscribe(this, callback, qos);
@@ -8204,8 +8092,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     node._unsubscribe(this, callback);
   }
 
-  onValueChange(path) {
-    let qos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  onValueChange(path, qos = 0) {
     let listener;
     let stream;
     stream = new async_1.Stream(() => {
@@ -8223,8 +8110,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     return stream;
   }
 
-  getNodeValue(path) {
-    let timeoutMs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  getNodeValue(path, timeoutMs = 0) {
     return new Promise((resolve, reject) => {
       let listener;
       let timer;
@@ -8274,10 +8160,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     return node._list(this).listen(callback);
   }
 
-  invoke(path) {
-    let params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    let callback = arguments.length > 2 ? arguments[2] : undefined;
-    let maxPermission = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : permission_1.Permission.CONFIG;
+  invoke(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
     let node = this.nodeCache.getRemoteNode(path);
 
     let stream = node._invoke(params, this, maxPermission);
@@ -8289,8 +8172,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     return stream;
   }
 
-  set(path, value) {
-    let maxPermission = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : permission_1.Permission.CONFIG;
+  set(path, value, maxPermission = permission_1.Permission.CONFIG) {
     return new set_1.SetController(this, path, value, maxPermission).future;
   }
 
@@ -8320,12 +8202,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     let newRequests = new Map();
     newRequests.set(0, this._subscription);
 
-    for (let _ref of this._requests) {
-      var _ref2 = _slicedToArray(_ref, 2);
-
-      let n = _ref2[0];
-      let req = _ref2[1];
-
+    for (let [n, req] of this._requests) {
       if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
         req._close(interfaces_1.DSError.DISCONNECTED);
       } else {
@@ -8342,11 +8219,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     this._connected = true;
     super.onReconnected();
 
-    for (let _ref3 of this._requests) {
-      var _ref4 = _slicedToArray(_ref3, 2);
-
-      let n = _ref4[0];
-      let req = _ref4[1];
+    for (let [n, req] of this._requests) {
       req.updater.onReconnect();
       req.resend();
     }
@@ -8365,8 +8238,7 @@ Object.defineProperty(exports, "__esModule", {
 const async_1 = require("../utils/async");
 
 class PassiveChannel {
-  constructor(conn) {
-    let connected = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  constructor(conn, connected = false) {
     this.onReceive = new async_1.Stream();
     this._processors = [];
     this._isReady = false;
@@ -8789,8 +8661,7 @@ class DummyECDH {
 exports.DummyECDH = DummyECDH;
 
 class BrowserUserLink extends interfaces_1.ClientLink {
-  constructor(wsUpdateUri) {
-    let format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'msgpack';
+  constructor(wsUpdateUri, format = 'msgpack') {
     super();
     this._onRequesterReadyCompleter = new async_1.Completer();
     this.requester = new requester_1.Requester(); //  readonly responder: Responder;
@@ -8826,8 +8697,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
   }
 
-  initWebsocket() {
-    let reconnect = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+  initWebsocket(reconnect = true) {
     this._initSocketTimer = null;
     let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
     this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format)); // if (this.responder != null) {

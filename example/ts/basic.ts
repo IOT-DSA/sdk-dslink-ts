@@ -1,4 +1,4 @@
-import {DSLink} from "../../lib/web";
+import {DSLink} from "../../ts/web";
 
 let link = new DSLink('ws://localhost:8080/ws', 'json');
 link.connect();

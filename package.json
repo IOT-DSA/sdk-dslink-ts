@@ -1,7 +1,7 @@
 {
   "name": "dslink-js",
   "license": "Apache-2.0",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/IOT-DSA/sdk-dslink-ts.git"
@@ -32,6 +32,6 @@
   "scripts": {
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
     "js-example": "parcel example/js/basic.html --out-dir temp --open --no-source-maps ",
-    "build": "parcel build lib/web.ts --no-minify"
+    "build": "parcel build ts/web.ts --no-minify"
   }
 }
