@@ -162,7 +162,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     this._ready = true;
     let defPath = defName;
     if (!defPath.startsWith('/')) {
-      let base: object = this.node.configs.get('$base');
+      let base: any = this.node.configs.get('$base');
       if (typeof base === 'string') {
         defPath = `${base}/defs/profile/${defPath}`;
       } else {
@@ -199,6 +199,19 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     for (let change of update.changes) {
       if (!ListController._ignoreProfileProps.includes(change)) {
         this.changes.add(change);
+        if (change.startsWith('$')) {
+          if (!this.node.configs.has(change)) {
+            this.node.configs.set(change, this.node.profile.configs.get(change));
+          }
+        } else if (change.startsWith('@')) {
+          if (!this.node.attributes.has(change)) {
+            this.node.attributes.set(change, this.node.profile.attributes.get(change));
+          }
+        } else {
+          if (!this.node.children.has(change)) {
+            this.node.children.set(change, this.node.profile.children.get(change));
+          }
+        }
       }
     }
 

@@ -7,6 +7,7 @@ export class Stream<T> {
   _listeners: Set<Listener<T>> = new Set<Listener<T>>();
   _updating = false;
   _value: T;
+  _cached = false;
 
   _onStartListen: () => void;
   _onAllCancel: () => void;
@@ -56,6 +57,9 @@ export class Stream<T> {
       listener(this._value);
     }
     this._updating = false;
+    if (!this._cached) {
+      this._value = undefined;
+    }
   }
 
   isClosed = false;
@@ -64,7 +68,7 @@ export class Stream<T> {
     if (!this.isClosed) {
       this.isClosed = true;
       this._listeners.clear();
-      if (this._onClose){
+      if (this._onClose) {
         this._onClose();
       }
     }

@@ -4,6 +4,7 @@ class Stream {
     constructor(onStartListen, onAllCancel, onListen) {
         this._listeners = new Set();
         this._updating = false;
+        this._cached = false;
         this.isClosed = false;
         this._onStartListen = onStartListen;
         this._onAllCancel = onAllCancel;
@@ -43,6 +44,9 @@ class Stream {
             listener(this._value);
         }
         this._updating = false;
+        if (!this._cached) {
+            this._value = undefined;
+        }
     }
     close() {
         if (!this.isClosed) {
