@@ -5660,6 +5660,7 @@ class Stream {
   constructor(onStartListen, onAllCancel, onListen) {
     this._listeners = new Set();
     this._updating = false;
+    this._cached = false;
     this.isClosed = false;
     this._onStartListen = onStartListen;
     this._onAllCancel = onAllCancel;
@@ -5713,6 +5714,10 @@ class Stream {
     }
 
     this._updating = false;
+
+    if (!this._cached) {
+      this._value = undefined;
+    }
   }
 
   close() {
@@ -6574,6 +6579,20 @@ class ListController {
       for (let change of update.changes) {
         if (!ListController._ignoreProfileProps.includes(change)) {
           this.changes.add(change);
+
+          if (change.startsWith('$')) {
+            if (!this.node.configs.has(change)) {
+              this.node.configs.set(change, this.node.profile.configs.get(change));
+            }
+          } else if (change.startsWith('@')) {
+            if (!this.node.attributes.has(change)) {
+              this.node.attributes.set(change, this.node.profile.attributes.get(change));
+            }
+          } else {
+            if (!this.node.children.has(change)) {
+              this.node.children.set(change, this.node.profile.children.get(change));
+            }
+          }
         }
       }
 
@@ -6768,7 +6787,7 @@ class ListController {
         this.changes.clear();
       }
 
-      if (this.request.streamStatus === interfaces_1.StreamStatus.closed) {
+      if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
         this.stream.close();
       }
     }
@@ -8110,11 +8129,10 @@ class Requester extends connection_handler_1.ConnectionHandler {
     return stream;
   }
 
-  getNodeValue(path, timeoutMs = 0) {
+  subscribeOnce(path, timeoutMs = 0) {
     return new Promise((resolve, reject) => {
-      let listener;
       let timer;
-      listener = this.subscribe(path, update => {
+      let listener = this.subscribe(path, update => {
         resolve(update);
 
         if (listener != null) {
@@ -8143,7 +8161,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     });
   }
 
-  getRemoteNode(path) {
+  listOnce(path) {
     return new Promise((resolve, reject) => {
       let sub = this.list(path, update => {
         resolve(update.node);
