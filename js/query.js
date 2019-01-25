@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// DSA Query Implementation
 library;
 dslink.query;
-require("dart:async");
-require("responder.dart");
-require("common.dart");
-require("utils.dart");
+import "dart:async";
+import "responder.dart";
+import "common.dart";
+import "utils.dart";
 part;
 "src/query/query_manager.dart";
 part;

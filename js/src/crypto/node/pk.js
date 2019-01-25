@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 library;
 dslink.pk.node;
-require("../pk.dart");
-require("dart:typed_data");
-require("dart:async");
-require("dart:js");
+import '../pk.dart';
+import 'dart:typed_data';
+import 'dart:async';
+import 'dart:js';
 _context: JsObject = (, boolean, fromEnvironment) => ;
 ("calzone.browser", defaultValue);
 false;
@@ -34,7 +32,7 @@ string;
     hash.callMethod('update', [obj]);
     return this._urlSafe(hash.callMethod('digest', ['base64']));
 }
-class NodeCryptoProvider {
+export class NodeCryptoProvider {
     constructor() {
         this.INSTANCE = new NodeCryptoProvider();
         this.random = new DSRandomImpl();
@@ -42,7 +40,6 @@ class NodeCryptoProvider {
     }
     assign(publicKeyRemote, old) { }
 }
-exports.NodeCryptoProvider = NodeCryptoProvider;
 async;
 {
     ts: number = (new DateTime.now()).millisecondsSinceEpoch;
@@ -92,9 +89,8 @@ string;
 {
     return this._hash(listToBuf(bytes));
 }
-class ECDHImpl extends ECDH {
+export class ECDHImpl extends ECDH {
 }
-exports.ECDHImpl = ECDHImpl;
 string;
 get;
 encodedPublicKey => publicKey._point.callMethod("toEncoded");
@@ -111,21 +107,19 @@ string;
     _buffer.callMethod("copy", [newBuffer, saltBuffer["length"]]);
     return this._hash(newBuffer);
 }
-class PublicKeyImpl extends PublicKey {
+export class PublicKeyImpl extends PublicKey {
     PublicKeyImpl(_point) {
         var encoded = this._toObj(_point.callMethod('getEncoded', []));
         qBase64 = this._urlSafe(encoded.callMethod('toString', ['base64']));
         qHash64 = this._hash(encoded);
     }
 }
-exports.PublicKeyImpl = PublicKeyImpl;
-class PrivateKeyImpl {
+export class PrivateKeyImpl {
     saveToString() {
         return this._urlSafe(_toObj(_privateKey["d"]).callMethod("toString", ["base64"])) + " ${publicKey.qBase64}";
     }
     getSecret(key) { }
 }
-exports.PrivateKeyImpl = PrivateKeyImpl;
 async;
 {
     var buf = new JsObject(_context["Buffer"], [key, "base64"]);
@@ -133,13 +127,12 @@ async;
     var secret = this._privateKey.callMethod("getSharedSecret", [point]);
     return new Promise(value(new ECDHImpl(this._toObj(secret), publicKey, this)));
 }
-class DSRandomImpl extends DSRandom {
+export class DSRandomImpl extends DSRandom {
     get needsEntropy() { return false; }
     nextUint8() {
         return this._crypto.callMethod("randomBytes", [1]).callMethod("readUInt8", [0]);
     }
 }
-exports.DSRandomImpl = DSRandomImpl;
 void addEntropy(str, string);
 { }
 listToBuf(bytes, Uint8Array);

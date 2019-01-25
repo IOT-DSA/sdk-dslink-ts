@@ -1,6 +1,4 @@
-"use strict";
 // part of dslink.pk.dart;
-Object.defineProperty(exports, "__esModule", { value: true });
 _cachedPrivate: ECPrivateKey;
 _cachedPublic: ECPublicKey;
 _cachedTime: number = -1;
@@ -50,10 +48,9 @@ _processECDH(initialReplyTo, SendPort);
         }
     });
 }
-class ECDHIsolate {
+export class ECDHIsolate {
     get running() { }
 }
-exports.ECDHIsolate = ECDHIsolate;
 this._ecdh_isolate != null;
 _ecdh_isolate: Isolate;
 start();
@@ -103,12 +100,11 @@ Promise < ECDH > {
     _requests, : .add(req),
     return: req.future
 };
-class ECDHIsolateRequest {
+export class ECDHIsolateRequest {
     constructor() {
         this._completer = new Completer();
     }
     get future() { }
 }
-exports.ECDHIsolateRequest = ECDHIsolateRequest;
 this._completer.future;
 //# sourceMappingURL=isolate.js.map

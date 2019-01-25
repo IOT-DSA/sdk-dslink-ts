@@ -1,11 +1,8 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
 class _InvokeResponseUpdate {
 }
-class InvokeResponse extends Response {
+export class InvokeResponse extends Response {
 }
-exports.InvokeResponse = InvokeResponse;
 (responder, rid, 'invoke');
 pendingData: _InvokeResponseUpdate[] = new _InvokeResponseUpdate[]();
 _hasSentColumns: boolean = false;

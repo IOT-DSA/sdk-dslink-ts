@@ -1,16 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const async_1 = require("../utils/async");
-const request_1 = require("./request");
-const connection_handler_1 = require("../common/connection_handler");
-const node_cache_1 = require("./node_cache");
-const subscribe_1 = require("./request/subscribe");
-const interfaces_1 = require("../common/interfaces");
-const list_1 = require("./request/list");
-const permission_1 = require("../common/permission");
-const set_1 = require("./request/set");
-const remove_1 = require("./request/remove");
-class Requester extends connection_handler_1.ConnectionHandler {
+import { Stream } from "../utils/async";
+import { Request } from "./request";
+import { ConnectionHandler } from "../common/connection_handler";
+import { RemoteNodeCache } from "./node_cache";
+import { ReqSubscribeListener, SubscribeRequest } from "./request/subscribe";
+import { DSError, StreamStatus } from "../common/interfaces";
+import { ListController } from "./request/list";
+import { Permission } from "../common/permission";
+import { SetController } from "./request/set";
+import { RemoveController } from "./request/remove";
+export class Requester extends ConnectionHandler {
     constructor(cache) {
         super();
         this._requests = new Map();
@@ -23,11 +21,11 @@ class Requester extends connection_handler_1.ConnectionHandler {
                 }
             }
         };
-        this.onError = new async_1.Stream();
+        this.onError = new Stream();
         this.lastRid = 0;
         this._connected = false;
-        this.nodeCache = cache ? cache : new node_cache_1.RemoteNodeCache();
-        this._subscription = new subscribe_1.SubscribeRequest(this, 0);
+        this.nodeCache = cache ? cache : new RemoteNodeCache();
+        this._subscription = new SubscribeRequest(this, 0);
         this._requests.set(0, this._subscription);
     }
     get subscriptionCount() {
@@ -63,7 +61,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         m['rid'] = this.getNextRid();
         let req;
         if (updater != null) {
-            req = new request_1.Request(this, this.lastRid, updater, m);
+            req = new Request(this, this.lastRid, updater, m);
             this._requests.set(this.lastRid, req);
         }
         if (this._conn) {
@@ -77,7 +75,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     subscribe(path, callback, qos = 0) {
         let node = this.nodeCache.getRemoteNode(path);
         node._subscribe(this, callback, qos);
-        return new subscribe_1.ReqSubscribeListener(this, path, callback);
+        return new ReqSubscribeListener(this, path, callback);
     }
     unsubscribe(path, callback) {
         let node = this.nodeCache.getRemoteNode(path);
@@ -86,7 +84,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     onValueChange(path, qos = 0) {
         let listener;
         let stream;
-        stream = new async_1.Stream(() => {
+        stream = new Stream(() => {
             if (listener == null) {
                 listener = this.subscribe(path, (update) => {
                     stream.add(update);
@@ -140,7 +138,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         let node = this.nodeCache.getRemoteNode(path);
         return node._list(this).listen(callback);
     }
-    invoke(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
+    invoke(path, params = {}, callback, maxPermission = Permission.CONFIG) {
         let node = this.nodeCache.getRemoteNode(path);
         let stream = node._invoke(params, this, maxPermission);
         if (callback) {
@@ -148,16 +146,16 @@ class Requester extends connection_handler_1.ConnectionHandler {
         }
         return stream;
     }
-    set(path, value, maxPermission = permission_1.Permission.CONFIG) {
-        return new set_1.SetController(this, path, value, maxPermission).future;
+    set(path, value, maxPermission = Permission.CONFIG) {
+        return new SetController(this, path, value, maxPermission).future;
     }
     remove(path) {
-        return new remove_1.RemoveController(this, path).future;
+        return new RemoveController(this, path).future;
     }
     /// close the request from requester side and notify responder
     closeRequest(request) {
         if (this._requests.has(request.rid)) {
-            if (request.streamStatus !== interfaces_1.StreamStatus.closed) {
+            if (request.streamStatus !== StreamStatus.closed) {
                 this.addToSendList({ 'method': 'close', 'rid': request.rid });
             }
             this._requests.delete(request.rid);
@@ -171,8 +169,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
         let newRequests = new Map();
         newRequests.set(0, this._subscription);
         for (let [n, req] of this._requests) {
-            if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
-                req._close(interfaces_1.DSError.DISCONNECTED);
+            if (req.rid <= this.lastRid && !(req.updater instanceof ListController)) {
+                req._close(DSError.DISCONNECTED);
             }
             else {
                 newRequests.set(req.rid, req);
@@ -192,5 +190,4 @@ class Requester extends connection_handler_1.ConnectionHandler {
         }
     }
 }
-exports.Requester = Requester;
 //# sourceMappingURL=requester.js.map

@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// DSA Broker Server
 library;
 dslink.server;
-require("dart:io");
+import "dart:io";
 "src/crypto/pk.dart";
 _jsonContentType: ContentType = new ContentType("application", "json", charset, "utf-8");
 updateResponseBeforeWrite(request, HttpRequest, statusCode, number = HttpStatus.OK, contentType, ContentType, noContentType, boolean = false);

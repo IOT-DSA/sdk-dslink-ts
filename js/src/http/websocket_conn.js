@@ -1,13 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 library;
 dslink.http.websocket;
-require("dart:async");
-require("dart:io");
-require("../../common.dart");
-require("../../utils.dart");
-require("package:logging/logging.dart");
-class WebSocketConnection extends Connection {
+import "dart:async";
+import "dart:io";
+import "../../common.dart";
+import "../../utils.dart";
+import "package:logging/logging.dart";
+export class WebSocketConnection extends Connection {
     constructor() {
         super(...arguments);
         this.onRequestReadyCompleter = new Completer();
@@ -18,7 +16,6 @@ class WebSocketConnection extends Connection {
     get onRequesterReady() { }
     get onDisconnected() { }
 }
-exports.WebSocketConnection = WebSocketConnection;
 this._onDisconnectedCompleter.future;
 clientLink: ClientLink;
 socket: WebSocket;

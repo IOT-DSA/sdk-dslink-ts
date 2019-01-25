@@ -1,4 +1,2 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.waitingModules = [];
+export const waitingModules = [];
 //# sourceMappingURL=module_loader.js.map

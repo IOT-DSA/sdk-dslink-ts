@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
-class Node {
+export class Node {
     constructor() {
         /// Node Attributes
         this.attributes = new Map();
@@ -150,9 +148,8 @@ class Node {
         return rslt;
     }
 }
-exports.Node = Node;
 /// Utility class for node and config/attribute paths.
-class Path {
+export class Path {
     constructor(path) {
         /// If this path is invalid, this will be false. Otherwise this will be true.
         this.valid = true;
@@ -298,5 +295,4 @@ class Path {
 Path.invalidChar = /[\\\?\*|"<>:]/;
 /// Regular Expression for invalid characters in names.
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
-exports.Path = Path;
 //# sourceMappingURL=node.js.map

@@ -1,7 +1,5 @@
-"use strict";
 // part of dslink.common;
-Object.defineProperty(exports, "__esModule", { value: true });
-class Permission {
+export class Permission {
     static parse(obj, defaultVal = Permission.NEVER) {
         if (typeof obj === 'string' && Permission.nameParser.hasOwnProperty(obj)) {
             return Permission.nameParser[obj];
@@ -37,8 +35,7 @@ Permission.nameParser = {
     'config': Permission.CONFIG,
     'never': Permission.NEVER
 };
-exports.Permission = Permission;
-class PermissionList {
+export class PermissionList {
     constructor() {
         this.idMatchs = {};
         this.groupMatchs = {};
@@ -95,5 +92,4 @@ class PermissionList {
         return rslt;
     }
 }
-exports.PermissionList = PermissionList;
 //# sourceMappingURL=permission.js.map

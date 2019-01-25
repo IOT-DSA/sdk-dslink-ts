@@ -1,13 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// manage cached nodes for requester
-const node_1 = require("../common/node");
-const list_1 = require("./request/list");
-const subscribe_1 = require("./request/subscribe");
-const permission_1 = require("../common/permission");
-const invoke_1 = require("./request/invoke");
-const utils_1 = require("../../utils");
-class RemoteNodeCache {
+import { Node } from "../common/node";
+import { ListController } from "./request/list";
+import { ReqSubscribeController } from "./request/subscribe";
+import { Permission } from "../common/permission";
+import { InvokeController } from "./request/invoke";
+import { buildEnumType } from "../../utils";
+export class RemoteNodeCache {
     constructor() {
         this._nodes = new Map();
     }
@@ -70,8 +68,7 @@ class RemoteNodeCache {
         return rslt;
     }
 }
-exports.RemoteNodeCache = RemoteNodeCache;
-class RemoteNode extends node_1.Node {
+export class RemoteNode extends Node {
     constructor(remotePath) {
         super();
         this.listed = false;
@@ -126,11 +123,11 @@ class RemoteNode extends node_1.Node {
     }
     /// need a factory function for children class to override
     createListController(requester) {
-        return new list_1.ListController(this, requester);
+        return new ListController(this, requester);
     }
     _subscribe(requester, callback, qos) {
         if (this._subscribeController == null) {
-            this._subscribeController = new subscribe_1.ReqSubscribeController(this, requester);
+            this._subscribeController = new ReqSubscribeController(this, requester);
         }
         this._subscribeController.listen(callback, qos);
     }
@@ -139,8 +136,8 @@ class RemoteNode extends node_1.Node {
             this._subscribeController.unlisten(callback);
         }
     }
-    _invoke(params, requester, maxPermission = permission_1.Permission.CONFIG) {
-        return new invoke_1.InvokeController(this, requester, params, maxPermission)._stream;
+    _invoke(params, requester, maxPermission = Permission.CONFIG) {
+        return new InvokeController(this, requester, params, maxPermission)._stream;
     }
     /// used by list api to update simple data for children
     updateRemoteChildData(m, cache) {
@@ -194,14 +191,12 @@ class RemoteNode extends node_1.Node {
         return map;
     }
 }
-exports.RemoteNode = RemoteNode;
-class RemoteDefNode extends RemoteNode {
+export class RemoteDefNode extends RemoteNode {
     constructor(path) {
         super(path);
     }
 }
-exports.RemoteDefNode = RemoteDefNode;
-class DefaultDefNodes {
+export class DefaultDefNodes {
 }
 DefaultDefNodes._defaultDefs = {
     "node": {},
@@ -219,7 +214,7 @@ DefaultDefNodes._defaultDefs = {
                 "name": "Interval",
                 "type": "enum",
                 "default": "none",
-                "edito": utils_1.buildEnumType([
+                "edito": buildEnumType([
                     "default",
                     "none",
                     "1Y",
@@ -248,7 +243,7 @@ DefaultDefNodes._defaultDefs = {
             {
                 "name": "Rollup",
                 "default": "none",
-                "type": utils_1.buildEnumType([
+                "type": buildEnumType([
                     "none",
                     "avg",
                     "min",
@@ -303,5 +298,4 @@ DefaultDefNodes.pathMap = (function () {
     }
     return rslt;
 })();
-exports.DefaultDefNodes = DefaultDefNodes;
 //# sourceMappingURL=node_cache.js.map

@@ -1,13 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 library;
 dslink.pk;
-require("dart:async");
-require("dart:typed_data");
-require("dart/pk.dart");
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart/pk.dart';
 show;
 DartCryptoProvider;
-require("../../utils.dart");
+import '../../utils.dart';
 _CRYPTO_PROVIDER: CryptoProvider = DartCryptoProvider.INSTANCE;
 _isCryptoProviderLocked: boolean = false;
 setCryptoProvider(provider, CryptoProvider);

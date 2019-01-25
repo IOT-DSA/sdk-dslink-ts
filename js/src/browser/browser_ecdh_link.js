@@ -1,8 +1,6 @@
-"use strict";
 // part of dslink.browser_client;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// a client link for websocket
-class BrowserECDHLink extends ClientLink {
+export class BrowserECDHLink extends ClientLink {
     constructor() {
         super(...arguments);
         this._onRequesterReadyCompleter = new Completer();
@@ -10,7 +8,6 @@ class BrowserECDHLink extends ClientLink {
     }
     get onConnected() { }
 }
-exports.BrowserECDHLink = BrowserECDHLink;
 this._onConnectedCompleter.future;
 Promise < Requester > get;
 onRequesterReady => this._onRequesterReadyCompleter.future;

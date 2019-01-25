@@ -1,9 +1,6 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
-class ListResponse extends Response {
+export class ListResponse extends Response {
 }
-exports.ListResponse = ListResponse;
 (responder, rid, ) => {
     _permission =
         responder.nodeProvider.permissions.getPermission(node.path, responder);

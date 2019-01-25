@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 library;
 dslink.historian;
-require("dart:async");
-require("dart:math");
-require("package:dslink/dslink.dart");
-require("package:dslink/nodes.dart");
-require("package:dslink/utils.dart");
+import "dart:async";
+import "dart:math";
+import "package:dslink/dslink.dart";
+import "package:dslink/nodes.dart";
+import "package:dslink/utils.dart";
 part;
 "src/historian/interval.dart";
 part;

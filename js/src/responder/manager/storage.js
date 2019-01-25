@@ -1,6 +1,4 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// general key/value pair storage
 IValueStorageBucket;
 getOrCreateValueStorageBucket(name, string);

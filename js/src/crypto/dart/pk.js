@@ -1,31 +1,29 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 library;
 dslink.pk.dart;
-require("dart:async");
-require("dart:convert");
-require("dart:collection");
-require("dart:typed_data");
-require("dart:math");
+import "dart:async";
+import "dart:convert";
+import "dart:collection";
+import "dart:typed_data";
+import "dart:math";
 as;
 Math;
-require("dart:isolate");
-require("package:bignum/bignum.dart");
-require("package:cipher/cipher.dart");
+import "dart:isolate";
+import "package:bignum/bignum.dart";
+import "package:cipher/cipher.dart";
 hide;
 PublicKey, PrivateKey;
-require("package:cipher/digests/sha256.dart");
-require("package:cipher/key_generators/ec_key_generator.dart");
-require("package:cipher/params/key_generators/ec_key_generator_parameters.dart");
-require("package:cipher/random/secure_random_base.dart");
-require("package:cipher/random/block_ctr_random.dart");
-require("package:cipher/block/aes_fast.dart");
-require("package:cipher/ecc/ecc_base.dart");
-require("package:cipher/ecc/ecc_fp.dart");
+import "package:cipher/digests/sha256.dart";
+import "package:cipher/key_generators/ec_key_generator.dart";
+import "package:cipher/params/key_generators/ec_key_generator_parameters.dart";
+import "package:cipher/random/secure_random_base.dart";
+import "package:cipher/random/block_ctr_random.dart";
+import "package:cipher/block/aes_fast.dart";
+import "package:cipher/ecc/ecc_base.dart";
+import "package:cipher/ecc/ecc_fp.dart";
 as;
 fp;
-require("../pk.dart");
-require("../../../utils.dart");
+import "../pk.dart";
+import "../../../utils.dart";
 part;
 "isolate.dart";
 /// hard code the EC curve data here, so the compiler don"t have to register all curves
@@ -55,7 +53,7 @@ ECDomainParameters;
     var curve = new fp.ECCurve(q, a, b);
     return new ECDomainParametersImpl("secp256r1", curve, curve.decodePoint(g.toByteArray()), n, h, seedBytes);
 }
-class DartCryptoProvider {
+export class DartCryptoProvider {
     constructor() {
         this.INSTANCE = new DartCryptoProvider();
         this.random = new DSRandomImpl();
@@ -63,7 +61,6 @@ class DartCryptoProvider {
     }
     assign(publicKeyRemote, old) { }
 }
-exports.DartCryptoProvider = DartCryptoProvider;
 async;
 {
     if (ECDHIsolate.running) {
@@ -167,9 +164,8 @@ string;
     hashed: Uint8Array = sha256.process(new Uint8Array.fromList(bytes));
     return Base64.encode(hashed);
 }
-class ECDHImpl extends ECDH {
+export class ECDHImpl extends ECDH {
 }
-exports.ECDHImpl = ECDHImpl;
 string;
 get;
 encodedPublicKey => Base64.encode(this._ecPublicKey.Q.getEncoded(false));
@@ -219,7 +215,7 @@ string;
     var hashed = sha256.process(raw);
     return Base64.encode(hashed);
 }
-class PublicKeyImpl extends PublicKey {
+export class PublicKeyImpl extends PublicKey {
     PublicKeyImpl(ecPublicKey) {
         bytes: number[] = ecPublicKey.Q.getEncoded(false);
         qBase64 = Base64.encode(bytes);
@@ -228,11 +224,9 @@ class PublicKeyImpl extends PublicKey {
     }
 }
 PublicKeyImpl.publicExp = new BigInteger(65537);
-exports.PublicKeyImpl = PublicKeyImpl;
-class PrivateKeyImpl {
+export class PrivateKeyImpl {
     PrivateKeyImpl(ecPrivateKey, [], ecPublicKey) { }
 }
-exports.PrivateKeyImpl = PrivateKeyImpl;
 {
     if (ecPublicKey == null) {
         ecPublicKey = new ECPublicKey(this._secp256r1.G * ecPrivateKey.d, this._secp256r1);
@@ -254,10 +248,9 @@ async;
     return new ECDHImpl(ecPrivateKey, ecPublicKey, Q2);
 }
 /// random number generator
-class DSRandomImpl extends SecureRandomBase {
+export class DSRandomImpl extends SecureRandomBase {
     get needsEntropy() { return true; }
 }
-exports.DSRandomImpl = DSRandomImpl;
 string;
 get;
 algorithmName => this._delegate.algorithmName;

@@ -1,9 +1,7 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// a responder for one connection
-const connection_handler_1 = require("../common/connection_handler");
-class Responder extends connection_handler_1.ConnectionHandler {
+import { ConnectionHandler } from "../common/connection_handler";
+export class Responder extends ConnectionHandler {
     constructor() {
         super(...arguments);
         this.maxCacheLength = ConnectionProcessor.defaultCacheSize;
@@ -41,7 +39,6 @@ class Responder extends connection_handler_1.ConnectionHandler {
         }
     }
 }
-exports.Responder = Responder;
 , Response > ;
 new object();
 get;

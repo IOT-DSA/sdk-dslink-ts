@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const msgpack_lite_1 = __importDefault(require("msgpack-lite"));
-const base64_1 = __importDefault(require("./base64"));
-function toBuffer(val) {
+import MsgPack from "msgpack-lite";
+import Base64 from "./base64";
+export function toBuffer(val) {
     if (val instanceof Buffer) {
         return val;
     }
@@ -13,8 +8,7 @@ function toBuffer(val) {
         return Buffer.from(val);
     }
 }
-exports.toBuffer = toBuffer;
-class DsCodec {
+export class DsCodec {
     static register(name, codec) {
         if (name != null && codec != null) {
             DsCodec._codecs[name] = codec;
@@ -34,8 +28,7 @@ class DsCodec {
         return this._blankData;
     }
 }
-exports.DsCodec = DsCodec;
-class DsJson {
+export class DsJson {
     static encode(val, pretty = false) {
         return this.instance.encodeJson(val, pretty);
     }
@@ -43,8 +36,7 @@ class DsJson {
         return this.instance.decodeJson(str);
     }
 }
-exports.DsJson = DsJson;
-class DsJsonCodecImpl extends DsCodec {
+export class DsJsonCodecImpl extends DsCodec {
     static _safeEncoder(key, value) {
         if (typeof value === 'object') {
             if (Object.isExtensible(value)) {
@@ -68,7 +60,7 @@ class DsJsonCodecImpl extends DsCodec {
     static reviver(key, value) {
         if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
             try {
-                return base64_1.default.decode(value.substring(7));
+                return Base64.decode(value.substring(7));
             }
             catch (err) {
                 return null;
@@ -78,7 +70,7 @@ class DsJsonCodecImpl extends DsCodec {
     }
     static replacer(key, value) {
         if (value instanceof Uint8Array) {
-            return `\u001Bbytes:${base64_1.default.encode(value)}`;
+            return `\u001Bbytes:${Base64.encode(value)}`;
         }
         return value;
     }
@@ -89,11 +81,10 @@ class DsJsonCodecImpl extends DsCodec {
         return JSON.stringify(val, DsJsonCodecImpl.replacer);
     }
 }
-exports.DsJsonCodecImpl = DsJsonCodecImpl;
 DsJson.instance = new DsJsonCodecImpl();
-class DsMsgPackCodecImpl extends DsCodec {
+export class DsMsgPackCodecImpl extends DsCodec {
     decodeBinaryFrame(bytes) {
-        let result = msgpack_lite_1.default.decode(bytes);
+        let result = MsgPack.decode(bytes);
         if (typeof result === 'object') {
             return result;
         }
@@ -104,11 +95,10 @@ class DsMsgPackCodecImpl extends DsCodec {
         return {};
     }
     encodeFrame(val) {
-        return msgpack_lite_1.default.encode(val);
+        return MsgPack.encode(val);
     }
 }
 DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
-exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
 DsCodec._codecs = {
     "json": DsJson.instance,
     "msgpack": DsMsgPackCodecImpl.instance

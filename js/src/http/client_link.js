@@ -1,8 +1,6 @@
-"use strict";
 // part of dslink.client;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// a client link for both http and ws
-class HttpClientLink extends ClientLink {
+export class HttpClientLink extends ClientLink {
     constructor() {
         super(...arguments);
         this._onRequesterReadyCompleter = new Completer();
@@ -10,7 +8,6 @@ class HttpClientLink extends ClientLink {
     }
     get onRequesterReady() { }
 }
-exports.HttpClientLink = HttpClientLink;
 this._onRequesterReadyCompleter.future;
 Future;
 get;

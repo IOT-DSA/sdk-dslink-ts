@@ -1,4 +1,3 @@
-"use strict";
 // part of dslink.responder;
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6,19 +5,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 typedef;
 Promise < ByteData > IconResolver(name, string);
 /// A simple table result.
 /// This is used to return simple tables from an action.
-class SimpleTableResult {
+export class SimpleTableResult {
     SimpleTableResult([], rows, columns) { }
     ;
 }
-exports.SimpleTableResult = SimpleTableResult;
 /// An Asynchronous Table Result
 /// This can be used to return asynchronous tables from actions.
-class AsyncTableResult {
+export class AsyncTableResult {
     constructor() {
         /// Stream Status
         this.status = StreamStatus.open;
@@ -72,9 +69,8 @@ class AsyncTableResult {
         }
     }
 }
-exports.AsyncTableResult = AsyncTableResult;
 /// A Live-Updating Table
-class LiveTable {
+export class LiveTable {
     constructor() {
         this._onClose = [];
         this.autoStartSend = true;
@@ -167,8 +163,7 @@ class LiveTable {
     }
     get response() { return this._resp; }
 }
-exports.LiveTable = LiveTable;
-class LiveTableRow {
+export class LiveTableRow {
     constructor() {
         this.index = -1;
     }
@@ -186,7 +181,6 @@ class LiveTableRow {
         table.reindex();
     }
 }
-exports.LiveTableRow = LiveTableRow;
 /// Initialize the node provider.
 void init([{ [key]: string }], dynamic, m, { [key]: string, NodeFactory }, profiles);
 /// Save the node provider to a map.
@@ -203,9 +197,8 @@ addNode(path, string, object, m);
 void removeNode(path, string);
 // Add a profile to the node provider.
 void addProfile(name, string, factory, NodeFactory);
-class SysGetIconNode extends SimpleNode {
+export class SysGetIconNode extends SimpleNode {
 }
-exports.SysGetIconNode = SysGetIconNode;
 (path, provider) => {
     configs.addAll({
         r, "$invokable": "read",
@@ -234,7 +227,7 @@ async;
             data
         ]];
 }
-class SimpleNodeProvider extends NodeProviderImpl {
+export class SimpleNodeProvider extends NodeProviderImpl {
     constructor() {
         super(...arguments);
         /// All the nodes in this node provider.
@@ -301,7 +294,7 @@ class SimpleNodeProvider extends NodeProviderImpl {
     }
     /// Checks if this provider has the node at [path].
     hasNode(path) {
-        node: exports.SimpleNode = SimpleNode = nodes[path];
+        node: SimpleNode = nodes[path];
         if (node == null) {
             return false;
         }
@@ -367,7 +360,7 @@ class SimpleNodeProvider extends NodeProviderImpl {
                 throw new Exception("Node at ${path} already exists.");
             }
         }
-        node: exports.SimpleNode = SimpleNode = existing == null ? new SimpleNode(path, this) : existing;
+        node: SimpleNode = existing == null ? new SimpleNode(path, this) : existing;
         nodes[path] = node;
         if (init) {
             node.onCreated();
@@ -390,7 +383,6 @@ __decorate([
 __decorate([
     override
 ], SimpleNodeProvider.prototype, "addProfile", null);
-exports.SimpleNodeProvider = SimpleNodeProvider;
 m, { [key]: string, NodeFactory };
 profiles;
 {
@@ -442,7 +434,7 @@ object;
 }
 updateValue(path, string, value, object);
 {
-    node: exports.SimpleNode = SimpleNode = getNode(path);
+    node: SimpleNode = getNode(path);
     node.updateValue(value);
 }
 /// Sets the given [node] to the given [path].
@@ -452,7 +444,7 @@ setNode(path, string, node, SimpleNode, { boolean, registerChildren: false });
         return null;
     Path;
     p = new Path(path);
-    pnode: exports.SimpleNode = SimpleNode = getNode(p.parentPath);
+    pnode: SimpleNode = getNode(p.parentPath);
     nodes[path] = node;
     node.onCreated();
     if (pnode != null) {
@@ -475,8 +467,8 @@ SimpleNode;
         return null;
     Path;
     p = new Path(path);
-    oldNode: exports.SimpleNode = SimpleNode = this._getNode(path, allowStubs, true);
-    pnode: exports.SimpleNode = SimpleNode = getNode(p.parentPath);
+    oldNode: SimpleNode = this._getNode(path, allowStubs, true);
+    pnode: SimpleNode = getNode(p.parentPath);
     node: SimpleNode;
     if (pnode != null) {
         node = pnode.onLoadChild(p.name, m, this);
@@ -531,7 +523,7 @@ removeNode(path, string, { boolean, recurse: true });
 {
     if (path == '/' || !path.startsWith('/'))
         return;
-    node: exports.SimpleNode = SimpleNode = getNode(path);
+    node: SimpleNode = getNode(path);
     if (node == null) {
         return;
     }
@@ -554,7 +546,7 @@ removeNode(path, string, { boolean, recurse: true });
 }
 Path;
 p = new Path(path);
-pnode: exports.SimpleNode = SimpleNode = getNode(p.parentPath);
+pnode: SimpleNode = getNode(p.parentPath);
 node.onRemoving();
 node.removed = true;
 if (pnode != null) {
@@ -603,7 +595,7 @@ string;
 }
 /// A Simple Node Implementation
 /// A flexible node implementation that should fit most use cases.
-class SimpleNode extends LocalNodeImpl {
+export class SimpleNode extends LocalNodeImpl {
     constructor() {
         super(...arguments);
         this._stub = false;
@@ -660,7 +652,6 @@ class SimpleNode extends LocalNodeImpl {
     /// part of their parent.
     get isStubNode() { return this._stub; }
 }
-exports.SimpleNode = SimpleNode;
  == null ? SimpleNodeProvider.instance : nodeprovider,
     super(path);
 /// Marks a node as being removed.
@@ -1246,9 +1237,8 @@ operator[] = (name, value) => {
     }
 };
 /// A hidden node.
-class SimpleHiddenNode extends SimpleNode {
+export class SimpleHiddenNode extends SimpleNode {
 }
-exports.SimpleHiddenNode = SimpleHiddenNode;
 (path, provider) => {
     configs[r];
     '$hidden';

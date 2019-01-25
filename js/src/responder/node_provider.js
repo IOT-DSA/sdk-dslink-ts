@@ -1,6 +1,4 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// Changes to nodes will be added to this controller's stream.
 /// See [updateList].
 get;

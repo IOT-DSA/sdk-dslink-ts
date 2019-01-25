@@ -1,9 +1,6 @@
-"use strict";
 // part of dslink.historian;
-Object.defineProperty(exports, "__esModule", { value: true });
-class GetHistoryNode extends SimpleNode {
+export class GetHistoryNode extends SimpleNode {
 }
-exports.GetHistoryNode = GetHistoryNode;
 (path, _link, provider) => {
     configs[r];
     "$is";

@@ -1,25 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const async_1 = require("../../utils/async");
-const interfaces_1 = require("../../common/interfaces");
-const node_cache_1 = require("../node_cache");
-const value_1 = require("../../common/value");
-const interface_1 = require("../interface");
-class RequesterListUpdate extends interface_1.RequesterUpdate {
+import { Stream } from "../../utils/async";
+import { StreamStatus } from "../../common/interfaces";
+import { RemoteNode } from "../node_cache";
+import { ValueUpdate } from "../../common/value";
+import { RequesterUpdate } from "../interface";
+export class RequesterListUpdate extends RequesterUpdate {
     constructor(node, changes, streamStatus) {
         super(streamStatus);
         this.node = node;
         this.changes = changes;
     }
 }
-exports.RequesterListUpdate = RequesterListUpdate;
-class ListDefListener {
+export class ListDefListener {
     constructor(node, requester, callback) {
         this.ready = false;
         this.node = node;
         this.requester = requester;
         this.listener = requester.list(node.remotePath, (update) => {
-            this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
+            this.ready = update.streamStatus !== StreamStatus.initialize;
             callback(update);
         });
     }
@@ -27,8 +24,7 @@ class ListDefListener {
         this.listener.close();
     }
 }
-exports.ListDefListener = ListDefListener;
-class ListController {
+export class ListController {
     constructor(node, requester) {
         this.changes = new Set();
         this._onProfileUpdate = (update) => {
@@ -96,13 +92,13 @@ class ListController {
         };
         this.node = node;
         this.requester = requester;
-        this.stream = new async_1.Stream(this.onStartListen, this._onAllCancel, this._onListen);
+        this.stream = new Stream(this.onStartListen, this._onAllCancel, this._onListen);
     }
     get initialized() {
-        return this.request != null && this.request.streamStatus !== interfaces_1.StreamStatus.initialize;
+        return this.request != null && this.request.streamStatus !== StreamStatus.initialize;
     }
     onDisconnect() {
-        this.disconnectTs = value_1.ValueUpdate.getTs();
+        this.disconnectTs = ValueUpdate.getTs();
         this.node.configs.set('$disconnectedTs', this.disconnectTs);
         this.stream.add(new RequesterListUpdate(this.node, ['$disconnectedTs'], this.request.streamStatus));
     }
@@ -187,7 +183,7 @@ class ListController {
                     }
                 }
             }
-            if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+            if (this.request.streamStatus !== StreamStatus.initialize) {
                 this.node.listed = true;
             }
             if (this._pendingRemoveDef) {
@@ -208,7 +204,7 @@ class ListController {
                 defPath = `/defs/profile/${defPath}`;
             }
         }
-        if (this.node.profile instanceof node_cache_1.RemoteNode &&
+        if (this.node.profile instanceof RemoteNode &&
             this.node.profile.remotePath === defPath) {
             return;
         }
@@ -216,18 +212,18 @@ class ListController {
         if (defName === 'node') {
             return;
         }
-        if ((this.node.profile instanceof node_cache_1.RemoteNode) && !this.node.profile.listed) {
+        if ((this.node.profile instanceof RemoteNode) && !this.node.profile.listed) {
             this._ready = false;
             this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
         }
     }
     onProfileUpdated() {
         if (this._ready) {
-            if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+            if (this.request.streamStatus !== StreamStatus.initialize) {
                 this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
                 this.changes.clear();
             }
-            if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
+            if (this.request && this.request.streamStatus === StreamStatus.closed) {
                 this.stream.close();
             }
         }
@@ -263,5 +259,4 @@ ListController._ignoreProfileProps = [
     '$permission',
     '$settings'
 ];
-exports.ListController = ListController;
 //# sourceMappingURL=list.js.map

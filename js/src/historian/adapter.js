@@ -1,6 +1,4 @@
-"use strict";
 // part of dslink.historian;
-Object.defineProperty(exports, "__esModule", { value: true });
 {
     [key, string];
     dynamic;

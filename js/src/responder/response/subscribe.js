@@ -1,7 +1,5 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
-class RespSubscribeListener {
+export class RespSubscribeListener {
     close() {
         if (callback != null) {
             node.unsubscribe(callback);
@@ -9,10 +7,8 @@ class RespSubscribeListener {
         }
     }
 }
-exports.RespSubscribeListener = RespSubscribeListener;
-class SubscribeResponse extends Response {
+export class SubscribeResponse extends Response {
 }
-exports.SubscribeResponse = SubscribeResponse;
 (responder, rid, 'subscribe');
 subscriptions: {
     [key, string];
@@ -178,7 +174,7 @@ addTraceCallback(_traceCallback, ResponseTraceCallback);
         _traceCallback(update);
     });
 }
-class RespSubscribeController {
+export class RespSubscribeController {
     constructor() {
         this._permitted = true;
         this.lastValues = new ValueUpdate[]();
@@ -398,5 +394,4 @@ class RespSubscribeController {
         _listener.close();
     }
 }
-exports.RespSubscribeController = RespSubscribeController;
 //# sourceMappingURL=subscribe.js.map

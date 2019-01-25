@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Stream {
+export class Stream {
     constructor(onStartListen, onAllCancel, onListen) {
         this._listeners = new Set();
         this._updating = false;
@@ -58,8 +56,7 @@ class Stream {
         }
     }
 }
-exports.Stream = Stream;
-class StreamSubscription {
+export class StreamSubscription {
     constructor(stream, listener) {
         this._stream = stream;
         this._listener = listener;
@@ -72,8 +69,7 @@ class StreamSubscription {
         }
     }
 }
-exports.StreamSubscription = StreamSubscription;
-class Completer {
+export class Completer {
     constructor() {
         this.isCompleted = false;
         this.future = new Promise((resolve, reject) => {
@@ -93,5 +89,4 @@ class Completer {
         }
     }
 }
-exports.Completer = Completer;
 //# sourceMappingURL=async.js.map

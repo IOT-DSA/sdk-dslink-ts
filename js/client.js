@@ -1,21 +1,19 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// Provides the base APIs for the DSLink SDK on the Dart VM.
 library;
 dslink.client;
-require("dart:async");
-require("dart:io");
-require("dart:convert");
-require("package:args/args.dart");
-require("common.dart");
-require("requester.dart");
-require("responder.dart");
-require("utils.dart");
-require("io.dart");
-require("src/crypto/pk.dart");
-require("src/http/websocket_conn.dart");
-require("package:logging/logging.dart");
-require("package:dslink/broker_discovery.dart");
+import "dart:async";
+import "dart:io";
+import "dart:convert";
+import "package:args/args.dart";
+import "common.dart";
+import "requester.dart";
+import "responder.dart";
+import "utils.dart";
+import "io.dart";
+import "src/crypto/pk.dart";
+import "src/http/websocket_conn.dart";
+import "package:logging/logging.dart";
+import "package:dslink/broker_discovery.dart";
 show;
 BrokerDiscoveryClient;
 "src/crypto/pk.dart";
@@ -24,7 +22,7 @@ part;
 typedef;
 _TwoArgumentProfileFunction(path, string, provider, SimpleNodeProvider);
 /// Main Entry Point for DSLinks on the Dart VM
-class LinkProvider {
+export class LinkProvider {
     constructor() {
         /// Are we a requester?
         this.isRequester = false;
@@ -70,7 +68,6 @@ class LinkProvider {
     /// [commandLineOptions] specifies a map of an option name to a default value, for use in expanding the command parameters.
     LinkProvider(args, prefix, { this: , isRequester: , false: , this: , command: , "link": , this: , isResponder: , true: , this: , defaultNodes, let, nodes: { [key]: string } }) { }
 }
-exports.LinkProvider = LinkProvider;
 this.profiles,
     this.provider,
     this.enableHttp;

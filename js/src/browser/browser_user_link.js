@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /// a client link for both http and ws
-const interfaces_1 = require("../common/interfaces");
-const async_1 = require("../utils/async");
-const requester_1 = require("../requester/requester");
-const browser_ws_conn_1 = require("./browser_ws_conn");
-const codec_1 = require("../utils/codec");
-class DummyECDH {
+import { ClientLink } from "../common/interfaces";
+import { Completer } from "../utils/async";
+import { Requester } from "../requester/requester";
+import { WebSocketConnection } from "./browser_ws_conn";
+import { DsCodec } from "../utils/codec";
+export class DummyECDH {
     constructor() {
         this.encodedPublicKey = "";
     }
@@ -17,12 +15,11 @@ class DummyECDH {
         return true;
     }
 }
-exports.DummyECDH = DummyECDH;
-class BrowserUserLink extends interfaces_1.ClientLink {
+export class BrowserUserLink extends ClientLink {
     constructor(wsUpdateUri, format = 'msgpack') {
         super();
-        this._onRequesterReadyCompleter = new async_1.Completer();
-        this.requester = new requester_1.Requester();
+        this._onRequesterReadyCompleter = new Completer();
+        this.requester = new Requester();
         //  readonly responder: Responder;
         this.nonce = new DummyECDH();
         this._wsDelay = 1;
@@ -52,7 +49,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     initWebsocket(reconnect = true) {
         this._initSocketTimer = null;
         let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-        this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format));
+        this._wsConnection = new WebSocketConnection(socket, this, null, DsCodec.getCodec(this.format));
         // if (this.responder != null) {
         //   this.responder.connection = this._wsConnection.responderChannel;
         // }
@@ -102,5 +99,4 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     }
 }
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
-exports.BrowserUserLink = BrowserUserLink;
 //# sourceMappingURL=browser_user_link.js.map

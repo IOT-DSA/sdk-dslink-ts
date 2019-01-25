@@ -1,7 +1,5 @@
-"use strict";
 // part of dslink.common;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultProfileMap = {
+export const defaultProfileMap = {
     "node": {},
     "static": {},
     "getHistory": {

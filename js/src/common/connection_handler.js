@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("./interfaces");
-exports.ACK_WAIT_COUNT = 16;
-exports.defaultCacheSize = 256;
-class ConnectionHandler {
+import { ProcessorResult } from "./interfaces";
+export const ACK_WAIT_COUNT = 16;
+export const defaultCacheSize = 256;
+export class ConnectionHandler {
     constructor() {
         this._toSendList = [];
         this._processors = [];
@@ -75,12 +73,11 @@ class ConnectionHandler {
         }
         let rslt = this._toSendList;
         this._toSendList = [];
-        return new interfaces_1.ProcessorResult(rslt, processors);
+        return new ProcessorResult(rslt, processors);
     }
     clearProcessors() {
         this._processors.length = 0;
         this._pendingSend = false;
     }
 }
-exports.ConnectionHandler = ConnectionHandler;
 //# sourceMappingURL=connection_handler.js.map

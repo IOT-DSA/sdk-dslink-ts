@@ -1,14 +1,11 @@
-"use strict";
 // part of dslink.utils;
-Object.defineProperty(exports, "__esModule", { value: true });
-class DSLinkJSON {
+export class DSLinkJSON {
     constructor() {
         this.engines = {};
     }
     get json() { return this._json; }
     object() { [key, string]; dynamic; }
 }
-exports.DSLinkJSON = DSLinkJSON;
  > configs;
 { }
 ;

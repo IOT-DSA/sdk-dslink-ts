@@ -1,11 +1,8 @@
-"use strict";
 // part of dslink.responder;
-Object.defineProperty(exports, "__esModule", { value: true });
 /// definition nodes are serializable node that won"t change
 /// the only change will be a global upgrade
-class DefinitionNode extends LocalNodeImpl {
+export class DefinitionNode extends LocalNodeImpl {
 }
-exports.DefinitionNode = DefinitionNode;
 (path) => {
     this.configs[r];
     "$is";

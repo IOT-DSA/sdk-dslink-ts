@@ -1,17 +1,13 @@
-"use strict";
 // part of dslink.historian;
-Object.defineProperty(exports, "__esModule", { value: true });
-class HistorySummary {
+export class HistorySummary {
 }
-exports.HistorySummary = HistorySummary;
-class ValuePair {
+export class ValuePair {
     get time() { }
     toRow() {
         return [timestamp, value];
     }
 }
-exports.ValuePair = ValuePair;
-class TimeRange {
+export class TimeRange {
     get duration() { }
     isWithin(time) {
         valid: boolean = (time.isAfter(start) || time.isAtSameMomentAs(start));
@@ -21,14 +17,12 @@ class TimeRange {
         return valid;
     }
 }
-exports.TimeRange = TimeRange;
-class ValueEntry {
+export class ValueEntry {
     asPair() {
         return new ValuePair(timestamp, value);
     }
     get time() { }
 }
-exports.ValueEntry = ValueEntry;
 parseTimeRange(input, string);
 TimeRange;
 {

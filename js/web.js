@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const browser_user_link_1 = require("./src/browser/browser_user_link");
+import { BrowserUserLink } from "./src/browser/browser_user_link";
 if (Object.isExtensible(window)) {
-    window.DSLink = browser_user_link_1.BrowserUserLink;
+    window.DSLink = BrowserUserLink;
 }
-exports.DSLink = browser_user_link_1.BrowserUserLink;
+export const DSLink = BrowserUserLink;
 //# sourceMappingURL=web.js.map
