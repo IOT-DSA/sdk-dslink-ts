@@ -1,33 +1,40 @@
-library dslink.http.websocket;
+import {ClientLink, Connection, ConnectionChannel} from "../common/interfaces";
+import {PassiveChannel} from "../common/connection_channel";
+import {Completer} from "../utils/async";
 
-import "dart:async";
-import "dart:io";
-
-import "../../common.dart";
-import "../../utils.dart";
-
-import "package:logging/logging.dart";
 
 export class WebSocketConnection  extends Connection {
   _responderChannel: PassiveChannel;
 
-  get responderChannel(): ConnectionChannel { return this._responderChannel;}
+  get responderChannel(): ConnectionChannel {
+    return this._responderChannel;
+  }
 
   _requesterChannel: PassiveChannel;
 
-  get requesterChannel(): ConnectionChannel { return this._requesterChannel;}
+  get requesterChannel(): ConnectionChannel {
+    return this._requesterChannel;
+  }
 
-  onRequestReadyCompleter: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
+  _onRequestReadyCompleter: Completer<ConnectionChannel> =
+    new Completer<ConnectionChannel>();
 
-  Promise<ConnectionChannel> get onRequesterReady => onRequestReadyCompleter.future;
+  get onRequesterReady(): Promise<ConnectionChannel> {
+    return this._onRequestReadyCompleter.future;
+  }
 
   _onDisconnectedCompleter: Completer<boolean> = new Completer<boolean>();
 
-  Promise<boolean> get onDisconnected => this._onDisconnectedCompleter.future;
+  get onDisconnected(): Promise<boolean> {
+    return this._onDisconnectedCompleter.future;
+  }
 
   readonly clientLink: ClientLink;
 
   readonly socket: WebSocket;
+
+  onConnect: Function;
+
 
   _onDoneHandled: boolean = false;
 

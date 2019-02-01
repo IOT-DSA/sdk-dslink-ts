@@ -19,15 +19,16 @@
     "@types/node": "^10.12.9",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "dslink-js": "file:./.",
     "parcel-bundler": "^1.10.3",
     "tslint": "^5.12.0",
-    "typescript": "^3.1.6",
-    "dslink-js": "file:./"
+    "typescript": "^3.1.6"
   },
   "dependencies": {
     "base64-js": "^1.3.0",
     "denque": "^1.4.0",
-    "msgpack-lite": "^0.1.26"
+    "msgpack-lite": "^0.1.26",
+    "ws": "^6.1.3"
   },
   "scripts": {
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
