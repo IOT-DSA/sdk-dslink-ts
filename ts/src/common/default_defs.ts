@@ -1,5 +1,7 @@
 // part of dslink.common;
 
+import {buildEnumType} from "../../utils";
+
 export const defaultProfileMap = {
   "node": {},
   "static": {},

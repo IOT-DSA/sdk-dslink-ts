@@ -144,7 +144,7 @@ export class Node {
 
   /// Gets a map for the data that will be listed in the parent node's children property.
   getSimpleMap(): { [key: string]: any } {
-    var rslt: { [key: string]: any } = {};
+    let rslt: { [key: string]: any } = {};
     if (this.configs.has('$is')) {
       rslt['$is'] = this.configs.get('$is');
     }
@@ -273,10 +273,10 @@ export class Path {
   }
 
   _parse() {
-    if (this.path == '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
+    if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
       this.valid = false;
     }
-    if (this.path == '/') {
+    if (this.path === '/') {
       this.valid = true;
       this.name = '/';
       this.parentPath = '';
@@ -289,7 +289,7 @@ export class Path {
     if (pos < 0) {
       this.name = this.path;
       this.parentPath = '';
-    } else if (pos == 0) {
+    } else if (pos === 0) {
       this.parentPath = '/';
       this.name = this.path.substring(1);
     } else {
@@ -304,12 +304,12 @@ export class Path {
 
   /// Is this an absolute path?
   get isAbsolute(): boolean {
-    return this.name == '/' || this.parentPath.startsWith('/');
+    return this.name === '/' || this.parentPath.startsWith('/');
   }
 
   /// Is this the root path?
   get isRoot(): boolean {
-    return this.name == '/';
+    return this.name === '/';
   }
 
   /// Is this a config?
@@ -334,7 +334,7 @@ export class Path {
     }
 
     if (!this.isAbsolute) {
-      if (this.parentPath == '') {
+      if (this.parentPath === '') {
         this.parentPath = base;
       } else {
         this.parentPath = '$base/$parentPath';
@@ -342,7 +342,7 @@ export class Path {
       this.path = '$parentPath/$name';
     } else if (force) {
       // apply base path on a absolute path
-      if (name == '') {
+      if (name === '') {
         // map the root path
         this.path = base;
         this._parse();

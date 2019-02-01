@@ -13,7 +13,7 @@ export abstract class ECDH {
   abstract hashSalt(salt: string): string;
 
   verifySalt(salt: string, hash: string): boolean {
-    return this.hashSalt(salt) == hash;
+    return this.hashSalt(salt) === hash;
   }
 }
 
@@ -45,7 +45,7 @@ export abstract class Connection {
     let findAckGroup: ConnectionAckGroup;
     for (let i = 0; i < this.pendingAcks.length; ++i) {
       let ackGroup = this.pendingAcks.peekAt(i);
-      if (ackGroup.ackId == ackId) {
+      if (ackGroup.ackId === ackId) {
         findAckGroup = ackGroup;
         break;
       } else if (ackGroup.ackId < ackId) {
@@ -59,7 +59,7 @@ export abstract class Connection {
       do {
         let ackGroup: ConnectionAckGroup = this.pendingAcks.shift();
         ackGroup.ackAll(ackId, ts);
-        if (ackGroup == findAckGroup) {
+        if (ackGroup === findAckGroup) {
           break;
         }
       } while (findAckGroup != null);
@@ -161,7 +161,7 @@ export abstract class ClientLink extends BaseLink {
 
   formatLogMessage(msg: string): string {
     if (this.logName != null) {
-      return "[${logName}] ${msg}";
+      return `[${this.logName}] ${msg}`;
     }
     return msg;
   }

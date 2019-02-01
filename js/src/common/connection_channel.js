@@ -17,7 +17,7 @@ export class PassiveChannel {
     getSendingData(currentTime, waitingAckId) {
         if (this.handler != null) {
             let rslt = this.handler.getSendingData(currentTime, waitingAckId);
-            //handler = null;
+            // handler = null;
             return rslt;
         }
         return null;
@@ -31,11 +31,9 @@ export class PassiveChannel {
     get onDisconnected() {
         return this.onDisconnectController.future;
     }
-    ;
     get onConnected() {
         return this.onConnectController.future;
     }
-    ;
     updateConnect() {
         if (this.connected)
             return;

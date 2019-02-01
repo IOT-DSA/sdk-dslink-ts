@@ -2,7 +2,7 @@ import Denque from "denque";
 import { DsCodec } from "../utils/codec";
 export class ECDH {
     verifySalt(salt, hash) {
-        return this.hashSalt(salt) == hash;
+        return this.hashSalt(salt) === hash;
     }
 }
 export class Connection {
@@ -14,7 +14,7 @@ export class Connection {
         let findAckGroup;
         for (let i = 0; i < this.pendingAcks.length; ++i) {
             let ackGroup = this.pendingAcks.peekAt(i);
-            if (ackGroup.ackId == ackId) {
+            if (ackGroup.ackId === ackId) {
                 findAckGroup = ackGroup;
                 break;
             }
@@ -27,7 +27,7 @@ export class Connection {
             do {
                 let ackGroup = this.pendingAcks.shift();
                 ackGroup.ackAll(ackId, ts);
-                if (ackGroup == findAckGroup) {
+                if (ackGroup === findAckGroup) {
                     break;
                 }
             } while (findAckGroup != null);
@@ -67,7 +67,7 @@ export class ClientLink extends BaseLink {
     }
     formatLogMessage(msg) {
         if (this.logName != null) {
-            return "[${logName}] ${msg}";
+            return `[${this.logName}] ${msg}`;
         }
         return msg;
     }

@@ -25,7 +25,7 @@ export class PassiveChannel implements ConnectionChannel {
   getSendingData(currentTime: number, waitingAckId: number): ProcessorResult {
     if (this.handler != null) {
       let rslt: ProcessorResult = this.handler.getSendingData(currentTime, waitingAckId);
-      //handler = null;
+      // handler = null;
       return rslt;
     }
     return null;
@@ -46,15 +46,15 @@ export class PassiveChannel implements ConnectionChannel {
     new Completer<ConnectionChannel>();
 
   get onDisconnected() {
-    return this.onDisconnectController.future
-  };
+    return this.onDisconnectController.future;
+  }
 
   readonly onConnectController: Completer<ConnectionChannel> =
     new Completer<ConnectionChannel>();
 
   get onConnected() {
-    return this.onConnectController.future
-  };
+    return this.onConnectController.future;
+  }
 
   updateConnect() {
     if (this.connected) return;

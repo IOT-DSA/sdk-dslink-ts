@@ -43,10 +43,7 @@
       true,
       "spaces"
     ],
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
+    "interface-name": false,
     "interface-over-type-literal": true,
     "jsdoc-format": true,
     "linebreak-style": [
