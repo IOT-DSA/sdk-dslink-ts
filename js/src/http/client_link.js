@@ -1,5 +1,5 @@
 // part of dslink.client;
-/// a client link for both http and ws
+import { ClientLink } from "../common/interfaces";
 export class HttpClientLink extends ClientLink {
     constructor() {
         super(...arguments);

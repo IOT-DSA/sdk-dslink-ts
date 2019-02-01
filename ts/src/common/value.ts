@@ -129,7 +129,7 @@ export class ValueUpdate {
   /// Generates a map representation of this value update.
   toMap(): { [key: string]: any } {
     let m: any = {"ts": this.ts, "value": this.value};
-    if (this.count != 1) {
+    if (this.count !== 1) {
       m["count"] = this.count;
     }
     return m;

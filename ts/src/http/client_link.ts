@@ -1,6 +1,7 @@
 // part of dslink.client;
 
-/// a client link for both http and ws
+import {ClientLink} from "../common/interfaces";
+
 export class HttpClientLink  extends ClientLink {
   _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
   _onConnectedCompleter: Completer = new Completer();

@@ -175,7 +175,7 @@ export class WebSocketConnection extends Connection {
           }
         }
       } catch (err) {
-        console.error("error in onData", err, stack);
+        console.error("error in onData", err);
         this.close();
         return;
       }
