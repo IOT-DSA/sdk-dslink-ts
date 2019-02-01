@@ -84,7 +84,7 @@ export class PermissionList  {
     rslt:number = Permission.NEVER;
     for (string group of responder.groups) {
       if (groupMatchs.hasOwnProperty(group)) {
-        int v = groupMatchs[group];
+        let v = groupMatchs[group];
         if (v < rslt) {
           // choose the lowest permission from all matched group
           rslt = v;

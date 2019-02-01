@@ -374,10 +374,7 @@ string;
 {
     var r0 = new Random();
     var buffer = new StringBuffer();
-    for (int; i = 1; i <= length)
-        ;
-    i++;
-    {
+    for (let i = 1; i <= length; i++) {
         var r = new Random(r0.nextInt(0x70000000) + (new DateTime.now()).millisecondsSinceEpoch);
         var n = r.nextInt(50);
         if (n >= 0 && n <= 32) {
@@ -398,10 +395,7 @@ string;
 {
     var r0 = new Random();
     var buffer = new StringBuffer();
-    for (int; i = 1; i <= length)
-        ;
-    i++;
-    {
+    for (let i = 1; i <= length; i++) {
         var r = new Random(r0.nextInt(0x70000000) + (new DateTime.now()).millisecondsSinceEpoch);
         if (r.nextBool()) {
             let letter = alphabet[r.nextInt(alphabet.length)];
@@ -455,10 +449,7 @@ Uint8Array;
 {
     length: number = str.length;
     bytes: Uint8Array = new Uint8Array(length);
-    for (int; i = 0; i < length)
-        ;
-    i++;
-    {
+    for (let i = 0; i < length; i++) {
         unit: number = str.codeUnitAt(i);
         if (unit >= 128) {
             return new Uint8Array.fromList();

@@ -102,10 +102,7 @@ async;
     random: Random = new Random();
     // Generate 16 random bytes.
     nonceData: Uint8Array = new Uint8Array(16);
-    for (int; i = 0; i < 16)
-        ;
-    i++;
-    {
+    for (let i = 0; i < 16; i++) {
         nonceData[i] = random.nextInt(256);
     }
     nonce: string = BASE64.encode(nonceData);
@@ -166,21 +163,17 @@ then((response) => {
     if (expectedAccept.length != receivedAccept.length) {
         error("Response header 'Sec-WebSocket-Accept' is the wrong length");
     }
-    for (int; i = 0; i < expectedAccept.length)
-        ;
-    i++;
-});
-{
-    if (expectedAccept[i] != receivedAccept[i]) {
-        error("Bad response 'Sec-WebSocket-Accept' header");
+    for (let i = 0; i < expectedAccept.length; i++) {
+        if (expectedAccept[i] != receivedAccept[i]) {
+            error("Bad response 'Sec-WebSocket-Accept' header");
+        }
     }
-}
-var protocol = response.headers.value('Sec-WebSocket-Protocol');
-return response.detachSocket().then((socket) => {
-    socket.setOption(SocketOption.TCP_NODELAY, this._tcpNoDelay);
-    return new WebSocket.fromUpgradedSocket(socket, protocol, protocol, serverSide, false);
-});
-timeout(new Duration(minutes, 1), onTimeout, () => {
+    var protocol = response.headers.value('Sec-WebSocket-Protocol');
+    return response.detachSocket().then((socket) => {
+        socket.setOption(SocketOption.TCP_NODELAY, this._tcpNoDelay);
+        return new WebSocket.fromUpgradedSocket(socket, protocol, protocol, serverSide, false);
+    });
+}).timeout(new Duration(minutes, 1), onTimeout, () => {
     _client.close(force, true);
     throw new WebSocketException('timeout');
 });

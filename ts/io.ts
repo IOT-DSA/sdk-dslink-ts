@@ -108,7 +108,7 @@ export class HttpHelper  {
     random: Random = new Random();
     // Generate 16 random bytes.
     nonceData: Uint8Array = new Uint8Array(16);
-    for (int i = 0; i < 16; i++) {
+    for (let i = 0; i < 16; i++) {
       nonceData[i] = random.nextInt(256);
     }
     nonce: string = BASE64.encode(nonceData);
@@ -179,7 +179,7 @@ export class HttpHelper  {
       if (expectedAccept.length != receivedAccept.length) {
         error("Response header 'Sec-WebSocket-Accept' is the wrong length");
       }
-      for (int i = 0; i < expectedAccept.length; i++) {
+      for (let i = 0; i < expectedAccept.length; i++) {
         if (expectedAccept[i] != receivedAccept[i]) {
           error("Bad response 'Sec-WebSocket-Accept' header");
         }

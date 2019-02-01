@@ -5,10 +5,7 @@ export class UriComponentDecoder {
         codes: number[] = new int[]();
         bytes: number[] = new int[]();
         len: number = text.length;
-        for (int; i = 0; i < len)
-            ;
-        i++;
-        {
+        for (let i = 0; i < len; i++) {
             var codeUnit = text.codeUnitAt(i);
             if (codeUnit == this._PERCENT) {
                 if (i + 3 > text.length) {
@@ -55,10 +52,7 @@ export class UriComponentDecoder {
     }
     static _hexCharPairToByte(string, s, pos) {
         byte: number = 0;
-        for (int; i = 0; i < 2)
-            ;
-        i++;
-        {
+        for (let i = 0; i < 2; i++) {
             let charCode = s.codeUnitAt(pos + i);
             if (0x30 <= charCode && charCode <= 0x39) {
                 byte = byte * 16 + charCode - 0x30;

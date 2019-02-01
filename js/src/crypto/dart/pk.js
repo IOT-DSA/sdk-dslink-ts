@@ -182,16 +182,10 @@ ECDHImpl(this._ecPrivateKey, this._ecPublicKey, ECPoint, Q2);
     else if (bytes.length < 32) {
         var newbytes = new Uint8Array(32);
         let dlen = 32 - bytes.length;
-        for (int; i = 0; i < bytes.length)
-            ;
-        ++i;
-        {
+        for (let i = 0; i < bytes.length; ++i) {
             newbytes[i + dlen] = bytes[i];
         }
-        for (int; i = 0; i < dlen)
-            ;
-        ++i;
-        {
+        for (let i = 0; i < dlen; ++i) {
             newbytes[i] = 0;
         }
         bytes = newbytes;
@@ -202,8 +196,7 @@ string;
 {
     encoded: Uint8Array = toUTF8(salt);
     raw: Uint8Array = new Uint8Array(encoded.length + bytes.length);
-    int;
-    i;
+    let i;
     for (i = 0; i < encoded.length; i++) {
         raw[i] = encoded[i];
     }
@@ -355,10 +348,7 @@ Uint8Array;
         rslt = rslt.sublist(1);
     }
     len: number = rslt.length;
-    for (int; i = 0; i < len)
-        ;
-    ++i;
-    {
+    for (let i = 0; i < len; ++i) {
         if (rslt[i] < 0) {
             rslt[i] &= 0xff;
         }

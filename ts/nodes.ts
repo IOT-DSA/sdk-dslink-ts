@@ -483,7 +483,7 @@ export class NodeNamer  {
             }
           }
 
-          int c = int.parse(s, radix: 16);
+          let c = int.parse(s, radix: 16);
           out.writeCharCode(c);
           i++;
           continue;
