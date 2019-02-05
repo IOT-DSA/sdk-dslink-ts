@@ -16,5 +16,3 @@ let list = link.requester.list('/sys', (data) => {
 let invoke = link.requester.invoke('/sys/get_server_log', {lines: 5}, (data) => {
   console.log(data);
 });
-
-

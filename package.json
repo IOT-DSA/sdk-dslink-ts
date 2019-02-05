@@ -17,10 +17,11 @@
     "@types/mocha": "^5.2.5",
     "@types/msgpack-lite": "^0.1.6",
     "@types/node": "^10.12.9",
+    "@types/ws": "^6.0.1",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
-    "dslink-js": "file:./.",
     "parcel-bundler": "^1.10.3",
+    "tsdoc": "^0.0.4",
     "tslint": "^5.12.0",
     "typescript": "^3.1.6"
   },
