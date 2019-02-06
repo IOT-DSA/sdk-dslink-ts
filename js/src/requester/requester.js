@@ -72,6 +72,13 @@ export class Requester extends ConnectionHandler {
     isNodeCached(path) {
         return this.nodeCache.isNodeCached(path);
     }
+    /**
+     * Subscribe a path and get the value in a async callback
+     *
+     * @param path - The path to subscribe
+     * @param callback - The callback
+     * @param qos - The qos level of the subscription
+     */
     subscribe(path, callback, qos = 0) {
         let node = this.nodeCache.getRemoteNode(path);
         node._subscribe(this, callback, qos);

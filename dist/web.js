@@ -5426,7 +5426,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class ECDH {
   verifySalt(salt, hash) {
-    return this.hashSalt(salt) == hash;
+    return this.hashSalt(salt) === hash;
   }
 
 }
@@ -5445,7 +5445,7 @@ class Connection {
     for (let i = 0; i < this.pendingAcks.length; ++i) {
       let ackGroup = this.pendingAcks.peekAt(i);
 
-      if (ackGroup.ackId == ackId) {
+      if (ackGroup.ackId === ackId) {
         findAckGroup = ackGroup;
         break;
       } else if (ackGroup.ackId < ackId) {
@@ -5460,7 +5460,7 @@ class Connection {
         let ackGroup = this.pendingAcks.shift();
         ackGroup.ackAll(ackId, ts);
 
-        if (ackGroup == findAckGroup) {
+        if (ackGroup === findAckGroup) {
           break;
         }
       } while (findAckGroup != null);
@@ -5518,7 +5518,7 @@ class ClientLink extends BaseLink {
 
   formatLogMessage(msg) {
     if (this.logName != null) {
-      return "[${logName}] ${msg}";
+      return `[${this.logName}] ${msg}`;
     }
 
     return msg;
@@ -6139,7 +6139,7 @@ class Node {
 
 
   getSimpleMap() {
-    var rslt = {};
+    let rslt = {};
 
     if (this.configs.has('$is')) {
       rslt['$is'] = this.configs.get('$is');
@@ -6261,11 +6261,11 @@ class Path {
   }
 
   _parse() {
-    if (this.path == '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
+    if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
       this.valid = false;
     }
 
-    if (this.path == '/') {
+    if (this.path === '/') {
       this.valid = true;
       this.name = '/';
       this.parentPath = '';
@@ -6281,7 +6281,7 @@ class Path {
     if (pos < 0) {
       this.name = this.path;
       this.parentPath = '';
-    } else if (pos == 0) {
+    } else if (pos === 0) {
       this.parentPath = '/';
       this.name = this.path.substring(1);
     } else {
@@ -6297,12 +6297,12 @@ class Path {
 
 
   get isAbsolute() {
-    return this.name == '/' || this.parentPath.startsWith('/');
+    return this.name === '/' || this.parentPath.startsWith('/');
   } /// Is this the root path?
 
 
   get isRoot() {
-    return this.name == '/';
+    return this.name === '/';
   } /// Is this a config?
 
 
@@ -6327,7 +6327,7 @@ class Path {
     }
 
     if (!this.isAbsolute) {
-      if (this.parentPath == '') {
+      if (this.parentPath === '') {
         this.parentPath = base;
       } else {
         this.parentPath = '$base/$parentPath';
@@ -6336,7 +6336,7 @@ class Path {
       this.path = '$parentPath/$name';
     } else if (force) {
       // apply base path on a absolute path
-      if (name == '') {
+      if (name === '') {
         // map the root path
         this.path = base;
 
@@ -6481,7 +6481,7 @@ class ValueUpdate {
       "value": this.value
     };
 
-    if (this.count != 1) {
+    if (this.count !== 1) {
       m["count"] = this.count;
     }
 
@@ -7189,7 +7189,7 @@ exports.ReqSubscribeController = ReqSubscribeController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PermissionList = exports.Permission = void 0;
+exports.Permission = void 0;
 
 // part of dslink.common;
 class Permission {
@@ -7225,73 +7225,6 @@ Permission.nameParser = {
   'config': Permission.CONFIG,
   'never': Permission.NEVER
 };
-
-class PermissionList {
-  constructor() {
-    this.idMatchs = {};
-    this.groupMatchs = {};
-    this.defaultPermission = Permission.NONE;
-    this._FORCE_CONFIG = true;
-  }
-
-  updatePermissions(data) {
-    idMatchs.clear();
-    groupMatchs.clear();
-    defaultPermission = Permission.NONE;
-
-    for (object; obj; of) data;
-
-    {
-      if (obj != null && obj instanceof Object) {
-        if (typeof obj['id'] === 'string') {
-          idMatchs[obj['id']] = Permission.nameParser[obj['permission']];
-        } else if (typeof obj['group'] === 'string') {
-          if (obj['group'] == 'default') {
-            defaultPermission = Permission.nameParser[obj['permission']];
-          } else {
-            groupMatchs[obj['group']] = Permission.nameParser[obj['permission']];
-          }
-        }
-      }
-    }
-  }
-
-  getPermission(responder) {
-    // TODO Permission temp workaround before user permission is implemented
-    if (this._FORCE_CONFIG) {
-      return Permission.CONFIG;
-    }
-
-    if (idMatchs.hasOwnProperty(responder.reqId)) {
-      return idMatchs[responder.reqId];
-    }
-
-    rslt: number = Permission.NEVER;
-
-    for (string; group; of) responder.groups;
-
-    {
-      if (groupMatchs.hasOwnProperty(group)) {
-        int;
-        v = groupMatchs[group];
-
-        if (v < rslt) {
-          // choose the lowest permission from all matched group
-          rslt = v;
-        }
-      }
-    }
-
-    if (rslt == Permission.NEVER) {
-      return defaultPermission;
-    }
-
-    return rslt;
-  }
-
-}
-
-exports.PermissionList = PermissionList;
 },{}],"q+mg":[function(require,module,exports) {
 "use strict";
 
@@ -8290,7 +8223,7 @@ class PassiveChannel {
 
   getSendingData(currentTime, waitingAckId) {
     if (this.handler != null) {
-      let rslt = this.handler.getSendingData(currentTime, waitingAckId); //handler = null;
+      let rslt = this.handler.getSendingData(currentTime, waitingAckId); // handler = null;
 
       return rslt;
     }
@@ -8498,7 +8431,7 @@ class WebSocketConnection extends _interfaces.Connection {
           }
         }
       } catch (err) {
-        console.error("error in onData", err, stack);
+        console.error("error in onData", err);
         this.close();
         return;
       }
