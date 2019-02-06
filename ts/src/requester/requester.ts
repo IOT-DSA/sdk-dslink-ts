@@ -14,11 +14,13 @@ import {RemoveController} from "./request/remove";
 
 
 export class Requester extends ConnectionHandler {
+  /** @ignore */
   _requests: Map<number, Request> = new Map<number, Request>();
 
   /// caching of nodes
+  /** @ignore */
   readonly nodeCache: RemoteNodeCache;
-
+  /** @ignore */
   _subscription: SubscribeRequest;
 
   constructor(cache?: RemoteNodeCache) {
@@ -36,6 +38,7 @@ export class Requester extends ConnectionHandler {
     return this._requests.size;
   }
 
+  /** @ignore */
   onData = (list: any[]) => {
     if (Array.isArray(list)) {
       for (let resp of list) {
@@ -46,6 +49,7 @@ export class Requester extends ConnectionHandler {
     }
   };
 
+  /** @ignore */
   _onReceiveUpdate(m: any) {
     if (typeof m['rid'] === 'number' && this._requests.has(m['rid'])) {
       this._requests.get(m['rid'])._update(m);
@@ -54,9 +58,10 @@ export class Requester extends ConnectionHandler {
 
   onError: Stream<DSError> = new Stream<DSError>();
 
-
+  /** @ignore */
   lastRid = 0;
 
+  /** @ignore */
   getNextRid(): number {
     do {
       if (this.lastRid < 0x7FFFFFFF) {
@@ -68,16 +73,18 @@ export class Requester extends ConnectionHandler {
     return this.lastRid;
   }
 
+  /** @ignore */
   getSendingData(currentTime: number, waitingAckId: number): ProcessorResult {
     let rslt: ProcessorResult = super.getSendingData(currentTime, waitingAckId);
     return rslt;
   }
 
+  /** @ignore */
   sendRequest(m: { [key: string]: any }, updater: RequestUpdater) {
     return this._sendRequest(m, updater);
   }
 
-
+  /** @ignore */
   _sendRequest(m: { [key: string]: any }, updater: RequestUpdater): Request {
     m['rid'] = this.getNextRid();
     let req: Request;
@@ -114,6 +121,7 @@ export class Requester extends ConnectionHandler {
     node._unsubscribe(this, callback);
   }
 
+  /** @ignore */
   onValueChange(path: string, qos: number = 0): Stream<ValueUpdate> {
     let listener: ReqSubscribeListener;
     let stream: Stream<ValueUpdate>;
@@ -199,6 +207,7 @@ export class Requester extends ConnectionHandler {
   }
 
   /// close the request from requester side and notify responder
+  /** @ignore */
   closeRequest(request: Request) {
     if (this._requests.has(request.rid)) {
       if (request.streamStatus !== StreamStatus.closed) {
@@ -209,8 +218,10 @@ export class Requester extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   _connected: boolean = false;
 
+  /** @ignore */
   onDisconnected() {
     if (!this._connected) return;
     this._connected = false;
@@ -228,6 +239,7 @@ export class Requester extends ConnectionHandler {
     this._requests = newRequests;
   }
 
+  /** @ignore */
   onReconnected() {
     if (this._connected) return;
     this._connected = true;

@@ -8,8 +8,8 @@ import {PrivateKey} from "../crypto/pk";
 import {WebSocketConnection} from "./browser_ws_conn";
 import {DsCodec} from "../utils/codec";
 
-
-export class DummyECDH implements ECDH {
+/** @ignore */
+class DummyECDH implements ECDH {
   readonly encodedPublicKey: string = "";
 
   hashSalt(salt: string): string {
@@ -22,29 +22,33 @@ export class DummyECDH implements ECDH {
 }
 
 export class BrowserUserLink extends ClientLink {
+  /** @ignore */
   _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
 
   get onRequesterReady(): Promise<Requester> {
     return this._onRequesterReadyCompleter.future;
   }
 
+  /** @ignore */
   static session: string = Math.random().toString(16).substr(2, 8);
   readonly requester: Requester = new Requester();
 //  readonly responder: Responder;
 
+  /** @ignore */
   readonly nonce: ECDH = new DummyECDH();
+  /** @ignore */
   privateKey: PrivateKey;
-
+  /** @ignore */
   _wsConnection: WebSocketConnection;
 
-  enableAck: boolean;
-
-
+  /** @ignore */
   updateSalt(salt: string) {
     // do nothing
   }
 
+  /** @ignore */
   wsUpdateUri: string;
+  /** @ignore */
   format: string;
 
 
@@ -68,15 +72,18 @@ export class BrowserUserLink extends ClientLink {
     this.initWebsocket(false);
   }
 
+  /** @ignore */
   _wsDelay: number = 1;
-
+  /** @ignore */
   _initSocketTimer: any;
 
+  /** @ignore */
   initWebsocketLater(ms: number) {
     if (this._initSocketTimer) return;
     this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
   }
 
+  /** @ignore */
   initWebsocket(reconnect = true) {
     this._initSocketTimer = null;
     let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);

@@ -125,10 +125,11 @@ export interface ConnectionChannel {
 
 /// Base Class for Links
 export abstract class BaseLink {
+  /** @ignore */
   requester: Requester;
-
+  /** @ignore */
   responder: Responder;
-
+  /** @ignore */
   nonce: ECDH;
 
   /// trigger when requester channel is Ready
@@ -151,14 +152,18 @@ export abstract class ServerLink extends BaseLink {
 
 /// Base Class for Client Link implementations.
 export abstract class ClientLink extends BaseLink {
+  /** @ignore */
   privateKey: PrivateKey;
 
+  /** @ignore */
   abstract updateSalt(salt: string): void;
 
+  /** @ignore */
   get logName(): string {
     return null;
   }
 
+  /** @ignore */
   formatLogMessage(msg: string): string {
     if (this.logName != null) {
       return `[${this.logName}] ${msg}`;
@@ -270,7 +275,7 @@ export class DSError {
     if (this.path != null) {
       rslt["path"] = this.path;
     }
-    if (this.phase == ErrorPhase.request) {
+    if (this.phase === ErrorPhase.request) {
       rslt["phase"] = ErrorPhase.request;
     }
     if (this.detail != null) {

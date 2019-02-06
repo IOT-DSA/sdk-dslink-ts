@@ -4,7 +4,8 @@ import { Completer } from "../utils/async";
 import { Requester } from "../requester/requester";
 import { WebSocketConnection } from "./browser_ws_conn";
 import { DsCodec } from "../utils/codec";
-export class DummyECDH {
+/** @ignore */
+class DummyECDH {
     constructor() {
         this.encodedPublicKey = "";
     }
@@ -18,10 +19,13 @@ export class DummyECDH {
 export class BrowserUserLink extends ClientLink {
     constructor(wsUpdateUri, format = 'msgpack') {
         super();
+        /** @ignore */
         this._onRequesterReadyCompleter = new Completer();
         this.requester = new Requester();
         //  readonly responder: Responder;
+        /** @ignore */
         this.nonce = new DummyECDH();
+        /** @ignore */
         this._wsDelay = 1;
         if (wsUpdateUri.startsWith("http")) {
             wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
@@ -35,17 +39,20 @@ export class BrowserUserLink extends ClientLink {
     get onRequesterReady() {
         return this._onRequesterReadyCompleter.future;
     }
+    /** @ignore */
     updateSalt(salt) {
         // do nothing
     }
     connect() {
         this.initWebsocket(false);
     }
+    /** @ignore */
     initWebsocketLater(ms) {
         if (this._initSocketTimer)
             return;
         this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
     }
+    /** @ignore */
     initWebsocket(reconnect = true) {
         this._initSocketTimer = null;
         let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
@@ -98,5 +105,6 @@ export class BrowserUserLink extends ClientLink {
         }
     }
 }
+/** @ignore */
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
 //# sourceMappingURL=browser_user_link.js.map

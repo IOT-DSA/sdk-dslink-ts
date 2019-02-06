@@ -62,9 +62,11 @@ export class ServerLink extends BaseLink {
 }
 /// Base Class for Client Link implementations.
 export class ClientLink extends BaseLink {
+    /** @ignore */
     get logName() {
         return null;
     }
+    /** @ignore */
     formatLogMessage(msg) {
         if (this.logName != null) {
             return `[${this.logName}] ${msg}`;
@@ -138,7 +140,7 @@ export class DSError {
         if (this.path != null) {
             rslt["path"] = this.path;
         }
-        if (this.phase == ErrorPhase.request) {
+        if (this.phase === ErrorPhase.request) {
             rslt["phase"] = ErrorPhase.request;
         }
         if (this.detail != null) {

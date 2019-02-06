@@ -50,7 +50,7 @@ export class Request {
       meta = m["meta"];
     }
     // remove the request from global object
-    if (this.streamStatus == StreamStatus.closed) {
+    if (this.streamStatus === StreamStatus.closed) {
       this.requester._requests.delete(this.rid);
     }
     let error: DSError;

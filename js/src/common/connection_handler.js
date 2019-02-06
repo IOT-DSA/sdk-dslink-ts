@@ -3,13 +3,18 @@ export const ACK_WAIT_COUNT = 16;
 export const defaultCacheSize = 256;
 export class ConnectionHandler {
     constructor() {
+        /** @ignore */
         this._toSendList = [];
+        /** @ignore */
         this._processors = [];
+        /** @ignore */
         this._pendingSend = false;
     }
+    /** @ignore */
     get connection() {
         return this._conn;
     }
+    /** @ignore */
     set connection(conn) {
         if (this._connListener != null) {
             this._connListener.close();
@@ -27,6 +32,7 @@ export class ConnectionHandler {
             this._conn.onConnected.then((conn) => this.onReconnected());
         }
     }
+    /** @ignore */
     _onDisconnected(conn) {
         if (this._conn === conn) {
             if (this._connListener != null) {
@@ -37,11 +43,13 @@ export class ConnectionHandler {
             this._conn = null;
         }
     }
+    /** @ignore */
     onReconnected() {
         if (this._pendingSend) {
             this._conn.sendWhenReady(this);
         }
     }
+    /** @ignore */
     addToSendList(m) {
         this._toSendList.push(m);
         if (!this._pendingSend) {
@@ -54,6 +62,7 @@ export class ConnectionHandler {
     /// a processor function that's called just before the data is sent
     /// same processor won't be added to the list twice
     /// inside processor, send() data that only need to appear once per data frame
+    /** @ignore */
     addProcessor(processor) {
         this._processors.push(processor);
         if (!this._pendingSend) {
@@ -64,6 +73,7 @@ export class ConnectionHandler {
         }
     }
     /// gather all the changes from
+    /** @ignore */
     getSendingData(currentTime, waitingAckId) {
         this._pendingSend = false;
         let processors = this._processors;
@@ -75,6 +85,7 @@ export class ConnectionHandler {
         this._toSendList = [];
         return new ProcessorResult(rslt, processors);
     }
+    /** @ignore */
     clearProcessors() {
         this._processors.length = 0;
         this._pendingSend = false;
