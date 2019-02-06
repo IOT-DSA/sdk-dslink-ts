@@ -56,6 +56,7 @@ export class Requester extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   onError: Stream<DSError> = new Stream<DSError>();
 
   /** @ignore */
@@ -103,11 +104,16 @@ export class Requester extends ConnectionHandler {
   }
 
   /**
-   * Subscribe a path and get the value in a async callback
+   * Subscribe a path and get value updates in a async callback
+   * If you only need to get the current value once, use [[subscribeOnce]] instead.
    *
-   * @param path - The path to subscribe
-   * @param callback - The callback
-   * @param qos - The qos level of the subscription
+   * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+   * You can also use the [[unsubscribe]] method to close the callback.
+   *
+   * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
+   * @param qos - qos level of the subscription
+   *   - 0: allow value skipping as long as the last update is received
+   *   - 1: no value skipping
    */
   subscribe(path: string, callback: (update: ValueUpdate) => void,
             qos: number = 0): ReqSubscribeListener {
@@ -116,6 +122,9 @@ export class Requester extends ConnectionHandler {
     return new ReqSubscribeListener(this, path, callback);
   }
 
+  /**
+   * Unsubscribe the callback
+   */
   unsubscribe(path: string, callback: (update: ValueUpdate) => void) {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     node._unsubscribe(this, callback);
@@ -141,6 +150,9 @@ export class Requester extends ConnectionHandler {
     return stream;
   }
 
+  /**
+   * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+   */
   subscribeOnce(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
     return new Promise((resolve, reject) => {
       let timer: any;
@@ -169,6 +181,9 @@ export class Requester extends ConnectionHandler {
     });
   }
 
+  /**
+   * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+   */
   listOnce(path: string): Promise<RemoteNode> {
     return new Promise((resolve, reject) => {
       let sub = this.list(path, (update) => {
@@ -182,11 +197,23 @@ export class Requester extends ConnectionHandler {
 
   }
 
+  /**
+   * List a path and get the node metadata as well as a summary of children nodes.
+   * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
+   *
+   * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+   */
+
   list(path: string, callback: Listener<RequesterListUpdate>): StreamSubscription<RequesterListUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     return node._list(this).listen(callback);
   }
 
+  /**
+   * Invoke a node action, and receive updates.
+   * Usually an action stream will be closed on server side,
+   * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
+   */
   invoke(path: string, params: { [key: string]: any } = {}, callback?: Listener<RequesterInvokeUpdate>,
          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
@@ -197,11 +224,17 @@ export class Requester extends ConnectionHandler {
     return stream;
   }
 
-  set(path: string, value: object,
+  /**
+   * Set the value of an attribute, the attribute will be created if not exists
+   */
+  set(path: string, value: any,
       maxPermission: number = Permission.CONFIG): Promise<RequesterUpdate> {
     return new SetController(this, path, value, maxPermission).future;
   }
 
+  /**
+   * Remove an attribute
+   */
   remove(path: string): Promise<RequesterUpdate> {
     return new RemoveController(this, path).future;
   }

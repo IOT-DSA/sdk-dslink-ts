@@ -5,6 +5,7 @@ import {Permission} from "../../common/permission";
 import {DSError} from "../../common/interfaces";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
+/** @ignore */
 export class SetController implements RequestUpdater {
   readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
 

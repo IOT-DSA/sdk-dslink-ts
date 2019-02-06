@@ -2,16 +2,22 @@ import {RequesterListUpdate} from "../requester/request/list";
 
 export type Listener<T> = (value: T) => void;
 
-
 export class Stream<T> {
+  /** @ignore */
   _listeners: Set<Listener<T>> = new Set<Listener<T>>();
+  /** @ignore */
   _updating = false;
+  /** @ignore */
   _value: T;
+  /** @ignore */
   _cached = false;
-
+  /** @ignore */
   _onStartListen: () => void;
+  /** @ignore */
   _onAllCancel: () => void;
+  /** @ignore */
   _onListen: (listener: Listener<T>) => void;
+  /** @ignore */
   _onClose: () => void;
 
   constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void) {
@@ -51,6 +57,7 @@ export class Stream<T> {
     return true;
   }
 
+  /** @ignore */
   protected _dispatch(): void {
     this._updating = true;
     for (let listener of this._listeners) {

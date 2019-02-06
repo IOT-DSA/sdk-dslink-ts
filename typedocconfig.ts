@@ -3,6 +3,8 @@ module.exports = {
     './ts/web.ts',
     './ts/src/browser/browser_user_link.ts',
     './ts/src/requester/requester.ts',
+    './ts/src/requester/node_cache.ts',
+    './ts/src/requester/request',
   ],
   mode: 'file',
   tsconfig: 'tsconfig.json',

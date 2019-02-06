@@ -68,6 +68,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
 }
 export class RequesterInvokeStream extends Stream {
 }
+/** @ignore */
 export class InvokeController {
     constructor(node, requester, params, maxPermission = Permission.CONFIG) {
         this.mode = 'stream';

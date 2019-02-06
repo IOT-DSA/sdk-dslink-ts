@@ -4,6 +4,7 @@ import {Completer} from "../../utils/async";
 import {DSError} from "../../common/interfaces";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
+/** @ignore */
 export class RemoveController implements RequestUpdater {
   readonly completer: Completer<RequesterUpdate> = new Completer<RequesterUpdate>();
 

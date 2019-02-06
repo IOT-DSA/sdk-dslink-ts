@@ -12,11 +12,11 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
   columns: TableColumn[];
   updates: any[];
   error: DSError;
-  meta: {[key: string]: any};
+  meta: { [key: string]: any };
 
   constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
               streamStatus: string,
-              meta: {[key: string]: any}, error?: DSError) {
+              meta: { [key: string]: any }, error?: DSError) {
     super(streamStatus);
     this.updates = updates;
     this.rawColumns = rawColumns;
@@ -24,7 +24,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
     this.error = error;
   }
 
-
+  /** @ignore */
   _rows: any[][];
 
   get rows(): any[][] {
@@ -83,7 +83,7 @@ export class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
   request: Request;
 }
 
-
+/** @ignore */
 export class InvokeController implements RequestUpdater {
   static getNodeColumns(node: RemoteNode): TableColumn[] {
     let columns = node.getConfig('$columns');
@@ -139,7 +139,7 @@ export class InvokeController implements RequestUpdater {
     }
   };
 
-  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {[key: string]: any},
+  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: { [key: string]: any },
            error: DSError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];

@@ -1,5 +1,6 @@
 import { Completer } from "../../utils/async";
 import { RequesterUpdate } from "../interface";
+/** @ignore */
 export class RemoveController {
     constructor(requester, path) {
         this.completer = new Completer();

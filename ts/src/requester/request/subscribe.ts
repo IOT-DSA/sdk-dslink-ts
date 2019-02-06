@@ -12,6 +12,7 @@ export class ReqSubscribeListener implements Cancelable {
   requester: Requester;
   path: string;
 
+  /** @ignore */
   constructor(requester: Requester, path: string, callback: ValueUpdateCallback) {
     this.requester = requester;
     this.path = path;
@@ -28,6 +29,7 @@ export class ReqSubscribeListener implements Cancelable {
 
 /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
+/** @ignore */
 export class SubscribeController implements RequestUpdater {
   request: SubscribeRequest;
 
@@ -45,6 +47,7 @@ export class SubscribeController implements RequestUpdater {
   }
 }
 
+/** @ignore */
 export class SubscribeRequest extends Request implements ConnectionProcessor {
   lastSid: number = 0;
 
@@ -237,6 +240,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
   }
 }
 
+/** @ignore */
 export class ReqSubscribeController {
   readonly node: RemoteNode;
   readonly requester: Requester;

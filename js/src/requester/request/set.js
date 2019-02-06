@@ -1,6 +1,7 @@
 import { Completer } from "../../utils/async";
 import { Permission } from "../../common/permission";
 import { RequesterUpdate } from "../interface";
+/** @ignore */
 export class SetController {
     constructor(requester, path, value, maxPermission = Permission.CONFIG) {
         this.completer = new Completer();

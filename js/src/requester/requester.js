@@ -23,6 +23,7 @@ export class Requester extends ConnectionHandler {
                 }
             }
         };
+        /** @ignore */
         this.onError = new Stream();
         /** @ignore */
         this.lastRid = 0;
@@ -82,17 +83,25 @@ export class Requester extends ConnectionHandler {
         return this.nodeCache.isNodeCached(path);
     }
     /**
-     * Subscribe a path and get the value in a async callback
+     * Subscribe a path and get value updates in a async callback
+     * If you only need to get the current value once, use [[subscribeOnce]] instead.
      *
-     * @param path - The path to subscribe
-     * @param callback - The callback
-     * @param qos - The qos level of the subscription
+     * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+     * You can also use the [[unsubscribe]] method to close the callback.
+     *
+     * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
+     * @param qos - qos level of the subscription
+     *   - 0: allow value skipping as long as the last update is received
+     *   - 1: no value skipping
      */
     subscribe(path, callback, qos = 0) {
         let node = this.nodeCache.getRemoteNode(path);
         node._subscribe(this, callback, qos);
         return new ReqSubscribeListener(this, path, callback);
     }
+    /**
+     * Unsubscribe the callback
+     */
     unsubscribe(path, callback) {
         let node = this.nodeCache.getRemoteNode(path);
         node._unsubscribe(this, callback);
@@ -115,6 +124,9 @@ export class Requester extends ConnectionHandler {
         });
         return stream;
     }
+    /**
+     * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+     */
     subscribeOnce(path, timeoutMs = 0) {
         return new Promise((resolve, reject) => {
             let timer;
@@ -141,6 +153,9 @@ export class Requester extends ConnectionHandler {
             }
         });
     }
+    /**
+     * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+     */
     listOnce(path) {
         return new Promise((resolve, reject) => {
             let sub = this.list(path, (update) => {
@@ -151,10 +166,21 @@ export class Requester extends ConnectionHandler {
             });
         });
     }
+    /**
+     * List a path and get the node metadata as well as a summary of children nodes.
+     * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
+     *
+     * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+     */
     list(path, callback) {
         let node = this.nodeCache.getRemoteNode(path);
         return node._list(this).listen(callback);
     }
+    /**
+     * Invoke a node action, and receive updates.
+     * Usually an action stream will be closed on server side,
+     * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
+     */
     invoke(path, params = {}, callback, maxPermission = Permission.CONFIG) {
         let node = this.nodeCache.getRemoteNode(path);
         let stream = node._invoke(params, this, maxPermission);
@@ -163,9 +189,15 @@ export class Requester extends ConnectionHandler {
         }
         return stream;
     }
+    /**
+     * Set the value of an attribute, the attribute will be created if not exists
+     */
     set(path, value, maxPermission = Permission.CONFIG) {
         return new SetController(this, path, value, maxPermission).future;
     }
+    /**
+     * Remove an attribute
+     */
     remove(path) {
         return new RemoveController(this, path).future;
     }

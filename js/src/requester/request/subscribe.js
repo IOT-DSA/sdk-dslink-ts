@@ -2,6 +2,7 @@ import { Request } from "../request";
 import { ValueUpdate } from "../../common/value";
 import { ACK_WAIT_COUNT } from "../../common/connection_handler";
 export class ReqSubscribeListener {
+    /** @ignore */
     constructor(requester, path, callback) {
         this.requester = requester;
         this.path = path;
@@ -16,6 +17,7 @@ export class ReqSubscribeListener {
 }
 /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
+/** @ignore */
 export class SubscribeController {
     onDisconnect() {
         // TODO: implement onDisconnect
@@ -27,6 +29,7 @@ export class SubscribeController {
         // do nothing
     }
 }
+/** @ignore */
 export class SubscribeRequest extends Request {
     constructor(requester, rid) {
         super(requester, rid, new SubscribeController(), null);
@@ -203,6 +206,7 @@ export class SubscribeRequest extends Request {
         }
     }
 }
+/** @ignore */
 export class ReqSubscribeController {
     constructor(node, requester) {
         this.callbacks = new Map();

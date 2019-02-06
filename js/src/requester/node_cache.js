@@ -5,6 +5,7 @@ import { ReqSubscribeController } from "./request/subscribe";
 import { Permission } from "../common/permission";
 import { InvokeController } from "./request/invoke";
 import { buildEnumType } from "../../utils";
+/** @ignore */
 export class RemoteNodeCache {
     constructor() {
         this._nodes = new Map();
@@ -71,10 +72,12 @@ export class RemoteNodeCache {
 export class RemoteNode extends Node {
     constructor(remotePath) {
         super();
+        /** @ignore */
         this.listed = false;
         this.remotePath = remotePath;
         this._getRawName();
     }
+    /** @ignore */
     get subscribeController() {
         return this._subscribeController;
     }
@@ -92,6 +95,7 @@ export class RemoteNode extends Node {
             return null;
         }
     }
+    /** @ignore */
     _getRawName() {
         if (this.remotePath === '/') {
             this.name = '/';
@@ -102,6 +106,7 @@ export class RemoteNode extends Node {
         }
     }
     /// node data is not ready until all profile and mixins are updated
+    /** @ignore */
     isUpdated() {
         if (!this.isSelfUpdated()) {
             return false;
@@ -112,9 +117,11 @@ export class RemoteNode extends Node {
         return true;
     }
     /// whether the node's own data is updated
+    /** @ignore */
     isSelfUpdated() {
         return this._listController != null && this._listController.initialized;
     }
+    /** @ignore */
     _list(requester) {
         if (this._listController == null) {
             this._listController = this.createListController(requester);
@@ -122,23 +129,28 @@ export class RemoteNode extends Node {
         return this._listController.stream;
     }
     /// need a factory function for children class to override
+    /** @ignore */
     createListController(requester) {
         return new ListController(this, requester);
     }
+    /** @ignore */
     _subscribe(requester, callback, qos) {
         if (this._subscribeController == null) {
             this._subscribeController = new ReqSubscribeController(this, requester);
         }
         this._subscribeController.listen(callback, qos);
     }
+    /** @ignore */
     _unsubscribe(requester, callback) {
         if (this._subscribeController != null) {
             this._subscribeController.unlisten(callback);
         }
     }
+    /** @ignore */
     _invoke(params, requester, maxPermission = Permission.CONFIG) {
         return new InvokeController(this, requester, params, maxPermission)._stream;
     }
+    /** @ignore */
     /// used by list api to update simple data for children
     updateRemoteChildData(m, cache) {
         let childPathPre;
@@ -166,11 +178,13 @@ export class RemoteNode extends Node {
         }
     }
     /// clear all configs attributes and children
+    /** @ignore */
     resetNodeCache() {
         this.configs.clear();
         this.attributes.clear();
         this.children.clear();
     }
+    /** @ignore */
     save(includeValue = true) {
         let map = {};
         for (let [key, value] of this.configs) {
@@ -191,11 +205,13 @@ export class RemoteNode extends Node {
         return map;
     }
 }
+/** @ignore */
 export class RemoteDefNode extends RemoteNode {
     constructor(path) {
         super(path);
     }
 }
+/** @ignore */
 export class DefaultDefNodes {
 }
 DefaultDefNodes._defaultDefs = {

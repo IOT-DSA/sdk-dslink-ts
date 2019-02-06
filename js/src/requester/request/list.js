@@ -4,12 +4,14 @@ import { RemoteNode } from "../node_cache";
 import { ValueUpdate } from "../../common/value";
 import { RequesterUpdate } from "../interface";
 export class RequesterListUpdate extends RequesterUpdate {
+    /** @ignore */
     constructor(node, changes, streamStatus) {
         super(streamStatus);
         this.node = node;
         this.changes = changes;
     }
 }
+/** @ignore */
 export class ListDefListener {
     constructor(node, requester, callback) {
         this.ready = false;
@@ -24,6 +26,7 @@ export class ListDefListener {
         this.listener.close();
     }
 }
+/** @ignore */
 export class ListController {
     constructor(node, requester) {
         this.changes = new Set();

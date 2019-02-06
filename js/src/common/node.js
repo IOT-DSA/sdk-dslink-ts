@@ -24,11 +24,6 @@ export class Node {
         }
         return nameOrPath;
     }
-    /// same as attributes for local node
-    /// but different on remote node
-    getOverideAttributes(attr) {
-        return this.attributes.get(attr);
-    }
     /// Get an Attribute
     getAttribute(name) {
         if (this.attributes.has(name)) {
@@ -50,11 +45,13 @@ export class Node {
         return null;
     }
     /// Adds a child to this node.
+    /** @ignore */
     addChild(name, node) {
         this.children.set(name, node);
     }
     /// Remove a child from this node.
     /// [input] can be either an instance of [Node] or a [string].
+    /** @ignore */
     removeChild(input) {
         this.children.delete(input);
     }
@@ -82,6 +79,7 @@ export class Node {
         return this.getChild(name);
     }
     /// Iterates over all the children of this node and passes them to the specified [callback].
+    /** @ignore */
     forEachChild(callback) {
         for (let [name, node] of this.children) {
             callback(name, node);
@@ -94,6 +92,7 @@ export class Node {
             }
         }
     }
+    /** @ignore */
     forEachConfig(callback) {
         for (let [name, val] of this.configs) {
             callback(name, val);
@@ -106,6 +105,7 @@ export class Node {
             }
         }
     }
+    /** @ignore */
     forEachAttribute(callback) {
         for (let [name, val] of this.attributes) {
             callback(name, val);
@@ -119,6 +119,7 @@ export class Node {
         }
     }
     /// Gets a map for the data that will be listed in the parent node's children property.
+    /** @ignore */
     getSimpleMap() {
         let rslt = {};
         if (this.configs.has('$is')) {
@@ -156,6 +157,7 @@ export class Path {
         this.path = path;
         this._parse();
     }
+    /** @ignore */
     static escapeName(str) {
         if (Path.invalidNameChar.test(str)) {
             return encodeURIComponent(str);
@@ -202,16 +204,17 @@ export class Path {
         }
         return null;
     }
-    /// Get the parent of this path.
+    /**  Get the parent of this path. */
     get parent() {
         return new Path(this.parentPath);
     }
-    /// Get a child of this path.
+    /** Get a child of this path. */
     child(name) {
         return new Path((this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) +
             "/" +
             (name.startsWith("/") ? name.substring(1) : name));
     }
+    /** @ignore */
     _parse() {
         if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
             this.valid = false;
@@ -264,6 +267,7 @@ export class Path {
         return !this.name.startsWith('@') && !this.name.startsWith('$');
     }
     /// Merges the [base] path with this path.
+    /** @ignore */
     mergeBasePath(base, force = false) {
         if (base == null) {
             return;
@@ -292,7 +296,9 @@ export class Path {
     }
 }
 /// Regular Expression for invalid characters in paths.
+/** @ignore */
 Path.invalidChar = /[\\\?\*|"<>:]/;
 /// Regular Expression for invalid characters in names.
+/** @ignore */
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
 //# sourceMappingURL=node.js.map

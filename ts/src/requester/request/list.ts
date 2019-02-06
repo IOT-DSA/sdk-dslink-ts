@@ -9,19 +9,22 @@ import {DsTimer} from "../../utils/timer";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class RequesterListUpdate extends RequesterUpdate {
-  /// this is only a list of changed fields
-  /// when changes is null, means everything could have been changed
+  /**
+   * This is only a list of changed fields.
+   * When changes is null, it means everything could have changed.
+   */
   changes: string[];
   node: RemoteNode;
 
+  /** @ignore */
   constructor(node: RemoteNode, changes: string[], streamStatus: string) {
     super(streamStatus);
     this.node = node;
     this.changes = changes;
-
   }
 }
 
+/** @ignore */
 export class ListDefListener {
   readonly node: RemoteNode;
   readonly requester: Requester;
@@ -45,6 +48,7 @@ export class ListDefListener {
   }
 }
 
+/** @ignore */
 export class ListController implements RequestUpdater, ConnectionProcessor {
   readonly node: RemoteNode;
   readonly requester: Requester;

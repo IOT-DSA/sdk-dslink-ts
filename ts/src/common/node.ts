@@ -23,12 +23,6 @@ export class Node {
   /// Node Attributes
   attributes: Map<string, any> = new Map();
 
-  /// same as attributes for local node
-  /// but different on remote node
-  getOverideAttributes(attr: string): object {
-    return this.attributes.get(attr);
-  }
-
   /// Get an Attribute
   getAttribute(name: string): any {
     if (this.attributes.has(name)) {
@@ -65,12 +59,14 @@ export class Node {
   children: Map<string, Node> = new Map();
 
   /// Adds a child to this node.
+  /** @ignore */
   addChild(name: string, node: Node) {
     this.children.set(name, node);
   }
 
   /// Remove a child from this node.
   /// [input] can be either an instance of [Node] or a [string].
+  /** @ignore */
   removeChild(input: string) {
     this.children.delete(input);
   }
@@ -103,6 +99,7 @@ export class Node {
 
 
   /// Iterates over all the children of this node and passes them to the specified [callback].
+  /** @ignore */
   forEachChild(callback: (name: string, node: Node) => void) {
     for (let [name, node] of this.children) {
       callback(name, node);
@@ -116,6 +113,7 @@ export class Node {
     }
   }
 
+  /** @ignore */
   forEachConfig(callback: (name: string, val: any) => void) {
     for (let [name, val] of this.configs) {
       callback(name, val);
@@ -129,6 +127,7 @@ export class Node {
     }
   }
 
+  /** @ignore */
   forEachAttribute(callback: (name: string, val: any) => void) {
     for (let [name, val] of this.attributes) {
       callback(name, val);
@@ -143,6 +142,7 @@ export class Node {
   }
 
   /// Gets a map for the data that will be listed in the parent node's children property.
+  /** @ignore */
   getSimpleMap(): { [key: string]: any } {
     let rslt: { [key: string]: any } = {};
     if (this.configs.has('$is')) {
@@ -183,11 +183,14 @@ export class Node {
 /// Utility class for node and config/attribute paths.
 export class Path {
   /// Regular Expression for invalid characters in paths.
+  /** @ignore */
   static readonly invalidChar: RegExp = /[\\\?\*|"<>:]/;
 
   /// Regular Expression for invalid characters in names.
+  /** @ignore */
   static readonly invalidNameChar: RegExp = /[\/\\\?\*|"<>:]/;
 
+  /** @ignore */
   static escapeName(str: string): string {
     if (Path.invalidNameChar.test(str)) {
       return encodeURIComponent(str);
@@ -245,12 +248,12 @@ export class Path {
   /// Real Parent Path
   parentPath: string;
 
-  /// Get the parent of this path.
+  /**  Get the parent of this path. */
   get parent() {
     return new Path(this.parentPath);
   }
 
-  /// Get a child of this path.
+  /** Get a child of this path. */
   child(name: string) {
     return new Path(
       (this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) +
@@ -271,7 +274,7 @@ export class Path {
     this.path = path;
     this._parse();
   }
-
+  /** @ignore */
   _parse() {
     if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
       this.valid = false;
@@ -328,6 +331,7 @@ export class Path {
   }
 
   /// Merges the [base] path with this path.
+  /** @ignore */
   mergeBasePath(base: string, force: boolean = false) {
     if (base == null) {
       return;

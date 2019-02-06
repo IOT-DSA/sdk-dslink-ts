@@ -1,7 +1,10 @@
 export class Stream {
     constructor(onStartListen, onAllCancel, onListen) {
+        /** @ignore */
         this._listeners = new Set();
+        /** @ignore */
         this._updating = false;
+        /** @ignore */
         this._cached = false;
         this.isClosed = false;
         this._onStartListen = onStartListen;
@@ -36,6 +39,7 @@ export class Stream {
         this._dispatch();
         return true;
     }
+    /** @ignore */
     _dispatch() {
         this._updating = true;
         for (let listener of this._listeners) {
