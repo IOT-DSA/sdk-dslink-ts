@@ -1,6 +1,8 @@
+import WebSocket from "ws";
 import {ClientLink, Connection, ConnectionChannel} from "../common/interfaces";
 import {PassiveChannel} from "../common/connection_channel";
 import {Completer} from "../utils/async";
+import {DsCodec} from "../utils/codec";
 
 
 export class WebSocketConnection  extends Connection {
@@ -39,13 +41,24 @@ export class WebSocketConnection  extends Connection {
   _onDoneHandled: boolean = false;
 
   /// clientLink is not needed when websocket works in server link
-  WebSocketConnection(this.socket,
-      {this.clientLink, boolean enableTimeout: false, boolean enableAck: true, DsCodec useCodec}) {
-    if (useCodec != null) {
-      codec = useCodec;
-    }
-    _responderChannel = new PassiveChannel(this, true);
-    _requesterChannel = new PassiveChannel(this, true);
+  // WebSocketConnection(socket:WebSocket,
+  //     options:{clientLink, boolean enableTimeout: false, boolean enableAck: true, DsCodec useCodec}) {
+  //   this.socket=socket;
+    constructor(socket: WebSocket, clientLink: ClientLink,
+      onConnect: Function,
+      useCodec: DsCodec
+  ) {
+      super();
+      this.socket = socket;
+      this.clientLink = clientLink;
+      this.onConnect = onConnect;
+      if (useCodec != null) {
+        this.codec = useCodec;
+      }
+
+      this._responderChannel = new PassiveChannel(this);
+      this._requesterChannel = new PassiveChannel(this);
+
     socket.listen(
         onData,
         onDone: _onDone,

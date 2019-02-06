@@ -34,6 +34,7 @@
   "scripts": {
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
     "js-example": "parcel example/js/basic.html --out-dir temp --open --no-source-maps ",
-    "build": "parcel build ts/web.ts --no-minify"
+    "build": "parcel build ts/web.ts --no-minify",
+    "buildDoc": "typedoc --ignoreCompilerErrors --out docs ./ts"
   }
 }

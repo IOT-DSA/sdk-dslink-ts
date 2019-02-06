@@ -73,12 +73,12 @@ export class Requester extends ConnectionHandler {
     return rslt;
   }
 
-  sendRequest(m: {[key: string]: any}, updater: RequestUpdater) {
+  sendRequest(m: { [key: string]: any }, updater: RequestUpdater) {
     return this._sendRequest(m, updater);
   }
 
 
-  _sendRequest(m: {[key: string]: any}, updater: RequestUpdater): Request {
+  _sendRequest(m: { [key: string]: any }, updater: RequestUpdater): Request {
     m['rid'] = this.getNextRid();
     let req: Request;
     if (updater != null) {
@@ -95,6 +95,13 @@ export class Requester extends ConnectionHandler {
     return this.nodeCache.isNodeCached(path);
   }
 
+  /**
+   * Subscribe a path and get the value in a async callback
+   *
+   * @param path - The path to subscribe
+   * @param callback - The callback
+   * @param qos - The qos level of the subscription
+   */
   subscribe(path: string, callback: (update: ValueUpdate) => void,
             qos: number = 0): ReqSubscribeListener {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
@@ -172,7 +179,7 @@ export class Requester extends ConnectionHandler {
     return node._list(this).listen(callback);
   }
 
-  invoke(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
+  invoke(path: string, params: { [key: string]: any } = {}, callback?: Listener<RequesterInvokeUpdate>,
          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
