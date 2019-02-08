@@ -5512,9 +5512,12 @@ class ServerLink extends BaseLink {} /// Base Class for Client Link implementati
 exports.ServerLink = ServerLink;
 
 class ClientLink extends BaseLink {
+  /** @ignore */
   get logName() {
     return null;
   }
+  /** @ignore */
+
 
   formatLogMessage(msg) {
     if (this.logName != null) {
@@ -5613,7 +5616,7 @@ class DSError {
       rslt["path"] = this.path;
     }
 
-    if (this.phase == ErrorPhase.request) {
+    if (this.phase === ErrorPhase.request) {
       rslt["phase"] = ErrorPhase.request;
     }
 
@@ -5654,8 +5657,13 @@ exports.Completer = exports.StreamSubscription = exports.Stream = void 0;
 
 class Stream {
   constructor(onStartListen, onAllCancel, onListen) {
+    /** @ignore */
     this._listeners = new Set();
+    /** @ignore */
+
     this._updating = false;
+    /** @ignore */
+
     this._cached = false;
     this.isClosed = false;
     this._onStartListen = onStartListen;
@@ -5701,6 +5709,8 @@ class Stream {
 
     return true;
   }
+  /** @ignore */
+
 
   _dispatch() {
     this._updating = true;
@@ -5835,7 +5845,7 @@ class Request {
     } // remove the request from global object
 
 
-    if (this.streamStatus == _interfaces.StreamStatus.closed) {
+    if (this.streamStatus === _interfaces.StreamStatus.closed) {
       this.requester._requests.delete(this.rid);
     }
 
@@ -5883,14 +5893,23 @@ exports.defaultCacheSize = defaultCacheSize;
 
 class ConnectionHandler {
   constructor() {
+    /** @ignore */
     this._toSendList = [];
+    /** @ignore */
+
     this._processors = [];
+    /** @ignore */
+
     this._pendingSend = false;
   }
+  /** @ignore */
+
 
   get connection() {
     return this._conn;
   }
+  /** @ignore */
+
 
   set connection(conn) {
     if (this._connListener != null) {
@@ -5913,6 +5932,8 @@ class ConnectionHandler {
       this._conn.onConnected.then(conn => this.onReconnected());
     }
   }
+  /** @ignore */
+
 
   _onDisconnected(conn) {
     if (this._conn === conn) {
@@ -5926,12 +5947,16 @@ class ConnectionHandler {
       this._conn = null;
     }
   }
+  /** @ignore */
+
 
   onReconnected() {
     if (this._pendingSend) {
       this._conn.sendWhenReady(this);
     }
   }
+  /** @ignore */
+
 
   addToSendList(m) {
     this._toSendList.push(m);
@@ -5947,6 +5972,8 @@ class ConnectionHandler {
   /// same processor won't be added to the list twice
   /// inside processor, send() data that only need to appear once per data frame
 
+  /** @ignore */
+
 
   addProcessor(processor) {
     this._processors.push(processor);
@@ -5959,6 +5986,8 @@ class ConnectionHandler {
       this._pendingSend = true;
     }
   } /// gather all the changes from
+
+  /** @ignore */
 
 
   getSendingData(currentTime, waitingAckId) {
@@ -5974,6 +6003,8 @@ class ConnectionHandler {
     this._toSendList = [];
     return new _interfaces.ProcessorResult(rslt, processors);
   }
+  /** @ignore */
+
 
   clearProcessors() {
     this._processors.length = 0;
@@ -6020,12 +6051,6 @@ class Node {
     }
 
     return nameOrPath;
-  } /// same as attributes for local node
-  /// but different on remote node
-
-
-  getOverideAttributes(attr) {
-    return this.attributes.get(attr);
   } /// Get an Attribute
 
 
@@ -6054,11 +6079,15 @@ class Node {
     return null;
   } /// Adds a child to this node.
 
+  /** @ignore */
+
 
   addChild(name, node) {
     this.children.set(name, node);
   } /// Remove a child from this node.
   /// [input] can be either an instance of [Node] or a [string].
+
+  /** @ignore */
 
 
   removeChild(input) {
@@ -6094,6 +6123,8 @@ class Node {
     return this.getChild(name);
   } /// Iterates over all the children of this node and passes them to the specified [callback].
 
+  /** @ignore */
+
 
   forEachChild(callback) {
     for (let [name, node] of this.children) {
@@ -6108,6 +6139,8 @@ class Node {
       }
     }
   }
+  /** @ignore */
+
 
   forEachConfig(callback) {
     for (let [name, val] of this.configs) {
@@ -6122,6 +6155,8 @@ class Node {
       }
     }
   }
+  /** @ignore */
+
 
   forEachAttribute(callback) {
     for (let [name, val] of this.attributes) {
@@ -6136,6 +6171,8 @@ class Node {
       }
     }
   } /// Gets a map for the data that will be listed in the parent node's children property.
+
+  /** @ignore */
 
 
   getSimpleMap() {
@@ -6189,6 +6226,8 @@ class Path {
 
     this._parse();
   }
+  /** @ignore */
+
 
   static escapeName(str) {
     if (Path.invalidNameChar.test(str)) {
@@ -6248,17 +6287,21 @@ class Path {
     }
 
     return null;
-  } /// Get the parent of this path.
+  }
+  /**  Get the parent of this path. */
 
 
   get parent() {
     return new Path(this.parentPath);
-  } /// Get a child of this path.
+  }
+  /** Get a child of this path. */
 
 
   child(name) {
     return new Path((this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) + "/" + (name.startsWith("/") ? name.substring(1) : name));
   }
+  /** @ignore */
+
 
   _parse() {
     if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {
@@ -6320,6 +6363,8 @@ class Path {
     return !this.name.startsWith('@') && !this.name.startsWith('$');
   } /// Merges the [base] path with this path.
 
+  /** @ignore */
+
 
   mergeBasePath(base, force = false) {
     if (base == null) {
@@ -6350,9 +6395,13 @@ class Path {
 
 } /// Regular Expression for invalid characters in paths.
 
+/** @ignore */
+
 
 exports.Path = Path;
 Path.invalidChar = /[\\\?\*|"<>:]/; /// Regular Expression for invalid characters in names.
+
+/** @ignore */
 
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
 },{}],"Re02":[function(require,module,exports) {
@@ -6539,6 +6588,7 @@ var _value = require("../../common/value");
 var _interface = require("../interface");
 
 class RequesterListUpdate extends _interface.RequesterUpdate {
+  /** @ignore */
   constructor(node, changes, streamStatus) {
     super(streamStatus);
     this.node = node;
@@ -6546,6 +6596,8 @@ class RequesterListUpdate extends _interface.RequesterUpdate {
   }
 
 }
+/** @ignore */
+
 
 exports.RequesterListUpdate = RequesterListUpdate;
 
@@ -6565,6 +6617,8 @@ class ListDefListener {
   }
 
 }
+/** @ignore */
+
 
 exports.ListDefListener = ListDefListener;
 
@@ -6854,6 +6908,7 @@ var _value = require("../../common/value");
 var _connection_handler = require("../../common/connection_handler");
 
 class ReqSubscribeListener {
+  /** @ignore */
   constructor(requester, path, callback) {
     this.requester = requester;
     this.path = path;
@@ -6870,6 +6925,8 @@ class ReqSubscribeListener {
 } /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
 
+/** @ignore */
+
 
 exports.ReqSubscribeListener = ReqSubscribeListener;
 
@@ -6884,6 +6941,8 @@ class SubscribeController {
   }
 
 }
+/** @ignore */
+
 
 exports.SubscribeController = SubscribeController;
 
@@ -7099,6 +7158,8 @@ class SubscribeRequest extends _request.Request {
   }
 
 }
+/** @ignore */
+
 
 exports.SubscribeRequest = SubscribeRequest;
 
@@ -7418,6 +7479,8 @@ class RequesterInvokeUpdate extends _interface.RequesterUpdate {
 exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 
 class RequesterInvokeStream extends _async.Stream {}
+/** @ignore */
+
 
 exports.RequesterInvokeStream = RequesterInvokeStream;
 
@@ -7538,6 +7601,8 @@ var _invoke = require("./request/invoke");
 var _utils = require("../../utils");
 
 /// manage cached nodes for requester
+
+/** @ignore */
 class RemoteNodeCache {
   constructor() {
     this._nodes = new Map();
@@ -7623,11 +7688,15 @@ exports.RemoteNodeCache = RemoteNodeCache;
 class RemoteNode extends _node.Node {
   constructor(remotePath) {
     super();
+    /** @ignore */
+
     this.listed = false;
     this.remotePath = remotePath;
 
     this._getRawName();
   }
+  /** @ignore */
+
 
   get subscribeController() {
     return this._subscribeController;
@@ -7648,6 +7717,8 @@ class RemoteNode extends _node.Node {
       return null;
     }
   }
+  /** @ignore */
+
 
   _getRawName() {
     if (this.remotePath === '/') {
@@ -7656,6 +7727,8 @@ class RemoteNode extends _node.Node {
       this.name = this.remotePath.split('/').pop();
     }
   } /// node data is not ready until all profile and mixins are updated
+
+  /** @ignore */
 
 
   isUpdated() {
@@ -7670,10 +7743,14 @@ class RemoteNode extends _node.Node {
     return true;
   } /// whether the node's own data is updated
 
+  /** @ignore */
+
 
   isSelfUpdated() {
     return this._listController != null && this._listController.initialized;
   }
+  /** @ignore */
+
 
   _list(requester) {
     if (this._listController == null) {
@@ -7683,10 +7760,14 @@ class RemoteNode extends _node.Node {
     return this._listController.stream;
   } /// need a factory function for children class to override
 
+  /** @ignore */
+
 
   createListController(requester) {
     return new _list.ListController(this, requester);
   }
+  /** @ignore */
+
 
   _subscribe(requester, callback, qos) {
     if (this._subscribeController == null) {
@@ -7695,16 +7776,22 @@ class RemoteNode extends _node.Node {
 
     this._subscribeController.listen(callback, qos);
   }
+  /** @ignore */
+
 
   _unsubscribe(requester, callback) {
     if (this._subscribeController != null) {
       this._subscribeController.unlisten(callback);
     }
   }
+  /** @ignore */
+
 
   _invoke(params, requester, maxPermission = _permission.Permission.CONFIG) {
     return new _invoke.InvokeController(this, requester, params, maxPermission)._stream;
-  } /// used by list api to update simple data for children
+  }
+  /** @ignore */
+  /// used by list api to update simple data for children
 
 
   updateRemoteChildData(m, cache) {
@@ -7734,12 +7821,16 @@ class RemoteNode extends _node.Node {
     }
   } /// clear all configs attributes and children
 
+  /** @ignore */
+
 
   resetNodeCache() {
     this.configs.clear();
     this.attributes.clear();
     this.children.clear();
   }
+  /** @ignore */
+
 
   save(includeValue = true) {
     let map = {};
@@ -7765,6 +7856,8 @@ class RemoteNode extends _node.Node {
   }
 
 }
+/** @ignore */
+
 
 exports.RemoteNode = RemoteNode;
 
@@ -7774,6 +7867,8 @@ class RemoteDefNode extends RemoteNode {
   }
 
 }
+/** @ignore */
+
 
 exports.RemoteDefNode = RemoteDefNode;
 
@@ -7862,6 +7957,7 @@ var _permission = require("../../common/permission");
 
 var _interface = require("../interface");
 
+/** @ignore */
 class SetController {
   constructor(requester, path, value, maxPermission = _permission.Permission.CONFIG) {
     this.completer = new _async.Completer();
@@ -7909,6 +8005,7 @@ var _async = require("../../utils/async");
 
 var _interface = require("../interface");
 
+/** @ignore */
 class RemoveController {
   constructor(requester, path) {
     this.completer = new _async.Completer();
@@ -7968,7 +8065,10 @@ var _remove = require("./request/remove");
 class Requester extends _connection_handler.ConnectionHandler {
   constructor(cache) {
     super();
+    /** @ignore */
+
     this._requests = new Map();
+    /** @ignore */
 
     this.onData = list => {
       if (Array.isArray(list)) {
@@ -7979,9 +8079,15 @@ class Requester extends _connection_handler.ConnectionHandler {
         }
       }
     };
+    /** @ignore */
+
 
     this.onError = new _async.Stream();
+    /** @ignore */
+
     this.lastRid = 0;
+    /** @ignore */
+
     this._connected = false;
     this.nodeCache = cache ? cache : new _node_cache.RemoteNodeCache();
     this._subscription = new _subscribe.SubscribeRequest(this, 0);
@@ -7996,12 +8102,16 @@ class Requester extends _connection_handler.ConnectionHandler {
   get openRequestCount() {
     return this._requests.size;
   }
+  /** @ignore */
+
 
   _onReceiveUpdate(m) {
     if (typeof m['rid'] === 'number' && this._requests.has(m['rid'])) {
       this._requests.get(m['rid'])._update(m);
     }
   }
+  /** @ignore */
+
 
   getNextRid() {
     do {
@@ -8014,15 +8124,21 @@ class Requester extends _connection_handler.ConnectionHandler {
 
     return this.lastRid;
   }
+  /** @ignore */
+
 
   getSendingData(currentTime, waitingAckId) {
     let rslt = super.getSendingData(currentTime, waitingAckId);
     return rslt;
   }
+  /** @ignore */
+
 
   sendRequest(m, updater) {
     return this._sendRequest(m, updater);
   }
+  /** @ignore */
+
 
   _sendRequest(m, updater) {
     m['rid'] = this.getNextRid();
@@ -8044,6 +8160,19 @@ class Requester extends _connection_handler.ConnectionHandler {
   isNodeCached(path) {
     return this.nodeCache.isNodeCached(path);
   }
+  /**
+   * Subscribe a path and get value updates in a async callback
+   * If you only need to get the current value once, use [[subscribeOnce]] instead.
+   *
+   * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+   * You can also use the [[unsubscribe]] method to close the callback.
+   *
+   * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
+   * @param qos - qos level of the subscription
+   *   - 0: allow value skipping as long as the last update is received
+   *   - 1: no value skipping
+   */
+
 
   subscribe(path, callback, qos = 0) {
     let node = this.nodeCache.getRemoteNode(path);
@@ -8052,12 +8181,18 @@ class Requester extends _connection_handler.ConnectionHandler {
 
     return new _subscribe.ReqSubscribeListener(this, path, callback);
   }
+  /**
+   * Unsubscribe the callback
+   */
+
 
   unsubscribe(path, callback) {
     let node = this.nodeCache.getRemoteNode(path);
 
     node._unsubscribe(this, callback);
   }
+  /** @ignore */
+
 
   onValueChange(path, qos = 0) {
     let listener;
@@ -8076,6 +8211,10 @@ class Requester extends _connection_handler.ConnectionHandler {
     });
     return stream;
   }
+  /**
+   * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+   */
+
 
   subscribeOnce(path, timeoutMs = 0) {
     return new Promise((resolve, reject) => {
@@ -8108,6 +8247,10 @@ class Requester extends _connection_handler.ConnectionHandler {
       }
     });
   }
+  /**
+   * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+   */
+
 
   listOnce(path) {
     return new Promise((resolve, reject) => {
@@ -8120,11 +8263,24 @@ class Requester extends _connection_handler.ConnectionHandler {
       });
     });
   }
+  /**
+   * List a path and get the node metadata as well as a summary of children nodes.
+   * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
+   *
+   * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+   */
+
 
   list(path, callback) {
     let node = this.nodeCache.getRemoteNode(path);
     return node._list(this).listen(callback);
   }
+  /**
+   * Invoke a node action, and receive updates.
+   * Usually an action stream will be closed on server side,
+   * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
+   */
+
 
   invoke(path, params = {}, callback, maxPermission = _permission.Permission.CONFIG) {
     let node = this.nodeCache.getRemoteNode(path);
@@ -8137,14 +8293,24 @@ class Requester extends _connection_handler.ConnectionHandler {
 
     return stream;
   }
+  /**
+   * Set the value of an attribute, the attribute will be created if not exists
+   */
+
 
   set(path, value, maxPermission = _permission.Permission.CONFIG) {
     return new _set.SetController(this, path, value, maxPermission).future;
   }
+  /**
+   * Remove an attribute
+   */
+
 
   remove(path) {
     return new _remove.RemoveController(this, path).future;
   } /// close the request from requester side and notify responder
+
+  /** @ignore */
 
 
   closeRequest(request) {
@@ -8161,6 +8327,8 @@ class Requester extends _connection_handler.ConnectionHandler {
       request.close();
     }
   }
+  /** @ignore */
+
 
   onDisconnected() {
     if (!this._connected) return;
@@ -8179,6 +8347,8 @@ class Requester extends _connection_handler.ConnectionHandler {
 
     this._requests = newRequests;
   }
+  /** @ignore */
+
 
   onReconnected() {
     if (this._connected) return;
@@ -8600,7 +8770,7 @@ exports.WebSocketConnection = WebSocketConnection;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BrowserUserLink = exports.DummyECDH = void 0;
+exports.BrowserUserLink = void 0;
 
 var _interfaces = require("../common/interfaces");
 
@@ -8613,6 +8783,8 @@ var _browser_ws_conn = require("./browser_ws_conn");
 var _codec = require("../utils/codec");
 
 /// a client link for both http and ws
+
+/** @ignore */
 class DummyECDH {
   constructor() {
     this.encodedPublicKey = "";
@@ -8628,15 +8800,19 @@ class DummyECDH {
 
 }
 
-exports.DummyECDH = DummyECDH;
-
 class BrowserUserLink extends _interfaces.ClientLink {
   constructor(wsUpdateUri, format = 'msgpack') {
     super();
+    /** @ignore */
+
     this._onRequesterReadyCompleter = new _async.Completer();
     this.requester = new _requester.Requester(); //  readonly responder: Responder;
 
+    /** @ignore */
+
     this.nonce = new DummyECDH();
+    /** @ignore */
+
     this._wsDelay = 1;
 
     if (wsUpdateUri.startsWith("http")) {
@@ -8654,6 +8830,8 @@ class BrowserUserLink extends _interfaces.ClientLink {
   get onRequesterReady() {
     return this._onRequesterReadyCompleter.future;
   }
+  /** @ignore */
+
 
   updateSalt(salt) {// do nothing
   }
@@ -8661,11 +8839,15 @@ class BrowserUserLink extends _interfaces.ClientLink {
   connect() {
     this.initWebsocket(false);
   }
+  /** @ignore */
+
 
   initWebsocketLater(ms) {
     if (this._initSocketTimer) return;
     this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
   }
+  /** @ignore */
+
 
   initWebsocket(reconnect = true) {
     this._initSocketTimer = null;
@@ -8724,6 +8906,8 @@ class BrowserUserLink extends _interfaces.ClientLink {
   }
 
 }
+/** @ignore */
+
 
 exports.BrowserUserLink = BrowserUserLink;
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);

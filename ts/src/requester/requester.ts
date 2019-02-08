@@ -151,7 +151,7 @@ export class Requester extends ConnectionHandler {
   }
 
   /**
-   * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+   * Subscribe and get value update only once, subscription will be closed automatically when an update is received
    */
   subscribeOnce(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
     return new Promise((resolve, reject) => {
@@ -182,7 +182,7 @@ export class Requester extends ConnectionHandler {
   }
 
   /**
-   * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+   * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
    */
   listOnce(path: string): Promise<RemoteNode> {
     return new Promise((resolve, reject) => {

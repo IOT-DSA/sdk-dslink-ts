@@ -125,7 +125,7 @@ export class Requester extends ConnectionHandler {
         return stream;
     }
     /**
-     * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+     * Subscribe and get value update only once, subscription will be closed automatically when an update is received
      */
     subscribeOnce(path, timeoutMs = 0) {
         return new Promise((resolve, reject) => {
@@ -154,7 +154,7 @@ export class Requester extends ConnectionHandler {
         });
     }
     /**
-     * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+     * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
      */
     listOnce(path) {
         return new Promise((resolve, reject) => {
