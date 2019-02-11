@@ -8212,7 +8212,7 @@ class Requester extends _connection_handler.ConnectionHandler {
     return stream;
   }
   /**
-   * Subscribe and get value update only once, subscription will be closed aromatically when an update is received
+   * Subscribe and get value update only once, subscription will be closed automatically when an update is received
    */
 
 
@@ -8248,7 +8248,7 @@ class Requester extends _connection_handler.ConnectionHandler {
     });
   }
   /**
-   * List and get node metadata and children summary only once, subscription will be closed aromatically when an update is received
+   * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
    */
 
 
@@ -8291,6 +8291,27 @@ class Requester extends _connection_handler.ConnectionHandler {
       stream.listen(callback);
     }
 
+    return stream;
+  }
+  /**
+   * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
+   */
+
+
+  invokeOnce(path, params = {}, callback, maxPermission = _permission.Permission.CONFIG) {
+    let node = this.nodeCache.getRemoteNode(path);
+
+    let stream = node._invoke(params, this, maxPermission);
+
+    if (callback) {
+      stream.listen(callback);
+    }
+
+    stream.listen(update => {
+      if (update.streamStatus !== _interfaces.StreamStatus.closed) {
+        stream.close();
+      }
+    });
     return stream;
   }
   /**

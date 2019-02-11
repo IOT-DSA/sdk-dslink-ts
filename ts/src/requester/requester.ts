@@ -81,12 +81,12 @@ export class Requester extends ConnectionHandler {
   }
 
   /** @ignore */
-  sendRequest(m: { [key: string]: any }, updater: RequestUpdater) {
+  sendRequest(m: {[key: string]: any}, updater: RequestUpdater) {
     return this._sendRequest(m, updater);
   }
 
   /** @ignore */
-  _sendRequest(m: { [key: string]: any }, updater: RequestUpdater): Request {
+  _sendRequest(m: {[key: string]: any}, updater: RequestUpdater): Request {
     m['rid'] = this.getNextRid();
     let req: Request;
     if (updater != null) {
@@ -214,13 +214,31 @@ export class Requester extends ConnectionHandler {
    * Usually an action stream will be closed on server side,
    * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
    */
-  invoke(path: string, params: { [key: string]: any } = {}, callback?: Listener<RequesterInvokeUpdate>,
+  invoke(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
     if (callback) {
       stream.listen(callback);
     }
+    return stream;
+  }
+
+  /**
+   * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
+   */
+  invokeOnce(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
+             maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
+    let stream = node._invoke(params, this, maxPermission);
+    if (callback) {
+      stream.listen(callback);
+    }
+    stream.listen((update: RequesterInvokeUpdate) => {
+      if (update.streamStatus !== StreamStatus.closed) {
+        stream.close();
+      }
+    });
     return stream;
   }
 

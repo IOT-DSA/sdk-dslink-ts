@@ -98,6 +98,7 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#invoke" class="tsd-kind-icon">invoke</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#invokeonce" class="tsd-kind-icon">invoke<wbr>Once</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#isnodecached" class="tsd-kind-icon">is<wbr>Node<wbr>Cached</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#list" class="tsd-kind-icon">list</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#listonce" class="tsd-kind-icon">list<wbr>Once</a></li>
@@ -123,7 +124,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L24">src/requester/requester.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L24">src/requester/requester.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -149,7 +150,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L37">src/requester/requester.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L37">src/requester/requester.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -166,7 +167,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L33">src/requester/requester.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L33">src/requester/requester.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -186,7 +187,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L217">src/requester/requester.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L217">src/requester/requester.ts:217</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -194,6 +195,48 @@
 									<p>Invoke a node action, and receive updates.
 										Usually an action stream will be closed on server side,
 									but in the case of a streaming action the returned stream needs to be closed with <a href="requesterinvokestream.html#close">RequesterInvokeStream.close</a></p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> params: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxPermission: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Permission.CONFIG</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="invokeonce" class="tsd-anchor"></a>
+					<h3>invoke<wbr>Once</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Once<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L230">src/requester/requester.ts:230</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Invoke a node action, and receive update only once, stream will be closed automatically if necessary</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -230,7 +273,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L102">src/requester/requester.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L102">src/requester/requester.ts:102</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -253,7 +296,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L207">src/requester/requester.ts:207</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L207">src/requester/requester.ts:207</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -286,7 +329,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L187">src/requester/requester.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L187">src/requester/requester.ts:187</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -314,7 +357,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L238">src/requester/requester.ts:238</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L256">src/requester/requester.ts:256</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -342,7 +385,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L230">src/requester/requester.ts:230</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L248">src/requester/requester.ts:248</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -376,7 +419,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L118">src/requester/requester.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L118">src/requester/requester.ts:118</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -441,7 +484,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L156">src/requester/requester.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L156">src/requester/requester.ts:156</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -472,7 +515,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/13a305a/ts/src/requester/requester.ts#L128">src/requester/requester.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/requester.ts#L128">src/requester/requester.ts:128</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -548,6 +591,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="requester.html#invoke" class="tsd-kind-icon">invoke</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="requester.html#invokeonce" class="tsd-kind-icon">invoke<wbr>Once</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="requester.html#isnodecached" class="tsd-kind-icon">is<wbr>Node<wbr>Cached</a>
