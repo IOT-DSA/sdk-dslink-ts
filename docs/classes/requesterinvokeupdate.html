@@ -90,7 +90,6 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="requesterinvokeupdate.html#columns" class="tsd-kind-icon">columns</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="requesterinvokeupdate.html#error" class="tsd-kind-icon">error</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="requesterinvokeupdate.html#meta" class="tsd-kind-icon">meta</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="requesterinvokeupdate.html#rawcolumns" class="tsd-kind-icon">raw<wbr>Columns</a></li>
@@ -101,6 +100,7 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="requesterinvokeupdate.html#result" class="tsd-kind-icon">result</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="requesterinvokeupdate.html#rows" class="tsd-kind-icon">rows</a></li>
 							</ul>
 						</section>
@@ -120,7 +120,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides RequesterUpdate.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L15">src/requester/request/invoke.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L22">src/requester/request/invoke.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -157,22 +157,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="columns" class="tsd-anchor"></a>
-					<h3>columns</h3>
-					<div class="tsd-signature tsd-kind-icon">columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TableColumn</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L12">src/requester/request/invoke.ts:12</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="error" class="tsd-anchor"></a>
 					<h3>error</h3>
 					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DSError</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L14">src/requester/request/invoke.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L21">src/requester/request/invoke.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,7 +172,7 @@
 					<div class="tsd-signature tsd-kind-icon">meta<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L15">src/requester/request/invoke.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L22">src/requester/request/invoke.ts:22</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -200,9 +190,14 @@
 					<div class="tsd-signature tsd-kind-icon">raw<wbr>Columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L11">src/requester/request/invoke.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L14">src/requester/request/invoke.ts:14</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Columns received from responder</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="streamstatus" class="tsd-anchor"></a>
@@ -211,7 +206,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from RequesterUpdate.streamStatus</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/interface.ts#L12">src/requester/interface.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/interface.ts#L12">src/requester/interface.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -221,13 +216,41 @@
 					<div class="tsd-signature tsd-kind-icon">updates<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L13">src/requester/request/invoke.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L20">src/requester/request/invoke.ts:20</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Raw updates received from responder</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="result" class="tsd-anchor"></a>
+					<h3>result</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> result<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L92">src/requester/request/invoke.ts:92</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Convert the update to a simple js Object
+									If there are multiple rows, only the first row is returned</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="rows" class="tsd-anchor"></a>
 					<h3>rows</h3>
@@ -238,7 +261,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/f4d432e/ts/src/requester/request/invoke.ts#L30">src/requester/request/invoke.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9627821/ts/src/requester/request/invoke.ts#L37">src/requester/request/invoke.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -281,9 +304,6 @@
 								<a href="requesterinvokeupdate.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="requesterinvokeupdate.html#columns" class="tsd-kind-icon">columns</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="requesterinvokeupdate.html#error" class="tsd-kind-icon">error</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -297,6 +317,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="requesterinvokeupdate.html#updates" class="tsd-kind-icon">updates</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="requesterinvokeupdate.html#result" class="tsd-kind-icon">result</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="requesterinvokeupdate.html#rows" class="tsd-kind-icon">rows</a>

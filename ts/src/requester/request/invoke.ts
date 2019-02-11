@@ -8,15 +8,22 @@ import {RemoteNode} from "../node_cache";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class RequesterInvokeUpdate extends RequesterUpdate {
+  /**
+   * Columns received from responder
+   */
   rawColumns: any[];
+  /** @ignore */
   columns: TableColumn[];
+  /**
+   * Raw updates received from responder
+   */
   updates: any[];
   error: DSError;
-  meta: { [key: string]: any };
+  meta: {[key: string]: any};
 
   constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
               streamStatus: string,
-              meta: { [key: string]: any }, error?: DSError) {
+              meta: {[key: string]: any}, error?: DSError) {
     super(streamStatus);
     this.updates = updates;
     this.rawColumns = rawColumns;
@@ -76,6 +83,29 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
       }
     }
     return this._rows;
+  }
+
+  /**
+   * Convert the update to a simple js Object
+   * If there are multiple rows, only the first row is returned
+   */
+  get result(): any {
+    let rows = this.rows;
+    if (rows.length) {
+      let firstRow = rows[0];
+      if (this.rawColumns && this.rawColumns.length >= firstRow.length) {
+        let result: any = {};
+        for (let i = 0; i < firstRow.length; ++i) {
+          let col = this.rawColumns[i].name;
+          result[col] = firstRow[i];
+        }
+        return result;
+      } else {
+        return firstRow;
+      }
+    } else {
+      return null;
+    }
   }
 }
 
@@ -139,7 +169,7 @@ export class InvokeController implements RequestUpdater {
     }
   };
 
-  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: { [key: string]: any },
+  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {[key: string]: any},
            error: DSError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];
