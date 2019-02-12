@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ReqSubscribeListener | DSLink SDK</title>
+	<title>StreamSubscription | DSLink SDK</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,21 +54,29 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="reqsubscribelistener.html">ReqSubscribeListener</a>
+					<a href="streamsubscription.html">StreamSubscription</a>
 				</li>
 			</ul>
-			<h1>Class ReqSubscribeListener</h1>
+			<h1>Class StreamSubscription&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T</h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ReqSubscribeListener</span>
+						<span class="target">StreamSubscription</span>
 					</li>
 				</ul>
 			</section>
@@ -83,53 +91,12 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="reqsubscribelistener.html#callback" class="tsd-kind-icon">callback</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="reqsubscribelistener.html#path" class="tsd-kind-icon">path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="reqsubscribelistener.html#requester" class="tsd-kind-icon">requester</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="reqsubscribelistener.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="streamsubscription.html#close" class="tsd-kind-icon">close</a></li>
 							</ul>
 						</section>
 					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="callback" class="tsd-anchor"></a>
-					<h3>callback</h3>
-					<div class="tsd-signature tsd-kind-icon">callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ValueUpdateCallback</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/a616ee0/ts/src/requester/request/subscribe.ts#L11">src/requester/request/subscribe.ts:11</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="path" class="tsd-anchor"></a>
-					<h3>path</h3>
-					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/a616ee0/ts/src/requester/request/subscribe.ts#L13">src/requester/request/subscribe.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="requester" class="tsd-anchor"></a>
-					<h3>requester</h3>
-					<div class="tsd-signature tsd-kind-icon">requester<span class="tsd-signature-symbol">:</span> <a href="requester.html" class="tsd-signature-type">Requester</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/a616ee0/ts/src/requester/request/subscribe.ts#L12">src/requester/request/subscribe.ts:12</a></li>
-						</ul>
-					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -144,9 +111,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/a616ee0/ts/src/requester/request/subscribe.ts#L22">src/requester/request/subscribe.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/a616ee0/ts/src/utils/async.ts#L107">src/utils/async.ts:107</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Close the subscription.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -169,27 +141,9 @@
 					<li class=" tsd-kind-class">
 						<a href="remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="reqsubscribelistener.html" class="tsd-kind-icon">Req<wbr>Subscribe<wbr>Listener</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="reqsubscribelistener.html#callback" class="tsd-kind-icon">callback</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="reqsubscribelistener.html#path" class="tsd-kind-icon">path</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="reqsubscribelistener.html#requester" class="tsd-kind-icon">requester</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="reqsubscribelistener.html#close" class="tsd-kind-icon">close</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="requester.html" class="tsd-kind-icon">Requester</a>
 					</li>
@@ -202,9 +156,18 @@
 					<li class=" tsd-kind-class">
 						<a href="requesterlistupdate.html" class="tsd-kind-icon">Requester<wbr>List<wbr>Update</a>
 					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-has-type-parameter">
 						<a href="streamsubscription.html" class="tsd-kind-icon">Stream<wbr>Subscription</a>
+						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="streamsubscription.html#close" class="tsd-kind-icon">close</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-variable">
 						<a href="../globals.html#dslink" class="tsd-kind-icon">DSLink</a>
 					</li>

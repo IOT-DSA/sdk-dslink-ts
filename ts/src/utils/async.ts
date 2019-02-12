@@ -1,7 +1,9 @@
 import {RequesterListUpdate} from "../requester/request/list";
 
+/** @ignore */
 export type Listener<T> = (value: T) => void;
 
+/** @ignore */
 export class Stream<T> {
   /** @ignore */
   _listeners: Set<Listener<T>> = new Set<Listener<T>>();
@@ -82,19 +84,26 @@ export class Stream<T> {
   }
 }
 
+/** @ignore */
 export interface Cancelable {
   close(): void;
 }
 
 export class StreamSubscription<T> implements Cancelable {
+  /** @ignore */
   _stream: Stream<T>;
+  /** @ignore */
   _listener: Listener<T>;
 
+  /** @ignore */
   constructor(stream: Stream<T>, listener: Listener<T>) {
     this._stream = stream;
     this._listener = listener;
   }
 
+  /**
+   * Close the subscription.
+   */
   close() {
     if (this._stream && this._listener) {
       this._stream.unlisten(this._listener);
@@ -104,6 +113,7 @@ export class StreamSubscription<T> implements Cancelable {
   }
 }
 
+/** @ignore */
 export class Completer<T> {
   _resolve: Function;
   _reject: Function;

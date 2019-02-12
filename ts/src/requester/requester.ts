@@ -107,7 +107,7 @@ export class Requester extends ConnectionHandler {
    * Subscribe a path and get value updates in a async callback
    * If you only need to get the current value once, use [[subscribeOnce]] instead.
    *
-   * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+   * A Subscription listener should be closed with [[ReqSubscribeListener.close]] when it's no longer needed.
    * You can also use the [[unsubscribe]] method to close the callback.
    *
    * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
@@ -201,7 +201,7 @@ export class Requester extends ConnectionHandler {
    * List a path and get the node metadata as well as a summary of children nodes.
    * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
    *
-   * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+   * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
    */
 
   list(path: string, callback: Listener<RequesterListUpdate>): StreamSubscription<RequesterListUpdate> {

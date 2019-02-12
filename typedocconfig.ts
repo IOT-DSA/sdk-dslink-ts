@@ -5,6 +5,7 @@ module.exports = {
     './ts/src/requester/requester.ts',
     './ts/src/requester/node_cache.ts',
     './ts/src/requester/request',
+    './ts/src/utils/async.ts',
   ],
   mode: 'file',
   tsconfig: 'tsconfig.json',
