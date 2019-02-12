@@ -65,22 +65,26 @@
 				<h2 id="get-started">Get Started</h2>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {DSLink} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dslink-js/js/web'</span>);
 
-<span class="hljs-keyword">let</span> link = <span class="hljs-keyword">new</span> DSLink(<span class="hljs-string">'ws://localhost:8080/ws'</span>, <span class="hljs-string">'json'</span>);
-link.connect();
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">let</span> link = <span class="hljs-keyword">new</span> DSLink(<span class="hljs-string">'ws://localhost:8080/ws'</span>, <span class="hljs-string">'json'</span>);
+    link.connect();
 
-<span class="hljs-keyword">let</span> subscription = link.requester.subscribe(<span class="hljs-string">'/sys/dataOutPerSecond'</span>, (data) =&gt; {
-  <span class="hljs-built_in">console</span>.log(data);
-  subscription.close();
-});
+    <span class="hljs-keyword">let</span> {requester} = link;
 
-<span class="hljs-keyword">let</span> list = link.requester.list(<span class="hljs-string">'/sys'</span>, (data) =&gt; {
-  <span class="hljs-built_in">console</span>.log(data);
-  list.close();
-});
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">await</span> requester.subscribeOnce(<span class="hljs-string">'/sys/dataOutPerSecond'</span>));
 
-<span class="hljs-keyword">let</span> invoke = link.requester.invoke(<span class="hljs-string">'/sys/get_server_log'</span>, {<span class="hljs-attr">lines</span>: <span class="hljs-number">5</span>}, (data) =&gt; {
-  <span class="hljs-built_in">console</span>.log(data.result);
-});</code></pre>
+    <span class="hljs-built_in">console</span>.log(
+        (<span class="hljs-keyword">await</span> requester.listOnce(<span class="hljs-string">'/sys'</span>))
+            .children
+    );
+
+    <span class="hljs-built_in">console</span>.log(
+        (<span class="hljs-keyword">await</span> requester.invokeOnce(<span class="hljs-string">'/sys/get_server_log'</span>, {<span class="hljs-attr">lines</span>: <span class="hljs-number">5</span>}))
+            .result.log
+    );
+}
+
+main();</code></pre>
 				<h2 id="class-reference">Class Reference</h2>
 				<ul>
 					<li>DSLink is an alias of <a href="classes/browseruserlink.html">BrowserUserLink</a></li>
