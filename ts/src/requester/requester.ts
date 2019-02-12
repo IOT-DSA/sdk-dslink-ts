@@ -227,19 +227,21 @@ export class Requester extends ConnectionHandler {
   /**
    * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
    */
-  invokeOnce(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
-             maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+  invokeOnce(path: string, params: {[key: string]: any} = {}, maxPermission: number = Permission.CONFIG): Promise<RequesterInvokeUpdate> {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
-    if (callback) {
-      stream.listen(callback);
-    }
-    stream.listen((update: RequesterInvokeUpdate) => {
-      if (update.streamStatus !== StreamStatus.closed) {
-        stream.close();
-      }
+    return new Promise((resolve, reject) => {
+      stream.listen((update: RequesterInvokeUpdate) => {
+        if (update.streamStatus !== StreamStatus.closed) {
+          stream.close();
+        }
+        if (update.error) {
+          reject(update.error);
+        } else {
+          resolve(update);
+        }
+      });
     });
-    return stream;
   }
 
   /**

@@ -8326,21 +8326,24 @@ class Requester extends _connection_handler.ConnectionHandler {
    */
 
 
-  invokeOnce(path, params = {}, callback, maxPermission = _permission.Permission.CONFIG) {
+  invokeOnce(path, params = {}, maxPermission = _permission.Permission.CONFIG) {
     let node = this.nodeCache.getRemoteNode(path);
 
     let stream = node._invoke(params, this, maxPermission);
 
-    if (callback) {
-      stream.listen(callback);
-    }
+    return new Promise((resolve, reject) => {
+      stream.listen(update => {
+        if (update.streamStatus !== _interfaces.StreamStatus.closed) {
+          stream.close();
+        }
 
-    stream.listen(update => {
-      if (update.streamStatus !== _interfaces.StreamStatus.closed) {
-        stream.close();
-      }
+        if (update.error) {
+          reject(update.error);
+        } else {
+          resolve(update);
+        }
+      });
     });
-    return stream;
   }
   /**
    * Set the value of an attribute, the attribute will be created if not exists
