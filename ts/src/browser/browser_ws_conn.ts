@@ -58,33 +58,25 @@ export class WebSocketConnection extends Connection {
     socket.binaryType = "arraybuffer";
     this._responderChannel = new PassiveChannel(this);
     this._requesterChannel = new PassiveChannel(this);
-    socket.onmessage = (event) => {
-      this._onData(event);
-    };
-    socket.onclose = (event) => {
-      this._onDone(event);
-    };
-    socket.onopen = (event) => {
-      this._onOpen(event);
-    };
-    // TODO, when it's used in client link, wait for the server to send {allowed} before complete this
-    setTimeout(() => {
-      this._onRequestReadyCompleter.complete(this._requesterChannel);
-    }, 0);
+    socket.onmessage = this._onData;
+    socket.onclose = this._onDone;
+    socket.onopen = this._onOpen;
 
-    this.pingTimer = setInterval(() => {
-      this.onPingTimer();
-    }, 20000);
+    this.pingTimer = setInterval(this.onPingTimer, 20000);
   }
 
   pingTimer: any;
+
+  /// set to true when data is sent, reset the flag every 20 seconds
+  /// since the previous ping message will cause the next 20 seoncd to have a message
+  /// max interval between 2 ping messages is 40 seconds
   _dataSent: boolean = false;
 
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link
   _dataReceiveCount: number = 0;
 
-  onPingTimer() {
+  onPingTimer = () => {
     if (this._dataReceiveCount >= 3) {
       close();
       return;
@@ -96,7 +88,7 @@ export class WebSocketConnection extends Connection {
       return;
     }
     this.addConnCommand(null, null);
-  }
+  };
 
   requireSend() {
     if (!this._sending) {
@@ -112,7 +104,7 @@ export class WebSocketConnection extends Connection {
     return this._opened;
   }
 
-  _onOpen(e: Event) {
+  _onOpen = (e: Event) => {
 //    logger.info("Connected");
     this._opened = true;
     if (this.onConnect != null) {
@@ -122,11 +114,11 @@ export class WebSocketConnection extends Connection {
     this._requesterChannel.updateConnect();
     this.socket.send(this.codec.blankData);
     this.requireSend();
-  }
+  };
 
   /// special server command that need to be merged into message
-  /// now only 2 possible value, salt, allowed
-  _msgCommand: { [key: string]: any };
+  /// now only 3 possible value, salt, ack, allowed
+  _msgCommand: {[key: string]: any};
 
   /// add server command, will be called only when used as server connection
   addConnCommand(key: string, value: object) {
@@ -139,10 +131,15 @@ export class WebSocketConnection extends Connection {
     this.requireSend();
   }
 
-  _onData(e: MessageEvent) {
-//    logger.fine("onData:");
+  _onData = (e: MessageEvent) => {
+    if (this._onDisconnectedCompleter.isCompleted) {
+      return;
+    }
+    if (!this._onRequestReadyCompleter.isCompleted) {
+      this._onRequestReadyCompleter.complete(this._requesterChannel);
+    }
     this._dataReceiveCount = 0;
-    let m: { [key: string]: any };
+    let m: {[key: string]: any};
     if (e.data instanceof ArrayBuffer) {
       try {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
@@ -211,20 +208,22 @@ export class WebSocketConnection extends Connection {
         return;
       }
     }
-  }
+  };
 
   nextMsgId: number = 1;
-
   _sending: boolean = false;
 
   _send() {
+    if (!this._sending) {
+      return;
+    }
     this._sending = false;
     if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
 //    logger.fine("browser sending");
     let needSend = false;
-    let m: { [key: string]: any };
+    let m: {[key: string]: any};
     if (this._msgCommand != null) {
       m = this._msgCommand;
       needSend = true;
@@ -286,7 +285,7 @@ export class WebSocketConnection extends Connection {
 
   _authError: boolean = false;
 
-  _onDone(o?: any) {
+  _onDone = (o?: any) => {
     if (o instanceof CloseEvent) {
       if (o.code === 1006) {
         this._authError = true;
@@ -318,7 +317,8 @@ export class WebSocketConnection extends Connection {
       clearInterval(this.pingTimer);
       this.pingTimer = null;
     }
-  }
+    this._sending = false;
+  };
 
   close() {
     if (this.socket.readyState === WebSocket.OPEN ||
