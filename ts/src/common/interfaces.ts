@@ -17,6 +17,19 @@ export abstract class ECDH {
   }
 }
 
+/** @ignore */
+export class DummyECDH implements ECDH {
+  readonly encodedPublicKey: string = "";
+
+  hashSalt(salt: string): string {
+    return '';
+  }
+
+  verifySalt(salt: string, hash: string): boolean {
+    return true;
+  }
+}
+
 export abstract class Connection {
   requesterChannel: ConnectionChannel;
 
@@ -220,7 +233,7 @@ export class DSError {
   path: string;
   phase: string;
 
-  constructor(type: string, options: { msg?: string, detail?: string, path?: string, phase?: string } = {}) {
+  constructor(type: string, options: {msg?: string, detail?: string, path?: string, phase?: string} = {}) {
     this.type = type;
     this.msg = options.msg;
     this.detail = options.detail;

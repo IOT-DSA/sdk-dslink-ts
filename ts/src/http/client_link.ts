@@ -1,20 +1,26 @@
-// part of dslink.client;
+import {ClientLink, DummyECDH} from "../common/interfaces";
+import {Completer} from "../utils/async";
+import {Requester} from "../requester/requester";
+import WebSocket from "ws";
+import {WebSocketConnection} from "./websocket_conn";
+import {Path} from "../common/node";
+import axios from "axios";
+import {DsCodec, DsJson} from "../utils/codec";
+import url from "url";
+import {Responder} from "../responder/responder";
 
-import {ClientLink} from "../common/interfaces";
 
-export class HttpClientLink  extends ClientLink {
-  _onRequesterReadyCompleter: Completer<Requester> = new Completer<Requester>();
-  _onConnectedCompleter: Completer = new Completer();
+export class HttpClientLink extends ClientLink {
+  _onReadyCompleter: Completer<[Requester, Responder]> = new Completer<[Requester, Responder]>();
 
-  Promise<Requester> get onRequesterReady => this._onRequesterReadyCompleter.future;
+  get onReady(): Promise<[Requester, Responder]> {
+    return this._onReadyCompleter.future;
+  }
 
-  Future get onConnected => this._onConnectedCompleter.future;
 
   remotePath: string;
 
   readonly dsId: string;
-  readonly home: string;
-  readonly token: string;
   readonly privateKey: PrivateKey;
 
   tokenHash: string;
@@ -25,17 +31,17 @@ export class HttpClientLink  extends ClientLink {
   useStandardWebSocket: boolean = true;
   readonly strictTls: boolean;
 
-  @override
-  logName: string;
 
   _nonce: ECDH;
 
-  get nonce(): ECDH { return this._nonce;}
+  get nonce(): ECDH {
+    return this._nonce;
+  }
 
   _wsConnection: WebSocketConnection;
 
 
-   salt: string;
+  salt: string;
 
   updateSalt(salt: string) {
     this.salt = salt;
@@ -45,247 +51,224 @@ export class HttpClientLink  extends ClientLink {
 
   _conn: string;
 
-  enableAck: boolean = false;
-
-  linkData: object;
+  linkData: {[key: string]: any};
 
   /// formats sent to broker
-  formats: List = ['msgpack', 'json'];
+  formats = ['msgpack', 'json'];
 
   /// format received from broker
   format: string = 'json';
 
-  HttpClientLink(this._conn, dsIdPrefix: string, privateKey: PrivateKey, {
-    nodeProvider: NodeProvider,
-    boolean isRequester: true,
-    boolean isResponder: true,
-    overrideRequester: Requester,
-    overrideResponder: Responder,
-    this.strictTls: false,
-    this.home,
-    this.token,
-    this.linkData,
-    List formats
-  }) : privateKey = privateKey,
-        dsId = '${Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}' {
-    if (isRequester) {
-      if (overrideRequester != null) {
-        requester = overrideRequester;
-      } else {
-        requester = new Requester();
-      }
+  constructor(conn: string, dsIdPrefix: string, privateKey: PrivateKey, options: {
+    nodeProvider?: NodeProvider,
+    isRequester: boolean,
+    isResponder: boolean,
+    token?: string,
+    linkData?: {[key: string]: any},
+    formats?: string[]
+  } = {isRequester: false, isResponder: true}) {
+    super();
+    this._conn = conn;
+    this.privateKey = privateKey;
+
+    this.linkData = options.linkData;
+    if (options.formats) {
+      this.formats = options.formats;
     }
 
-    if (formats == null &&
-      const string.fromEnvironment("dsa.codec.formats") != null) {
-      var formatString = const string.fromEnvironment("dsa.codec.formats");
-      formats = formatString.split(",");
+    this.dsId = `${Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}`;
+
+    if (options.isRequester) {
+      this.requester = new Requester();
     }
 
-    if (formats != null) {
-      this.formats = formats;
+
+    if (options.isResponder) {
+      this.responder = new Responder(this.nodeProvider);
     }
 
-    if (isResponder) {
-      if (overrideResponder != null) {
-        responder = overrideResponder;
-      } else if (nodeProvider != null) {
-        responder = new Responder(nodeProvider);
-      }
-    }
-
-    if (token != null && token.length > 16) {
+    if (options.token != null && options.token.length > 16) {
       // pre-generate tokenHash
-      let tokenId: string = token.substring(0, 16);
+      let tokenId: string = options.token.substring(0, 16);
       let hashStr: string = CryptoProvider.sha256(
-          toUTF8('$dsId$token'));
-      tokenHash = '&token=$tokenId$hashStr';
+        toUTF8(`${dsId}${options.token}`));
+      this.tokenHash = `&token=${tokenId}${hashStr}`;
     }
   }
 
-  _connDelay:number = 0;
+  _connDelay: number = 0;
+
+  _connDelayTimer: any;
 
   connDelay() {
-    reconnectWSCount = 0;
-    DsTimer.timerOnceAfter(connect, (
-        _connDelay == 0 ? 20 : _connDelay * 500
-    ));
-    if ( this._connDelay < 30) _connDelay++;
+    this.reconnectWSCount = 0;
+    let delay = this._connDelay * 500;
+    if (!delay) delay = 20;
+    if (!this._connDelayTimer) {
+      this._connDelayTimer = setTimeout(() => {
+        this._connDelayTimer = null;
+        this.connect();
+      }, delay);
+    }
+
+    if (this._connDelay < 30) this._connDelay++;
   }
 
-  connect() async {
-    if ( this._closed) {
+
+  async connect() {
+    if (this._connDelayTimer) {
+      clearTimeout(this._connDelayTimer);
+      this._connDelayTimer = null;
+    }
+    if (this._closed) {
       return;
     }
 
-    lockCryptoProvider();
-    DsTimer.timerCancel(initWebsocket);
-
-    client: HttpClient = new HttpClient();
-
-    client.badCertificateCallback = (cert: X509Certificate, host: string, port:number) {
-//      logger.info(formatLogMessage('Bad certificate for $host:$port'));
-//      logger.finest(formatLogMessage('Cert Issuer: ${cert.issuer}, ' +
-          'Subject: ${cert.subject}'));
-      return !strictTls;
-    };
-
-    connUrl: string = '$_conn?dsId=${encodeURIComponent(dsId)}';
-    if (home != null) {
-      connUrl = '$connUrl&home=$home';
+    if (this._wsDelayTimer) {
+      clearTimeout(this._wsDelayTimer);
     }
-    if (tokenHash != null) {
+
+    let connUrl = `${this._conn}?dsId=${encodeURIComponent(this.dsId)}`;
+    if (this.tokenHash != null) {
       connUrl = '$connUrl$tokenHash';
     }
-    connUri: Uri = Uri.parse(connUrl);
 //    logger.info(formatLogMessage("Connecting to ${_conn}"));
 
     // TODO: This runZoned is due to a bug in the DartVM
     // https://github.com/dart-lang/sdk/issues/31275
     // When it is fixed, we should go back to a regular try-catch
-    runZoned(() async {
-    await ()async{
-      let request: HttpClientRequest = await client.postUrl(connUri);
-      let requestJson: object = {
-        'publicKey': privateKey.publicKey.qBase64,
-        'isRequester': requester != null,
-        'isResponder': responder != null,
-        'formats': formats,
+
+    try {
+      let requestJson: any = {
+        'publicKey': this.privateKey.publicKey.qBase64,
+        'isRequester': this.requester != null,
+        'isResponder': this.responder != null,
+        'formats': this.formats,
         'version': DSA_VERSION,
         'enableWebSocketCompression': true
       };
-
-      if (linkData != null) {
-        requestJson['linkData'] = linkData;
+      if (this.linkData != null) {
+        requestJson['linkData'] = this.linkData;
       }
 
-//      logger.finest(formatLogMessage("Handshake Request: ${requestJson}"));
-//      logger.fine(formatLogMessage("ID: ${dsId}"));
+      let connResponse = await axios.post(connUrl, requestJson, {timeout: 60000});
 
-      request.add(toUTF8(DsJson.encode(requestJson)));
-      let response: HttpClientResponse = await request.close();
-      let merged:number[] = await response.fold(<int>[], foldList);
-      let rslt: string = const Utf8Decoder().convert(merged);
-      let serverConfig: object = DsJson.decode(rslt);
+
+      let serverConfig: {[key: string]: any} = DsJson.decode(connResponse.data);
 
 //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
 
-      //read salt
-      salt = serverConfig['salt'];
+      // read salt
+      let salt = serverConfig['salt'];
 
       let tempKey: string = serverConfig['tempKey'];
       if (tempKey == null) {
         // trusted client, don't do ECDH handshake
-        _nonce = const DummyECDH();
+        this._nonce = new DummyECDH();
       } else {
-        _nonce = await privateKey.getSecret(tempKey);
+        this._nonce = await this.privateKey.getSecret(tempKey);
       }
-      // server start to support version since 1.0.4
-      // and this is the version ack is added
-      enableAck = serverConfig.hasOwnProperty('version');
-      remotePath = serverConfig['path'];
+      this.remotePath = serverConfig['path'];
 
       if (typeof serverConfig['wsUri'] === 'string') {
-        _wsUpdateUri = '${connUri.resolve(serverConfig['wsUri'])}?dsId=${encodeURIComponent(dsId)}'
-            .replaceFirst('http', 'ws');
-        if (home != null) {
-          _wsUpdateUri = '$_wsUpdateUri&home=$home';
-        }
+        this._wsUpdateUri = `${url.resolve(connUrl, serverConfig['wsUri'])}?dsId=${encodeURIComponent(this.dsId)}`
+          .replace('http', 'ws');
       }
 
       if (typeof serverConfig['format'] === 'string') {
-        format = serverConfig['format'];
+        this.format = serverConfig['format'];
       }
-    }().timeout(new Duration(minutes: 1), onTimeout:(){
-        client.close(force: true);
-        throw new TimeoutException('Connection to $_conn',
-            const Duration(minutes: 1));
-    });
-      await initWebsocket(false);
-    }, onError: (e, s) {
-      if (logger.level <= Level.FINER ) {
+
+      await this.initWebsocket(false);
+    } catch (e) {
+//      if (logger.level <= Level.FINER ) {
 //        logger.warning("Client socket crashed: $e $s");
-      } else {
+//      } else {
 //        logger.warning("Client socket crashed: $e");
-      }
-      client.close();
-      connDelay();
-    });
+//      }
+      this.connDelay();
+    }
   }
 
-  _wsDelay:number = 0;
+  _wsDelay: number = 0;
+  _wsDelayTimer: any;
 
-  reconnectWSCount:number = 0;
-  initWebsocket([reconnect: boolean = true]) async {
-    if ( this._closed) return;
+  reconnectWSCount: number = 0;
 
-    reconnectWSCount++;
-    if (reconnectWSCount > 10) {
+  async initWebsocket(reconnect: boolean = true) {
+    if (this._wsDelayTimer) {
+      clearTimeout(this._wsDelayTimer);
+      this._wsDelayTimer = null;
+    }
+    if (this._closed) return;
+
+    this.reconnectWSCount++;
+    if (this.reconnectWSCount > 10) {
       // if reconnected ws for more than 10 times, do a clean reconnct
-      connDelay();
+      this.connDelay();
       return;
     }
 
     try {
-      let wsUrl: string = '$_wsUpdateUri&auth=${_nonce.hashSalt(
-          salt)}&format=$format';
-      if (tokenHash != null) {
-        wsUrl = '$wsUrl$tokenHash';
+      let wsUrl = `${this._wsUpdateUri}&auth=${this._nonce.hashSalt(this.salt)}&format=$format`;
+      if (this.tokenHash != null) {
+        wsUrl = `${wsUrl}${this.tokenHash}`;
       }
 
-      var socket = await HttpHelper.connectToWebSocket(wsUrl,
-              useStandardWebSocket: useStandardWebSocket);
+      let socket = new WebSocket(wsUrl);
 
-      _wsConnection = new WebSocketConnection(
-          socket,
-          clientLink: this,
-          enableTimeout: true,
-          enableAck: enableAck,
-          useCodec: DsCodec.getCodec(format)
+      this._wsConnection = new WebSocketConnection(
+        socket,
+        this, null,
+        DsCodec.getCodec(this.format)
       );
 
 //      logger.info(formatLogMessage("Connected"));
-      if (!_onConnectedCompleter.isCompleted) {
-        _onConnectedCompleter.complete();
-      }
 
       // delays: Reset, we've successfully connected.
-      _connDelay = 0;
-      _wsDelay = 0;
+      this._connDelay = 0;
+      this._wsDelay = 0;
 
-      if (responder != null) {
-        responder.connection = this._wsConnection.responderChannel;
+      if (this.responder != null) {
+        this.responder.connection = this._wsConnection.responderChannel;
+        if (!this.requester) {
+          this._onReadyCompleter.complete([null, this.responder]);
+        }
       }
 
-      if (requester != null) {
-        _wsConnection.onRequesterReady.then((channel) {
-          requester.connection = channel;
-          if (!_onRequesterReadyCompleter.isCompleted) {
-            _onRequesterReadyCompleter.complete(requester);
-          }
+      if (this.requester) {
+        this._wsConnection.onRequesterReady.then((channel) => {
+          this.requester.connection = channel;
+          this._onReadyCompleter.complete([null, this.responder]);
+
         });
       }
 
-      _wsConnection.onDisconnected.then((connection) {
-        initWebsocket();
+      this._wsConnection.onDisconnected.then((connection) => {
+        this.initWebsocket();
       });
-    } catch (error, stack) {
+    } catch (error) {
 //      logger.fine(
-        formatLogMessage("Error while initializing WebSocket"),
-        error,
-        stack
-      );
-      if ( error instanceof WebSocketException && (
-          error.message.contains('not upgraded to websocket') // error from dart
-              || error.message.contains('(401)') // error from nodejs
-      )) {
-        connDelay();
+//         formatLogMessage("Error while initializing WebSocket"),
+//         error,
+//         stack
+//       );
+      if (error.message.contains('not upgraded to websocket')
+        || error.message.contains('(401)')
+      ) {
+        console.log(error.message);
+        this.connDelay();
       } else if (reconnect) {
-        DsTimer.timerOnceAfter(
-          initWebsocket,
-          _wsDelay == 0 ? 20 : _wsDelay * 500
-        );
-        if ( this._wsDelay < 30) _wsDelay++;
+        let delay = this._wsDelay * 500;
+        if (!delay) delay = 20;
+        if (!this._wsDelayTimer) {
+          this._wsDelayTimer = setTimeout(() => {
+            this._wsDelayTimer = null;
+            this.connect();
+          }, delay);
+        }
+
+        if (this._wsDelay < 30) this._wsDelay++;
       }
     }
   }
@@ -293,27 +276,27 @@ export class HttpClientLink  extends ClientLink {
   _closed: boolean = false;
 
   close() {
-    if ( this._closed) return;
-    _onConnectedCompleter = new Completer();
-    _closed = true;
-    if ( this._wsConnection != null) {
-      _wsConnection.close();
-      _wsConnection = null;
+    if (this._closed) return;
+    this._onReadyCompleter = new Completer();
+    this._closed = true;
+    if (this._wsConnection != null) {
+      this._wsConnection.close();
+      this._wsConnection = null;
     }
   }
 }
 
-Promise<PrivateKey> getKeyFromFile(path: string) async {
-  var file = new File(path);
-
-  key: PrivateKey;
-  if (!file.existsSync()) {
-    key = await PrivateKey.generate();
-    file.createSync(recursive: true);
-    file.writeAsStringSync(key.saveToString());
-  } else {
-    key = new PrivateKey.loadFromString(file.readAsStringSync());
-  }
-
-  return key;
-}
+// Promise<PrivateKey> getKeyFromFile(path: string) async {
+//   var file = new File(path);
+//
+//   key: PrivateKey;
+//   if (!file.existsSync()) {
+//     key = await PrivateKey.generate();
+//     file.createSync(recursive: true);
+//     file.writeAsStringSync(key.saveToString());
+//   } else {
+//     key = new PrivateKey.loadFromString(file.readAsStringSync());
+//   }
+//
+//   return key;
+// }

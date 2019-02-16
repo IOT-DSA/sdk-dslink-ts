@@ -1,5 +1,5 @@
 /// a client link for both http and ws
-import {ClientLink, ECDH, NodeProvider} from "../common/interfaces";
+import {ClientLink, DummyECDH, ECDH, NodeProvider} from "../common/interfaces";
 import {Completer} from "../utils/async";
 import {Requester} from "../requester/requester";
 
@@ -7,19 +7,6 @@ import {Responder} from "../responder/responder";
 import {PrivateKey} from "../crypto/pk";
 import {WebSocketConnection} from "./browser_ws_conn";
 import {DsCodec} from "../utils/codec";
-
-/** @ignore */
-class DummyECDH implements ECDH {
-  readonly encodedPublicKey: string = "";
-
-  hashSalt(salt: string): string {
-    return '';
-  }
-
-  verifySalt(salt: string, hash: string): boolean {
-    return true;
-  }
-}
 
 export class BrowserUserLink extends ClientLink {
   /** @ignore */
@@ -70,6 +57,7 @@ export class BrowserUserLink extends ClientLink {
 
   connect() {
     this.initWebsocket(false);
+    return this.onRequesterReady;
   }
 
   /** @ignore */
