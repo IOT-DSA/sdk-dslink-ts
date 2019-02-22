@@ -8,6 +8,8 @@ import axios from "axios";
 import {DsCodec, DsJson} from "../utils/codec";
 import url from "url";
 import {Responder} from "../responder/responder";
+import {sha256} from "../crypto/pk";
+import {DSA_VERSION} from "../../utils";
 
 
 export class HttpClientLink extends ClientLink {
@@ -90,8 +92,7 @@ export class HttpClientLink extends ClientLink {
     if (options.token != null && options.token.length > 16) {
       // pre-generate tokenHash
       let tokenId: string = options.token.substring(0, 16);
-      let hashStr: string = CryptoProvider.sha256(
-        toUTF8(`${dsId}${options.token}`));
+      let hashStr: string = sha256(`${this.dsId}${options.token}`);
       this.tokenHash = `&token=${tokenId}${hashStr}`;
     }
   }

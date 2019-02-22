@@ -26,8 +26,6 @@ typedef T Producer<T>();
 typedef Taker<T>(value: T);
 typedef TwoTaker<A, B>(A a, B b);
 
-/// The DSA Version
-const string DSA_VERSION = "1.1.2";
 
 _logger: Logger;
 
