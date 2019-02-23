@@ -1,79 +1,89 @@
-library dslink.pk;
+import crypto, {ECDH as ECCurve} from "crypto";
+import Base64 from "../utils/base64";
+import {ECDH as ECDHBase} from "../common/interfaces";
 
-import 'dart:async';
-import 'dart:typed_data';
-
-import 'dart/pk.dart' show DartCryptoProvider;
-import '../../utils.dart';
-
-_CRYPTO_PROVIDER: CryptoProvider = DartCryptoProvider.INSTANCE;
-_isCryptoProviderLocked: boolean = false;
-
-setCryptoProvider(provider: CryptoProvider) {
-  if( this._isCryptoProviderLocked)
-    throw new StateError("crypto provider is locked");
-  _CRYPTO_PROVIDER = provider;
-  _isCryptoProviderLocked = true;
-}
-
-lockCryptoProvider() => this._isCryptoProviderLocked = true;
-
-export interface CryptoProvider {
-  static string sha256(list:number[]){
-    bytes: Uint8Array = ByteDataUtil.list2Uint8Array(list);
-    return this._CRYPTO_PROVIDER.base64_sha256(bytes);
-  }
-
-  random:DSRandom;
-
-  Promise<ECDH> assign(publicKeyRemote: PublicKey, old: ECDH);
-  Promise<ECDH> getSecret(publicKeyRemote: PublicKey);
-
-  Promise<PrivateKey> generate();
-  PrivateKey generateSync();
-
-  PrivateKey loadFromString(str: string);
-
-  PublicKey getKeyFromBytes(bytes: Uint8Array);
-
-  string base64_sha256(bytes: Uint8Array);
+export function sha256(str: string | Buffer): string {
+  const hash = crypto.createHash('sha256');
+  hash.update(str);
+  return Base64.encode(hash.digest());
 }
 
 
+export class PublicKey {
 
-export interface PublicKey {
-  qBase64:string;
-  qHash64:string;
+  ecPublicKey: Buffer;
+  qBase64: string;
+  qHash64: string;
 
-  PublicKey();
-
-  factory PublicKey.fromBytes(bytes: Uint8Array) =>
-    _CRYPTO_PROVIDER.getKeyFromBytes(bytes);
-
-  getDsId(prefix: string):string {
-    return '$prefix$qHash64';
-  }
-
-  verifyDsId(dsId: string):boolean {
-    return (dsId.length >= 43 && dsId.substring(dsId.length - 43) == qHash64);
+  constructor(buffer: Buffer) {
+    this.ecPublicKey = buffer;
+    this.qBase64 = Base64.encode(this.ecPublicKey);
+    this.qHash64 = sha256(this.ecPublicKey);
   }
 }
 
-export interface PrivateKey {
-  publicKey:PublicKey;
+export class PrivateKey {
+  ecc: ECCurve;
+  publicKey: PublicKey;
+  ecPrivateKey: Buffer;
+  ecPublicKey: Buffer;
 
-  static Promise<PrivateKey> generate() async =>
-    _CRYPTO_PROVIDER.generate();
+  static generate(): PrivateKey {
+    let ec = crypto.createECDH('prime256v1');
+    ec.generateKeys();
+    return new PrivateKey(ec.getPrivateKey(), ec.getPublicKey());
+  }
 
-  factory PrivateKey.generateSync() =>
-    _CRYPTO_PROVIDER.generateSync();
+  static loadFromString(str: string): PrivateKey {
+    try {
+      let pair = str.split(' ');
+      let buf0 = Base64.decode(pair[0]);
+      let buf1 = Base64.decode(pair[1]);
+      return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+    } catch (e) {
+      return null;
+    }
+  }
 
-  factory PrivateKey.loadFromString(str: string) =>
-    _CRYPTO_PROVIDER.loadFromString(str);
+  constructor(ecPrivateKey: Buffer, ecPublicKey: Buffer) {
+    this.ecPrivateKey = ecPrivateKey;
+    this.ecPublicKey = ecPublicKey;
+    this.ecc = crypto.createECDH('prime256v1');
+    this.ecc.setPrivateKey(ecPrivateKey);
 
-  string saveToString();
-  /// get the secret from the remote public key
-  Promise<ECDH> getSecret(tempKey: string);
+    this.publicKey = new PublicKey(ecPublicKey);
+  }
+
+  saveToString(): string {
+    return `${Base64.encode(this.ecPrivateKey)} ${this.publicKey.qBase64}`;
+  }
+
+  getSecret(key: string): ECDH {
+    let otherPublic = Base64.decode(key);
+    let sharedSecret = this.ecc.computeSecret(otherPublic);
+    return new ECDH(this, sharedSecret);
+  }
 }
 
 
+export class ECDH extends ECDHBase {
+  get encodedPublicKey(): string {
+    return Base64.encode(this.privateKey.ecPublicKey);
+  }
+
+  sharedSecret: Uint8Array;
+
+  privateKey: PrivateKey;
+
+  constructor(privateKey: PrivateKey, sharedSecret: Buffer) {
+    super();
+    this.privateKey = privateKey;
+    this.sharedSecret = sharedSecret;
+  }
+
+  hashSalt(salt: string): string {
+    let encoded = Buffer.from(salt);
+    let buff = Buffer.concat([encoded, this.sharedSecret]);
+    return sha256(buff);
+  }
+}

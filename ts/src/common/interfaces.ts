@@ -8,7 +8,7 @@ import {Responder} from "../responder/responder";
 import {Requester} from "../requester/requester";
 
 export abstract class ECDH {
-  encodedPublicKey: string;
+  abstract get encodedPublicKey(): string;
 
   abstract hashSalt(salt: string): string;
 

@@ -1,4 +1,4 @@
-import {ClientLink, DummyECDH} from "../common/interfaces";
+import {ClientLink, DummyECDH, ECDH} from "../common/interfaces";
 import {Completer} from "../utils/async";
 import {Requester} from "../requester/requester";
 import WebSocket from "ws";
@@ -8,7 +8,7 @@ import axios from "axios";
 import {DsCodec, DsJson} from "../utils/codec";
 import url from "url";
 import {Responder} from "../responder/responder";
-import {sha256} from "../crypto/pk";
+import {PrivateKey, sha256} from "../crypto/pk";
 import {DSA_VERSION} from "../../utils";
 
 
