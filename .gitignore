@@ -3,9 +3,10 @@
 *.log
 /tool/**/*.js
 /example/ts/**/*.js
+/ts/**/*.js
+/test/**/*.js
 node_modules
 /.idea
 /temp
 /.cache
-/ts/**/*.js
 /js/typedocconfig.js
