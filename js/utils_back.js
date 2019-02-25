@@ -30,8 +30,6 @@ typedef;
 Taker(value, T);
 typedef;
 TwoTaker(A, a, B, b);
-/// The DSA Version
-const string, DSA_VERSION = "1.1.2";
 _logger: Logger;
 _DEBUG_MODE: boolean;
 foldList(int[], a, int[], b);

@@ -1,3 +1,4 @@
+/** @ignore */
 export class Stream {
     constructor(onStartListen, onAllCancel, onListen) {
         /** @ignore */
@@ -61,10 +62,14 @@ export class Stream {
     }
 }
 export class StreamSubscription {
+    /** @ignore */
     constructor(stream, listener) {
         this._stream = stream;
         this._listener = listener;
     }
+    /**
+     * Close the subscription.
+     */
     close() {
         if (this._stream && this._listener) {
             this._stream.unlisten(this._listener);
@@ -73,6 +78,7 @@ export class StreamSubscription {
         }
     }
 }
+/** @ignore */
 export class Completer {
     constructor() {
         this.isCompleted = false;

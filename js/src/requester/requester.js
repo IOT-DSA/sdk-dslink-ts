@@ -86,7 +86,7 @@ export class Requester extends ConnectionHandler {
      * Subscribe a path and get value updates in a async callback
      * If you only need to get the current value once, use [[subscribeOnce]] instead.
      *
-     * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+     * A Subscription listener should be closed with [[ReqSubscribeListener.close]] when it's no longer needed.
      * You can also use the [[unsubscribe]] method to close the callback.
      *
      * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
@@ -170,7 +170,7 @@ export class Requester extends ConnectionHandler {
      * List a path and get the node metadata as well as a summary of children nodes.
      * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
      *
-     * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+     * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
      */
     list(path, callback) {
         let node = this.nodeCache.getRemoteNode(path);
@@ -188,6 +188,26 @@ export class Requester extends ConnectionHandler {
             stream.listen(callback);
         }
         return stream;
+    }
+    /**
+     * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
+     */
+    invokeOnce(path, params = {}, maxPermission = Permission.CONFIG) {
+        let node = this.nodeCache.getRemoteNode(path);
+        let stream = node._invoke(params, this, maxPermission);
+        return new Promise((resolve, reject) => {
+            stream.listen((update) => {
+                if (update.streamStatus !== StreamStatus.closed) {
+                    stream.close();
+                }
+                if (update.error) {
+                    reject(update.error);
+                }
+                else {
+                    resolve(update);
+                }
+            });
+        });
     }
     /**
      * Set the value of an attribute, the attribute will be created if not exists

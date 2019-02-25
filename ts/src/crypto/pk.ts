@@ -20,6 +20,14 @@ export class PublicKey {
     this.qBase64 = Base64.encode(this.ecPublicKey);
     this.qHash64 = sha256(this.ecPublicKey);
   }
+
+  getDsId(prefix: string) {
+    return `${prefix}${this.qHash64}`;
+  }
+
+  verifyDsId(dsId: string) {
+    return (dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64);
+  }
 }
 
 export class PrivateKey {
@@ -38,9 +46,17 @@ export class PrivateKey {
     try {
       let pair = str.split(' ');
       let buf0 = Base64.decode(pair[0]);
-      let buf1 = Base64.decode(pair[1]);
-      return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+      if (pair.length === 2) {
+        let buf1 = Base64.decode(pair[1]);
+        return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+      } else {
+        // load from private key only, used for testing purpose only
+        let ec = crypto.createECDH('prime256v1');
+        ec.setPrivateKey(Buffer.from(buf0));
+        return new PrivateKey(Buffer.from(buf0), ec.getPublicKey());
+      }
     } catch (e) {
+      // console.log(e);
       return null;
     }
   }
@@ -71,7 +87,7 @@ export class ECDH extends ECDHBase {
     return Base64.encode(this.privateKey.ecPublicKey);
   }
 
-  sharedSecret: Uint8Array;
+  sharedSecret: Buffer;
 
   privateKey: PrivateKey;
 

@@ -38,7 +38,9 @@
   "scripts": {
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
     "js-example": "parcel example/js/basic.html --out-dir temp --open --no-source-maps ",
-    "build": "parcel build ts/web.ts --no-minify",
-    "buildDoc": "typedoc --options ./typedocconfig.ts"
+    "buildWeb": "parcel build ts/web.ts --no-minify",
+    "buildEs": "tsc -p tsconfig-build.json",
+    "buildDoc": "typedoc --options ./typedocconfig.ts",
+    "test": "mocha test/**/*.ts"
   }
 }

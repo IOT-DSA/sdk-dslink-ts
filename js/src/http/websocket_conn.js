@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { Connection } from "../common/interfaces";
+import { Connection, ConnectionAckGroup } from "../common/interfaces";
 import { PassiveChannel } from "../common/connection_channel";
 import { Completer } from "../utils/async";
 export class WebSocketConnection extends Connection {
@@ -19,31 +19,123 @@ export class WebSocketConnection extends Connection {
         /// add this count every 20 seconds, set to 0 when receiving data
         /// when the count is 3, disconnect the link (>=60 seconds)
         this._dataReceiveCount = 0;
+        this.onPingTimer = () => {
+            if (this._dataReceiveCount >= 3) {
+                close();
+                return;
+            }
+            this._dataReceiveCount++;
+            if (this._dataSent) {
+                this._dataSent = false;
+                return;
+            }
+            this.addConnCommand(null, null);
+        };
+        this._opened = false;
+        this._onOpen = (e) => {
+            //    logger.info("Connected");
+            this._opened = true;
+            if (this.onConnect != null) {
+                this.onConnect();
+            }
+            this._responderChannel.updateConnect();
+            this._requesterChannel.updateConnect();
+            this.socket.send(this.codec.blankData);
+            this.requireSend();
+        };
+        this._onData = (e) => {
+            if (this._onDisconnectedCompleter.isCompleted) {
+                return;
+            }
+            if (!this._onRequestReadyCompleter.isCompleted) {
+                this._onRequestReadyCompleter.complete(this._requesterChannel);
+            }
+            this._dataReceiveCount = 0;
+            let m;
+            if (e.data instanceof ArrayBuffer) {
+                try {
+                    let bytes = new Uint8Array(e.data);
+                    m = this.codec.decodeBinaryFrame(bytes);
+                    //        logger.fine("$m");
+                    if (typeof m["salt"] === 'string') {
+                        this.clientLink.updateSalt(m["salt"]);
+                    }
+                    let needAck = false;
+                    if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+                        needAck = true;
+                        // send responses to requester channel
+                        this._requesterChannel.onReceive.add(m["responses"]);
+                    }
+                    if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+                        needAck = true;
+                        // send requests to responder channel
+                        this._responderChannel.onReceive.add(m["requests"]);
+                    }
+                    if (typeof m["ack"] === 'number') {
+                        this.ack(m["ack"]);
+                    }
+                    if (needAck) {
+                        let msgId = m["msg"];
+                        if (msgId != null) {
+                            this.addConnCommand("ack", msgId);
+                        }
+                    }
+                }
+                catch (err) {
+                    console.error("error in onData", err);
+                    this.close();
+                    return;
+                }
+            }
+            else if (typeof e.data === 'string') {
+                try {
+                    m = this.codec.decodeStringFrame(e.data);
+                    //        logger.fine("$m");
+                    let needAck = false;
+                    if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+                        needAck = true;
+                        // send responses to requester channel
+                        this._requesterChannel.onReceive.add(m["responses"]);
+                    }
+                    if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+                        needAck = true;
+                        // send requests to responder channel
+                        this._responderChannel.onReceive.add(m["requests"]);
+                    }
+                    if (typeof m["ack"] === "number") {
+                        this.ack(m["ack"]);
+                    }
+                    if (needAck) {
+                        let msgId = m["msg"];
+                        if (msgId != null) {
+                            this.addConnCommand("ack", msgId);
+                        }
+                    }
+                }
+                catch (err) {
+                    console.error(err);
+                    this.close();
+                    return;
+                }
+            }
+        };
         /// when nextMsgId = -1, ack is disabled
         this.nextMsgId = 1;
         this._sending = false;
-        this.printDisconnectedMessage = true;
         this.socket = socket;
         this.clientLink = clientLink;
         this.onConnect = onConnect;
         if (useCodec != null) {
             this.codec = useCodec;
         }
+        socket.binaryType = "arraybuffer";
         this._responderChannel = new PassiveChannel(this);
         this._requesterChannel = new PassiveChannel(this);
-        socket.listen(onData, onDone, _onDone, onError, (err) => // logger.warning(
-         formatLogMessage('Error listening to socket'), err);
-        ;
-        socket.add(codec.blankData);
-        if (!enableAck) {
-            nextMsgId = -1;
-        }
-        if (enableTimeout) {
-            pingTimer = new Timer.periodic();
-            const Duration;
-            (seconds) => , onPingTimer;
-            ;
-        }
+        socket.onmessage = this._onData;
+        socket.onclose = this._onDone;
+        socket.onopen = this._onOpen;
+        socket.send(this.codec.blankData);
+        this.pingTimer = setInterval(this.onPingTimer, 20000);
         // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this
     }
     get responderChannel() {
@@ -58,325 +150,125 @@ export class WebSocketConnection extends Connection {
     get onDisconnected() {
         return this._onDisconnectedCompleter.future;
     }
-    onPingTimer(t) {
-        if (this._dataReceiveCount >= 3) {
-            //      logger.finest('close stale connection');
-            this.close();
-            return;
-        }
-        _dataReceiveCount++;
-        if (this._dataSent) {
-            _dataSent = false;
-            return;
-        }
-        this.addConnCommand(null, null);
-    }
     requireSend() {
-        if (!_sending) {
-            _sending = true;
-            DsTimer.callLater(this._send);
+        if (!this._sending) {
+            this._sending = true;
+            setTimeout(() => {
+                this._send();
+            }, 0);
         }
+    }
+    get opened() {
+        return this._opened;
     }
     /// add server command, will be called only when used as server connection
     addConnCommand(key, value) {
-        if (this._serverCommand == null) {
-            _serverCommand = {};
+        if (this._msgCommand == null) {
+            this._msgCommand = {};
         }
         if (key != null) {
-            _serverCommand[key] = value;
+            this._msgCommand[key] = value;
         }
-        requireSend();
-    }
-    onData(dynamic, data) {
-        if (throughputEnabled) {
-            frameIn++;
-        }
-        if (this._onDisconnectedCompleter.isCompleted) {
-            return;
-        }
-        if (!onRequestReadyCompleter.isCompleted) {
-            onRequestReadyCompleter.complete(this._requesterChannel);
-        }
-        _dataReceiveCount = 0;
-        object;
-        m;
-        if (data)
-            is;
-        int[];
-        {
-            try {
-                m = codec.decodeBinaryFrame(data);
-                if (logger.isLoggable(Level.FINEST)) {
-                    //          logger.finest(formatLogMessage("receive: ${m}"));
-                }
-            }
-            catch (err) { }
-            stack;
-            {
-                //        logger.fine(
-                formatLogMessage("Failed to decode binary data in WebSocket Connection"),
-                    err,
-                    stack;
-                ;
-                close();
-                return;
-            }
-            if (throughputEnabled) {
-                dataIn += data.length;
-            }
-            data = null;
-            let needAck = false;
-            if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
-                needAck = true;
-                // send responses to requester channel
-                _requesterChannel.onReceiveController.add(m["responses"]);
-                if (throughputEnabled) {
-                    messageIn += m["responses"].length;
-                }
-            }
-            if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
-                needAck = true;
-                // send requests to responder channel
-                _responderChannel.onReceiveController.add(m["requests"]);
-                if (throughputEnabled) {
-                    messageIn += m["requests"].length;
-                }
-            }
-            if (m["ack"])
-                is;
-            int;
-            {
-                ack(m["ack"]);
-            }
-            if (needAck) {
-                let msgId = m["msg"];
-                if (msgId != null) {
-                    addConnCommand("ack", msgId);
-                }
-            }
-        }
-        if (typeof data === 'string') {
-            try {
-                m = codec.decodeStringFrame(data);
-                if (logger.isLoggable(Level.FINEST)) {
-                    //          logger.finest(formatLogMessage("receive: ${m}"));
-                }
-            }
-            catch (err) { }
-            stack;
-            {
-                console.error(formatLogMessage("Failed to decode string data from WebSocket Connection"), err, stack);
-                close();
-                return;
-            }
-            if (throughputEnabled) {
-                dataIn += data.length;
-            }
-            if (typeof m["salt"] === 'string' && clientLink != null) {
-                clientLink.updateSalt(m["salt"]);
-            }
-            let needAck = false;
-            if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
-                needAck = true;
-                // send responses to requester channel
-                _requesterChannel.onReceiveController.add(m["responses"]);
-                if (throughputEnabled) {
-                    for (object; resp; of)
-                        m["responses"];
-                    {
-                        if (Array.isArray(resp["updates"])) {
-                            let len = resp["updates"].length;
-                            if (len > 0) {
-                                messageIn += len;
-                            }
-                            else {
-                                messageIn += 1;
-                            }
-                        }
-                        else {
-                            messageIn += 1;
-                        }
-                    }
-                }
-            }
-            if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
-                needAck = true;
-                // send requests to responder channel
-                _responderChannel.onReceiveController.add(m["requests"]);
-                if (throughputEnabled) {
-                    messageIn += m["requests"].length;
-                }
-            }
-            if (m["ack"])
-                is;
-            int;
-            {
-                ack(m["ack"]);
-            }
-            if (needAck) {
-                let msgId = m["msg"];
-                if (msgId != null) {
-                    addConnCommand("ack", msgId);
-                }
-            }
-        }
+        this.requireSend();
     }
     _send() {
-        if (!_sending) {
+        if (!this._sending) {
             return;
         }
-        _sending = false;
-        needSend: boolean = false;
-        object;
-        m;
-        if (this._serverCommand != null) {
-            m = this._serverCommand;
-            _serverCommand = null;
+        this._sending = false;
+        if (this.socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
+        //    logger.fine("browser sending");
+        let needSend = false;
+        let m;
+        if (this._msgCommand != null) {
+            m = this._msgCommand;
             needSend = true;
+            this._msgCommand = null;
         }
         else {
             m = {};
         }
-        var pendingAck = [];
-        ts: number = (new DateTime.now()).millisecondsSinceEpoch;
-        rslt: ProcessorResult = this._responderChannel.getSendingData(ts, nextMsgId);
+        let pendingAck = [];
+        let ts = (new Date()).getTime();
+        let rslt = this._responderChannel.getSendingData(ts, this.nextMsgId);
         if (rslt != null) {
             if (rslt.messages.length > 0) {
                 m["responses"] = rslt.messages;
                 needSend = true;
-                if (throughputEnabled) {
-                    for (object; resp; of)
-                        rslt.messages;
-                    {
-                        if (Array.isArray(resp["updates"])) {
-                            let len = resp["updates"].length;
-                            if (len > 0) {
-                                messageOut += len;
-                            }
-                            else {
-                                messageOut += 1;
-                            }
-                        }
-                        else {
-                            messageOut += 1;
-                        }
-                    }
-                }
             }
             if (rslt.processors.length > 0) {
-                pendingAck.addAll(rslt.processors);
+                pendingAck = pendingAck.concat(rslt.processors);
             }
         }
-        rslt = this._requesterChannel.getSendingData(ts, nextMsgId);
+        rslt = this._requesterChannel.getSendingData(ts, this.nextMsgId);
         if (rslt != null) {
             if (rslt.messages.length > 0) {
                 m["requests"] = rslt.messages;
                 needSend = true;
-                if (throughputEnabled) {
-                    messageOut += rslt.messages.length;
-                }
             }
             if (rslt.processors.length > 0) {
-                pendingAck.addAll(rslt.processors);
+                pendingAck = pendingAck.concat(rslt.processors);
             }
         }
         if (needSend) {
-            if (nextMsgId != -1) {
+            if (this.nextMsgId !== -1) {
                 if (pendingAck.length > 0) {
-                    pendingAcks.add(new ConnectionAckGroup(nextMsgId, ts, pendingAck));
+                    this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
                 }
-                m["msg"] = nextMsgId;
-                if (nextMsgId < 0x7FFFFFFF) {
-                    ++nextMsgId;
+                m["msg"] = this.nextMsgId;
+                if (this.nextMsgId < 0x7FFFFFFF) {
+                    ++this.nextMsgId;
                 }
                 else {
-                    nextMsgId = 1;
+                    this.nextMsgId = 1;
                 }
             }
-            addData(m);
-            _dataSent = true;
-            if (throughputEnabled) {
-                frameOut++;
+            //      logger.fine("send: $m");
+            let encoded = this.codec.encodeFrame(m);
+            try {
+                this.socket.send(encoded);
             }
-        }
-    }
-    addData(object, m) {
-        encoded: object = codec.encodeFrame(m);
-        if (logger.isLoggable(Level.FINEST)) {
-            //      logger.finest(formatLogMessage("send: $m"));
-        }
-        if (throughputEnabled) {
-            if (typeof encoded === 'string') {
-                dataOut += encoded.length;
+            catch (e) {
+                console.error('Unable to send on socket', e);
+                this.close();
             }
-            else if (encoded)
-                is;
-            int[];
-            {
-                dataOut += encoded.length;
-            }
-            {
-                //        logger.warning(formatLogMessage("invalid data frame"));
-            }
-        }
-        try {
-            socket.add(encoded);
-        }
-        catch (e) {
-            console.error(formatLogMessage('Error writing to socket'), e);
-            close();
+            this._dataSent = true;
         }
     }
     _onDone() {
         if (this._onDoneHandled) {
             return;
         }
-        _onDoneHandled = true;
-        if (printDisconnectedMessage) {
-            //      logger.info(formatLogMessage("Disconnected"));
+        this._onDoneHandled = true;
+        if (!this._requesterChannel.onReceive.isClosed) {
+            this._requesterChannel.onReceive.close();
         }
-        if (!_requesterChannel.onReceiveController.isClosed) {
-            _requesterChannel.onReceiveController.close();
+        if (!this._requesterChannel.onDisconnectController.isCompleted) {
+            this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
         }
-        if (!_requesterChannel.onDisconnectController.isCompleted) {
-            _requesterChannel.onDisconnectController.complete(this._requesterChannel);
+        if (!this._responderChannel.onReceive.isClosed) {
+            this._responderChannel.onReceive.close();
         }
-        if (!_responderChannel.onReceiveController.isClosed) {
-            _responderChannel.onReceiveController.close();
+        if (!this._responderChannel.onDisconnectController.isCompleted) {
+            this._responderChannel.onDisconnectController.complete(this._responderChannel);
         }
-        if (!_responderChannel.onDisconnectController.isCompleted) {
-            _responderChannel.onDisconnectController.complete(this._responderChannel);
+        if (!this._onDisconnectedCompleter.isCompleted) {
+            this._onDisconnectedCompleter.complete(false);
         }
-        if (!_onDisconnectedCompleter.isCompleted) {
-            _onDisconnectedCompleter.complete(false);
+        if (this.pingTimer != null) {
+            clearInterval(this.pingTimer);
+            this.pingTimer = null;
         }
-        if (pingTimer != null) {
-            pingTimer.cancel();
-        }
-        _sending = false;
-    }
-    formatLogMessage(msg) {
-        if (clientLink != null) {
-            return clientLink.formatLogMessage(msg);
-        }
-        if (logName != null) {
-            return "[${logName}] ${msg}";
-        }
-        return msg;
+        this._sending = false;
     }
     close() {
-        if (socket.readyState == WebSocket.OPEN ||
-            socket.readyState == WebSocket.CONNECTING) {
-            socket.close();
+        if (this.socket.readyState === WebSocket.OPEN ||
+            this.socket.readyState === WebSocket.CONNECTING) {
+            this.socket.close();
         }
-        _onDone();
+        this._onDone();
     }
 }
-WebSocketConnection.throughputEnabled = false;
-WebSocketConnection.dataIn = 0;
-WebSocketConnection.messageIn = 0;
-WebSocketConnection.dataOut = 0;
-WebSocketConnection.messageOut = 0;
-WebSocketConnection.frameIn = 0;
-WebSocketConnection.frameOut = 0;
 //# sourceMappingURL=websocket_conn.js.map

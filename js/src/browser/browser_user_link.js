@@ -1,21 +1,9 @@
 /// a client link for both http and ws
-import { ClientLink } from "../common/interfaces";
+import { ClientLink, DummyECDH } from "../common/interfaces";
 import { Completer } from "../utils/async";
 import { Requester } from "../requester/requester";
 import { WebSocketConnection } from "./browser_ws_conn";
 import { DsCodec } from "../utils/codec";
-/** @ignore */
-class DummyECDH {
-    constructor() {
-        this.encodedPublicKey = "";
-    }
-    hashSalt(salt) {
-        return '';
-    }
-    verifySalt(salt, hash) {
-        return true;
-    }
-}
 export class BrowserUserLink extends ClientLink {
     constructor(wsUpdateUri, format = 'msgpack') {
         super();
@@ -45,6 +33,7 @@ export class BrowserUserLink extends ClientLink {
     }
     connect() {
         this.initWebsocket(false);
+        return this.onRequesterReady;
     }
     /** @ignore */
     initWebsocketLater(ms) {

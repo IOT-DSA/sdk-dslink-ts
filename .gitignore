@@ -7,6 +7,5 @@ node_modules
 /.idea
 /temp
 /.cache
-/js/ts
-/js/example
+/ts/**/*.js
 /js/typedocconfig.js

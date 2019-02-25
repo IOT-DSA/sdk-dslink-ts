@@ -65,6 +65,30 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
         }
         return this._rows;
     }
+    /**
+     * Convert the update to a simple js Object
+     * If there are multiple rows, only the first row is returned
+     */
+    get result() {
+        let rows = this.rows;
+        if (rows.length) {
+            let firstRow = rows[0];
+            if (this.rawColumns && this.rawColumns.length >= firstRow.length) {
+                let result = {};
+                for (let i = 0; i < firstRow.length; ++i) {
+                    let col = this.rawColumns[i].name;
+                    result[col] = firstRow[i];
+                }
+                return result;
+            }
+            else {
+                return firstRow;
+            }
+        }
+        else {
+            return null;
+        }
+    }
 }
 export class RequesterInvokeStream extends Stream {
 }

@@ -1,62 +1,70 @@
-library;
-dslink.pk;
-import 'dart:async';
-import 'dart:typed_data';
-import 'dart/pk.dart';
-show;
-DartCryptoProvider;
-import '../../utils.dart';
-_CRYPTO_PROVIDER: CryptoProvider = DartCryptoProvider.INSTANCE;
-_isCryptoProviderLocked: boolean = false;
-setCryptoProvider(provider, CryptoProvider);
-{
-    if (this._isCryptoProviderLocked)
-        throw new StateError("crypto provider is locked");
-    _CRYPTO_PROVIDER = provider;
-    _isCryptoProviderLocked = true;
+import crypto from "crypto";
+import Base64 from "../utils/base64";
+import { ECDH as ECDHBase } from "../common/interfaces";
+export function sha256(str) {
+    const hash = crypto.createHash('sha256');
+    hash.update(str);
+    return Base64.encode(hash.digest());
 }
-lockCryptoProvider();
-this._isCryptoProviderLocked = true;
-string;
-sha256(list, number[]);
-{
-    bytes: Uint8Array = ByteDataUtil.list2Uint8Array(list);
-    return this._CRYPTO_PROVIDER.base64_sha256(bytes);
+export class PublicKey {
+    constructor(buffer) {
+        this.ecPublicKey = buffer;
+        this.qBase64 = Base64.encode(this.ecPublicKey);
+        this.qHash64 = sha256(this.ecPublicKey);
+    }
+    getDsId(prefix) {
+        return `${prefix}${this.qHash64}`;
+    }
+    verifyDsId(dsId) {
+        return (dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64);
+    }
 }
-random: DSRandom;
-Promise < ECDH > assign(publicKeyRemote, PublicKey, old, ECDH);
-Promise < ECDH > getSecret(publicKeyRemote, PublicKey);
-Promise < PrivateKey > generate();
-PrivateKey;
-generateSync();
-PrivateKey;
-loadFromString(str, string);
-PublicKey;
-getKeyFromBytes(bytes, Uint8Array);
-string;
-base64_sha256(bytes, Uint8Array);
-factory;
-PublicKey.fromBytes(bytes, Uint8Array);
-_CRYPTO_PROVIDER.getKeyFromBytes(bytes);
-getDsId(prefix, string);
-string;
-{
-    return '$prefix$qHash64';
+export class PrivateKey {
+    static generate() {
+        let ec = crypto.createECDH('prime256v1');
+        ec.generateKeys();
+        return new PrivateKey(ec.getPrivateKey(), ec.getPublicKey());
+    }
+    static loadFromString(str) {
+        try {
+            let pair = str.split(' ');
+            let buf0 = Base64.decode(pair[0]);
+            let buf1 = Base64.decode(pair[1]);
+            return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+        }
+        catch (e) {
+            return null;
+        }
+    }
+    constructor(ecPrivateKey, ecPublicKey) {
+        this.ecPrivateKey = ecPrivateKey;
+        this.ecPublicKey = ecPublicKey;
+        this.ecc = crypto.createECDH('prime256v1');
+        this.ecc.setPrivateKey(ecPrivateKey);
+        this.publicKey = new PublicKey(ecPublicKey);
+    }
+    saveToString() {
+        return `${Base64.encode(this.ecPrivateKey)} ${this.publicKey.qBase64}`;
+    }
+    getSecret(key) {
+        let otherPublic = Base64.decode(key);
+        let sharedSecret = this.ecc.computeSecret(otherPublic);
+        return new ECDH(this, sharedSecret);
+    }
 }
-verifyDsId(dsId, string);
-boolean;
-{
-    return (dsId.length >= 43 && dsId.substring(dsId.length - 43) == qHash64);
+export class ECDH extends ECDHBase {
+    get encodedPublicKey() {
+        return Base64.encode(this.privateKey.ecPublicKey);
+    }
+    constructor(privateKey, sharedSecret) {
+        super();
+        this.privateKey = privateKey;
+        this.sharedSecret = sharedSecret;
+    }
+    hashSalt(salt) {
+        let encoded = Buffer.from(salt);
+        let buff = Buffer.concat([encoded, this.sharedSecret]);
+        return sha256(buff);
+    }
 }
-async => _CRYPTO_PROVIDER.generate();
-factory;
-PrivateKey.generateSync();
-_CRYPTO_PROVIDER.generateSync();
-factory;
-PrivateKey.loadFromString(str, string);
-_CRYPTO_PROVIDER.loadFromString(str);
-string;
-saveToString();
-/// get the secret from the remote public key
-Promise < ECDH > getSecret(tempKey, string);
 //# sourceMappingURL=pk.js.map

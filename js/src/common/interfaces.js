@@ -5,6 +5,18 @@ export class ECDH {
         return this.hashSalt(salt) === hash;
     }
 }
+/** @ignore */
+export class DummyECDH {
+    constructor() {
+        this.encodedPublicKey = "";
+    }
+    hashSalt(salt) {
+        return '';
+    }
+    verifySalt(salt, hash) {
+        return true;
+    }
+}
 export class Connection {
     constructor() {
         this.codec = DsCodec.defaultCodec;
