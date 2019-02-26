@@ -1,10 +1,12 @@
 const DSLink = require("../../js/src/http/client_link").HttpClientLink;
-const {PrivateKey} = require("../../ts/src/crypto/pk");
+const {PrivateKey} = require("../../js/src/crypto/pk");
 
 async function main() {
-  let link = new DSLink('ws://localhost:8080/conn', 'test-', PrivateKey.generate(), {
+  let key = PrivateKey.loadFromString('M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE');
+  let link = new DSLink('http://localhost:8080/conn', 'test-', key, {
     isRequester: true,
-    isResponder: false
+    isResponder: false,
+    format: 'json'
   });
   await link.connect();
 

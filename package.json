@@ -39,7 +39,6 @@
     "ts-example": "parcel example/ts/basic.html --out-dir temp --open --no-source-maps ",
     "js-example": "parcel example/js/basic.html --out-dir temp --open --no-source-maps ",
     "buildWeb": "parcel build ts/web.ts --no-minify",
-    "buildJs": "tsc -p tsconfig-build.json",
     "buildDoc": "typedoc --options ./typedocconfig.ts",
     "test": "mocha test/**/*.ts"
   }

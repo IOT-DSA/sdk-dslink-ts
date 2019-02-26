@@ -11,12 +11,12 @@
     ],
     "alwaysStrict": true,
     "noImplicitAny": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "outDir": "./js"
   },
   "compileOnSave": true,
   "include": [
-    "ts/**/*",
-    "test/**/*.spec.ts"
+    "ts/**/*"
   ],
   "exclude": [
     "node_modules"

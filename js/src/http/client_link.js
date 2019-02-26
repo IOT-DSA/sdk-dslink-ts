@@ -30,8 +30,13 @@ class HttpClientLink extends interfaces_1.ClientLink {
         this._conn = conn;
         this.privateKey = privateKey;
         this.linkData = options.linkData;
-        if (options.formats) {
-            this.formats = options.formats;
+        if (options.format) {
+            if (Array.isArray(options.format)) {
+                this.formats = options.format;
+            }
+            else {
+                this.formats = [options.format];
+            }
         }
         this.dsId = `${node_1.Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}`;
         if (options.isRequester) {
@@ -102,10 +107,10 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 requestJson['linkData'] = this.linkData;
             }
             let connResponse = await axios_1.default.post(connUrl, requestJson, { timeout: 60000 });
-            let serverConfig = codec_1.DsJson.decode(connResponse.data);
+            let serverConfig = connResponse.data;
             //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
             // read salt
-            let salt = serverConfig['salt'];
+            this.salt = serverConfig['salt'];
             let tempKey = serverConfig['tempKey'];
             if (tempKey == null) {
                 // trusted client, don't do ECDH handshake

@@ -69,9 +69,6 @@ export class WebSocketConnection extends Connection {
     socket.onclose = this._onDone;
     socket.onopen = this._onOpen;
 
-    socket.send(this.codec.blankData);
-
-
     this.pingTimer = setInterval(this.onPingTimer, 20000);
 
     // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this
@@ -123,9 +120,9 @@ export class WebSocketConnection extends Connection {
     if (this.onConnect != null) {
       this.onConnect();
     }
+    this.addConnCommand('init', true); // this is a usless command, just force client to send something to server
     this._responderChannel.updateConnect();
     this._requesterChannel.updateConnect();
-    this.socket.send(this.codec.blankData);
     this.requireSend();
   };
 
@@ -134,7 +131,7 @@ export class WebSocketConnection extends Connection {
   _msgCommand: {[key: string]: any};
 
   /// add server command, will be called only when used as server connection
-  addConnCommand(key: string, value: object) {
+  addConnCommand(key: string, value: any) {
     if (this._msgCommand == null) {
       this._msgCommand = {};
     }
@@ -160,6 +157,7 @@ export class WebSocketConnection extends Connection {
 
         m = this.codec.decodeBinaryFrame(bytes);
 //        logger.fine("$m");
+        console.log(m);
 
         if (typeof m["salt"] === 'string') {
           this.clientLink.updateSalt(m["salt"]);

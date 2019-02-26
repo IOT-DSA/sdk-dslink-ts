@@ -67,15 +67,19 @@ export class HttpClientLink extends ClientLink {
     isResponder: boolean,
     token?: string,
     linkData?: {[key: string]: any},
-    formats?: string[]
+    format?: string[] | string
   } = {isRequester: false, isResponder: true}) {
     super();
     this._conn = conn;
     this.privateKey = privateKey;
 
     this.linkData = options.linkData;
-    if (options.formats) {
-      this.formats = options.formats;
+    if (options.format) {
+      if (Array.isArray(options.format)) {
+        this.formats = options.format;
+      } else {
+        this.formats = [options.format];
+      }
     }
 
     this.dsId = `${Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}`;
@@ -155,12 +159,12 @@ export class HttpClientLink extends ClientLink {
       let connResponse = await axios.post(connUrl, requestJson, {timeout: 60000});
 
 
-      let serverConfig: {[key: string]: any} = DsJson.decode(connResponse.data);
+      let serverConfig: {[key: string]: any} = connResponse.data;
 
 //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
 
       // read salt
-      let salt = serverConfig['salt'];
+      this.salt = serverConfig['salt'];
 
       let tempKey: string = serverConfig['tempKey'];
       if (tempKey == null) {

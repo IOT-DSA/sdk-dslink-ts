@@ -43,9 +43,9 @@ class WebSocketConnection extends interfaces_1.Connection {
             if (this.onConnect != null) {
                 this.onConnect();
             }
+            this.addConnCommand('init', true); // this is a usless command, just force client to send something to server
             this._responderChannel.updateConnect();
             this._requesterChannel.updateConnect();
-            this.socket.send(this.codec.blankData);
             this.requireSend();
         };
         this._onData = (e) => {
@@ -62,6 +62,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
                     //        logger.fine("$m");
+                    console.log(m);
                     if (typeof m["salt"] === 'string') {
                         this.clientLink.updateSalt(m["salt"]);
                     }
@@ -139,7 +140,6 @@ class WebSocketConnection extends interfaces_1.Connection {
         socket.onmessage = this._onData;
         socket.onclose = this._onDone;
         socket.onopen = this._onOpen;
-        socket.send(this.codec.blankData);
         this.pingTimer = setInterval(this.onPingTimer, 20000);
         // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this
     }
