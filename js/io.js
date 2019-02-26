@@ -1,16 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// DSLink SDK IO Utilities
 library;
 dslink.io;
-import "dart:async";
-import "dart:convert";
-import "dart:io";
-import "dart:typed_data";
-import "dart:math";
-import 'package:dslink/utils.dart';
-import "package:path/path.dart";
+require("dart:async");
+require("dart:convert");
+require("dart:io");
+require("dart:typed_data");
+require("dart:math");
+require("package:dslink/utils.dart");
+require("package:path/path.dart");
 as;
 pathlib;
-import "package:crypto/crypto.dart";
+require("package:crypto/crypto.dart");
 const _tcpNoDelay = ;
 const boolean, fromEnvironment;
 ("dsa.io.tcpNoDelay",
@@ -29,11 +31,12 @@ Stream < string > {
     return: , const: LineSplitter().bind(stream)
 };
 /// Helpers for working with HTTP
-export class HttpHelper {
+class HttpHelper {
     createRequest(method, url, {}, { [key]: string }) { }
 }
 /// Main HTTP Client
 HttpHelper.client = new HttpClient();
+exports.HttpHelper = HttpHelper;
 headers;
 async;
 {

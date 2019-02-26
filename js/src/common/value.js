@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const TIME_ZONE = (function () {
     let timeZoneOffset = (new Date()).getTimezoneOffset();
     let s = "+";
@@ -10,7 +12,7 @@ const TIME_ZONE = (function () {
     return `${s}${hhstr}:${mmstr}`;
 })();
 /// Represents an update to a value subscription.
-export class ValueUpdate {
+class ValueUpdate {
     constructor(value, ts, options) {
         /// The id of the ack we are waiting for.
         this.waitingAck = -1;
@@ -113,4 +115,5 @@ export class ValueUpdate {
     }
 }
 ValueUpdate._lastTs = 0;
+exports.ValueUpdate = ValueUpdate;
 //# sourceMappingURL=value.js.map

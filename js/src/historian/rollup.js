@@ -1,3 +1,4 @@
+"use strict";
 // part of dslink.historian;
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5,9 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 void add(dynamic, input);
 void reset();
-export class FirstRollup extends Rollup {
+class FirstRollup extends Rollup {
     constructor() {
         super(...arguments);
         this.set = false;
@@ -29,7 +31,8 @@ __decorate([
 __decorate([
     override
 ], FirstRollup.prototype, "reset", null);
-export class LastRollup extends Rollup {
+exports.FirstRollup = FirstRollup;
+class LastRollup extends Rollup {
     add(input) {
         value = input;
     }
@@ -42,7 +45,8 @@ __decorate([
 __decorate([
     override
 ], LastRollup.prototype, "reset", null);
-export class AvgRollup extends Rollup {
+exports.LastRollup = LastRollup;
+class AvgRollup extends Rollup {
     constructor() {
         super(...arguments);
         this.total = 0.0;
@@ -69,9 +73,10 @@ __decorate([
 __decorate([
     override
 ], AvgRollup.prototype, "reset", null);
+exports.AvgRollup = AvgRollup;
 / count;;
 count: number = 0;
-export class SumRollup extends Rollup {
+class SumRollup extends Rollup {
     constructor() {
         super(...arguments);
         this.value = 0.0;
@@ -95,7 +100,8 @@ __decorate([
 __decorate([
     override
 ], SumRollup.prototype, "reset", null);
-export class CountRollup extends Rollup {
+exports.SumRollup = SumRollup;
+class CountRollup extends Rollup {
     constructor() {
         super(...arguments);
         this.value = 0;
@@ -113,7 +119,8 @@ __decorate([
 __decorate([
     override
 ], CountRollup.prototype, "reset", null);
-export class MaxRollup extends Rollup {
+exports.CountRollup = CountRollup;
+class MaxRollup extends Rollup {
     add(input) {
         if (typeof input === 'string') {
             input = num.parse(input, (e) => null);
@@ -133,7 +140,8 @@ __decorate([
 __decorate([
     override
 ], MaxRollup.prototype, "reset", null);
-export class MinRollup extends Rollup {
+exports.MaxRollup = MaxRollup;
+class MinRollup extends Rollup {
     add(input) {
         if (typeof input === 'string') {
             input = num.parse(input, (e) => null);
@@ -153,6 +161,7 @@ __decorate([
 __decorate([
     override
 ], MinRollup.prototype, "reset", null);
+exports.MinRollup = MinRollup;
 typedef;
 Rollup;
 RollupFactory();

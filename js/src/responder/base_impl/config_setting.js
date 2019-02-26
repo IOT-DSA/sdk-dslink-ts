@@ -1,10 +1,13 @@
+"use strict";
 // part of dslink.responder;
-export class ConfigSetting {
+Object.defineProperty(exports, "__esModule", { value: true });
+class ConfigSetting {
     constructor() {
         this.defaultValue = m.hasOwnProperty('default') ? m['default'] : null;
     }
     hasOwnProperty() { }
 }
+exports.ConfigSetting = ConfigSetting;
 { }
 setConfig(value, object, node, LocalNodeImpl, responder, Responder);
 DSError;
@@ -24,9 +27,10 @@ DSError;
     }
     return null;
 }
-export class Configs {
+class Configs {
 }
 Configs._globalConfigs = ;
+exports.Configs = Configs;
 const { r, '$is': , const: { 'type': , 'profile':  }, r, '$interface': , const: { 'type': , 'interface':  }, 
 /// list of permissions
 r, '$permissions': , const: { 'type': , 'list': , 'require': Permission, CONFIG, 'writable': Permission, CONFIG, }, 
@@ -48,8 +52,8 @@ r, '$columns': , const: { 'type': , 'list':  },
 r, '$streamMeta': , const: { 'type': , 'list':  }
 // not serializable
  };
-global: Configs = new Configs()..load(this._globalConfigs);
-defaultConfig: ConfigSetting =
+global: exports.Configs = Configs = new Configs()..load(this._globalConfigs);
+defaultConfig: exports.ConfigSetting = ConfigSetting =
     new ConfigSetting.fromMap('');
 const {};
 getConfig(name, string, profile, Node);

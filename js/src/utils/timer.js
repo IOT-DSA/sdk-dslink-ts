@@ -1,5 +1,7 @@
+"use strict";
 // part of dslink.utils;
-export class TimerFunctions extends LinkedListEntry {
+Object.defineProperty(exports, "__esModule", { value: true });
+class TimerFunctions extends LinkedListEntry {
     constructor() {
         super(...arguments);
         this._functions = new Function[]();
@@ -13,12 +15,14 @@ export class TimerFunctions extends LinkedListEntry {
         _functions.remove(foo);
     }
 }
-export class DsTimer {
+exports.TimerFunctions = TimerFunctions;
+class DsTimer {
     static millisecondsSinceEpoch() {
         return new DateTime.now().millisecondsSinceEpoch;
     }
     waitAndRun(time, action) { }
 }
+exports.DsTimer = DsTimer;
 ();
 {
     return new Future.delayed(time, action);
@@ -45,7 +49,7 @@ new object();
 _getTimerFunctions(time50, number);
 TimerFunctions;
 {
-    tf: TimerFunctions = _pendingTimerMap[time50];
+    tf: exports.TimerFunctions = TimerFunctions = _pendingTimerMap[time50];
     if (tf != null) {
         return tf;
     }
@@ -117,7 +121,7 @@ timerOnceBefore(callback, Function, ms, number);
         callLater(callback);
         return;
     }
-    tf: TimerFunctions = this._getTimerFunctions(desiredTime50);
+    tf: exports.TimerFunctions = TimerFunctions = this._getTimerFunctions(desiredTime50);
     tf.add(callback);
     _functionsMap[callback] = tf;
 }
@@ -138,7 +142,7 @@ timerOnceAfter(callback, Function, ms, number);
         callLater(callback);
         return;
     }
-    tf: TimerFunctions = this._getTimerFunctions(desiredTime50);
+    tf: exports.TimerFunctions = TimerFunctions = this._getTimerFunctions(desiredTime50);
     tf.add(callback);
     _functionsMap[callback] = tf;
 }
@@ -161,14 +165,14 @@ timerOnceBetween(callback, Function, after, number, before, number);
         callLater(callback);
         return;
     }
-    tf: TimerFunctions = this._getTimerFunctions(desiredTime50_1);
+    tf: exports.TimerFunctions = TimerFunctions = this._getTimerFunctions(desiredTime50_1);
     tf.add(callback);
     _functionsMap[callback] = tf;
 }
 timerCancel(callback, Function);
 {
     // TODO: what if timerCancel is called from another timer of group?
-    existTf: TimerFunctions = _functionsMap[callback];
+    existTf: exports.TimerFunctions = TimerFunctions = _functionsMap[callback];
     if (existTf != null) {
         existTf.remove(callback);
     }

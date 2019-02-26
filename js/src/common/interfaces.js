@@ -1,12 +1,18 @@
-import Denque from "denque";
-import { DsCodec } from "../utils/codec";
-export class ECDH {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const denque_1 = __importDefault(require("denque"));
+const codec_1 = require("../utils/codec");
+class ECDH {
     verifySalt(salt, hash) {
         return this.hashSalt(salt) === hash;
     }
 }
+exports.ECDH = ECDH;
 /** @ignore */
-export class DummyECDH {
+class DummyECDH {
     constructor() {
         this.encodedPublicKey = "";
     }
@@ -17,10 +23,11 @@ export class DummyECDH {
         return true;
     }
 }
-export class Connection {
+exports.DummyECDH = DummyECDH;
+class Connection {
     constructor() {
-        this.codec = DsCodec.defaultCodec;
-        this.pendingAcks = new Denque();
+        this.codec = codec_1.DsCodec.defaultCodec;
+        this.pendingAcks = new denque_1.default();
     }
     ack(ackId) {
         let findAckGroup;
@@ -46,15 +53,17 @@ export class Connection {
         }
     }
 }
+exports.Connection = Connection;
 /// generate message right before sending to get the latest update
 /// return messages and the processors that need ack callback
-export class ProcessorResult {
+class ProcessorResult {
     constructor(messages, processors) {
         this.messages = messages;
         this.processors = processors;
     }
 }
-export class ConnectionAckGroup {
+exports.ProcessorResult = ProcessorResult;
+class ConnectionAckGroup {
     constructor(ackId, startTime, processors) {
         this.ackId = ackId;
         this.startTime = startTime;
@@ -66,14 +75,17 @@ export class ConnectionAckGroup {
         }
     }
 }
+exports.ConnectionAckGroup = ConnectionAckGroup;
 /// Base Class for Links
-export class BaseLink {
+class BaseLink {
 }
+exports.BaseLink = BaseLink;
 /// Base Class for Server Link implementations.
-export class ServerLink extends BaseLink {
+class ServerLink extends BaseLink {
 }
+exports.ServerLink = ServerLink;
 /// Base Class for Client Link implementations.
-export class ClientLink extends BaseLink {
+class ClientLink extends BaseLink {
     /** @ignore */
     get logName() {
         return null;
@@ -86,8 +98,9 @@ export class ClientLink extends BaseLink {
         return msg;
     }
 }
+exports.ClientLink = ClientLink;
 /// DSA Stream Status
-export class StreamStatus {
+class StreamStatus {
 }
 /// Stream should be initialized.
 StreamStatus.initialize = "initialize";
@@ -95,11 +108,13 @@ StreamStatus.initialize = "initialize";
 StreamStatus.open = "open";
 /// Stream is closed.
 StreamStatus.closed = "closed";
-export class ErrorPhase {
+exports.StreamStatus = StreamStatus;
+class ErrorPhase {
 }
 ErrorPhase.request = "request";
 ErrorPhase.response = "response";
-export class DSError {
+exports.ErrorPhase = ErrorPhase;
+class DSError {
     constructor(type, options = {}) {
         this.type = type;
         this.msg = options.msg;
@@ -170,8 +185,10 @@ DSError.INVALID_VALUE = new DSError("invalidValue");
 DSError.INVALID_PARAMETER = new DSError("invalidParameter");
 DSError.DISCONNECTED = new DSError("disconnected", { phase: ErrorPhase.request });
 DSError.FAILED = new DSError("failed");
-export class Unspecified {
+exports.DSError = DSError;
+class Unspecified {
 }
+exports.Unspecified = Unspecified;
 /// Marks something as being unspecified.
 const unspecified = new Unspecified();
 /// Unspecified means that something has never been set.

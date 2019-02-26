@@ -1,14 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// DSA Responder API
 library;
 dslink.responder;
-import "dart:async";
-import "dart:collection";
-import "dart:typed_data";
-import 'dart:convert';
-import 'package:cipher/block/aes_fast.dart';
-import 'package:cipher/params/key_parameter.dart';
-import "common.dart";
-import "utils.dart";
+require("dart:async");
+require("dart:collection");
+require("dart:typed_data");
+require("dart:convert");
+require("package:cipher/block/aes_fast.dart");
+require("package:cipher/params/key_parameter.dart");
+require("common.dart");
+require("utils.dart");
 part;
 "src/responder/responder.dart";
 part;

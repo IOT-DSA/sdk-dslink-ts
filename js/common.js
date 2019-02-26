@@ -1,12 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// Shared APIs between all DSA Components.
 library;
 dslink.common;
-import "dart:async";
-import "dart:collection";
-import "requester.dart";
-import "responder.dart";
-import "utils.dart";
-import "src/crypto/pk.dart";
+require("dart:async");
+require("dart:collection");
+require("requester.dart");
+require("responder.dart");
+require("utils.dart");
+require("src/crypto/pk.dart");
 part;
 "src/common/node.dart";
 part;

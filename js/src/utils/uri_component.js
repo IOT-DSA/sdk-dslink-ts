@@ -1,6 +1,8 @@
+"use strict";
 // part of dslink.utils;
+Object.defineProperty(exports, "__esModule", { value: true });
 /// a decoder class to decode malformed url encoded string
-export class UriComponentDecoder {
+class UriComponentDecoder {
     static decode(text) {
         codes: number[] = new int[]();
         bytes: number[] = new int[]();
@@ -73,4 +75,5 @@ export class UriComponentDecoder {
 UriComponentDecoder._SPACE = 0x20;
 UriComponentDecoder._PERCENT = 0x25;
 UriComponentDecoder._PLUS = 0x2B;
+exports.UriComponentDecoder = UriComponentDecoder;
 //# sourceMappingURL=uri_component.js.map

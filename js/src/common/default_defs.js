@@ -1,6 +1,8 @@
+"use strict";
 // part of dslink.common;
-import { buildEnumType } from "../../utils";
-export const defaultProfileMap = {
+Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../../utils");
+exports.defaultProfileMap = {
     "node": {},
     "static": {},
     "getHistory": {
@@ -11,7 +13,7 @@ export const defaultProfileMap = {
             {
                 "name": "Interval",
                 "type": "enum",
-                "editor": buildEnumType([
+                "editor": utils_1.buildEnumType([
                     "default",
                     "none",
                     "1Y",
@@ -39,7 +41,7 @@ export const defaultProfileMap = {
             },
             {
                 "name": "Rollup",
-                "type": buildEnumType([
+                "type": utils_1.buildEnumType([
                     "avg",
                     "min",
                     "max",

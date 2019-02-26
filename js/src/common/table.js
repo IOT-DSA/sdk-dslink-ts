@@ -1,4 +1,6 @@
-export class TableColumn {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class TableColumn {
     constructor(name, type, defaultValue) {
         this.name = name;
         this.type = type;
@@ -51,21 +53,25 @@ export class TableColumn {
         return rslt;
     }
 }
-export class Table {
+exports.TableColumn = TableColumn;
+class Table {
     constructor(columns, rows, meta) {
         this.columns = columns;
         this.rows = rows;
         this.meta = meta;
     }
 }
-export class TableColumns {
+exports.Table = Table;
+class TableColumns {
     constructor(columns) {
         this.columns = columns;
     }
 }
-export class TableMetadata {
+exports.TableColumns = TableColumns;
+class TableMetadata {
     constructor(meta) {
         this.meta = meta;
     }
 }
+exports.TableMetadata = TableMetadata;
 //# sourceMappingURL=table.js.map

@@ -1,7 +1,9 @@
-import { Request } from "../request";
-import { ValueUpdate } from "../../common/value";
-import { ACK_WAIT_COUNT } from "../../common/connection_handler";
-export class ReqSubscribeListener {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const request_1 = require("../request");
+const value_1 = require("../../common/value");
+const connection_handler_1 = require("../../common/connection_handler");
+class ReqSubscribeListener {
     /** @ignore */
     constructor(requester, path, callback) {
         this.requester = requester;
@@ -15,10 +17,11 @@ export class ReqSubscribeListener {
         }
     }
 }
+exports.ReqSubscribeListener = ReqSubscribeListener;
 /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
 /** @ignore */
-export class SubscribeController {
+class SubscribeController {
     onDisconnect() {
         // TODO: implement onDisconnect
     }
@@ -29,8 +32,9 @@ export class SubscribeController {
         // do nothing
     }
 }
+exports.SubscribeController = SubscribeController;
 /** @ignore */
-export class SubscribeRequest extends Request {
+class SubscribeRequest extends request_1.Request {
     constructor(requester, rid) {
         super(requester, rid, new SubscribeController(), null);
         this.lastSid = 0;
@@ -118,7 +122,7 @@ export class SubscribeRequest extends Request {
                     controller = this.subscriptionIds.get(sid);
                 }
                 if (controller != null) {
-                    let valueUpdate = new ValueUpdate(value, ts, options);
+                    let valueUpdate = new value_1.ValueUpdate(value, ts, options);
                     controller.addValue(valueUpdate);
                 }
             }
@@ -196,7 +200,7 @@ export class SubscribeRequest extends Request {
         if (this._sendingAfterAck) {
             return;
         }
-        if (this._waitingAckCount > ACK_WAIT_COUNT) {
+        if (this._waitingAckCount > connection_handler_1.ACK_WAIT_COUNT) {
             this._sendingAfterAck = true;
             return;
         }
@@ -206,8 +210,9 @@ export class SubscribeRequest extends Request {
         }
     }
 }
+exports.SubscribeRequest = SubscribeRequest;
 /** @ignore */
-export class ReqSubscribeController {
+class ReqSubscribeController {
     constructor(node, requester) {
         this.callbacks = new Map();
         this.currentQos = -1;
@@ -272,4 +277,5 @@ export class ReqSubscribeController {
         this.node._subscribeController = null;
     }
 }
+exports.ReqSubscribeController = ReqSubscribeController;
 //# sourceMappingURL=subscribe.js.map

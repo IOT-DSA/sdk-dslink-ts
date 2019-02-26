@@ -1,9 +1,11 @@
-import { Completer } from "../../utils/async";
-import { RequesterUpdate } from "../interface";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const async_1 = require("../../utils/async");
+const interface_1 = require("../interface");
 /** @ignore */
-export class RemoveController {
+class RemoveController {
     constructor(requester, path) {
-        this.completer = new Completer();
+        this.completer = new async_1.Completer();
         this.requester = requester;
         this.path = path;
         let reqMap = {
@@ -17,11 +19,12 @@ export class RemoveController {
     }
     onUpdate(status, updates, columns, meta, error) {
         // TODO implement error
-        this.completer.complete(new RequesterUpdate(status));
+        this.completer.complete(new interface_1.RequesterUpdate(status));
     }
     onDisconnect() {
     }
     onReconnect() {
     }
 }
+exports.RemoveController = RemoveController;
 //# sourceMappingURL=remove.js.map

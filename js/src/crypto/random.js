@@ -1,8 +1,14 @@
-import crypto from 'crypto';
-export function randomBytes(len) {
-    return crypto.randomBytes(len);
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const crypto_1 = __importDefault(require("crypto"));
+function randomBytes(len) {
+    return crypto_1.default.randomBytes(len);
 }
-export class DSRandom {
+exports.randomBytes = randomBytes;
+class DSRandom {
     constructor() {
         this._pos = 0;
     }
@@ -25,4 +31,5 @@ export class DSRandom {
     }
 }
 DSRandom.instance = new DSRandom();
+exports.DSRandom = DSRandom;
 //# sourceMappingURL=random.js.map

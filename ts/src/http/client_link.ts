@@ -62,7 +62,7 @@ export class HttpClientLink extends ClientLink {
   format: string = 'json';
 
   constructor(conn: string, dsIdPrefix: string, privateKey: PrivateKey, options: {
-    nodeProvider?: NodeProvider,
+    // nodeProvider?: NodeProvider,
     isRequester: boolean,
     isResponder: boolean,
     token?: string,
@@ -86,7 +86,7 @@ export class HttpClientLink extends ClientLink {
 
 
     if (options.isResponder) {
-      this.responder = new Responder(this.nodeProvider);
+      // this.responder = new Responder(this.nodeProvider);
     }
 
     if (options.token != null && options.token.length > 16) {

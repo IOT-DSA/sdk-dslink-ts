@@ -1,6 +1,9 @@
+"use strict";
 // part of dslink.nodes;
-export class DsaJsonNode extends SimpleNode {
+Object.defineProperty(exports, "__esModule", { value: true });
+class DsaJsonNode extends SimpleNode {
 }
+exports.DsaJsonNode = DsaJsonNode;
 (path, provider);
 dynamic;
 _json;

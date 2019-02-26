@@ -1,20 +1,22 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /// Base API for DSA in the Browser
 library;
 dslink.browser_client;
-import "dart:async";
-import "dart:html";
-import "dart:typed_data";
-import "common.dart";
-import "utils.dart";
-import "requester.dart";
-import "responder.dart";
-import "src/crypto/pk.dart";
+require("dart:async");
+require("dart:html");
+require("dart:typed_data");
+require("common.dart");
+require("utils.dart");
+require("requester.dart");
+require("responder.dart");
+require("src/crypto/pk.dart");
 part;
 "src/browser/browser_user_link.dart";
 part;
@@ -36,7 +38,7 @@ removeSync(key, string);
 /// Store a key value pair.
 void storeSync(key, string, value, string);
 /// Storage for DSA in Local Storage
-export class LocalDataStorage extends DataStorage {
+class LocalDataStorage extends DataStorage {
     constructor() {
         super(...arguments);
         this.INSTANCE = new LocalDataStorage();
@@ -46,6 +48,7 @@ export class LocalDataStorage extends DataStorage {
 __decorate([
     override
 ], LocalDataStorage.prototype, "Promise", null);
+exports.LocalDataStorage = LocalDataStorage;
 async => window.localStorage[key];
 Promise < boolean > has(key, string);
 async => window.localStorage.hasOwnProperty(key);

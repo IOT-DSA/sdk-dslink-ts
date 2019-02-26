@@ -1,5 +1,7 @@
+"use strict";
 // part of dslink.utils;
-export class ByteDataUtil {
+Object.defineProperty(exports, "__esModule", { value: true });
+class ByteDataUtil {
     static list2Uint8Array(input) {
         if (input instanceof Uint8Array) {
             return input;
@@ -40,4 +42,5 @@ export class ByteDataUtil {
         return fromUint8Array(new Uint8Array.fromList(input));
     }
 }
+exports.ByteDataUtil = ByteDataUtil;
 //# sourceMappingURL=list.js.map

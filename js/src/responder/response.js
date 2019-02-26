@@ -1,5 +1,7 @@
+"use strict";
 // part of dslink.responder;
-export class Response {
+Object.defineProperty(exports, "__esModule", { value: true });
+class Response {
     constructor() {
         this._sentStreamStatus = StreamStatus.initialize;
         /// close the response now, no need to send more response update
@@ -13,6 +15,7 @@ export class Response {
         responder.closeResponse(rid, error, err, response, this);
     }
 }
+exports.Response = Response;
 /// close the response now, no need to send more response update
 void _close();
 { }

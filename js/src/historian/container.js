@@ -1,10 +1,13 @@
+"use strict";
 // part of dslink.historian;
-export class DatabaseNode extends SimpleNode {
+Object.defineProperty(exports, "__esModule", { value: true });
+class DatabaseNode extends SimpleNode {
     constructor() {
         super(...arguments);
         this.onDatabaseReady = [];
     }
 }
+exports.DatabaseNode = DatabaseNode;
 (path);
 onCreated();
 {
@@ -60,12 +63,13 @@ onRemoving();
         database.close();
     }
 }
-export class WatchPathNode extends SimpleNode {
+class WatchPathNode extends SimpleNode {
     constructor() {
         super(...arguments);
         this.isPublishOnly = false;
     }
 }
+exports.WatchPathNode = WatchPathNode;
 (path);
 onCreated();
 async;
@@ -242,8 +246,9 @@ fetchHistory(range, TimeRange);
 Stream < ValuePair > {
     return: group.fetchHistory(valuePath, range)
 };
-export class WatchGroupNode extends SimpleNode {
+class WatchGroupNode extends SimpleNode {
 }
+exports.WatchGroupNode = WatchGroupNode;
 (path, this._link.provider);
 onCreated();
 {

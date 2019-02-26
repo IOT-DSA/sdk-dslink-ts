@@ -1,5 +1,8 @@
-export function buildEnumType(values) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function buildEnumType(values) {
     return `enum[${values.join(',')}]`;
 }
-export const DSA_VERSION = '1.1.2';
+exports.buildEnumType = buildEnumType;
+exports.DSA_VERSION = '1.1.2';
 //# sourceMappingURL=utils.js.map

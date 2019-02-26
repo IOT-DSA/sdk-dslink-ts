@@ -2,7 +2,6 @@
 *.dart
 *.log
 /tool/**/*.js
-/example/ts/**/*.js
 /ts/**/*.js
 /test/**/*.js
 node_modules

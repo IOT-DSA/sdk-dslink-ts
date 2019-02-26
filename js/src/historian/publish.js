@@ -1,6 +1,9 @@
+"use strict";
 // part of dslink.historian;
-export class PublishValueAction extends SimpleNode {
+Object.defineProperty(exports, "__esModule", { value: true });
+class PublishValueAction extends SimpleNode {
 }
+exports.PublishValueAction = PublishValueAction;
 (path);
 onInvoke(params, { [key]: string, dynamic });
 {

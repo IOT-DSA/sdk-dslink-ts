@@ -1,9 +1,11 @@
-import { Stream } from "../../utils/async";
-import { Permission } from "../../common/permission";
-import { StreamStatus } from "../../common/interfaces";
-import { TableColumn } from "../../common/table";
-import { RequesterUpdate } from "../interface";
-export class RequesterInvokeUpdate extends RequesterUpdate {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const async_1 = require("../../utils/async");
+const permission_1 = require("../../common/permission");
+const interfaces_1 = require("../../common/interfaces");
+const table_1 = require("../../common/table");
+const interface_1 = require("../interface");
+class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
     constructor(updates, rawColumns, columns, streamStatus, meta, error) {
         super(streamStatus);
         this.updates = updates;
@@ -47,7 +49,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
                     row = [];
                     if (this.columns == null) {
                         let keys = obj.keys;
-                        this.columns = keys.map((x) => new TableColumn(x, "dynamic"));
+                        this.columns = keys.map((x) => new table_1.TableColumn(x, "dynamic"));
                     }
                     if (this.columns != null) {
                         for (let column of this.columns) {
@@ -90,15 +92,17 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
         }
     }
 }
-export class RequesterInvokeStream extends Stream {
+exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
+class RequesterInvokeStream extends async_1.Stream {
 }
+exports.RequesterInvokeStream = RequesterInvokeStream;
 /** @ignore */
-export class InvokeController {
-    constructor(node, requester, params, maxPermission = Permission.CONFIG) {
+class InvokeController {
+    constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
         this.mode = 'stream';
-        this.lastStatus = StreamStatus.initialize;
+        this.lastStatus = interfaces_1.StreamStatus.initialize;
         this._onUnsubscribe = (obj) => {
-            if (this._request != null && this._request.streamStatus !== StreamStatus.closed) {
+            if (this._request != null && this._request.streamStatus !== interfaces_1.StreamStatus.closed) {
                 this._request.close();
             }
         };
@@ -111,8 +115,8 @@ export class InvokeController {
             'path': node.remotePath,
             'params': params
         };
-        if (maxPermission !== Permission.CONFIG) {
-            reqMap['permit'] = Permission.names[maxPermission];
+        if (maxPermission !== permission_1.Permission.CONFIG) {
+            reqMap['permit'] = permission_1.Permission.names[maxPermission];
         }
         // TODO: update node before invoke to load columns
         //    if(!node.isUpdated()) {
@@ -128,7 +132,7 @@ export class InvokeController {
             columns = node.profile.getConfig('$columns');
         }
         if (Array.isArray(columns)) {
-            return TableColumn.parseColumns(columns);
+            return table_1.TableColumn.parseColumns(columns);
         }
         return null;
     }
@@ -139,24 +143,24 @@ export class InvokeController {
         // TODO: implement error
         if (columns != null) {
             if (this._cachedColumns == null || this.mode === 'refresh') {
-                this._cachedColumns = TableColumn.parseColumns(columns);
+                this._cachedColumns = table_1.TableColumn.parseColumns(columns);
             }
             else {
-                this._cachedColumns = this._cachedColumns.concat(TableColumn.parseColumns(columns));
+                this._cachedColumns = this._cachedColumns.concat(table_1.TableColumn.parseColumns(columns));
             }
         }
         else if (this._cachedColumns == null) {
             this._cachedColumns = InvokeController.getNodeColumns(this.node);
         }
         if (error != null) {
-            streamStatus = StreamStatus.closed;
+            streamStatus = interfaces_1.StreamStatus.closed;
             this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
         }
         else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
             this._stream.add(new RequesterInvokeUpdate(updates, columns, this._cachedColumns, streamStatus, meta));
         }
         this.lastStatus = streamStatus;
-        if (streamStatus === StreamStatus.closed) {
+        if (streamStatus === interfaces_1.StreamStatus.closed) {
             this._stream.close();
         }
     }
@@ -165,4 +169,5 @@ export class InvokeController {
     onReconnect() {
     }
 }
+exports.InvokeController = InvokeController;
 //# sourceMappingURL=invoke.js.map

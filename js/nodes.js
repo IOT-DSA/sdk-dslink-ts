@@ -1,27 +1,30 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /// Helper Nodes for Responders
 library;
 dslink.nodes;
-import "dart:async";
-import "dart:convert";
-import "package:dslink/common.dart";
-import "package:dslink/responder.dart";
-import "package:json_diff/json_diff.dart";
+require("dart:async");
+require("dart:convert");
+require("package:dslink/common.dart");
+require("package:dslink/responder.dart");
+require("package:json_diff/json_diff.dart");
 as;
 JsonDiff;
-import "package:dslink/utils.dart";
+require("package:dslink/utils.dart");
 show;
 Producer;
 part;
 "src/nodes/json.dart";
 /// An Action for Deleting a Given Node
-export class DeleteActionNode extends SimpleNode {
+class DeleteActionNode extends SimpleNode {
 }
+exports.DeleteActionNode = DeleteActionNode;
 (path, provider);
 /// When this action is invoked, [provider.removeNode] will be called with the parent of this action.
 DeleteActionNode.forParent(path, string, provider, MutableNodeProvider, {
@@ -42,18 +45,19 @@ object;
 typedef;
 ActionFunction(params, { [key]: string, dynamic });
 /// A Simple Action Node
-export class SimpleActionNode extends SimpleNode {
+class SimpleActionNode extends SimpleNode {
     /// When this action is invoked, the given [function] will be called with the parameters
     /// and then the result of the function will be returned.
     SimpleActionNode(path) { }
 }
+exports.SimpleActionNode = SimpleActionNode;
 function () { }
 [SimpleNodeProvider, provider];
 super(path, provider);
 object;
 onInvoke(params, { [key]: string, dynamic });
 /// A Node Provider for a Single Node
-export class SingleNodeProvider extends NodeProvider {
+class SingleNodeProvider extends NodeProvider {
     constructor() {
         super(...arguments);
         this.permissions = new DummyPermissionManager();
@@ -69,8 +73,10 @@ export class SingleNodeProvider extends NodeProvider {
 __decorate([
     override
 ], SingleNodeProvider.prototype, "LocalNode", void 0);
-export class UpgradableNode extends SimpleNode {
+exports.SingleNodeProvider = SingleNodeProvider;
+class UpgradableNode extends SimpleNode {
 }
+exports.UpgradableNode = UpgradableNode;
 (path, provider);
 onCreated();
 {
@@ -92,8 +98,9 @@ onCreated();
     }
 }
 /// A Lazy Value Node
-export class LazyValueNode extends SimpleNode {
+class LazyValueNode extends SimpleNode {
 }
+exports.LazyValueNode = LazyValueNode;
 (path, provider);
 onSubscribe();
 {
@@ -119,8 +126,9 @@ subscriptionCount: number = 0;
 /// Represents a Simple Callback Function
 typedef;
 void SimpleCallback();
-export class ResolvingNodeProvider extends SimpleNodeProvider {
+class ResolvingNodeProvider extends SimpleNodeProvider {
 }
+exports.ResolvingNodeProvider = ResolvingNodeProvider;
 {
     [key, string];
     NodeFactory;
@@ -220,9 +228,10 @@ LocalNode;
 getOrCreateNode(path, string, [addToTree, boolean = true, init, boolean = true]);
 getNode(path);
 /// A Simple Node which delegates all basic methods to given functions.
-export class CallbackNode extends SimpleNode {
+class CallbackNode extends SimpleNode {
     CallbackNode(path, { provider: SimpleNodeProvider, this: , onActionInvoke, let, onChildAdded: ChildChangedCallback, let, onChildRemoved: ChildChangedCallback, let, onCreated: SimpleCallback, let, onRemoving: SimpleCallback, let, onLoadChild: LoadChildCallback, let, onSubscribe: SimpleCallback, let, onValueSet: ValueCallback }, , boolean) { }
 }
+exports.CallbackNode = CallbackNode;
  > ,
     SimpleCallback;
 onUnsubscribe;
@@ -344,7 +353,7 @@ onSetValue(value);
     }
     return super.onSetValue(value);
 }
-export class NodeNamer {
+class NodeNamer {
     constructor() {
         this.BANNED_CHARS = [
             r, "%",
@@ -440,4 +449,5 @@ export class NodeNamer {
         return new Path(p).child(NodeNamer.createName(name)).path;
     }
 }
+exports.NodeNamer = NodeNamer;
 //# sourceMappingURL=nodes.js.map

@@ -1,4 +1,6 @@
+"use strict";
 // part of dslink.responder;
+Object.defineProperty(exports, "__esModule", { value: true });
 {
     [key, string];
     LocalNode;

@@ -1,15 +1,21 @@
-import crypto from "crypto";
-import Base64 from "../utils/base64";
-import { ECDH as ECDHBase } from "../common/interfaces";
-export function sha256(str) {
-    const hash = crypto.createHash('sha256');
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const crypto_1 = __importDefault(require("crypto"));
+const base64_1 = __importDefault(require("../utils/base64"));
+const interfaces_1 = require("../common/interfaces");
+function sha256(str) {
+    const hash = crypto_1.default.createHash('sha256');
     hash.update(str);
-    return Base64.encode(hash.digest());
+    return base64_1.default.encode(hash.digest());
 }
-export class PublicKey {
+exports.sha256 = sha256;
+class PublicKey {
     constructor(buffer) {
         this.ecPublicKey = buffer;
-        this.qBase64 = Base64.encode(this.ecPublicKey);
+        this.qBase64 = base64_1.default.encode(this.ecPublicKey);
         this.qHash64 = sha256(this.ecPublicKey);
     }
     getDsId(prefix) {
@@ -19,42 +25,53 @@ export class PublicKey {
         return (dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64);
     }
 }
-export class PrivateKey {
+exports.PublicKey = PublicKey;
+class PrivateKey {
     static generate() {
-        let ec = crypto.createECDH('prime256v1');
+        let ec = crypto_1.default.createECDH('prime256v1');
         ec.generateKeys();
         return new PrivateKey(ec.getPrivateKey(), ec.getPublicKey());
     }
     static loadFromString(str) {
         try {
             let pair = str.split(' ');
-            let buf0 = Base64.decode(pair[0]);
-            let buf1 = Base64.decode(pair[1]);
-            return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+            let buf0 = base64_1.default.decode(pair[0]);
+            if (pair.length === 2) {
+                let buf1 = base64_1.default.decode(pair[1]);
+                return new PrivateKey(Buffer.from(buf0), Buffer.from(buf1));
+            }
+            else {
+                // load from private key only, used for testing purpose only
+                let ec = crypto_1.default.createECDH('prime256v1');
+                ec.setPrivateKey(Buffer.from(buf0));
+                return new PrivateKey(Buffer.from(buf0), ec.getPublicKey());
+            }
         }
         catch (e) {
+            // console.log(e);
             return null;
         }
     }
     constructor(ecPrivateKey, ecPublicKey) {
         this.ecPrivateKey = ecPrivateKey;
         this.ecPublicKey = ecPublicKey;
-        this.ecc = crypto.createECDH('prime256v1');
+        this.ecc = crypto_1.default.createECDH('prime256v1');
         this.ecc.setPrivateKey(ecPrivateKey);
         this.publicKey = new PublicKey(ecPublicKey);
     }
     saveToString() {
-        return `${Base64.encode(this.ecPrivateKey)} ${this.publicKey.qBase64}`;
+        return `${base64_1.default.encode(this.ecPrivateKey)} ${this.publicKey.qBase64}`;
     }
     getSecret(key) {
-        let otherPublic = Base64.decode(key);
+        let otherPublic = base64_1.default.decode(key);
         let sharedSecret = this.ecc.computeSecret(otherPublic);
         return new ECDH(this, sharedSecret);
     }
 }
-export class ECDH extends ECDHBase {
+exports.PrivateKey = PrivateKey;
+class ECDH extends interfaces_1.ECDH {
     get encodedPublicKey() {
-        return Base64.encode(this.privateKey.ecPublicKey);
+        return base64_1.default.encode(this.privateKey.ecPublicKey);
     }
     constructor(privateKey, sharedSecret) {
         super();
@@ -67,4 +84,5 @@ export class ECDH extends ECDHBase {
         return sha256(buff);
     }
 }
+exports.ECDH = ECDH;
 //# sourceMappingURL=pk.js.map

@@ -1,8 +1,12 @@
-import {DSLink} from "../../ts/web";
+const DSLink = require("../../js/src/http/client_link").HttpClientLink;
+const {PrivateKey} = require("../../ts/src/crypto/pk");
 
 async function main() {
-  let link = new DSLink('ws://localhost:8080/ws', 'json');
-  link.connect();
+  let link = new DSLink('ws://localhost:8080/conn', 'test-', PrivateKey.generate(), {
+    isRequester: true,
+    isResponder: false
+  });
+  await link.connect();
 
   let {requester} = link;
 

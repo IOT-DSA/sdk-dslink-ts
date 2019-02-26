@@ -1,12 +1,14 @@
-import { Connection, ConnectionAckGroup } from "../common/interfaces";
-import { PassiveChannel } from "../common/connection_channel";
-import { Completer } from "../utils/async";
-export class WebSocketConnection extends Connection {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const interfaces_1 = require("../common/interfaces");
+const connection_channel_1 = require("../common/connection_channel");
+const async_1 = require("../utils/async");
+class WebSocketConnection extends interfaces_1.Connection {
     /// clientLink is not needed when websocket works in server link
     constructor(socket, clientLink, onConnect, useCodec) {
         super();
-        this._onRequestReadyCompleter = new Completer();
-        this._onDisconnectedCompleter = new Completer();
+        this._onRequestReadyCompleter = new async_1.Completer();
+        this._onDisconnectedCompleter = new async_1.Completer();
         /// set to true when data is sent, reset the flag every 20 seconds
         /// since the previous ping message will cause the next 20 seoncd to have a message
         /// max interval between 2 ping messages is 40 seconds
@@ -152,8 +154,8 @@ export class WebSocketConnection extends Connection {
             this.codec = useCodec;
         }
         socket.binaryType = "arraybuffer";
-        this._responderChannel = new PassiveChannel(this);
-        this._requesterChannel = new PassiveChannel(this);
+        this._responderChannel = new connection_channel_1.PassiveChannel(this);
+        this._requesterChannel = new connection_channel_1.PassiveChannel(this);
         socket.onmessage = this._onData;
         socket.onclose = this._onDone;
         socket.onopen = this._onOpen;
@@ -236,7 +238,7 @@ export class WebSocketConnection extends Connection {
         if (needSend) {
             if (this.nextMsgId !== -1) {
                 if (pendingAck.length > 0) {
-                    this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
+                    this.pendingAcks.push(new interfaces_1.ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
                 }
                 m["msg"] = this.nextMsgId;
                 if (this.nextMsgId < 0x7FFFFFFF) {
@@ -266,4 +268,5 @@ export class WebSocketConnection extends Connection {
         this._onDone();
     }
 }
+exports.WebSocketConnection = WebSocketConnection;
 //# sourceMappingURL=browser_ws_conn.js.map

@@ -1,8 +1,10 @@
-import { DSError, StreamStatus } from "../common/interfaces";
-export class Request {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const interfaces_1 = require("../common/interfaces");
+class Request {
     constructor(requester, rid, updater, data) {
         this._isClosed = false;
-        this.streamStatus = StreamStatus.initialize;
+        this.streamStatus = interfaces_1.StreamStatus.initialize;
         this.requester = requester;
         this.rid = rid;
         this.updater = updater;
@@ -35,21 +37,21 @@ export class Request {
             meta = m["meta"];
         }
         // remove the request from global object
-        if (this.streamStatus === StreamStatus.closed) {
+        if (this.streamStatus === interfaces_1.StreamStatus.closed) {
             this.requester._requests.delete(this.rid);
         }
         let error;
         if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-            error = DSError.fromMap(m["error"]);
+            error = interfaces_1.DSError.fromMap(m["error"]);
             this.requester.onError.add(error);
         }
         this.updater.onUpdate(this.streamStatus, updates, columns, meta, error);
     }
     /// close the request and finish data
     _close(error) {
-        if (this.streamStatus != StreamStatus.closed) {
-            this.streamStatus = StreamStatus.closed;
-            this.updater.onUpdate(StreamStatus.closed, null, null, null, error);
+        if (this.streamStatus != interfaces_1.StreamStatus.closed) {
+            this.streamStatus = interfaces_1.StreamStatus.closed;
+            this.updater.onUpdate(interfaces_1.StreamStatus.closed, null, null, null, error);
         }
     }
     /// close the request from the client side
@@ -58,4 +60,5 @@ export class Request {
         this.requester.closeRequest(this);
     }
 }
+exports.Request = Request;
 //# sourceMappingURL=request.js.map

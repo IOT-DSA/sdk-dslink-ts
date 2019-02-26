@@ -1,12 +1,14 @@
-import { Completer, Stream } from "../utils/async";
-export class PassiveChannel {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const async_1 = require("../utils/async");
+class PassiveChannel {
     constructor(conn, connected = false) {
-        this.onReceive = new Stream();
+        this.onReceive = new async_1.Stream();
         this._processors = [];
         this._isReady = false;
         this.connected = true;
-        this.onDisconnectController = new Completer();
-        this.onConnectController = new Completer();
+        this.onDisconnectController = new async_1.Completer();
+        this.onConnectController = new async_1.Completer();
         this.conn = conn;
         this.connected = connected;
     }
@@ -41,4 +43,5 @@ export class PassiveChannel {
         this.onConnectController.complete(this);
     }
 }
+exports.PassiveChannel = PassiveChannel;
 //# sourceMappingURL=connection_channel.js.map

@@ -1,14 +1,16 @@
-import { Stream } from "../utils/async";
-import { Request } from "./request";
-import { ConnectionHandler } from "../common/connection_handler";
-import { RemoteNodeCache } from "./node_cache";
-import { ReqSubscribeListener, SubscribeRequest } from "./request/subscribe";
-import { DSError, StreamStatus } from "../common/interfaces";
-import { ListController } from "./request/list";
-import { Permission } from "../common/permission";
-import { SetController } from "./request/set";
-import { RemoveController } from "./request/remove";
-export class Requester extends ConnectionHandler {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const async_1 = require("../utils/async");
+const request_1 = require("./request");
+const connection_handler_1 = require("../common/connection_handler");
+const node_cache_1 = require("./node_cache");
+const subscribe_1 = require("./request/subscribe");
+const interfaces_1 = require("../common/interfaces");
+const list_1 = require("./request/list");
+const permission_1 = require("../common/permission");
+const set_1 = require("./request/set");
+const remove_1 = require("./request/remove");
+class Requester extends connection_handler_1.ConnectionHandler {
     constructor(cache) {
         super();
         /** @ignore */
@@ -24,13 +26,13 @@ export class Requester extends ConnectionHandler {
             }
         };
         /** @ignore */
-        this.onError = new Stream();
+        this.onError = new async_1.Stream();
         /** @ignore */
         this.lastRid = 0;
         /** @ignore */
         this._connected = false;
-        this.nodeCache = cache ? cache : new RemoteNodeCache();
-        this._subscription = new SubscribeRequest(this, 0);
+        this.nodeCache = cache ? cache : new node_cache_1.RemoteNodeCache();
+        this._subscription = new subscribe_1.SubscribeRequest(this, 0);
         this._requests.set(0, this._subscription);
     }
     get subscriptionCount() {
@@ -71,7 +73,7 @@ export class Requester extends ConnectionHandler {
         m['rid'] = this.getNextRid();
         let req;
         if (updater != null) {
-            req = new Request(this, this.lastRid, updater, m);
+            req = new request_1.Request(this, this.lastRid, updater, m);
             this._requests.set(this.lastRid, req);
         }
         if (this._conn) {
@@ -97,7 +99,7 @@ export class Requester extends ConnectionHandler {
     subscribe(path, callback, qos = 0) {
         let node = this.nodeCache.getRemoteNode(path);
         node._subscribe(this, callback, qos);
-        return new ReqSubscribeListener(this, path, callback);
+        return new subscribe_1.ReqSubscribeListener(this, path, callback);
     }
     /**
      * Unsubscribe the callback
@@ -110,7 +112,7 @@ export class Requester extends ConnectionHandler {
     onValueChange(path, qos = 0) {
         let listener;
         let stream;
-        stream = new Stream(() => {
+        stream = new async_1.Stream(() => {
             if (listener == null) {
                 listener = this.subscribe(path, (update) => {
                     stream.add(update);
@@ -181,7 +183,7 @@ export class Requester extends ConnectionHandler {
      * Usually an action stream will be closed on server side,
      * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
      */
-    invoke(path, params = {}, callback, maxPermission = Permission.CONFIG) {
+    invoke(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
         let node = this.nodeCache.getRemoteNode(path);
         let stream = node._invoke(params, this, maxPermission);
         if (callback) {
@@ -192,12 +194,12 @@ export class Requester extends ConnectionHandler {
     /**
      * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
      */
-    invokeOnce(path, params = {}, maxPermission = Permission.CONFIG) {
+    invokeOnce(path, params = {}, maxPermission = permission_1.Permission.CONFIG) {
         let node = this.nodeCache.getRemoteNode(path);
         let stream = node._invoke(params, this, maxPermission);
         return new Promise((resolve, reject) => {
             stream.listen((update) => {
-                if (update.streamStatus !== StreamStatus.closed) {
+                if (update.streamStatus !== interfaces_1.StreamStatus.closed) {
                     stream.close();
                 }
                 if (update.error) {
@@ -212,20 +214,20 @@ export class Requester extends ConnectionHandler {
     /**
      * Set the value of an attribute, the attribute will be created if not exists
      */
-    set(path, value, maxPermission = Permission.CONFIG) {
-        return new SetController(this, path, value, maxPermission).future;
+    set(path, value, maxPermission = permission_1.Permission.CONFIG) {
+        return new set_1.SetController(this, path, value, maxPermission).future;
     }
     /**
      * Remove an attribute
      */
     remove(path) {
-        return new RemoveController(this, path).future;
+        return new remove_1.RemoveController(this, path).future;
     }
     /// close the request from requester side and notify responder
     /** @ignore */
     closeRequest(request) {
         if (this._requests.has(request.rid)) {
-            if (request.streamStatus !== StreamStatus.closed) {
+            if (request.streamStatus !== interfaces_1.StreamStatus.closed) {
                 this.addToSendList({ 'method': 'close', 'rid': request.rid });
             }
             this._requests.delete(request.rid);
@@ -240,8 +242,8 @@ export class Requester extends ConnectionHandler {
         let newRequests = new Map();
         newRequests.set(0, this._subscription);
         for (let [n, req] of this._requests) {
-            if (req.rid <= this.lastRid && !(req.updater instanceof ListController)) {
-                req._close(DSError.DISCONNECTED);
+            if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
+                req._close(interfaces_1.DSError.DISCONNECTED);
             }
             else {
                 newRequests.set(req.rid, req);
@@ -262,4 +264,5 @@ export class Requester extends ConnectionHandler {
         }
     }
 }
+exports.Requester = Requester;
 //# sourceMappingURL=requester.js.map

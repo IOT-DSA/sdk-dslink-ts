@@ -1,5 +1,7 @@
+"use strict";
 // part of dslink.common;
-export class Permission {
+Object.defineProperty(exports, "__esModule", { value: true });
+class Permission {
     static parse(obj, defaultVal = Permission.NEVER) {
         if (typeof obj === 'string' && Permission.nameParser.hasOwnProperty(obj)) {
             return Permission.nameParser[obj];
@@ -35,4 +37,5 @@ Permission.nameParser = {
     'config': Permission.CONFIG,
     'never': Permission.NEVER
 };
+exports.Permission = Permission;
 //# sourceMappingURL=permission.js.map

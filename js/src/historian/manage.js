@@ -1,6 +1,9 @@
+"use strict";
 // part of dslink.historian;
-export class CreateWatchGroupNode extends SimpleNode {
+Object.defineProperty(exports, "__esModule", { value: true });
+class CreateWatchGroupNode extends SimpleNode {
 }
+exports.CreateWatchGroupNode = CreateWatchGroupNode;
 (path, this._link.provider);
 onInvoke(params, { [key]: string, dynamic });
 async;
@@ -14,8 +17,9 @@ async;
     });
     _link.save();
 }
-export class AddDatabaseNode extends SimpleNode {
+class AddDatabaseNode extends SimpleNode {
 }
+exports.AddDatabaseNode = AddDatabaseNode;
 (path, this._link.provider);
 onInvoke(params, { [key]: string, dynamic });
 async;
@@ -29,8 +33,9 @@ async;
     });
     _link.save();
 }
-export class AddWatchPathNode extends SimpleNode {
+class AddWatchPathNode extends SimpleNode {
 }
+exports.AddWatchPathNode = AddWatchPathNode;
 (path);
 onInvoke(params, { [key]: string, dynamic });
 async;
@@ -48,8 +53,9 @@ async;
     });
     _link.save();
 }
-export class PurgePathNode extends SimpleNode {
+class PurgePathNode extends SimpleNode {
 }
+exports.PurgePathNode = PurgePathNode;
 (path);
 onInvoke(params, { [key]: string, dynamic });
 async;
@@ -61,8 +67,9 @@ async;
     watchPathNode: WatchPathNode = _link[new Path(path).parentPath];
     await watchPathNode.group.db.database.purgePath(watchPathNode.group._watchName, watchPathNode.valuePath, tr);
 }
-export class PurgeGroupNode extends SimpleNode {
+class PurgeGroupNode extends SimpleNode {
 }
+exports.PurgeGroupNode = PurgeGroupNode;
 (path);
 onInvoke(params, { [key]: string, dynamic });
 async;
