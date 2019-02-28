@@ -5,6 +5,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "declaration": true,
     "lib": [
       "es2017",
       "dom"
@@ -12,6 +13,7 @@
     "alwaysStrict": true,
     "noImplicitAny": true,
     "sourceMap": true,
+    "newLine": "lf",
     "outDir": "./js"
   },
   "compileOnSave": true,
