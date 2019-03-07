@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,6 +109,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
 })({"DPC0":[function(require,module,exports) {
 'use strict';
@@ -5222,14 +5235,17 @@ exports.codec = require("./codec").codec;
 var Buffer = require("buffer").Buffer;
 "use strict";
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
 
-var _base64Js = _interopRequireDefault(require("base64-js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const base64_js_1 = __importDefault(require("base64-js"));
 
 class Base64 {
   static encodeString(content) {
@@ -5242,7 +5258,7 @@ class Base64 {
 
   static encode(bytes) {
     // url safe encode
-    return _base64Js.default.fromByteArray(bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return base64_js_1.default.fromByteArray(bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 
   static decode(input) {
@@ -5251,7 +5267,7 @@ class Base64 {
       input = input.padEnd((input.length >> 2) + 1 << 2, '=');
     }
 
-    return _base64Js.default.toByteArray(input);
+    return base64_js_1.default.toByteArray(input);
   }
 
 }
@@ -5261,17 +5277,19 @@ exports.default = Base64;
 var Buffer = require("buffer").Buffer;
 "use strict";
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.toBuffer = toBuffer;
-exports.DsMsgPackCodecImpl = exports.DsJsonCodecImpl = exports.DsJson = exports.DsCodec = void 0;
 
-var _msgpackLite = _interopRequireDefault(require("msgpack-lite"));
+const msgpack_lite_1 = __importDefault(require("msgpack-lite"));
 
-var _base = _interopRequireDefault(require("./base64"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const base64_1 = __importDefault(require("./base64"));
 
 function toBuffer(val) {
   if (val instanceof Buffer) {
@@ -5280,6 +5298,8 @@ function toBuffer(val) {
     return Buffer.from(val);
   }
 }
+
+exports.toBuffer = toBuffer;
 
 class DsCodec {
   static register(name, codec) {
@@ -5351,7 +5371,7 @@ class DsJsonCodecImpl extends DsCodec {
   static reviver(key, value) {
     if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
       try {
-        return _base.default.decode(value.substring(7));
+        return base64_1.default.decode(value.substring(7));
       } catch (err) {
         return null;
       }
@@ -5362,7 +5382,7 @@ class DsJsonCodecImpl extends DsCodec {
 
   static replacer(key, value) {
     if (value instanceof Uint8Array) {
-      return `\u001Bbytes:${_base.default.encode(value)}`;
+      return `\u001Bbytes:${base64_1.default.encode(value)}`;
     }
 
     return value;
@@ -5383,7 +5403,7 @@ DsJson.instance = new DsJsonCodecImpl();
 
 class DsMsgPackCodecImpl extends DsCodec {
   decodeBinaryFrame(bytes) {
-    let result = _msgpackLite.default.decode(bytes);
+    let result = msgpack_lite_1.default.decode(bytes);
 
     if (typeof result === 'object') {
       return result;
@@ -5398,13 +5418,13 @@ class DsMsgPackCodecImpl extends DsCodec {
   }
 
   encodeFrame(val) {
-    return _msgpackLite.default.encode(val);
+    return msgpack_lite_1.default.encode(val);
   }
 
 }
 
-exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
 DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
+exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
 DsCodec._codecs = {
   "json": DsJson.instance,
   "msgpack": DsMsgPackCodecImpl.instance
@@ -5413,16 +5433,19 @@ DsCodec.defaultCodec = DsJson.instance;
 },{"msgpack-lite":"mwm5","./base64":"ZvoB","buffer":"dskh"}],"N9NG":[function(require,module,exports) {
 "use strict";
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Unspecified = exports.DSError = exports.ErrorPhase = exports.StreamStatus = exports.ClientLink = exports.ServerLink = exports.BaseLink = exports.ConnectionAckGroup = exports.ProcessorResult = exports.Connection = exports.ECDH = void 0;
 
-var _denque = _interopRequireDefault(require("denque"));
+const denque_1 = __importDefault(require("denque"));
 
-var _codec = require("../utils/codec");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const codec_1 = require("../utils/codec");
 
 class ECDH {
   verifySalt(salt, hash) {
@@ -5432,11 +5455,29 @@ class ECDH {
 }
 
 exports.ECDH = ECDH;
+/** @ignore */
+
+class DummyECDH {
+  constructor() {
+    this.encodedPublicKey = "";
+  }
+
+  hashSalt(salt) {
+    return '';
+  }
+
+  verifySalt(salt, hash) {
+    return true;
+  }
+
+}
+
+exports.DummyECDH = DummyECDH;
 
 class Connection {
   constructor() {
-    this.codec = _codec.DsCodec.defaultCodec;
-    this.pendingAcks = new _denque.default();
+    this.codec = codec_1.DsCodec.defaultCodec;
+    this.pendingAcks = new denque_1.default();
   }
 
   ack(ackId) {
@@ -5467,11 +5508,10 @@ class Connection {
     }
   }
 
-} /// generate message right before sending to get the latest update
+}
+
+exports.Connection = Connection; /// generate message right before sending to get the latest update
 /// return messages and the processors that need ack callback
-
-
-exports.Connection = Connection;
 
 class ProcessorResult {
   constructor(messages, processors) {
@@ -5496,20 +5536,17 @@ class ConnectionAckGroup {
     }
   }
 
-} /// Base Class for Links
+}
 
+exports.ConnectionAckGroup = ConnectionAckGroup; /// Base Class for Links
 
-exports.ConnectionAckGroup = ConnectionAckGroup;
+class BaseLink {}
 
-class BaseLink {} /// Base Class for Server Link implementations.
+exports.BaseLink = BaseLink; /// Base Class for Server Link implementations.
 
+class ServerLink extends BaseLink {}
 
-exports.BaseLink = BaseLink;
-
-class ServerLink extends BaseLink {} /// Base Class for Client Link implementations.
-
-
-exports.ServerLink = ServerLink;
+exports.ServerLink = ServerLink; /// Base Class for Client Link implementations.
 
 class ClientLink extends BaseLink {
   /** @ignore */
@@ -5527,26 +5564,25 @@ class ClientLink extends BaseLink {
     return msg;
   }
 
-} /// DSA Stream Status
+}
 
-
-exports.ClientLink = ClientLink;
+exports.ClientLink = ClientLink; /// DSA Stream Status
 
 class StreamStatus {} /// Stream should be initialized.
 
 
-exports.StreamStatus = StreamStatus;
 StreamStatus.initialize = "initialize"; /// Stream is open.
 
 StreamStatus.open = "open"; /// Stream is closed.
 
 StreamStatus.closed = "closed";
+exports.StreamStatus = StreamStatus;
 
 class ErrorPhase {}
 
-exports.ErrorPhase = ErrorPhase;
 ErrorPhase.request = "request";
 ErrorPhase.response = "response";
+exports.ErrorPhase = ErrorPhase;
 
 class DSError {
   constructor(type, options = {}) {
@@ -5629,7 +5665,6 @@ class DSError {
 
 }
 
-exports.DSError = DSError;
 DSError.PERMISSION_DENIED = new DSError("permissionDenied");
 DSError.INVALID_METHOD = new DSError("invalidMethod");
 DSError.NOT_IMPLEMENTED = new DSError("notImplemented");
@@ -5641,11 +5676,12 @@ DSError.DISCONNECTED = new DSError("disconnected", {
   phase: ErrorPhase.request
 });
 DSError.FAILED = new DSError("failed");
+exports.DSError = DSError;
 
-class Unspecified {} /// Marks something as being unspecified.
+class Unspecified {}
 
+exports.Unspecified = Unspecified; /// Marks something as being unspecified.
 
-exports.Unspecified = Unspecified;
 const unspecified = new Unspecified(); /// Unspecified means that something has never been set.
 },{"denque":"DPC0","../utils/codec":"TRmg"}],"bajV":[function(require,module,exports) {
 "use strict";
@@ -5653,7 +5689,7 @@ const unspecified = new Unspecified(); /// Unspecified means that something has 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Completer = exports.StreamSubscription = exports.Stream = void 0;
+/** @ignore */
 
 class Stream {
   constructor(onStartListen, onAllCancel, onListen) {
@@ -5743,10 +5779,15 @@ class Stream {
 exports.Stream = Stream;
 
 class StreamSubscription {
+  /** @ignore */
   constructor(stream, listener) {
     this._stream = stream;
     this._listener = listener;
   }
+  /**
+   * Close the subscription.
+   */
+
 
   close() {
     if (this._stream && this._listener) {
@@ -5760,6 +5801,7 @@ class StreamSubscription {
 }
 
 exports.StreamSubscription = StreamSubscription;
+/** @ignore */
 
 class Completer {
   constructor() {
@@ -5793,14 +5835,13 @@ exports.Completer = Completer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Request = void 0;
 
-var _interfaces = require("../common/interfaces");
+const interfaces_1 = require("../common/interfaces");
 
 class Request {
   constructor(requester, rid, updater, data) {
     this._isClosed = false;
-    this.streamStatus = _interfaces.StreamStatus.initialize;
+    this.streamStatus = interfaces_1.StreamStatus.initialize;
     this.requester = requester;
     this.rid = rid;
     this.updater = updater;
@@ -5845,14 +5886,14 @@ class Request {
     } // remove the request from global object
 
 
-    if (this.streamStatus === _interfaces.StreamStatus.closed) {
+    if (this.streamStatus === interfaces_1.StreamStatus.closed) {
       this.requester._requests.delete(this.rid);
     }
 
     let error;
 
     if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-      error = _interfaces.DSError.fromMap(m["error"]);
+      error = interfaces_1.DSError.fromMap(m["error"]);
       this.requester.onError.add(error);
     }
 
@@ -5861,9 +5902,9 @@ class Request {
 
 
   _close(error) {
-    if (this.streamStatus != _interfaces.StreamStatus.closed) {
-      this.streamStatus = _interfaces.StreamStatus.closed;
-      this.updater.onUpdate(_interfaces.StreamStatus.closed, null, null, null, error);
+    if (this.streamStatus != interfaces_1.StreamStatus.closed) {
+      this.streamStatus = interfaces_1.StreamStatus.closed;
+      this.updater.onUpdate(interfaces_1.StreamStatus.closed, null, null, null, error);
     }
   } /// close the request from the client side
 
@@ -5882,14 +5923,11 @@ exports.Request = Request;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ConnectionHandler = exports.defaultCacheSize = exports.ACK_WAIT_COUNT = void 0;
 
-var _interfaces = require("./interfaces");
+const interfaces_1 = require("./interfaces");
 
-const ACK_WAIT_COUNT = 16;
-exports.ACK_WAIT_COUNT = ACK_WAIT_COUNT;
-const defaultCacheSize = 256;
-exports.defaultCacheSize = defaultCacheSize;
+exports.ACK_WAIT_COUNT = 16;
+exports.defaultCacheSize = 256;
 
 class ConnectionHandler {
   constructor() {
@@ -6001,7 +6039,7 @@ class ConnectionHandler {
 
     let rslt = this._toSendList;
     this._toSendList = [];
-    return new _interfaces.ProcessorResult(rslt, processors);
+    return new interfaces_1.ProcessorResult(rslt, processors);
   }
   /** @ignore */
 
@@ -6019,11 +6057,9 @@ exports.ConnectionHandler = ConnectionHandler;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-});
-exports.Path = exports.Node = void 0;
-
-/// Base Class for any and all nodes in the SDK.
+}); /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
+
 class Node {
   constructor() {
     /// Node Attributes
@@ -6213,10 +6249,9 @@ class Node {
     return rslt;
   }
 
-} /// Utility class for node and config/attribute paths.
+}
 
-
-exports.Node = Node;
+exports.Node = Node; /// Utility class for node and config/attribute paths.
 
 class Path {
   constructor(path) {
@@ -6398,19 +6433,18 @@ class Path {
 /** @ignore */
 
 
-exports.Path = Path;
 Path.invalidChar = /[\\\?\*|"<>:]/; /// Regular Expression for invalid characters in names.
 
 /** @ignore */
 
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
+exports.Path = Path;
 },{}],"Re02":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ValueUpdate = void 0;
 
 const TIME_ZONE = function () {
   let timeZoneOffset = new Date().getTimezoneOffset();
@@ -6551,15 +6585,14 @@ class ValueUpdate {
 
 }
 
-exports.ValueUpdate = ValueUpdate;
 ValueUpdate._lastTs = 0;
+exports.ValueUpdate = ValueUpdate;
 },{}],"wq45":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RequesterUpdate = void 0;
 
 class RequesterUpdate {
   constructor(streamStatus) {
@@ -6575,19 +6608,18 @@ exports.RequesterUpdate = RequesterUpdate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ListController = exports.ListDefListener = exports.RequesterListUpdate = void 0;
 
-var _async = require("../../utils/async");
+const async_1 = require("../../utils/async");
 
-var _interfaces = require("../../common/interfaces");
+const interfaces_1 = require("../../common/interfaces");
 
-var _node_cache = require("../node_cache");
+const node_cache_1 = require("../node_cache");
 
-var _value = require("../../common/value");
+const value_1 = require("../../common/value");
 
-var _interface = require("../interface");
+const interface_1 = require("../interface");
 
-class RequesterListUpdate extends _interface.RequesterUpdate {
+class RequesterListUpdate extends interface_1.RequesterUpdate {
   /** @ignore */
   constructor(node, changes, streamStatus) {
     super(streamStatus);
@@ -6596,10 +6628,9 @@ class RequesterListUpdate extends _interface.RequesterUpdate {
   }
 
 }
-/** @ignore */
-
 
 exports.RequesterListUpdate = RequesterListUpdate;
+/** @ignore */
 
 class ListDefListener {
   constructor(node, requester, callback) {
@@ -6607,7 +6638,7 @@ class ListDefListener {
     this.node = node;
     this.requester = requester;
     this.listener = requester.list(node.remotePath, update => {
-      this.ready = update.streamStatus !== _interfaces.StreamStatus.initialize;
+      this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
       callback(update);
     });
   }
@@ -6617,10 +6648,9 @@ class ListDefListener {
   }
 
 }
-/** @ignore */
-
 
 exports.ListDefListener = ListDefListener;
+/** @ignore */
 
 class ListController {
   constructor(node, requester) {
@@ -6705,15 +6735,15 @@ class ListController {
 
     this.node = node;
     this.requester = requester;
-    this.stream = new _async.Stream(this.onStartListen, this._onAllCancel, this._onListen);
+    this.stream = new async_1.Stream(this.onStartListen, this._onAllCancel, this._onListen);
   }
 
   get initialized() {
-    return this.request != null && this.request.streamStatus !== _interfaces.StreamStatus.initialize;
+    return this.request != null && this.request.streamStatus !== interfaces_1.StreamStatus.initialize;
   }
 
   onDisconnect() {
-    this.disconnectTs = _value.ValueUpdate.getTs();
+    this.disconnectTs = value_1.ValueUpdate.getTs();
     this.node.configs.set('$disconnectedTs', this.disconnectTs);
     this.stream.add(new RequesterListUpdate(this.node, ['$disconnectedTs'], this.request.streamStatus));
   }
@@ -6798,7 +6828,7 @@ class ListController {
         }
       }
 
-      if (this.request.streamStatus !== _interfaces.StreamStatus.initialize) {
+      if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
         this.node.listed = true;
       }
 
@@ -6824,7 +6854,7 @@ class ListController {
       }
     }
 
-    if (this.node.profile instanceof _node_cache.RemoteNode && this.node.profile.remotePath === defPath) {
+    if (this.node.profile instanceof node_cache_1.RemoteNode && this.node.profile.remotePath === defPath) {
       return;
     }
 
@@ -6834,7 +6864,7 @@ class ListController {
       return;
     }
 
-    if (this.node.profile instanceof _node_cache.RemoteNode && !this.node.profile.listed) {
+    if (this.node.profile instanceof node_cache_1.RemoteNode && !this.node.profile.listed) {
       this._ready = false;
       this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }
@@ -6842,12 +6872,12 @@ class ListController {
 
   onProfileUpdated() {
     if (this._ready) {
-      if (this.request.streamStatus !== _interfaces.StreamStatus.initialize) {
+      if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
         this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
 
-      if (this.request && this.request.streamStatus === _interfaces.StreamStatus.closed) {
+      if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
         this.stream.close();
       }
     }
@@ -6891,21 +6921,20 @@ class ListController {
 
 }
 
-exports.ListController = ListController;
 ListController._ignoreProfileProps = ['$is', '$permission', '$settings'];
+exports.ListController = ListController;
 },{"../../utils/async":"bajV","../../common/interfaces":"N9NG","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ReqSubscribeController = exports.SubscribeRequest = exports.SubscribeController = exports.ReqSubscribeListener = void 0;
 
-var _request = require("../request");
+const request_1 = require("../request");
 
-var _value = require("../../common/value");
+const value_1 = require("../../common/value");
 
-var _connection_handler = require("../../common/connection_handler");
+const connection_handler_1 = require("../../common/connection_handler");
 
 class ReqSubscribeListener {
   /** @ignore */
@@ -6922,13 +6951,12 @@ class ReqSubscribeListener {
     }
   }
 
-} /// only a place holder for reconnect and disconnect
+}
+
+exports.ReqSubscribeListener = ReqSubscribeListener; /// only a place holder for reconnect and disconnect
 /// real logic is in SubscribeRequest itself
 
 /** @ignore */
-
-
-exports.ReqSubscribeListener = ReqSubscribeListener;
 
 class SubscribeController {
   onDisconnect() {// TODO: implement onDisconnect
@@ -6941,12 +6969,11 @@ class SubscribeController {
   }
 
 }
-/** @ignore */
-
 
 exports.SubscribeController = SubscribeController;
+/** @ignore */
 
-class SubscribeRequest extends _request.Request {
+class SubscribeRequest extends request_1.Request {
   constructor(requester, rid) {
     super(requester, rid, new SubscribeController(), null);
     this.lastSid = 0;
@@ -7040,7 +7067,7 @@ class SubscribeRequest extends _request.Request {
         }
 
         if (controller != null) {
-          let valueUpdate = new _value.ValueUpdate(value, ts, options);
+          let valueUpdate = new value_1.ValueUpdate(value, ts, options);
           controller.addValue(valueUpdate);
         }
       }
@@ -7146,7 +7173,7 @@ class SubscribeRequest extends _request.Request {
       return;
     }
 
-    if (this._waitingAckCount > _connection_handler.ACK_WAIT_COUNT) {
+    if (this._waitingAckCount > connection_handler_1.ACK_WAIT_COUNT) {
       this._sendingAfterAck = true;
       return;
     }
@@ -7158,10 +7185,9 @@ class SubscribeRequest extends _request.Request {
   }
 
 }
-/** @ignore */
-
 
 exports.SubscribeRequest = SubscribeRequest;
+/** @ignore */
 
 class ReqSubscribeController {
   constructor(node, requester) {
@@ -7245,14 +7271,12 @@ class ReqSubscribeController {
 
 exports.ReqSubscribeController = ReqSubscribeController;
 },{"../request":"wg7F","../../common/value":"Re02","../../common/connection_handler":"lXIX"}],"nCNP":[function(require,module,exports) {
-"use strict";
+"use strict"; // part of dslink.common;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Permission = void 0;
 
-// part of dslink.common;
 class Permission {
   static parse(obj, defaultVal = Permission.NEVER) {
     if (typeof obj === 'string' && Permission.nameParser.hasOwnProperty(obj)) {
@@ -7265,7 +7289,6 @@ class Permission {
 } /// now allowed to do anything
 
 
-exports.Permission = Permission;
 Permission.NONE = 0; /// list node
 
 Permission.LIST = 1; /// read node
@@ -7286,13 +7309,13 @@ Permission.nameParser = {
   'config': Permission.CONFIG,
   'never': Permission.NEVER
 };
+exports.Permission = Permission;
 },{}],"q+mg":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TableMetadata = exports.TableColumns = exports.Table = exports.TableColumn = void 0;
 
 class TableColumn {
   constructor(name, type, defaultValue) {
@@ -7393,19 +7416,18 @@ exports.TableMetadata = TableMetadata;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.InvokeController = exports.RequesterInvokeStream = exports.RequesterInvokeUpdate = void 0;
 
-var _async = require("../../utils/async");
+const async_1 = require("../../utils/async");
 
-var _permission = require("../../common/permission");
+const permission_1 = require("../../common/permission");
 
-var _interfaces = require("../../common/interfaces");
+const interfaces_1 = require("../../common/interfaces");
 
-var _table = require("../../common/table");
+const table_1 = require("../../common/table");
 
-var _interface = require("../interface");
+const interface_1 = require("../interface");
 
-class RequesterInvokeUpdate extends _interface.RequesterUpdate {
+class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
   constructor(updates, rawColumns, columns, streamStatus, meta, error) {
     super(streamStatus);
     this.updates = updates;
@@ -7453,7 +7475,7 @@ class RequesterInvokeUpdate extends _interface.RequesterUpdate {
 
           if (this.columns == null) {
             let keys = obj.keys;
-            this.columns = keys.map(x => new _table.TableColumn(x, "dynamic"));
+            this.columns = keys.map(x => new table_1.TableColumn(x, "dynamic"));
           }
 
           if (this.columns != null) {
@@ -7506,19 +7528,18 @@ class RequesterInvokeUpdate extends _interface.RequesterUpdate {
 
 exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 
-class RequesterInvokeStream extends _async.Stream {}
-/** @ignore */
-
+class RequesterInvokeStream extends async_1.Stream {}
 
 exports.RequesterInvokeStream = RequesterInvokeStream;
+/** @ignore */
 
 class InvokeController {
-  constructor(node, requester, params, maxPermission = _permission.Permission.CONFIG) {
+  constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
     this.mode = 'stream';
-    this.lastStatus = _interfaces.StreamStatus.initialize;
+    this.lastStatus = interfaces_1.StreamStatus.initialize;
 
     this._onUnsubscribe = obj => {
-      if (this._request != null && this._request.streamStatus !== _interfaces.StreamStatus.closed) {
+      if (this._request != null && this._request.streamStatus !== interfaces_1.StreamStatus.closed) {
         this._request.close();
       }
     };
@@ -7533,8 +7554,8 @@ class InvokeController {
       'params': params
     };
 
-    if (maxPermission !== _permission.Permission.CONFIG) {
-      reqMap['permit'] = _permission.Permission.names[maxPermission];
+    if (maxPermission !== permission_1.Permission.CONFIG) {
+      reqMap['permit'] = permission_1.Permission.names[maxPermission];
     } // TODO: update node before invoke to load columns
     //    if(!node.isUpdated()) {
     //      node._list().listen( this._onNodeUpdate)
@@ -7553,7 +7574,7 @@ class InvokeController {
     }
 
     if (Array.isArray(columns)) {
-      return _table.TableColumn.parseColumns(columns);
+      return table_1.TableColumn.parseColumns(columns);
     }
 
     return null;
@@ -7567,16 +7588,16 @@ class InvokeController {
 
     if (columns != null) {
       if (this._cachedColumns == null || this.mode === 'refresh') {
-        this._cachedColumns = _table.TableColumn.parseColumns(columns);
+        this._cachedColumns = table_1.TableColumn.parseColumns(columns);
       } else {
-        this._cachedColumns = this._cachedColumns.concat(_table.TableColumn.parseColumns(columns));
+        this._cachedColumns = this._cachedColumns.concat(table_1.TableColumn.parseColumns(columns));
       }
     } else if (this._cachedColumns == null) {
       this._cachedColumns = InvokeController.getNodeColumns(this.node);
     }
 
     if (error != null) {
-      streamStatus = _interfaces.StreamStatus.closed;
+      streamStatus = interfaces_1.StreamStatus.closed;
 
       this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
     } else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
@@ -7585,7 +7606,7 @@ class InvokeController {
 
     this.lastStatus = streamStatus;
 
-    if (streamStatus === _interfaces.StreamStatus.closed) {
+    if (streamStatus === interfaces_1.StreamStatus.closed) {
       this._stream.close();
     }
   }
@@ -7603,34 +7624,34 @@ exports.InvokeController = InvokeController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.buildEnumType = buildEnumType;
 
 function buildEnumType(values) {
   return `enum[${values.join(',')}]`;
 }
+
+exports.buildEnumType = buildEnumType;
+exports.DSA_VERSION = '1.1.2';
 },{}],"jg7K":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-});
-exports.DefaultDefNodes = exports.RemoteDefNode = exports.RemoteNode = exports.RemoteNodeCache = void 0;
+}); /// manage cached nodes for requester
 
-var _node = require("../common/node");
+const node_1 = require("../common/node");
 
-var _list = require("./request/list");
+const list_1 = require("./request/list");
 
-var _subscribe = require("./request/subscribe");
+const subscribe_1 = require("./request/subscribe");
 
-var _permission = require("../common/permission");
+const permission_1 = require("../common/permission");
 
-var _invoke = require("./request/invoke");
+const invoke_1 = require("./request/invoke");
 
-var _utils = require("../../utils");
-
-/// manage cached nodes for requester
-
+const utils_1 = require("../../utils");
 /** @ignore */
+
+
 class RemoteNodeCache {
   constructor() {
     this._nodes = new Map();
@@ -7713,7 +7734,7 @@ class RemoteNodeCache {
 
 exports.RemoteNodeCache = RemoteNodeCache;
 
-class RemoteNode extends _node.Node {
+class RemoteNode extends node_1.Node {
   constructor(remotePath) {
     super();
     /** @ignore */
@@ -7792,14 +7813,14 @@ class RemoteNode extends _node.Node {
 
 
   createListController(requester) {
-    return new _list.ListController(this, requester);
+    return new list_1.ListController(this, requester);
   }
   /** @ignore */
 
 
   _subscribe(requester, callback, qos) {
     if (this._subscribeController == null) {
-      this._subscribeController = new _subscribe.ReqSubscribeController(this, requester);
+      this._subscribeController = new subscribe_1.ReqSubscribeController(this, requester);
     }
 
     this._subscribeController.listen(callback, qos);
@@ -7815,8 +7836,8 @@ class RemoteNode extends _node.Node {
   /** @ignore */
 
 
-  _invoke(params, requester, maxPermission = _permission.Permission.CONFIG) {
-    return new _invoke.InvokeController(this, requester, params, maxPermission)._stream;
+  _invoke(params, requester, maxPermission = permission_1.Permission.CONFIG) {
+    return new invoke_1.InvokeController(this, requester, params, maxPermission)._stream;
   }
   /** @ignore */
   /// used by list api to update simple data for children
@@ -7884,10 +7905,9 @@ class RemoteNode extends _node.Node {
   }
 
 }
-/** @ignore */
-
 
 exports.RemoteNode = RemoteNode;
+/** @ignore */
 
 class RemoteDefNode extends RemoteNode {
   constructor(path) {
@@ -7895,14 +7915,12 @@ class RemoteDefNode extends RemoteNode {
   }
 
 }
-/** @ignore */
-
 
 exports.RemoteDefNode = RemoteDefNode;
+/** @ignore */
 
 class DefaultDefNodes {}
 
-exports.DefaultDefNodes = DefaultDefNodes;
 DefaultDefNodes._defaultDefs = {
   "node": {},
   "static": {},
@@ -7917,11 +7935,11 @@ DefaultDefNodes._defaultDefs = {
       "name": "Interval",
       "type": "enum",
       "default": "none",
-      "edito": (0, _utils.buildEnumType)(["default", "none", "1Y", "3N", "1N", "1W", "1D", "12H", "6H", "4H", "3H", "2H", "1H", "30M", "15M", "10M", "5M", "1M", "30S", "15S", "10S", "5S", "1S"])
+      "edito": utils_1.buildEnumType(["default", "none", "1Y", "3N", "1N", "1W", "1D", "12H", "6H", "4H", "3H", "2H", "1H", "30M", "15M", "10M", "5M", "1M", "30S", "15S", "10S", "5S", "1S"])
     }, {
       "name": "Rollup",
       "default": "none",
-      "type": (0, _utils.buildEnumType)(["none", "avg", "min", "max", "sum", "first", "last", "count", "delta"])
+      "type": utils_1.buildEnumType(["none", "avg", "min", "max", "sum", "first", "last", "count", "delta"])
     }],
     "$columns": [{
       "name": "timestamp",
@@ -7971,24 +7989,26 @@ DefaultDefNodes.pathMap = function () {
 
   return rslt;
 }();
+
+exports.DefaultDefNodes = DefaultDefNodes;
 },{"../common/node":"QClj","./request/list":"duux","./request/subscribe":"YpSC","../common/permission":"nCNP","./request/invoke":"+yD6","../../utils":"UnXq"}],"wdMm":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SetController = void 0;
 
-var _async = require("../../utils/async");
+const async_1 = require("../../utils/async");
 
-var _permission = require("../../common/permission");
+const permission_1 = require("../../common/permission");
 
-var _interface = require("../interface");
-
+const interface_1 = require("../interface");
 /** @ignore */
+
+
 class SetController {
-  constructor(requester, path, value, maxPermission = _permission.Permission.CONFIG) {
-    this.completer = new _async.Completer();
+  constructor(requester, path, value, maxPermission = permission_1.Permission.CONFIG) {
+    this.completer = new async_1.Completer();
     this.requester = requester;
     this.path = path;
     this.value = value;
@@ -7998,8 +8018,8 @@ class SetController {
       'value': value
     };
 
-    if (maxPermission !== _permission.Permission.CONFIG) {
-      reqMap['permit'] = _permission.Permission.names[maxPermission];
+    if (maxPermission !== permission_1.Permission.CONFIG) {
+      reqMap['permit'] = permission_1.Permission.names[maxPermission];
     }
 
     this._request = requester._sendRequest(reqMap, this);
@@ -8011,7 +8031,7 @@ class SetController {
 
   onUpdate(status, updates, columns, meta, error) {
     // TODO implement error
-    this.completer.complete(new _interface.RequesterUpdate(status));
+    this.completer.complete(new interface_1.RequesterUpdate(status));
   }
 
   onDisconnect() {}
@@ -8027,16 +8047,16 @@ exports.SetController = SetController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RemoveController = void 0;
 
-var _async = require("../../utils/async");
+const async_1 = require("../../utils/async");
 
-var _interface = require("../interface");
-
+const interface_1 = require("../interface");
 /** @ignore */
+
+
 class RemoveController {
   constructor(requester, path) {
-    this.completer = new _async.Completer();
+    this.completer = new async_1.Completer();
     this.requester = requester;
     this.path = path;
     let reqMap = {
@@ -8052,7 +8072,7 @@ class RemoveController {
 
   onUpdate(status, updates, columns, meta, error) {
     // TODO implement error
-    this.completer.complete(new _interface.RequesterUpdate(status));
+    this.completer.complete(new interface_1.RequesterUpdate(status));
   }
 
   onDisconnect() {}
@@ -8068,29 +8088,28 @@ exports.RemoveController = RemoveController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Requester = void 0;
 
-var _async = require("../utils/async");
+const async_1 = require("../utils/async");
 
-var _request = require("./request");
+const request_1 = require("./request");
 
-var _connection_handler = require("../common/connection_handler");
+const connection_handler_1 = require("../common/connection_handler");
 
-var _node_cache = require("./node_cache");
+const node_cache_1 = require("./node_cache");
 
-var _subscribe = require("./request/subscribe");
+const subscribe_1 = require("./request/subscribe");
 
-var _interfaces = require("../common/interfaces");
+const interfaces_1 = require("../common/interfaces");
 
-var _list = require("./request/list");
+const list_1 = require("./request/list");
 
-var _permission = require("../common/permission");
+const permission_1 = require("../common/permission");
 
-var _set = require("./request/set");
+const set_1 = require("./request/set");
 
-var _remove = require("./request/remove");
+const remove_1 = require("./request/remove");
 
-class Requester extends _connection_handler.ConnectionHandler {
+class Requester extends connection_handler_1.ConnectionHandler {
   constructor(cache) {
     super();
     /** @ignore */
@@ -8110,15 +8129,15 @@ class Requester extends _connection_handler.ConnectionHandler {
     /** @ignore */
 
 
-    this.onError = new _async.Stream();
+    this.onError = new async_1.Stream();
     /** @ignore */
 
     this.lastRid = 0;
     /** @ignore */
 
     this._connected = false;
-    this.nodeCache = cache ? cache : new _node_cache.RemoteNodeCache();
-    this._subscription = new _subscribe.SubscribeRequest(this, 0);
+    this.nodeCache = cache ? cache : new node_cache_1.RemoteNodeCache();
+    this._subscription = new subscribe_1.SubscribeRequest(this, 0);
 
     this._requests.set(0, this._subscription);
   }
@@ -8173,7 +8192,7 @@ class Requester extends _connection_handler.ConnectionHandler {
     let req;
 
     if (updater != null) {
-      req = new _request.Request(this, this.lastRid, updater, m);
+      req = new request_1.Request(this, this.lastRid, updater, m);
 
       this._requests.set(this.lastRid, req);
     }
@@ -8192,7 +8211,7 @@ class Requester extends _connection_handler.ConnectionHandler {
    * Subscribe a path and get value updates in a async callback
    * If you only need to get the current value once, use [[subscribeOnce]] instead.
    *
-   * A Subscription listener should be close with [[ReqSubscribeListener.close]] when it's no longer needed.
+   * A Subscription listener should be closed with [[ReqSubscribeListener.close]] when it's no longer needed.
    * You can also use the [[unsubscribe]] method to close the callback.
    *
    * @param callback - if same callback is subscribed twice, the previous one will be overwritten with new qos value
@@ -8207,7 +8226,7 @@ class Requester extends _connection_handler.ConnectionHandler {
 
     node._subscribe(this, callback, qos);
 
-    return new _subscribe.ReqSubscribeListener(this, path, callback);
+    return new subscribe_1.ReqSubscribeListener(this, path, callback);
   }
   /**
    * Unsubscribe the callback
@@ -8225,7 +8244,7 @@ class Requester extends _connection_handler.ConnectionHandler {
   onValueChange(path, qos = 0) {
     let listener;
     let stream;
-    stream = new _async.Stream(() => {
+    stream = new async_1.Stream(() => {
       if (listener == null) {
         listener = this.subscribe(path, update => {
           stream.add(update);
@@ -8295,7 +8314,7 @@ class Requester extends _connection_handler.ConnectionHandler {
    * List a path and get the node metadata as well as a summary of children nodes.
    * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
    *
-   * A Subscription should be close with [[StreamSubscription.close]] when it's no longer needed.
+   * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
    */
 
 
@@ -8310,7 +8329,7 @@ class Requester extends _connection_handler.ConnectionHandler {
    */
 
 
-  invoke(path, params = {}, callback, maxPermission = _permission.Permission.CONFIG) {
+  invoke(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
     let node = this.nodeCache.getRemoteNode(path);
 
     let stream = node._invoke(params, this, maxPermission);
@@ -8326,14 +8345,14 @@ class Requester extends _connection_handler.ConnectionHandler {
    */
 
 
-  invokeOnce(path, params = {}, maxPermission = _permission.Permission.CONFIG) {
+  invokeOnce(path, params = {}, maxPermission = permission_1.Permission.CONFIG) {
     let node = this.nodeCache.getRemoteNode(path);
 
     let stream = node._invoke(params, this, maxPermission);
 
     return new Promise((resolve, reject) => {
       stream.listen(update => {
-        if (update.streamStatus !== _interfaces.StreamStatus.closed) {
+        if (update.streamStatus !== interfaces_1.StreamStatus.closed) {
           stream.close();
         }
 
@@ -8350,8 +8369,8 @@ class Requester extends _connection_handler.ConnectionHandler {
    */
 
 
-  set(path, value, maxPermission = _permission.Permission.CONFIG) {
-    return new _set.SetController(this, path, value, maxPermission).future;
+  set(path, value, maxPermission = permission_1.Permission.CONFIG) {
+    return new set_1.SetController(this, path, value, maxPermission).future;
   }
   /**
    * Remove an attribute
@@ -8359,7 +8378,7 @@ class Requester extends _connection_handler.ConnectionHandler {
 
 
   remove(path) {
-    return new _remove.RemoveController(this, path).future;
+    return new remove_1.RemoveController(this, path).future;
   } /// close the request from requester side and notify responder
 
   /** @ignore */
@@ -8367,7 +8386,7 @@ class Requester extends _connection_handler.ConnectionHandler {
 
   closeRequest(request) {
     if (this._requests.has(request.rid)) {
-      if (request.streamStatus !== _interfaces.StreamStatus.closed) {
+      if (request.streamStatus !== interfaces_1.StreamStatus.closed) {
         this.addToSendList({
           'method': 'close',
           'rid': request.rid
@@ -8389,8 +8408,8 @@ class Requester extends _connection_handler.ConnectionHandler {
     newRequests.set(0, this._subscription);
 
     for (let [n, req] of this._requests) {
-      if (req.rid <= this.lastRid && !(req.updater instanceof _list.ListController)) {
-        req._close(_interfaces.DSError.DISCONNECTED);
+      if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
+        req._close(interfaces_1.DSError.DISCONNECTED);
       } else {
         newRequests.set(req.rid, req);
         req.updater.onDisconnect();
@@ -8422,18 +8441,17 @@ exports.Requester = Requester;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PassiveChannel = void 0;
 
-var _async = require("../utils/async");
+const async_1 = require("../utils/async");
 
 class PassiveChannel {
   constructor(conn, connected = false) {
-    this.onReceive = new _async.Stream();
+    this.onReceive = new async_1.Stream();
     this._processors = [];
     this._isReady = false;
     this.connected = true;
-    this.onDisconnectController = new _async.Completer();
-    this.onConnectController = new _async.Completer();
+    this.onDisconnectController = new async_1.Completer();
+    this.onConnectController = new async_1.Completer();
     this.conn = conn;
     this.connected = connected;
   }
@@ -8484,28 +8502,189 @@ exports.PassiveChannel = PassiveChannel;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.WebSocketConnection = void 0;
 
-var _interfaces = require("../common/interfaces");
+const interfaces_1 = require("../common/interfaces");
 
-var _connection_channel = require("../common/connection_channel");
+const connection_channel_1 = require("../common/connection_channel");
 
-var _async = require("../utils/async");
+const async_1 = require("../utils/async");
 
-class WebSocketConnection extends _interfaces.Connection {
+class WebSocketConnection extends interfaces_1.Connection {
   /// clientLink is not needed when websocket works in server link
   constructor(socket, clientLink, onConnect, useCodec) {
     super();
-    this._onRequestReadyCompleter = new _async.Completer();
-    this._onDisconnectedCompleter = new _async.Completer();
+    this._onRequestReadyCompleter = new async_1.Completer();
+    this._onDisconnectedCompleter = new async_1.Completer(); /// set to true when data is sent, reset the flag every 20 seconds
+    /// since the previous ping message will cause the next 20 seoncd to have a message
+    /// max interval between 2 ping messages is 40 seconds
+
     this._dataSent = false; /// add this count every 20 seconds, set to 0 when receiving data
     /// when the count is 3, disconnect the link
 
     this._dataReceiveCount = 0;
+
+    this.onPingTimer = () => {
+      if (this._dataReceiveCount >= 3) {
+        close();
+        return;
+      }
+
+      this._dataReceiveCount++;
+
+      if (this._dataSent) {
+        this._dataSent = false;
+        return;
+      }
+
+      this.addConnCommand(null, null);
+    };
+
     this._opened = false;
+
+    this._onOpen = e => {
+      //    logger.info("Connected");
+      this._opened = true;
+
+      if (this.onConnect != null) {
+        this.onConnect();
+      }
+
+      this._responderChannel.updateConnect();
+
+      this._requesterChannel.updateConnect();
+
+      this.socket.send(this.codec.blankData);
+      this.requireSend();
+    };
+
+    this._onData = e => {
+      if (this._onDisconnectedCompleter.isCompleted) {
+        return;
+      }
+
+      if (!this._onRequestReadyCompleter.isCompleted) {
+        this._onRequestReadyCompleter.complete(this._requesterChannel);
+      }
+
+      this._dataReceiveCount = 0;
+      let m;
+
+      if (e.data instanceof ArrayBuffer) {
+        try {
+          let bytes = new Uint8Array(e.data);
+          m = this.codec.decodeBinaryFrame(bytes); //        logger.fine("$m");
+
+          if (typeof m["salt"] === 'string') {
+            this.clientLink.updateSalt(m["salt"]);
+          }
+
+          let needAck = false;
+
+          if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+            needAck = true; // send responses to requester channel
+
+            this._requesterChannel.onReceive.add(m["responses"]);
+          }
+
+          if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+            needAck = true; // send requests to responder channel
+
+            this._responderChannel.onReceive.add(m["requests"]);
+          }
+
+          if (typeof m["ack"] === 'number') {
+            this.ack(m["ack"]);
+          }
+
+          if (needAck) {
+            let msgId = m["msg"];
+
+            if (msgId != null) {
+              this.addConnCommand("ack", msgId);
+            }
+          }
+        } catch (err) {
+          console.error("error in onData", err);
+          this.close();
+          return;
+        }
+      } else if (typeof e.data === 'string') {
+        try {
+          m = this.codec.decodeStringFrame(e.data); //        logger.fine("$m");
+
+          let needAck = false;
+
+          if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+            needAck = true; // send responses to requester channel
+
+            this._requesterChannel.onReceive.add(m["responses"]);
+          }
+
+          if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+            needAck = true; // send requests to responder channel
+
+            this._responderChannel.onReceive.add(m["requests"]);
+          }
+
+          if (typeof m["ack"] === "number") {
+            this.ack(m["ack"]);
+          }
+
+          if (needAck) {
+            let msgId = m["msg"];
+
+            if (msgId != null) {
+              this.addConnCommand("ack", msgId);
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          this.close();
+          return;
+        }
+      }
+    };
+
     this.nextMsgId = 1;
     this._sending = false;
     this._authError = false;
+
+    this._onDone = o => {
+      if (o instanceof CloseEvent) {
+        if (o.code === 1006) {
+          this._authError = true;
+        }
+      } //    logger.fine("socket disconnected");
+
+
+      if (!this._requesterChannel.onReceive.isClosed) {
+        this._requesterChannel.onReceive.close();
+      }
+
+      if (!this._requesterChannel.onDisconnectController.isCompleted) {
+        this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
+      }
+
+      if (!this._responderChannel.onReceive.isClosed) {
+        this._responderChannel.onReceive.close();
+      }
+
+      if (!this._responderChannel.onDisconnectController.isCompleted) {
+        this._responderChannel.onDisconnectController.complete(this._responderChannel);
+      }
+
+      if (!this._onDisconnectedCompleter.isCompleted) {
+        this._onDisconnectedCompleter.complete(this._authError);
+      }
+
+      if (this.pingTimer != null) {
+        clearInterval(this.pingTimer);
+        this.pingTimer = null;
+      }
+
+      this._sending = false;
+    };
+
     this.socket = socket;
     this.clientLink = clientLink;
     this.onConnect = onConnect;
@@ -8515,28 +8694,12 @@ class WebSocketConnection extends _interfaces.Connection {
     }
 
     socket.binaryType = "arraybuffer";
-    this._responderChannel = new _connection_channel.PassiveChannel(this);
-    this._requesterChannel = new _connection_channel.PassiveChannel(this);
-
-    socket.onmessage = event => {
-      this._onData(event);
-    };
-
-    socket.onclose = event => {
-      this._onDone(event);
-    };
-
-    socket.onopen = event => {
-      this._onOpen(event);
-    }; // TODO, when it's used in client link, wait for the server to send {allowed} before complete this
-
-
-    setTimeout(() => {
-      this._onRequestReadyCompleter.complete(this._requesterChannel);
-    }, 0);
-    this.pingTimer = setInterval(() => {
-      this.onPingTimer();
-    }, 20000);
+    this._responderChannel = new connection_channel_1.PassiveChannel(this);
+    this._requesterChannel = new connection_channel_1.PassiveChannel(this);
+    socket.onmessage = this._onData;
+    socket.onclose = this._onDone;
+    socket.onopen = this._onOpen;
+    this.pingTimer = setInterval(this.onPingTimer, 20000);
   }
 
   get responderChannel() {
@@ -8555,22 +8718,6 @@ class WebSocketConnection extends _interfaces.Connection {
     return this._onDisconnectedCompleter.future;
   }
 
-  onPingTimer() {
-    if (this._dataReceiveCount >= 3) {
-      close();
-      return;
-    }
-
-    this._dataReceiveCount++;
-
-    if (this._dataSent) {
-      this._dataSent = false;
-      return;
-    }
-
-    this.addConnCommand(null, null);
-  }
-
   requireSend() {
     if (!this._sending) {
       this._sending = true;
@@ -8582,22 +8729,6 @@ class WebSocketConnection extends _interfaces.Connection {
 
   get opened() {
     return this._opened;
-  }
-
-  _onOpen(e) {
-    //    logger.info("Connected");
-    this._opened = true;
-
-    if (this.onConnect != null) {
-      this.onConnect();
-    }
-
-    this._responderChannel.updateConnect();
-
-    this._requesterChannel.updateConnect();
-
-    this.socket.send(this.codec.blankData);
-    this.requireSend();
   } /// add server command, will be called only when used as server connection
 
 
@@ -8613,88 +8744,11 @@ class WebSocketConnection extends _interfaces.Connection {
     this.requireSend();
   }
 
-  _onData(e) {
-    //    logger.fine("onData:");
-    this._dataReceiveCount = 0;
-    let m;
-
-    if (e.data instanceof ArrayBuffer) {
-      try {
-        let bytes = new Uint8Array(e.data);
-        m = this.codec.decodeBinaryFrame(bytes); //        logger.fine("$m");
-
-        if (typeof m["salt"] === 'string') {
-          this.clientLink.updateSalt(m["salt"]);
-        }
-
-        let needAck = false;
-
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
-          needAck = true; // send responses to requester channel
-
-          this._requesterChannel.onReceive.add(m["responses"]);
-        }
-
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
-          needAck = true; // send requests to responder channel
-
-          this._responderChannel.onReceive.add(m["requests"]);
-        }
-
-        if (typeof m["ack"] === 'number') {
-          this.ack(m["ack"]);
-        }
-
-        if (needAck) {
-          let msgId = m["msg"];
-
-          if (msgId != null) {
-            this.addConnCommand("ack", msgId);
-          }
-        }
-      } catch (err) {
-        console.error("error in onData", err);
-        this.close();
-        return;
-      }
-    } else if (typeof e.data === 'string') {
-      try {
-        m = this.codec.decodeStringFrame(e.data); //        logger.fine("$m");
-
-        let needAck = false;
-
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
-          needAck = true; // send responses to requester channel
-
-          this._requesterChannel.onReceive.add(m["responses"]);
-        }
-
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
-          needAck = true; // send requests to responder channel
-
-          this._responderChannel.onReceive.add(m["requests"]);
-        }
-
-        if (typeof m["ack"] === "number") {
-          this.ack(m["ack"]);
-        }
-
-        if (needAck) {
-          let msgId = m["msg"];
-
-          if (msgId != null) {
-            this.addConnCommand("ack", msgId);
-          }
-        }
-      } catch (err) {
-        console.error(err);
-        this.close();
-        return;
-      }
-    }
-  }
-
   _send() {
+    if (!this._sending) {
+      return;
+    }
+
     this._sending = false;
 
     if (this.socket.readyState !== WebSocket.OPEN) {
@@ -8745,7 +8799,7 @@ class WebSocketConnection extends _interfaces.Connection {
     if (needSend) {
       if (this.nextMsgId !== -1) {
         if (pendingAck.length > 0) {
-          this.pendingAcks.push(new _interfaces.ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
+          this.pendingAcks.push(new interfaces_1.ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
 
         m["msg"] = this.nextMsgId;
@@ -8771,40 +8825,6 @@ class WebSocketConnection extends _interfaces.Connection {
     }
   }
 
-  _onDone(o) {
-    if (o instanceof CloseEvent) {
-      if (o.code === 1006) {
-        this._authError = true;
-      }
-    } //    logger.fine("socket disconnected");
-
-
-    if (!this._requesterChannel.onReceive.isClosed) {
-      this._requesterChannel.onReceive.close();
-    }
-
-    if (!this._requesterChannel.onDisconnectController.isCompleted) {
-      this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
-    }
-
-    if (!this._responderChannel.onReceive.isClosed) {
-      this._responderChannel.onReceive.close();
-    }
-
-    if (!this._responderChannel.onDisconnectController.isCompleted) {
-      this._responderChannel.onDisconnectController.complete(this._responderChannel);
-    }
-
-    if (!this._onDisconnectedCompleter.isCompleted) {
-      this._onDisconnectedCompleter.complete(this._authError);
-    }
-
-    if (this.pingTimer != null) {
-      clearInterval(this.pingTimer);
-      this.pingTimer = null;
-    }
-  }
-
   close() {
     if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
       this.socket.close();
@@ -8821,48 +8841,29 @@ exports.WebSocketConnection = WebSocketConnection;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-});
-exports.BrowserUserLink = void 0;
+}); /// a client link for both http and ws
 
-var _interfaces = require("../common/interfaces");
+const interfaces_1 = require("../common/interfaces");
 
-var _async = require("../utils/async");
+const async_1 = require("../utils/async");
 
-var _requester = require("../requester/requester");
+const requester_1 = require("../requester/requester");
 
-var _browser_ws_conn = require("./browser_ws_conn");
+const browser_ws_conn_1 = require("./browser_ws_conn");
 
-var _codec = require("../utils/codec");
+const codec_1 = require("../utils/codec");
 
-/// a client link for both http and ws
-
-/** @ignore */
-class DummyECDH {
-  constructor() {
-    this.encodedPublicKey = "";
-  }
-
-  hashSalt(salt) {
-    return '';
-  }
-
-  verifySalt(salt, hash) {
-    return true;
-  }
-
-}
-
-class BrowserUserLink extends _interfaces.ClientLink {
+class BrowserUserLink extends interfaces_1.ClientLink {
   constructor(wsUpdateUri, format = 'msgpack') {
     super();
     /** @ignore */
 
-    this._onRequesterReadyCompleter = new _async.Completer();
-    this.requester = new _requester.Requester(); //  readonly responder: Responder;
+    this._onRequesterReadyCompleter = new async_1.Completer();
+    this.requester = new requester_1.Requester(); //  readonly responder: Responder;
 
     /** @ignore */
 
-    this.nonce = new DummyECDH();
+    this.nonce = new interfaces_1.DummyECDH();
     /** @ignore */
 
     this._wsDelay = 1;
@@ -8890,6 +8891,7 @@ class BrowserUserLink extends _interfaces.ClientLink {
 
   connect() {
     this.initWebsocket(false);
+    return this.onRequesterReady;
   }
   /** @ignore */
 
@@ -8904,7 +8906,7 @@ class BrowserUserLink extends _interfaces.ClientLink {
   initWebsocket(reconnect = true) {
     this._initSocketTimer = null;
     let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-    this._wsConnection = new _browser_ws_conn.WebSocketConnection(socket, this, null, _codec.DsCodec.getCodec(this.format)); // if (this.responder != null) {
+    this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format)); // if (this.responder != null) {
     //   this.responder.connection = this._wsConnection.responderChannel;
     // }
 
@@ -8961,23 +8963,21 @@ class BrowserUserLink extends _interfaces.ClientLink {
 /** @ignore */
 
 
-exports.BrowserUserLink = BrowserUserLink;
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
+exports.BrowserUserLink = BrowserUserLink;
 },{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser_ws_conn":"3FSK","../utils/codec":"TRmg"}],"txRo":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DSLink = void 0;
 
-var _browser_user_link = require("./src/browser/browser_user_link");
+const browser_user_link_1 = require("./src/browser/browser_user_link");
 
 if (Object.isExtensible(window)) {
-  window.DSLink = _browser_user_link.BrowserUserLink;
+  window.DSLink = browser_user_link_1.BrowserUserLink;
 }
 
-const DSLink = _browser_user_link.BrowserUserLink;
-exports.DSLink = DSLink;
+exports.DSLink = browser_user_link_1.BrowserUserLink;
 },{"./src/browser/browser_user_link":"0BdU"}]},{},["txRo"], null)
-//# sourceMappingURL=/web.map
+//# sourceMappingURL=/web.js.map
