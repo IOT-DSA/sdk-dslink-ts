@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 get;
 listChangeController();
 BroadcastStreamController < string > {
-    if() { }, : ._listChangeController == null
+    : ._listChangeController == null
 };
 {
     _listChangeController = new BroadcastStreamController(() => {

@@ -64,7 +64,6 @@ DEBUG_MODE;
     return this._DEBUG_MODE;
 }
 class DSLogUtils {
-    static withLoggerName(name, handler) { }
 }
 exports.DSLogUtils = DSLogUtils;
 ();
@@ -242,7 +241,6 @@ get;
 inMilliseconds => duration.inMilliseconds;
 void dispose();
 class FunctionDisposable extends Disposable {
-    FunctionDisposable() { }
 }
 exports.FunctionDisposable = FunctionDisposable;
 function () { }

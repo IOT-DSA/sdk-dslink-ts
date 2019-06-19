@@ -32,7 +32,6 @@ Stream < string > {
 };
 /// Helpers for working with HTTP
 class HttpHelper {
-    createRequest(method, url, {}, { [key]: string }) { }
 }
 /// Main HTTP Client
 HttpHelper.client = new HttpClient();

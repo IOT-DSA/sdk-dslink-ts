@@ -12,7 +12,6 @@ Promise < ByteData > IconResolver(name, string);
 /// A simple table result.
 /// This is used to return simple tables from an action.
 class SimpleTableResult {
-    SimpleTableResult([], rows, columns) { }
     ;
 }
 exports.SimpleTableResult = SimpleTableResult;
@@ -23,7 +22,6 @@ class AsyncTableResult {
         /// Stream Status
         this.status = StreamStatus.open;
     }
-    AsyncTableResult([], columns) { }
     ;
     /// Updates table rows to [rows].
     /// [stat] is the stream status.

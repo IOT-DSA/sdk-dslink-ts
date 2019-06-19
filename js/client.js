@@ -49,26 +49,6 @@ class LinkProvider {
         /// Save Private Key?
         this.savePrivateKey = false;
     }
-    /// Create a Link Provider.
-    /// [args] are the command-line arguments to pass in.
-    /// [prefix] is the link name.
-    /// [isRequester] specifies if you are a requester or not.
-    /// [isResponder] specifies if you a responder or not.
-    /// [command] is the command name for this link.
-    /// Both [defaultNodes] and [nodes] specify the default nodes to initialize if a nodes.json is not present.
-    /// [profiles] specify the profiles for this link.
-    /// [provider] is a node provider. If it is not specified, one will be created for you.
-    /// [enableHttp] toggles whether to enable HTTP fallbacks.
-    /// [encodePrettyJson] specifies whether to encode pretty JSON files when writing the nodes.json
-    /// [autoInitialize] specifies whether to initialize the link inside the constructor.
-    /// [strictOptions] toggles allowing trailing options in the argument parser.
-    /// [exitOnFailure] toggles exiting when the link fails.
-    /// [loadNodesJson] specifies whether to load the nodes.json file or not.
-    /// [strictTls] specifies if a link to a secure broker should fail, if the TLS Certificate is bad.
-    /// [defaultLogLevel] specifies the default log level.
-    /// [nodeProvider] is the same as [provider]. It is provided for backwards compatibility.
-    /// [commandLineOptions] specifies a map of an option name to a default value, for use in expanding the command parameters.
-    LinkProvider(args, prefix, { this: , isRequester: , false: , this: , command: , "link": , this: , isResponder: , true: , this: , defaultNodes, let, nodes: { [key]: string } }) { }
 }
 exports.LinkProvider = LinkProvider;
 this.profiles,

@@ -43,7 +43,6 @@ class LocalDataStorage extends DataStorage {
         super(...arguments);
         this.INSTANCE = new LocalDataStorage();
     }
-    get(key) { }
 }
 __decorate([
     override

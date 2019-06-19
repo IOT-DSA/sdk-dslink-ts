@@ -46,9 +46,6 @@ typedef;
 ActionFunction(params, { [key]: string, dynamic });
 /// A Simple Action Node
 class SimpleActionNode extends SimpleNode {
-    /// When this action is invoked, the given [function] will be called with the parameters
-    /// and then the result of the function will be returned.
-    SimpleActionNode(path) { }
 }
 exports.SimpleActionNode = SimpleActionNode;
 function () { }
@@ -62,7 +59,6 @@ class SingleNodeProvider extends NodeProvider {
         super(...arguments);
         this.permissions = new DummyPermissionManager();
     }
-    getNode(path) { }
     createResponder(dsId, sessionId) {
         return new Responder(this, dsId);
     }
@@ -229,7 +225,6 @@ getOrCreateNode(path, string, [addToTree, boolean = true, init, boolean = true])
 getNode(path);
 /// A Simple Node which delegates all basic methods to given functions.
 class CallbackNode extends SimpleNode {
-    CallbackNode(path, { provider: SimpleNodeProvider, this: , onActionInvoke, let, onChildAdded: ChildChangedCallback, let, onChildRemoved: ChildChangedCallback, let, onCreated: SimpleCallback, let, onRemoving: SimpleCallback, let, onLoadChild: LoadChildCallback, let, onSubscribe: SimpleCallback, let, onValueSet: ValueCallback }, , boolean) { }
 }
 exports.CallbackNode = CallbackNode;
  > ,

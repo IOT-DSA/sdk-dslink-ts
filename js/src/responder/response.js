@@ -7,7 +7,6 @@ class Response {
         /// close the response now, no need to send more response update
     }
     get sentStreamStatus() { return this._sentStreamStatus; }
-    Response(responder, rid, [], type = null) { }
     ;
     /// close the request from responder side and also notify the requester
     close(err = null) {

@@ -20,7 +20,6 @@ class DsTimer {
     static millisecondsSinceEpoch() {
         return new DateTime.now().millisecondsSinceEpoch;
     }
-    waitAndRun(time, action) { }
 }
 exports.DsTimer = DsTimer;
 ();
