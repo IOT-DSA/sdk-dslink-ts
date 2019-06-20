@@ -647,7 +647,7 @@ export class LinkProvider  {
   }
 
   /// Handles deserialization of node data.
-  void onNodesDeserialized(json: object) {}
+  onNodesDeserialized(json: object) {}
 
   _initialized: boolean = false;
   _ready: boolean = false;
@@ -693,7 +693,7 @@ export class LinkProvider  {
   }
 
   /// An alias to [close].
-  void stop() => close();
+  stop() => close();
 
   /// Checks if the link object is null.
   boolean get didInitializationFail => link == null;

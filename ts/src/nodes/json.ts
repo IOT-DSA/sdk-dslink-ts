@@ -18,11 +18,11 @@ export class DsaJsonNode  extends SimpleNode {
 
       let type: string = this._guessType(input);
 
-      let lastType: string = configs[r"$type"];
+      let lastType: string = configs["$type"];
 
       if (lastType != type) {
-        configs[r"$type"] = type;
-        updateList(r"$type");
+        configs["$type"] = type;
+        updateList("$type");
       }
 
       return;
@@ -43,7 +43,7 @@ export class DsaJsonNode  extends SimpleNode {
           "${node.path}/${name}",
           buildNodeMap(diff.added[key])
         );
-        node.updateList(r"$is");
+        node.updateList("$is");
       }
 
       for (string key in diff.removed) {
@@ -121,7 +121,7 @@ export class DsaJsonNode  extends SimpleNode {
     create(value):object {
       if ( (value != null && value instanceof Object) ) {
         var m = <string, dynamic>{
-          r"$is": "json"
+          "$is": "json"
         };
 
         for (string key in value) {
@@ -137,8 +137,8 @@ export class DsaJsonNode  extends SimpleNode {
         return m;
       } else {
         return {
-          r"$is": "json",
-          r"$type": _guessType(value),
+          "$is": "json",
+          "$type": _guessType(value),
           "?_json": value
         };
       }

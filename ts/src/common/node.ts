@@ -38,8 +38,8 @@ export class Node {
   /// Node Configs
   configs: Map<string, any> = new Map();
 
-  constructor() {
-    this.configs.set('$is', 'node');
+  constructor(profileName: string = 'node') {
+    this.configs.set('$is', profileName);
   }
 
   /// Get a Config
@@ -143,8 +143,8 @@ export class Node {
 
   /// Gets a map for the data that will be listed in the parent node's children property.
   /** @ignore */
-  getSimpleMap(): { [key: string]: any } {
-    let rslt: { [key: string]: any } = {};
+  getSimpleMap(): {[key: string]: any} {
+    let rslt: {[key: string]: any} = {};
     if (this.configs.has('$is')) {
       rslt['$is'] = this.configs.get('$is');
     }
@@ -274,6 +274,7 @@ export class Path {
     this.path = path;
     this._parse();
   }
+
   /** @ignore */
   _parse() {
     if (this.path === '' || Path.invalidChar.test(this.path) || this.path.includes('//')) {

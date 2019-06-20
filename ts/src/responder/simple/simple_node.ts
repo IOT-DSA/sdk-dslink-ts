@@ -226,25 +226,25 @@ export class LiveTableRow  {
 /// Interface for node providers that are serializable.
 export interface SerializableNodeProvider {
   /// Initialize the node provider.
-  void init([{[key: string]: dynamic} m, {[key: string]: NodeFactory} profiles]);
+  init([{[key: string]: dynamic} m, {[key: string]: NodeFactory} profiles]);
 
   /// Save the node provider to a map.
   object save();
 
   /// Persist the node provider.
-  void persist([now: boolean = false]);
+  persist([now: boolean = false]);
 }
 
 /// Interface for node providers that are mutable.
 export interface MutableNodeProvider {
   /// Updates the value of the node at [path] to the given [value].
-  void updateValue(path: string, value: object);
+  updateValue(path: string, value: object);
   /// Adds a node at the given [path] that is initialized with the given data in [m].
   LocalNode addNode(path: string, object m);
   /// Removes the node specified at [path].
-  void removeNode(path: string);
+  removeNode(path: string);
   // Add a profile to the node provider.
-  void addProfile(name: string, factory: NodeFactory);
+  addProfile(name: string, factory: NodeFactory);
 }
 
 export class SysGetIconNode  extends SimpleNode {
@@ -253,20 +253,20 @@ export class SysGetIconNode  extends SimpleNode {
     provider
   ) {
     configs.addAll({
-      r"$invokable": "read",
-      r"$params": [
+      "$invokable": "read",
+      "$params": [
         {
           "name": "Icon",
           "type": "string"
         }
       ],
-      r"$columns": [
+      "$columns": [
         {
           "name": "Data",
           "type": "binary"
         }
       ],
-      r"$result": "table"
+      "$result": "table"
     });
   }
 
@@ -345,7 +345,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
           if (parent != null && !parent.children.hasOwnProperty(po.name)) {
             parent.addChild(po.name, node);
             parent.listChangeController.add(po.name);
-            node.listChangeController.add(r"$is");
+            node.listChangeController.add("$is");
           }
         }
 
@@ -558,7 +558,7 @@ export class SimpleNodeProvider  extends NodeProviderImpl
     }
 
     if (node == null) {
-      let profile: string = m[r'$is'];
+      let profile: string = m['$is'];
       if ( this._profiles.hasOwnProperty(profile)) {
         node = _profiles[profile](path);
       } else {
@@ -600,10 +600,10 @@ export class SimpleNodeProvider  extends NodeProviderImpl
       pnode.updateList(p.name);
     }
 
-    node.updateList(r"$is");
+    node.updateList("$is");
 
     if (oldNode != null) {
-      oldNode.updateList(r"$is");
+      oldNode.updateList("$is");
     }
 
     return node;
@@ -778,8 +778,8 @@ export class SimpleNode  extends LocalNodeImpl {
         if (key == '?value') {
           updateValue(value);
         }
-      } else if (key.startsWith(r'$')) {
-        if ( this._encryptEngine != null && key.startsWith(r'$$') && typeof value === 'string' ) {
+      } else if (key.startsWith('$')) {
+        if ( this._encryptEngine != null && key.startsWith('$$') && typeof value === 'string' ) {
           configs[key] = decryptString(value);
         } else {
           configs[key] = value;
@@ -799,7 +799,7 @@ export class SimpleNode  extends LocalNodeImpl {
   save():object {
     rslt: object = {};
     configs.forEach((str, val) {
-      if ( this._encryptEngine != null && typeof val === 'string' && str.startsWith(r'$$') && str.endsWith('password')) {
+      if ( this._encryptEngine != null && typeof val === 'string' && str.startsWith('$$') && str.endsWith('password')) {
         rslt[str] = encryptString(val);
       } else {
         rslt[str] = val;
@@ -844,8 +844,8 @@ export class SimpleNode  extends LocalNodeImpl {
     }
 
     var rtype = "values";
-    if (configs.hasOwnProperty(r"$result")) {
-      rtype = configs[r"$result"];
+    if (configs.hasOwnProperty("$result")) {
+      rtype = configs["$result"];
     }
 
     if (rslt == null) {
@@ -1094,23 +1094,23 @@ export class SimpleNode  extends LocalNodeImpl {
   boolean onSetAttribute(name: string, value: object) => false;
 
   // Callback used to notify a node that it is being subscribed to.
-  void onSubscribe() {}
+  onSubscribe() {}
 
   // Callback used to notify a node that a subscribe has unsubscribed.
-  void onUnsubscribe() {}
+  onUnsubscribe() {}
 
   /// Callback used to notify a node that it was created.
   /// This is called after a node is deserialized as well.
-  void onCreated() {}
+  onCreated() {}
 
   /// Callback used to notify a node that it is about to be removed.
-  void onRemoving() {}
+  onRemoving() {}
 
   /// Callback used to notify a node that one of it's children has been removed.
-  void onChildRemoved(name: string, node: Node) {}
+  onChildRemoved(name: string, node: Node) {}
 
   /// Callback used to notify a node that a child has been added to it.
-  void onChildAdded(name: string, node: Node) {}
+  onChildAdded(name: string, node: Node) {}
 
   @override
   subscribe(callback: ValueUpdateCallback, qos:number = 0):RespSubscribeListener {
@@ -1143,61 +1143,61 @@ export class SimpleNode  extends LocalNodeImpl {
 
   /// Gets the current display name of this node.
   /// This is the $name config. If it does not exist, then null is returned.
-  string get displayName => configs[r"$name"];
+  string get displayName => configs["$name"];
 
   /// Sets the display name of this node.
   /// This is the $name config. If this is set to null, then the display name is removed.
   set displayName(value: string) {
     if (value == null) {
-      configs.remove(r"$name");
+      configs.remove("$name");
     } else {
-      configs[r"$name"] = value;
+      configs["$name"] = value;
     }
 
-    updateList(r"$name");
+    updateList("$name");
   }
 
   /// Gets the current value type of this node.
   /// This is the $type config. If it does not exist, then null is returned.
-  string get type => configs[r"$type"];
+  string get type => configs["$type"];
 
   /// Sets the value type of this node.
   /// This is the $type config. If this is set to null, then the value type is removed.
   set type(value: string) {
     if (value == null) {
-      configs.remove(r"$type");
+      configs.remove("$type");
     } else {
-      configs[r"$type"] = value;
+      configs["$type"] = value;
     }
 
-    updateList(r"$type");
+    updateList("$type");
   }
 
   /// Gets the current value of the $writable config.
   /// If it does not exist, then null is returned.
-  string get writable => configs[r"$writable"];
+  string get writable => configs["$writable"];
 
   /// Sets the value of the writable config.
   /// If this is set to null, then the writable config is removed.
   set writable(value) {
     if (value == null) {
-      configs.remove(r"$writable");
+      configs.remove("$writable");
     } else if ( value instanceof boolean ) {
       if (value) {
-        configs[r"$writable"] = "write";
+        configs["$writable"] = "write";
       } else {
-        configs.remove(r"$writable");
+        configs.remove("$writable");
       }
     } else {
-      configs[r"$writable"] = value.toString();
+      configs["$writable"] = value.toString();
     }
 
-    updateList(r"$writable");
+    updateList("$writable");
   }
 
   /// Checks if this node has the specified config.
   boolean hasConfig(name: string) => configs.hasOwnProperty(
-      name.startsWith(r"$") ? name : '\$' + name
+      name.startsWith("$") ? name : '\$' + name
   );
 
   /// Checks if this node has the specified attribute.
@@ -1274,8 +1274,8 @@ export class SimpleNode  extends LocalNodeImpl {
   operator [](name: string) => get(name);
 
   operator []=(name: string, value) {
-    if (name.startsWith(r"$") || name.startsWith(r"@")) {
-      if (name.startsWith(r"$")) {
+    if (name.startsWith("$") || name.startsWith(r"@")) {
+      if (name.startsWith("$")) {
         configs[name] = value;
       } else {
         attributes[name] = value;
@@ -1296,33 +1296,33 @@ export class SimpleNode  extends LocalNodeImpl {
 /// A hidden node.
 export class SimpleHiddenNode  extends SimpleNode {
   SimpleHiddenNode(path: string, provider: SimpleNodeProvider) : super(path, provider) {
-    configs[r'$hidden'] = true;
+    configs['$hidden'] = true;
   }
 
   @override
   getSimpleMap():{[key: string]: dynamic} {
     var rslt = <string, dynamic>{
-      r'$hidden': true
+      '$hidden': true
     };
 
-    if (configs.hasOwnProperty(r'$is')) {
-      rslt[r'$is'] = configs[r'$is'];
+    if (configs.hasOwnProperty('$is')) {
+      rslt['$is'] = configs['$is'];
     }
 
-    if (configs.hasOwnProperty(r'$type')) {
-      rslt[r'$type'] = configs[r'$type'];
+    if (configs.hasOwnProperty('$type')) {
+      rslt['$type'] = configs['$type'];
     }
 
-    if (configs.hasOwnProperty(r'$name')) {
-      rslt[r'$name'] = configs[r'$name'];
+    if (configs.hasOwnProperty('$name')) {
+      rslt['$name'] = configs['$name'];
     }
 
-    if (configs.hasOwnProperty(r'$invokable')) {
-      rslt[r'$invokable'] = configs[r'$invokable'];
+    if (configs.hasOwnProperty('$invokable')) {
+      rslt['$invokable'] = configs['$invokable'];
     }
 
-    if (configs.hasOwnProperty(r'$writable')) {
-      rslt[r'$writable'] = configs[r'$writable'];
+    if (configs.hasOwnProperty('$writable')) {
+      rslt['$writable'] = configs['$writable'];
     }
     return rslt;
   }

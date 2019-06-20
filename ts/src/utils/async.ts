@@ -71,6 +71,10 @@ export class Stream<T> {
     }
   }
 
+  hasListener() {
+    return this._listeners.size !== 0;
+  }
+
   isClosed = false;
 
   close() {

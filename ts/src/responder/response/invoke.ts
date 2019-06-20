@@ -39,8 +39,8 @@ export class InvokeResponse  extends Response {
       if (columns == null &&
         autoSendColumns &&
         node != null &&
-        Array.isArray(node.configs[r"$columns"])) {
-        columns = node.configs[r"$columns"];
+        Array.isArray(node.configs["$columns"])) {
+        columns = node.configs["$columns"];
       }
     }
 

@@ -9,7 +9,7 @@ export class DefinitionNode  extends LocalNodeImpl {
   readonly provider: NodeProvider;
 
   DefinitionNode(path: string, this.provider) : super(path) {
-    this.configs[r"$is"] = "static";
+    this.configs["$is"] = "static";
   }
 
   _invokeCallback: InvokeCallback;

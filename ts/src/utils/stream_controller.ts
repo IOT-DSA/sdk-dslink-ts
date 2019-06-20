@@ -9,9 +9,9 @@ class BroadcastStreamController<T> implements StreamController<T> {
   onAllCancel: Function;
 
   BroadcastStreamController([
-    void onStartListen(),
-    void onAllCancel(),
-    void onListen(callback(value: T)),
+    onStartListen(),
+    onAllCancel(),
+    onListen(callback(value: T)),
     sync: boolean = false
   ]) {
     _controller = new StreamController<T>(sync: sync);
@@ -118,7 +118,7 @@ class CachedStreamWrapper<T> extends Stream<T> {
   @override
   Stream<T> asBroadcastStream(
       {void onListen(subscription: StreamSubscription<T>),
-      void onCancel(subscription: StreamSubscription<T>)}) {
+      onCancel(subscription: StreamSubscription<T>)}) {
     return this;
   }
 
@@ -126,9 +126,9 @@ class CachedStreamWrapper<T> extends Stream<T> {
 
   @override
   StreamSubscription<T> listen(
-    void onData(event: T), {
+    onData(event: T), {
     onError: Function,
-    void onDone(),
+    onDone(),
     boolean cancelOnError}) {
     if ( this._onListen != null) {
       _onListen(onData);

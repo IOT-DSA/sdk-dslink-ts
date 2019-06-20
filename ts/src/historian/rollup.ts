@@ -3,9 +3,9 @@
 export interface Rollup {
   value:dynamic;
 
-  void add(dynamic input);
+  add(dynamic input);
 
-  void reset();
+  reset();
 }
 
 export class FirstRollup  extends Rollup {

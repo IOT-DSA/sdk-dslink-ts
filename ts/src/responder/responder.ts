@@ -1,58 +1,28 @@
-// part of dslink.responder;
-
 /// a responder for one connection
 import {ConnectionHandler} from "../common/connection_handler";
+import {Permission} from "../common/permission";
+import {SubscribeResponse} from "./response/subscribe";
+import {NodeProvider} from "./node_state";
+import {Response} from "./response";
 
 export class Responder  extends ConnectionHandler {
   /// reqId can be a dsId or a user name
   reqId: string;
 
-  maxCacheLength:number = ConnectionProcessor.defaultCacheSize;
+  // maxCacheLength:number = ConnectionProcessor.defaultCacheSize;
 
-  storage: ISubscriptionResponderStorage;
-  
+  // storage: ISubscriptionResponderStorage;
+
   /// max permisison of the remote requester, this requester won't be able to do anything with higher
   /// permission even when other permission setting allows it to.
   /// This feature allows reverse proxy to override the permission for each connection with url parameter 
-  maxPermission:number = Permission.CONFIG;
+  maxPermission: number = Permission.CONFIG;
 
-  initStorage(ISubscriptionResponderStorage s, nodes: ISubscriptionNodeStorage[]) {
-    if (storage != null) {
-      storage.destroy();
-    }
-    storage = s;
-    if (storage != null && nodes != null) {
-      for (ISubscriptionNodeStorage node of nodes) {
-        var values = node.getLoadedValues();
-        let localnode: LocalNode = nodeProvider.getOrCreateNode(node.path, false);
-        let controller: RespSubscribeController = this._subscription.add(
-          node.path,
-          localnode,
-          -1,
-          node.qos
-        );
-        if (values.isNotEmpty) {
-          controller.resetCache(values);
-        }
-      }
-    }
-  }
 
-  /// list of permission group
-  groups: string[] = [];
-  updateGroups(vals: string[], ignoreId: boolean = false) {
-    if (ignoreId) {
-      groups = vals.where((str)=>str != '').toList();
-    } else {
-      groups = [reqId]..addAll(vals.where((str)=>str != ''));
-    }
-   
-  }
-
-  readonly _responses: object<int, Response> = new object<int, Response>();
+  readonly _responses: Map<number, Response> = new Map<number, Response>();
 
   get openResponseCount(): number {
-    return this._responses.length;
+    return this._responses.size;
   }
 
   get subscriptionCount(): number {
@@ -64,13 +34,12 @@ export class Responder  extends ConnectionHandler {
   /// caching of nodes
   readonly nodeProvider: NodeProvider;
 
-  Responder(this.nodeProvider, [this.reqId]) {
-    _subscription = new SubscribeResponse(this, 0);
-    _responses[0] = this._subscription;
-    // TODO: load reqId
-    if (reqId != null) {
-      groups = [reqId];
-    }
+  constructor(nodeProvider: NodeProvider) {
+    super();
+    this.nodeProvider = nodeProvider;
+    this._subscription = new SubscribeResponse(this, 0);
+    this._responses.set(0, this._subscription);
+
   }
 
   addResponse(response: Response, path: Path = null, parameters: object = null):Response {
@@ -93,7 +62,7 @@ export class Responder  extends ConnectionHandler {
     return response;
   }
 
-  void traceResponseRemoved(response: Response){
+   traceResponseRemoved(response: Response){
     update: ResponseTrace = response.getTraceData('-');
     for (ResponseTraceCallback callback of _traceCallbacks) {
       callback(update);
@@ -101,27 +70,28 @@ export class Responder  extends ConnectionHandler {
   }
 
   disabled: boolean = false;
-  onData(list: List) {
-    if (disabled){
+
+  onData(list: any[]) {
+    if (this.disabled) {
       return;
     }
-    for (object resp of list) {
-      if ( (resp != null && resp instanceof Object) ) {
-        _onReceiveRequest(resp);
+    for (let resp of list) {
+      if (resp && resp instanceof Object) {
+        this._onReceiveRequest(resp);
       }
     }
   }
 
-  _onReceiveRequest(object m) {
-    method: object = m['method'];
-    if (m['rid'] is int) {
+  _onReceiveRequest(m: any) {
+    let method = m['method'];
+    if (typeof m['rid'] === 'number') {
       if (method == null) {
-        updateInvoke(m);
+        this.updateInvoke(m);
         return;
       } else {
-        if ( this._responses.hasOwnProperty(m['rid'])) {
-          if (method == 'close') {
-            close(m);
+        if (this._responses.hasOwnProperty(m['rid'])) {
+          if (method === 'close') {
+            this.close(m);
           }
           // when rid is invalid, nothing needs to be sent back
           return;
@@ -129,22 +99,22 @@ export class Responder  extends ConnectionHandler {
 
         switch (method) {
           case 'list':
-            list(m);
+            this.list(m);
             return;
           case 'subscribe':
-            subscribe(m);
+            this.ubscribe(m);
             return;
           case 'unsubscribe':
-            unsubscribe(m);
+            this.unsubscribe(m);
             return;
           case 'invoke':
-            invoke(m);
+            this.invoke(m);
             return;
           case 'set':
-            set(m);
+            this.set(m);
             return;
           case 'remove':
-            remove(m);
+            this.remove(m);
             return;
         }
       }
@@ -153,7 +123,7 @@ export class Responder  extends ConnectionHandler {
   }
 
   /// close the response from responder side and notify requester
-  closeResponse(rid:number, {response: Response, DSError error}) {
+  closeResponse(rid:number, response: Response, error?:DSError ) {
     if (response != null) {
       if (_responses[response.rid] != response) {
         // this response is no longer valid
@@ -170,12 +140,13 @@ export class Responder  extends ConnectionHandler {
     addToSendList(m);
   }
 
-  void updateResponse(response: Response, updates: List,
-      {
-        let streamStatus: string,
-        let columns: dynamic[],
-        let meta: object,
-        void handleMap(object m)}) {
+  updateResponse(response: Response, updates: any[],
+                 options?: {
+                   streamStatus?: string,
+                   columns?: any[],
+                   meta?: object,
+                  // handleMap?: (object m)=>void
+                 }) {
     if (_responses[response.rid] == response) {
       object m = {'rid': response.rid};
       if (streamStatus != null && streamStatus != response._sentStreamStatus) {
@@ -254,7 +225,7 @@ export class Responder  extends ConnectionHandler {
 
         if (path != null && path.isAbsolute) {
           _getNode(path, (node: LocalNode) {
-            _subscription.add(path.path, node, sid, qos);
+           this._subscription.add(path.path, node, sid, qos);
             closeResponse(m['rid']);
           }, (e, stack) {
             var error = new DSError(
@@ -304,7 +275,7 @@ export class Responder  extends ConnectionHandler {
     if (Array.isArray(m['sids'])) {
       for (object sid of m['sids']) {
         if ( typeof sid === 'number' ) {
-          _subscription.remove(sid);
+         this._subscription.remove(sid);
         }
       }
       closeResponse(m['rid']);
@@ -538,25 +509,5 @@ export class Responder  extends ConnectionHandler {
 
   onReconnected() {
     super.onReconnected();
-  }
-
-  _traceCallbacks: ResponseTraceCallback[];
-
-  addTraceCallback(_traceCallback: ResponseTraceCallback) {
-    _subscription.addTraceCallback( this._traceCallback);
-    _responses.forEach((rid:number, response: Response){
-      _traceCallback(response.getTraceData());
-    });
-
-    if ( this._traceCallbacks == null) _traceCallbacks = new ResponseTraceCallback[]();
-
-    _traceCallbacks.add( this._traceCallback);
-  }
-
-  removeTraceCallback(_traceCallback: ResponseTraceCallback) {
-    _traceCallbacks.remove( this._traceCallback);
-    if ( this._traceCallbacks.isEmpty) {
-      _traceCallbacks = null;
-    }
   }
 }

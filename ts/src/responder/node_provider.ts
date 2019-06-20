@@ -1,49 +1,50 @@
-// part of dslink.responder;
+import {Node} from "../common/node";
+import {Stream} from "../utils/async";
+import {NodeProvider} from "../common/interfaces";
 
 /// Base Class for responder-side nodes.
-export interface LocalNode extends Node {
-  _listChangeController: BroadcastStreamController<string>;
+export abstract class LocalNode extends Node {
+  _listChangeController: Stream<string>;
 
   /// Changes to nodes will be added to this controller's stream.
   /// See [updateList].
-  get listChangeController(): BroadcastStreamController<string> {
-    if ( this._listChangeController == null) {
-      _listChangeController = new BroadcastStreamController<string>(
-        () {
-          onStartListListen();
-        }, () {
-          onAllListCancel();
-        }, null, true);
+  get listStream() {
+    if (this._listChangeController === null) {
+      this._listChangeController = new Stream<string>(
+        () => {
+          this.onStartListListen();
+        }, () => {
+          this.onAllListCancel();
+        });
     }
     return this._listChangeController;
   }
 
-  overrideListChangeController(controller: BroadcastStreamController<string>) {
-    _listChangeController = controller;
+  /// Callback for when listing this node has started.
+  onStartListListen(): void {
   }
 
-  /// List Stream.
-  /// See [listChangeController].
-  Stream<string> get listStream => listChangeController.stream;
-
-  /// Callback for when listing this node has started.
-  void onStartListListen() {}
-
   /// Callback for when all lists are canceled.
-  void onAllListCancel() {}
+  onAllListCancel(): void {
+  }
 
-  boolean get _hasListListener => _listChangeController?.hasListener ?? false;
+  _hasListListener() {
+    return this._listChangeController && this._listChangeController.hasListener;
+  }
 
   /// Node Provider
-  provider:NodeProvider;
+  provider: NodeProvider;
 
   /// Node Path
   readonly path: string;
 
-  LocalNode(this.path);
+  constructor(path: string) {
+    super();
+    this.path = path;
+  }
 
   /// Subscription Callbacks
-  callbacks: object<ValueUpdateCallback, int> = new object<ValueUpdateCallback, int>();
+  callbacks: Map<ValueUpdateCallback, number> = new Map<ValueUpdateCallback, number>();
 
   /// Subscribes the given [callback] to this node.
   RespSubscribeListener subscribe(callback(update: ValueUpdate), [qos:number = 0]) {
@@ -115,7 +116,7 @@ export interface LocalNode extends Node {
   get disconnected(): string { return null;}
   getDisconnectedListResponse():List {
     return [
-      [r'$disconnectedTs', disconnected]
+      ['$disconnectedTs', disconnected]
     ];
   }
 
@@ -127,12 +128,12 @@ export interface LocalNode extends Node {
 
   /// Gets the invoke permission for this node.
   getInvokePermission():number {
-    return Permission.parse(getConfig(r'$invokable'));
+    return Permission.parse(getConfig('$invokable'));
   }
 
   /// Gets the set permission for this node.
   getSetPermission():number {
-    return Permission.parse(getConfig(r'$writable'));
+    return Permission.parse(getConfig('$writable'));
   }
 
   /// Called by the link internals to invoke this node.
@@ -190,7 +191,7 @@ export interface LocalNode extends Node {
     if (response != null) {
       return response..close();
     } else {
-      if (!name.startsWith(r"$")) {
+      if (!name.startsWith("$")) {
         name = "\$${name}";
       }
 
@@ -205,7 +206,7 @@ export interface LocalNode extends Node {
     if (response != null) {
       return response..close();
     } else {
-      if (!name.startsWith(r"$")) {
+      if (!name.startsWith("$")) {
         name = "\$${name}";
       }
       configs.remove(name);
@@ -227,7 +228,7 @@ export interface LocalNode extends Node {
 
   /// Set a config, attribute, or child on this node.
   operator []=(name: string, value: object) {
-    if (name.startsWith(r"$")) {
+    if (name.startsWith("$")) {
       configs[name] = value;
     } else if (name.startsWith(r"@")) {
       attributes[name] = value;

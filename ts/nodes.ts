@@ -83,14 +83,14 @@ export class UpgradableNode  extends SimpleNode {
 
   @override
   onCreated() {
-    if (configs.hasOwnProperty(r"$version")) {
-      var version = configs[r"$version"];
+    if (configs.hasOwnProperty("$version")) {
+      var version = configs["$version"];
       if (version != latestVersion) {
         upgrader(version);
-        configs[r"$version"] = latestVersion;
+        configs["$version"] = latestVersion;
       }
     } else {
-      configs[r"$version"] = latestVersion;
+      configs["$version"] = latestVersion;
     }
   }
 }
@@ -175,7 +175,7 @@ export class ResolvingNodeProvider  extends SimpleNodeProvider {
         isListReady = true;
         let ts: string = ValueUpdate.getTs();
         n.getDisconnectedStatus = () => ts;
-        n.listChangeController.add(r"$is");
+        n.listChangeController.add("$is");
 
         if (onLoaded != null && !onLoaded.isCompleted) {
           onLoaded.complete(n);
@@ -188,7 +188,7 @@ export class ResolvingNodeProvider  extends SimpleNodeProvider {
         return;
       }
       isListReady = true;
-      n.listChangeController.add(r"$is");
+      n.listChangeController.add("$is");
       if (onLoaded != null && !onLoaded.isCompleted) {
         onLoaded.complete(n);
       }
@@ -200,7 +200,7 @@ export class ResolvingNodeProvider  extends SimpleNodeProvider {
       isListReady = true;
       let ts: string = ValueUpdate.getTs();
       n.getDisconnectedStatus = () => ts;
-      n.listChangeController.add(r"$is");
+      n.listChangeController.add("$is");
 
       if (c != null && !c.isCompleted) {
         c.completeError(e, stack);
@@ -223,7 +223,7 @@ export class ResolvingNodeProvider  extends SimpleNodeProvider {
     }
 
     if (node == null) {
-      let profile: string = m[r'$is'];
+      let profile: string = m['$is'];
       if (profileMap.hasOwnProperty(profile)) {
         node = profileMap[profile](path);
       } else {
@@ -401,20 +401,20 @@ export class CallbackNode  extends SimpleNode implements WaitForMe {
 
 export class NodeNamer  {
   static readonly string[] BANNED_CHARS = [
-    r"%",
-    r".",
-    r"/",
-    r"\",
-    r"?",
-    r"*",
-    r":",
-    r"|",
-    r"<",
-    r">",
-    r"$",
-    r"@",
+    "%",
+    ".",
+    "/",
+    "\",
+    "?",
+    "*",
+    ":",
+    "|",
+    "<",
+    ">",
+    "$",
+    "@",
     r'"',
-    r"'"
+    "'"
   ];
 
   static createName(input: string):string {

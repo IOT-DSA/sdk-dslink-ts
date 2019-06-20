@@ -1,5 +1,7 @@
 // part of dslink.responder;
 
+import {ValueUpdateCallback} from "../../common/value";
+
 export class RespSubscribeListener  {
   callback: ValueUpdateCallback;
   node: LocalNode;
@@ -22,8 +24,8 @@ export class SubscribeResponse  extends Response {
   readonly subsriptionids: object<int, RespSubscribeController> =
     new object<int, RespSubscribeController>();
 
-  readonly changed: LinkedHashSet<RespSubscribeController> =
-    new LinkedHashSet<RespSubscribeController>();
+  readonly changed: Set<RespSubscribeController> =
+    new Set<RespSubscribeController>();
 
   add(path: string, node: LocalNode, sid:number, qos:number):RespSubscribeController {
     controller: RespSubscribeController;

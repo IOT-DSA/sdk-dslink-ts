@@ -10,16 +10,16 @@ historianMain(args: string[], name: string, adapter: HistorianAdapter) async {
     autoInitialize: false,
     nodes: {
       "addDatabase": {
-        r"$name": "Add Database",
-        r"$invokable": "write",
-        r"$params": <{[key: string]: dynamic}>[
+        "$name": "Add Database",
+        "$invokable": "write",
+        "$params": <{[key: string]: dynamic}>[
           {
             "name": "Name",
             "type": "string",
             "placeholder": "HistoryData"
           }
         ]..addAll(adapter.getCreateDatabaseParameters()),
-        r"$is": "addDatabase"
+        "$is": "addDatabase"
       }
     },
     profiles: {

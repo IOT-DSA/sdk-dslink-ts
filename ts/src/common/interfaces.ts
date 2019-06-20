@@ -308,16 +308,6 @@ export class DSError {
   static readonly FAILED = new DSError("failed");
 }
 
-export class Unspecified {
-
-}
-
-/// Marks something as being unspecified.
-const unspecified: Unspecified = new Unspecified();
-
-export interface IPermissionManager {
-  getPermission(path: string, resp: Responder): number;
-}
 
 /// Provides Nodes for a responder.
 /// A single node provider can be reused by multiple responder.
@@ -331,12 +321,5 @@ export interface NodeProvider {
   /// When [addToTree] is false, the node will not be inserted into the node provider.
   getOrCreateNode(path: string, addToTree?: boolean): LocalNode;
 
-/// Create a Responder
-  createResponder(dsId: string, sessionId: string): Responder;
-
-/// Get Permissions.
-  permissions: IPermissionManager;
 }
-
-/// Unspecified means that something has never been set.
 

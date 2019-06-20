@@ -260,7 +260,7 @@ export class Interval  {
 }
 
 export interface Disposable {
-  void dispose();
+  dispose();
 }
 
 export class FunctionDisposable  extends Disposable {

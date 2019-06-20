@@ -48,7 +48,7 @@ export interface LocalNodeImpl extends LocalNode {
     }
 
     m.forEach((key: string, value) {
-      if (key.startsWith(r'$')) {
+      if (key.startsWith('$')) {
         configs[key] = value;
       } else if (key.startsWith('@')) {
         attributes[key] = value;

@@ -2,10 +2,10 @@
 
 export class GetHistoryNode  extends SimpleNode {
   GetHistoryNode(path: string) : super(path, this._link.provider) {
-    configs[r"$is"] = "getHistory";
-    configs[r"$name"] = "Get History";
-    configs[r"$invokable"] = "read";
-    configs[r"$params"] = [
+    configs["$is"] = "getHistory";
+    configs["$name"] = "Get History";
+    configs["$invokable"] = "read";
+    configs["$params"] = [
       {
         "name": "Timerange",
         "type": "string",
@@ -66,7 +66,7 @@ export class GetHistoryNode  extends SimpleNode {
       }
     ];
 
-    configs[r"$columns"] = [
+    configs["$columns"] = [
       {
         "name": "timestamp",
         "type": "time"
@@ -77,7 +77,7 @@ export class GetHistoryNode  extends SimpleNode {
       }
     ];
 
-    configs[r"$result"] = "stream";
+    configs["$result"] = "stream";
   }
 
   @override

@@ -43,7 +43,7 @@ export interface SynchronousDataStorage {
   string removeSync(key: string);
 
   /// Store a key value pair.
-  void storeSync(key: string, value: string);
+  storeSync(key: string, value: string);
 }
 
 /// Storage for DSA in Local Storage

@@ -4,7 +4,7 @@
 export interface IStorageManager {
   /// general key/value pair storage
   IValueStorageBucket getOrCreateValueStorageBucket(name: string);
-  void destroyValueStorageBucket(name: string);
+  destroyValueStorageBucket(name: string);
 
   /// get subscription storage
   /// responder path point to a local responder node
@@ -12,7 +12,7 @@ export interface IStorageManager {
   ISubscriptionResponderStorage getOrCreateSubscriptionStorage(responderPath: string);
 
   /// destroy subscription storage
-  void destroySubscriptionStorage(responderPath: string);
+  destroySubscriptionStorage(responderPath: string);
 
   /// load all saved subscriptions
   /// should be called only during application initialization
@@ -25,11 +25,11 @@ export interface ISubscriptionResponderStorage {
   responderPath:string;
 
   ISubscriptionNodeStorage getOrCreateValue(valuePath: string);
-  void destroyValue(valuePath: string);
+  destroyValue(valuePath: string);
   /// load all saved subscriptions
   /// should be called only during application initialization
   Promise<ISubscriptionNodeStorage[]> load();
-  void destroy();
+  destroy();
 }
 
 /// the storage of one value
@@ -40,25 +40,25 @@ export interface ISubscriptionNodeStorage {
   ISubscriptionNodeStorage(this.path, this.storage);
 
   /// add data to List of values
-  void addValue(value: ValueUpdate);
+  addValue(value: ValueUpdate);
 
   /// set value to newValue and clear all existing values in the storage
   /// [removes] is only designed for database that can't directly remove all data in a key.
   /// ValueUpdate.storedData can be used to store any helper data for the storage class
-  void setValue(removes: Iterable<ValueUpdate>, newValue: ValueUpdate);
+  setValue(removes: Iterable<ValueUpdate>, newValue: ValueUpdate);
 
   /// for some database it's easier to remove data one by one
   /// removeValue and valueRemoved will be both called, either one can be used
-  void removeValue(value: ValueUpdate);
+  removeValue(value: ValueUpdate);
 
   /// for some database it's easier to remove multiple data together
   /// removeValue and valueRemoved will be both called, either one can be used
   /// [updates] are all the remaining value that are still in the list
-  void valueRemoved(updates: Iterable<ValueUpdate>){}
+  valueRemoved(updates: Iterable<ValueUpdate>){}
 
   /// clear the values, but still leave the qos data in storage
-  void clear(qos:number);
-  void destroy();
+  clear(qos:number);
+  destroy();
 
   /// return the existing storage values
   /// should be called only during application initialization
@@ -70,13 +70,13 @@ export interface ISubscriptionNodeStorage {
 export interface IValueStorageBucket {
   IValueStorage getValueStorage(key: string);
   Promise<object> load();
-  void destroy();
+  destroy();
 }
 
 /// basic value storage
 export interface IValueStorage {
   key:string;
-  void setValue(value: object);
+  setValue(value: object);
   Future getValueAsync();
-  void destroy();
+  destroy();
 }

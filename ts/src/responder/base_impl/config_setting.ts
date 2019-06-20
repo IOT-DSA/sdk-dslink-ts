@@ -34,39 +34,39 @@ export class ConfigSetting  {
 
 export class Configs  {
   static readonly _globalConfigs: object = const {
-    r'$is': const {'type': 'profile'},
-    r'$interface': const {'type': 'interface'},
+    '$is': const {'type': 'profile'},
+    '$interface': const {'type': 'interface'},
 
     /// list of permissions
-    r'$permissions': const {
+    '$permissions': const {
       'type': 'list',
       'require': Permission.CONFIG,
       'writable': Permission.CONFIG,
     },
 
     /// the display name
-    r'$name': const {'type': 'string'},
+    '$name': const {'type': 'string'},
 
     /// type of subscription stream
-    r'$type': const {'type': 'type'},
+    '$type': const {'type': 'type'},
 
     /// permission needed to invoke
-    r'$invokable': const {'type': 'permission', 'default': 'read'},
+    '$invokable': const {'type': 'permission', 'default': 'read'},
 
     /// permission needed to set
-    r'$writable': const {'type': 'permission', 'default': 'never'},
+    '$writable': const {'type': 'permission', 'default': 'never'},
 
     /// config settings, only used by profile nodes
-    r'$settings': const {'type': 'map'},
+    '$settings': const {'type': 'map'},
 
     /// params of invoke method
-    r'$params': const {'type': 'list'},
+    '$params': const {'type': 'list'},
 
     /// stream columns of invoke method
-    r'$columns': const {'type': 'list'},
+    '$columns': const {'type': 'list'},
 
     /// stream meta of invoke method
-    r'$streamMeta': const {'type': 'list'}
+    '$streamMeta': const {'type': 'list'}
     // not serializable
   };
 
