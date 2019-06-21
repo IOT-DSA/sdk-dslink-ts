@@ -1,5 +1,6 @@
 import {Listener, Stream} from "../utils/async";
 import {Node} from "../common/node";
+import {Permission} from "../common/permission";
 
 export class LocalNode extends Node {
   /// Node Provider
@@ -7,13 +8,20 @@ export class LocalNode extends Node {
 
   /// Node Path
   readonly path: string;
-  
+
   _state: NodeState;
 
   constructor(path: string, provider: NodeProvider, profileName: string = 'node') {
     super(profileName);
     this.path = path;
     this.provider = provider;
+  }
+
+  getInvokePermission(): number {
+    return Permission.parse(this.configs.get('$invokable'));
+  }
+  getSetPermission() {
+    return Permission.parse(this.configs.get('$writable'));
   }
 }
 

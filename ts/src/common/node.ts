@@ -198,7 +198,7 @@ export class Path {
     return str;
   }
 
-  static getValidPath(path: any, basePath: string): Path {
+  static getValidPath(path: any, basePath?: string): Path {
     if (typeof path === 'string') {
       let p = new Path(path);
       if (p.valid) {
@@ -209,7 +209,7 @@ export class Path {
     return null;
   }
 
-  static getValidNodePath(path: any, basePath: string): Path {
+  static getValidNodePath(path: any, basePath?: string): Path {
     if (typeof path === 'string') {
       let p = new Path(path);
       if (p.valid && p.isNode) {
@@ -220,7 +220,7 @@ export class Path {
     return null;
   }
 
-  static getValidAttributePath(path: any, basePath: string): Path {
+  static getValidAttributePath(path: any, basePath?: string): Path {
     if (typeof path === 'string') {
       let p = new Path(path);
       if (p.valid && p.isAttribute) {
@@ -231,7 +231,7 @@ export class Path {
     return null;
   }
 
-  static getValidConfigPath(path: any, basePath: string): Path {
+  static getValidConfigPath(path: any, basePath?: string): Path {
     if (typeof path === 'string') {
       let p = new Path(path);
       if (p.valid && p.isConfig) {

@@ -24,6 +24,7 @@ export declare class Stream<T> {
     add(val: T): boolean;
     /** @ignore */
     protected _dispatch(): void;
+    hasListener(): boolean;
     isClosed: boolean;
     close(): void;
 }

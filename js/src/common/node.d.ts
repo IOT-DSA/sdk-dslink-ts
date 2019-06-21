@@ -4,7 +4,7 @@ export declare class Node {
     attributes: Map<string, any>;
     getAttribute(name: string): any;
     configs: Map<string, any>;
-    constructor();
+    constructor(profileName?: string);
     getConfig(name: string): object;
     children: Map<string, Node>;
     /** @ignore */
@@ -31,10 +31,10 @@ export declare class Path {
     static readonly invalidNameChar: RegExp;
     /** @ignore */
     static escapeName(str: string): string;
-    static getValidPath(path: any, basePath: string): Path;
-    static getValidNodePath(path: any, basePath: string): Path;
-    static getValidAttributePath(path: any, basePath: string): Path;
-    static getValidConfigPath(path: any, basePath: string): Path;
+    static getValidPath(path: any, basePath?: string): Path;
+    static getValidNodePath(path: any, basePath?: string): Path;
+    static getValidAttributePath(path: any, basePath?: string): Path;
+    static getValidConfigPath(path: any, basePath?: string): Path;
     path: string;
     parentPath: string;
     /**  Get the parent of this path. */

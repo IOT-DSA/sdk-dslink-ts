@@ -1,6 +1,7 @@
 // part of dslink.responder;
 
 import {ValueUpdateCallback} from "../../common/value";
+import {Response} from "../response";
 
 export class RespSubscribeListener  {
   callback: ValueUpdateCallback;

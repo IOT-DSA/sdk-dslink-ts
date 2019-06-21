@@ -125,14 +125,7 @@ export declare class DSError {
     static readonly DISCONNECTED: DSError;
     static readonly FAILED: DSError;
 }
-export declare class Unspecified {
-}
-export interface IPermissionManager {
-    getPermission(path: string, resp: Responder): number;
-}
 export interface NodeProvider {
     getNode(path: string): LocalNode;
     getOrCreateNode(path: string, addToTree?: boolean): LocalNode;
-    createResponder(dsId: string, sessionId: string): Responder;
-    permissions: IPermissionManager;
 }
