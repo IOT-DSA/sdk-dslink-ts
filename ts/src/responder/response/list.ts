@@ -35,6 +35,7 @@ export class ListResponse extends Response {
 
     let node = this.state._node;
     if (!node) {
+      // TODO send disconnectedTs
       return;
     }
     if (waitingAckId !== -1) {

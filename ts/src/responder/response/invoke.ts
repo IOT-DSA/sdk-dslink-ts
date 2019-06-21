@@ -1,5 +1,7 @@
 // part of dslink.responder;
 
+import {Response} from "../response";
+
 export type OnInvokeClosed = (response: InvokeResponse) => void;
 export type OnInvokeSend = (response: InvokeResponse, object m) => void;
 

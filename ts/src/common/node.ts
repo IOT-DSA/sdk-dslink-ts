@@ -178,6 +178,9 @@ export class Node {
     }
     return rslt;
   }
+
+  destroy() {
+  }
 }
 
 /// Utility class for node and config/attribute paths.
