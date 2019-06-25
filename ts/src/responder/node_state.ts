@@ -4,6 +4,7 @@ import {Permission} from "../common/permission";
 import {InvokeResponse} from "./response/invoke";
 import {Responder} from "./responder";
 import {Response} from "./response";
+import {ValueUpdate, ValueUpdateCallback} from "../common/value";
 
 export class LocalNode extends Node {
   /// Node Provider
@@ -62,59 +63,43 @@ export class LocalNode extends Node {
   /// Called by the link internals to set an attribute on this node.
   setAttribute(
     name: string, value: any, responder: Responder, response: Response) {
-    if (response != null) {
-      response.close();
-    }
     if (!name.startsWith("@")) {
       name = `@${name}`;
     }
 
     this.attributes.set(name, value);
     this.provider.save();
+    if (response != null) {
+      response.close();
+    }
   }
 
 /// Called by the link internals to remove an attribute from this node.
   removeAttribute(
     name: string, responder: Responder, response: Response) {
-    if (response != null) {
-      response.close();
-    }
     if (!name.startsWith("@")) {
       name = `@${name}`;
     }
 
     this.attributes.delete(name);
     this.provider.save();
+    if (response != null) {
+      response.close();
+    }
   }
 
+  _value: any = null;
+  _valueReady = true;
+
   /// Called by the link internals to set a value of a node.
-  setValue(value: object, responder: Responder, response: Response,
+  setValue(value: any, responder: Responder, response: Response,
            maxPermission: number = Permission.CONFIG) {
+    this._value = value;
     response.close();
   }
 
   save(): {[key: string]: any} {
-    let data = {};
-    this.saveProperties(data);
-    this.saveChildren(data);
-    return data;
-  }
-
-  saveChildren(data: {[key: string]: any}) {
-    for (let [name, value] of this.children) {
-      if (value instanceof LocalNode) {
-        let saved = value.save();
-        if (saved) {
-          data[name] = saved;
-        }
-      }
-    }
-  }
-
-  saveProperties(data: {[key: string]: any}) {
-    for (let [name, value] of this.attributes) {
-      data[name] = value;
-    }
+    return null;
   }
 
   destroy() {
@@ -189,9 +174,14 @@ export class NodeProvider {
   }
 }
 
+interface Subscriber {
+  addValue: ValueUpdateCallback;
+}
+
 export class NodeState {
 
   _node: LocalNode;
+  _subscriber: Subscriber;
   readonly provider: NodeProvider;
   readonly path: string;
 
@@ -199,13 +189,6 @@ export class NodeState {
     this.path = path;
     this.provider = provider;
   }
-
-  checkDestroy() {
-    if (!(this._node || this.listStream.hasListener())) {
-      this.destroy();
-    }
-  }
-
 
   onList = (listener: Listener<string>) => {
     if (this._node) {
@@ -225,12 +208,42 @@ export class NodeState {
     }
   }
 
+  _lastValueUpdate: ValueUpdate;
+
+  /// Gets the last value update of this node.
+  get lastValueUpdate(): ValueUpdate {
+    if (!this._lastValueUpdate && this._node && this._node._valueReady) {
+      this._lastValueUpdate = new ValueUpdate(this._node._value);
+    }
+    return this._lastValueUpdate;
+  }
+
   setNode(node: LocalNode) {
     this._node = node;
     if (node) {
       node._state = this;
+      if (this._subscriber && node._valueReady) {
+        this._subscriber.addValue(this.lastValueUpdate);
+      }
+      for (let listener of this.listStream._listeners) {
+        listener(null); // use null to update all
+      }
     } else {
+      this._lastValueUpdate = null;
       this.checkDestroy();
+    }
+  }
+
+  setSubscriber(s: Subscriber) {
+    this._subscriber = s;
+    if (!s) {
+      this.checkDestroy();
+    }
+  }
+
+  checkDestroy() {
+    if (!(this._node || this.listStream.hasListener() || this._subscriber)) {
+      this.destroy();
     }
   }
 

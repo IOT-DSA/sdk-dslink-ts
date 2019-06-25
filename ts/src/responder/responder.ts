@@ -30,7 +30,7 @@ export class Responder extends ConnectionHandler {
   }
 
   get subscriptionCount(): number {
-    return this._subscription.subscriptions.length;
+    return this._subscription.subscriptions.size;
   }
 
   _subscription: SubscribeResponse;
@@ -43,10 +43,9 @@ export class Responder extends ConnectionHandler {
     this.nodeProvider = nodeProvider;
     this._subscription = new SubscribeResponse(this, 0);
     this._responses.set(0, this._subscription);
-
   }
 
-  addResponse(response: Response): Response {
+  addResponse<T extends Response>(response: T): T {
     if (response._sentStreamStatus !== StreamStatus.closed) {
       this._responses.set(response.rid, response);
     }
@@ -126,7 +125,7 @@ export class Responder extends ConnectionHandler {
   }
 
   updateResponse(response: Response, updates: any[],
-                 options?: {
+                 options: {
                    streamStatus?: string,
                    columns?: any[],
                    meta?: object,

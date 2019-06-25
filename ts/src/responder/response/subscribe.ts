@@ -1,261 +1,221 @@
 // part of dslink.responder;
 
-import {ValueUpdateCallback} from "../../common/value";
+import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
 import {Response} from "../response";
+import {LocalNode, NodeState} from "../node_state";
+import * as path from "path";
+import {Responder} from "../responder";
+import {DSA_CONFIG} from "../../common/connection_handler";
+import Denque = require("denque");
 
-export class RespSubscribeListener  {
-  callback: ValueUpdateCallback;
-  node: LocalNode;
+interface ISubscriptionNodeStorage {
 
-  RespSubscribeListener(this.node, this.callback);
-
-  close() {
-    if (callback != null) {
-      node.unsubscribe(callback);
-      callback = null;
-    }
-  }
 }
 
-export class SubscribeResponse  extends Response {
-  SubscribeResponse(responder: Responder, rid:number) : super(responder, rid, 'subscribe');
+export class SubscribeResponse extends Response {
+  constructor(responder: Responder, rid: number) {
+    super(responder, rid, 'subscribe');
+  }
 
-  readonly subscriptions: {[key: string]: RespSubscribeController} =
-    new {[key: string]: RespSubscribeController}();
-  readonly subsriptionids: object<int, RespSubscribeController> =
-    new object<int, RespSubscribeController>();
+  readonly subscriptions: Map<string, ValueSubscriber> = new Map<string, ValueSubscriber>();
 
-  readonly changed: Set<RespSubscribeController> =
-    new Set<RespSubscribeController>();
+  readonly subsriptionids: Map<number, ValueSubscriber> = new Map<number, ValueSubscriber>();
 
-  add(path: string, node: LocalNode, sid:number, qos:number):RespSubscribeController {
-    controller: RespSubscribeController;
-    if (subscriptions[path] != null) {
-      controller = subscriptions[path];
-      if (controller.sid != sid) {
-        if (controller.sid >= 0) {
-          subsriptionids.remove(controller.sid);
+  readonly changed: Set<ValueSubscriber> = new Set<ValueSubscriber>();
+
+  add(path: string, node: NodeState, sid: number, qos: number): ValueSubscriber {
+    let subscriber: ValueSubscriber;
+    if (this.subscriptions.get(path) != null) {
+      subscriber = this.subscriptions.get(path);
+      if (subscriber.sid !== sid) {
+        if (subscriber.sid >= 0) {
+          this.subsriptionids.delete(subscriber.sid);
         }
-        controller.sid = sid;
+        subscriber.sid = sid;
         if (sid >= 0) {
-          subsriptionids[sid] = controller;
+          this.subsriptionids.set(sid, subscriber);
         }
       }
-      controller.qosLevel = qos;
-      if (sid > -1 && controller.lastValue != null) {
-        subscriptionChanged(controller);
+      subscriber.qosLevel = qos;
+      if (sid > -1 && subscriber.lastValue != null) {
+        this.subscriptionChanged(subscriber);
       }
     } else {
-      let permission:number = responder.nodeProvider.permissions
-          .getPermission(node.path, responder);
-      controller = new RespSubscribeController(
-          this, node, sid, permission >= Permission.READ, qos);
-      subscriptions[path] = controller;
+
+      subscriber = new ValueSubscriber(this, node, sid, qos);
+      this.subscriptions.set(path, subscriber);
 
       if (sid >= 0) {
-        subsriptionids[sid] = controller;
-      }
-
-      if (responder._traceCallbacks != null) {
-        let update: ResponseTrace = new ResponseTrace(path, 'subscribe', 0, '+');
-        for (ResponseTraceCallback callback of responder._traceCallbacks) {
-          callback(update);
-        }
+        this.subsriptionids.set(sid, subscriber);
       }
     }
-    return controller;
+    return subscriber;
   }
 
-  remove(sid:number) {
-    if (subsriptionids[sid] != null) {
-      let controller: RespSubscribeController = subsriptionids[sid];
-      subsriptionids[sid].destroy();
-      subsriptionids.remove(sid);
-      subscriptions.remove(controller.node.path);
-      if (responder._traceCallbacks != null) {
-        let update: ResponseTrace = new ResponseTrace(
-            controller.node.path, 'subscribe', 0, '-');
-        for (ResponseTraceCallback callback of responder._traceCallbacks) {
-          callback(update);
-        }
-      }
-      
-      if (subsriptionids.isEmpty) {
-        _waitingAckCount = 0;
+  remove(sid: number) {
+    if (this.subsriptionids.get(sid) != null) {
+      let subscriber: ValueSubscriber = this.subsriptionids.get(sid);
+      this.subsriptionids.get(sid).destroy();
+      this.subsriptionids.delete(sid);
+      this.subscriptions.delete(subscriber.node.path);
+
+      if (this.subsriptionids.size === 0) {
+        this._waitingAckCount = 0;
       }
     }
   }
 
-  subscriptionChanged(controller: RespSubscribeController) {
-    changed.add(controller);
-    prepareSending();
+  subscriptionChanged(subscriber: ValueSubscriber) {
+    this.changed.add(subscriber);
+    this.prepareSending();
   }
 
-  @override
-  startSendingData(currentTime:number, waitingAckId:number) {
-    _pendingSending = false;
+  startSendingData(currentTime: number, waitingAckId: number) {
+    this._pendingSending = false;
 
-    if (waitingAckId != -1) {
-      _waitingAckCount++;
-      _lastWaitingAckId = waitingAckId;
+    if (waitingAckId !== -1) {
+      this._waitingAckCount++;
+      this._lastWaitingAckId = waitingAckId;
     }
 
-    updates: List = new List();
-    for (RespSubscribeController controller of changed) {
-      updates.addAll(controller.process(waitingAckId));
+    let updates: any[] = [];
+    for (let subscriber of this.changed) {
+      updates = updates.concat(subscriber.process(waitingAckId));
     }
-    responder.updateResponse(this, updates);
-    changed.clear();
+    this.responder.updateResponse(this, updates);
+    this.changed.clear();
   }
 
-  _waitingAckCount:number = 0;
-  _lastWaitingAckId:number = -1;
+  _waitingAckCount: number = 0;
+  _lastWaitingAckId: number = -1;
 
-  ackReceived(receiveAckId:number, startTime:number, currentTime:number) {
-    if (receiveAckId == this._lastWaitingAckId) {
-      _waitingAckCount = 0;
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
+    if (receiveAckId === this._lastWaitingAckId) {
+      this._waitingAckCount = 0;
     } else {
-      _waitingAckCount--;
+      this._waitingAckCount--;
     }
-    subscriptions.forEach((path: string, controller: RespSubscribeController) {
-      if (controller._qosLevel > 0) {
-        controller.onAck(receiveAckId);
+    for (let [path, subscriber] of this.subscriptions) {
+      if (subscriber._qosLevel > 0) {
+        subscriber.onAck(receiveAckId);
       }
-    });
-    if ( this._sendingAfterAck) {
-      _sendingAfterAck = false;
-      prepareSending();
+    }
+    if (this._sendingAfterAck) {
+      this._sendingAfterAck = false;
+      this.prepareSending();
     }
   }
 
   _sendingAfterAck: boolean = false;
 
   prepareSending() {
-    if ( this._sendingAfterAck) {
+    if (this._sendingAfterAck) {
       return;
     }
-    if ( this._waitingAckCount > ConnectionProcessor.ACK_WAIT_COUNT) {
-      _sendingAfterAck = true;
+    if (this._waitingAckCount > DSA_CONFIG.ackWaitCount) {
+      this._sendingAfterAck = true;
       return;
     }
-    if (responder.connection == null) {
+    if (this.responder.connection == null) {
       // don't pend send, when requester is offline
       return;
     }
-    if (!_pendingSending) {
-      _pendingSending = true;
-      responder.addProcessor(this);
+    if (!this._pendingSending) {
+      this._pendingSending = true;
+      this.responder.addProcessor(this);
     }
   }
 
   _close() {
-    pendingControllers: List;
-    subscriptions.forEach((path, controller: RespSubscribeController) {
-      if (controller._qosLevel < 2) {
-        controller.destroy();
+    let pendingControllers: ValueSubscriber[];
+    for (let [path, subscriber] of this.subscriptions) {
+      if (subscriber._qosLevel < 2) {
+        subscriber.destroy();
       } else {
-        controller.sid = -1;
+        subscriber.sid = -1;
         if (pendingControllers == null) {
-          pendingControllers = new List();
+          pendingControllers = [];
         }
-        pendingControllers.add(controller);
+        pendingControllers.push(subscriber);
       }
-    });
-    subscriptions.clear();
+    }
+    this.subscriptions.clear();
     if (pendingControllers != null) {
-      for (RespSubscribeController controller of pendingControllers) {
-        subscriptions[controller.node.path] = controller;
+      for (let subscriber of pendingControllers) {
+        this.subscriptions.set(subscriber.node.path, subscriber);
       }
     }
 
-    subsriptionids.clear();
-    _waitingAckCount = 0;
-    _lastWaitingAckId = -1;
-    _sendingAfterAck = false;
-    _pendingSending = false;
-  }
-
-  addTraceCallback(_traceCallback: ResponseTraceCallback) {
-    subscriptions.forEach((path, controller) {
-      let update: ResponseTrace = new ResponseTrace(
-          controller.node.path, 'subscribe', 0, '+');
-      _traceCallback(update);
-    });
+    this.subsriptionids.clear();
+    this._waitingAckCount = 0;
+    this._lastWaitingAckId = -1;
+    this._sendingAfterAck = false;
+    this._pendingSending = false;
   }
 }
 
-export class RespSubscribeController  {
-  readonly node: LocalNode;
+export class ValueSubscriber {
+  readonly node: NodeState;
   readonly response: SubscribeResponse;
-  _listener: RespSubscribeListener;
-  sid:number;
+  sid: number;
 
-  _permitted: boolean = true;
+  lastValues: ValueUpdate[] = [];
+  waitingValues: Denque<ValueUpdate>;
 
-  set permitted(val: boolean) {
-    if (val == this._permitted) return;
-    _permitted = val;
-    if ( this._permitted && lastValues.length > 0) {
-      response.subscriptionChanged(this);
-    }
-  }
-
-  lastValues: ValueUpdate[] = new ValueUpdate[]();
-  waitingValues: ListQueue<ValueUpdate>;
-
-  //; = new ListQueue<ValueUpdate>();
+  // ; = new ListQueue<ValueUpdate>();
   lastValue: ValueUpdate;
 
-  _qosLevel:number = -1;
+  _qosLevel: number = -1;
   _storage: ISubscriptionNodeStorage;
 
-  set qosLevel(int v) {
+  set qosLevel(v: number) {
     if (v < 0 || v > 3) v = 0;
-    if ( this._qosLevel == v)
+    if (this._qosLevel === v) {
       return;
-
-    _qosLevel = v;
-    if (waitingValues == null && this._qosLevel > 0) {
-      waitingValues = new ListQueue<ValueUpdate>();
     }
-    caching = (v > 0);
-    cachingQueue = (v > 1);
-    persist = (v > 2);
-    _listener = node.subscribe(addValue, this._qosLevel);
+    this._qosLevel = v;
+    if (this.waitingValues == null && this._qosLevel > 0) {
+      this.waitingValues = new Denque<ValueUpdate>();
+    }
+    this.caching = (v > 0);
+    this.cachingQueue = (v > 1);
+    this.persist = (v > 2);
   }
 
   _caching: boolean = false;
 
   set caching(val: boolean) {
-    if (val == this._caching) return;
-    _caching = val;
-    if (!_caching) {
-      lastValues.length = 0;
+    if (val === this._caching) return;
+    this._caching = val;
+    if (!this._caching) {
+      this.lastValues.length = 0;
     }
   }
+
   cachingQueue: boolean = false;
 
   _persist: boolean = false;
 
   set persist(val: boolean) {
-    if (val == this._persist) return;
-    _persist = val;
-    storageM: ISubscriptionResponderStorage = response.responder.storage;
-    if (storageM != null) {
-      if ( this._persist) {
-        _storage = storageM.getOrCreateValue(node.path);
-      } else if ( this._storage != null) {
-        storageM.destroyValue(node.path);
-        _storage = null;
-      }
+    if (val === this._persist) return;
+    this._persist = val;
+    // TODO implement qos storage
+    if (this._persist) {
+      // this._storage = storageM.getOrCreateValue(node.path);
+    } else if (this._storage != null) {
+      // storageM.destroyValue(node.path);
+      this._storage = null;
     }
   }
 
-  RespSubscribeController(this.response, this.node, this.sid, this._permitted,
-      let qos:number) {
+  constructor(response: SubscribeResponse, node: NodeState, sid: number, qos: number) {
+    this.response = response;
+    this.node = node;
+    this.sid = sid;
     this.qosLevel = qos;
-    if (node.valueReady && node.lastValueUpdate != null) {
-      addValue(node.lastValueUpdate);
+    node.setSubscriber(this);
+    if (node.lastValueUpdate) {
+      this.addValue(node.lastValueUpdate);
     }
   }
 
@@ -263,153 +223,155 @@ export class RespSubscribeController  {
 
   addValue(val: ValueUpdate) {
     val = val.cloneForAckQueue();
-    if ( this._caching && this._isCacheValid) {
-      lastValues.add(val);
-      let needClearQueue: boolean = (lastValues.length > response.responder.maxCacheLength);
-      if (!needClearQueue && !cachingQueue && response._sendingAfterAck && lastValues.length > 1) {
+    if (this._caching && this._isCacheValid) {
+      this.lastValues.push(val);
+      let needClearQueue: boolean = (this.lastValues.length > DSA_CONFIG.defaultCacheSize);
+      if (!needClearQueue && !this.cachingQueue && this.response._sendingAfterAck && this.lastValues.length > 1) {
         needClearQueue = true;
       }
       if (needClearQueue) {
         // cache is no longer valid, fallback to rollup mode
-        _isCacheValid = false;
-        lastValue = new ValueUpdate(null, ts: '');
-        for (ValueUpdate update of lastValues) {
-          lastValue.mergeAdd(update);
+        this._isCacheValid = false;
+        this.lastValue = new ValueUpdate(null, '');
+        for (let update of this.lastValues) {
+          this.lastValue.mergeAdd(update);
         }
-        lastValues.length = 0;
-        if ( this._qosLevel > 0) {
-          if ( this._storage != null) {
-            _storage.setValue(waitingValues, lastValue);
+        this.lastValues.length = 0;
+        if (this._qosLevel > 0) {
+          if (this._storage) {
+            // this._storage.setValue(waitingValues, lastValue);
           }
-          waitingValues
-            ..clear()
-            ..add(lastValue);
+          this.waitingValues.clear();
+          this.waitingValues.push(this.lastValue);
         }
       } else {
-        lastValue = val;
-        if ( this._qosLevel > 0) {
-          waitingValues.add(lastValue);
-          if ( this._storage != null) {
-            _storage.addValue(lastValue);
+        this.lastValue = val;
+        if (this._qosLevel > 0) {
+          this.waitingValues.push(this.lastValue);
+          if (this._storage) {
+            // _storage.addValue(lastValue);
           }
         }
       }
     } else {
-      if (lastValue != null) {
-        lastValue = new ValueUpdate.merge(lastValue, val);
+      if (this.lastValue) {
+        this.lastValue = ValueUpdate.merge(this.lastValue, val);
       } else {
-        lastValue = val;
+        this.lastValue = val;
       }
-      if ( this._qosLevel > 0) {
-        if ( this._storage != null) {
-          _storage.setValue(waitingValues, lastValue);
+      if (this._qosLevel > 0) {
+        if (this._storage) {
+          // _storage.setValue(waitingValues, lastValue);
         }
-        waitingValues
-          ..clear()
-          ..add(lastValue);
+        this.waitingValues.clear();
+        this.waitingValues.push(this.lastValue);
       }
     }
-    // TODO, don't allow this to be called from same controller more often than 100ms
+    // TODO, don't allow this to be called from same subscriber more often than 100ms
     // the first response can happen ASAP, but
-    if ( this._permitted && sid > -1) {
-      response.subscriptionChanged(this);
+    if (this.sid > -1) {
+      this.response.subscriptionChanged(this);
     }
   }
 
-  process(waitingAckId:number):List {
-    rslts: List = new List();
-    if ( this._caching && this._isCacheValid) {
-      for (ValueUpdate lastValue of lastValues) {
-        rslts.add([sid, lastValue.value, lastValue.ts]);
+  process(waitingAckId: number): any[] {
+    let rslts: any[] = [];
+    if (this._caching && this._isCacheValid) {
+      for (let lastValue of this.lastValues) {
+        rslts.push([this.sid, lastValue.value, lastValue.ts]);
       }
 
-      if ( this._qosLevel > 0) {
-        for (ValueUpdate update of lastValues) {
+      if (this._qosLevel > 0) {
+        for (let update of this.lastValues) {
           update.waitingAck = waitingAckId;
         }
       }
-      lastValues.length = 0;
+      this.lastValues.length = 0;
     } else {
-      if (lastValue.count > 1 || lastValue.status != null) {
-        object m = lastValue.toMap();
-        m['sid'] = sid;
-        rslts.add(m);
+      if (this.lastValue.count > 1 || this.lastValue.status) {
+        let m = this.lastValue.toMap();
+        m['sid'] = this.sid;
+        rslts.push(m);
       } else {
-        rslts.add([sid, lastValue.value, lastValue.ts]);
+        rslts.push([this.sid, this.lastValue.value, this.lastValue.ts]);
       }
-      if ( this._qosLevel > 0) {
-        lastValue.waitingAck = waitingAckId;
+      if (this._qosLevel > 0) {
+        this.lastValue.waitingAck = waitingAckId;
       }
-      _isCacheValid = true;
+      this._isCacheValid = true;
     }
-    lastValue = null;
+    this.lastValue = null;
     return rslts;
   }
 
-  onAck(ackId:number) {
-    if (waitingValues.isEmpty) {
+  onAck(ackId: number) {
+    if (this.waitingValues.length === 0) {
       return;
     }
-    valueRemoved: boolean = false;
-    if (!waitingValues.isEmpty && waitingValues.first.waitingAck != ackId) {
+    let valueRemoved = false;
+    if (!this.waitingValues.isEmpty && this.waitingValues.peekFront().waitingAck !== ackId) {
       let matchUpdate: ValueUpdate;
-      for (ValueUpdate update of waitingValues) {
-        if (update.waitingAck == ackId) {
+      let waitingLen = this.waitingValues.length;
+      for (let i = 0; i < waitingLen; ++i) {
+        let update = this.waitingValues.peekAt(i);
+        if (update.waitingAck === ackId) {
           matchUpdate = update;
           break;
         }
       }
 
       if (matchUpdate != null) {
-        while (!waitingValues.isEmpty && waitingValues.first != matchUpdate) {
-          let removed: ValueUpdate = waitingValues.removeFirst();
-          if ( this._storage != null) {
-            _storage.removeValue(removed);
-            valueRemoved = true;
+        while (!this.waitingValues.isEmpty && this.waitingValues.peekFront() !== matchUpdate) {
+          let removed: ValueUpdate = this.waitingValues.shift();
+          if (this._storage != null) {
+            // _storage.removeValue(removed);
+            // valueRemoved = true;
           }
         }
       }
     }
 
-    while (!waitingValues.isEmpty && waitingValues.first.waitingAck == ackId) {
-      let removed: ValueUpdate = waitingValues.removeFirst();
-      if ( this._storage != null) {
-        _storage.removeValue(removed);
-        valueRemoved = true;
+    while (!this.waitingValues.isEmpty && this.waitingValues.peekFront().waitingAck === ackId) {
+      let removed: ValueUpdate = this.waitingValues.shift();
+      if (this._storage != null) {
+        // _storage.removeValue(removed);
+        // valueRemoved = true;
       }
     }
 
-    if (valueRemoved && this._storage != null) {
-      _storage.valueRemoved(waitingValues);
-    }
+    // if (valueRemoved && this._storage != null) {
+    //   _storage.valueRemoved(this.waitingValues);
+    // }
   }
 
   resetCache(values: ValueUpdate[]) {
     if (this._caching) {
-      if (lastValues.length > 0 && lastValues.first.equals(values.last)) {
-        lastValues.removeAt(0);
+      if (this.lastValues.length > 0 && this.lastValues[0].equals(values[values.length - 1])) {
+        this.lastValues.shift();
       }
-      lastValues = values..addAll(lastValues);
-      if (waitingValues != null) {
-        waitingValues.clear();
-        waitingValues.addAll(lastValues);
+      this.lastValues = values.concat(this.lastValues);
+      if (this.waitingValues != null) {
+        this.waitingValues.clear();
+        for (let value of this.lastValues) {
+          this.waitingValues.push(value);
+        }
       }
     } else {
-      lastValues.length = 0;
-      if (waitingValues != null) {
-        waitingValues.clear();
-        waitingValues.add(values.last);
+      this.lastValues.length = 0;
+      if (this.waitingValues != null) {
+        this.waitingValues.clear();
+        this.waitingValues.push(values[values.length - 1]);
       }
     }
-    lastValue = values.last;
+    this.lastValue = values[values.length - 1];
   }
 
   destroy() {
-    if ( this._storage != null) {
-      let storageM: ISubscriptionResponderStorage = response.responder.storage;
-      storageM.destroyValue(node.path);
-      _storage = null;
+    if (this._storage) {
+      // let storageM: ISubscriptionResponderStorage = response.responder.storage;
+      // storageM.destroyValue(node.path);
+      // _storage = null;
     }
-    _listener.close();
+    this.node.setSubscriber(null);
   }
 }

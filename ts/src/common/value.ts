@@ -105,8 +105,6 @@ export class ValueUpdate {
     this.ts = newUpdate.ts;
     this.status = newUpdate.status;
     this.count += newUpdate.count;
-
-
   }
 
   equals(other: ValueUpdate): boolean {

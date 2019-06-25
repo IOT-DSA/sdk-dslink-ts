@@ -1,7 +1,7 @@
 import {NodeState} from "../node_state";
 import {Responder} from "../responder";
 import {Response} from "../response";
-import {ACK_WAIT_COUNT} from "../../common/connection_handler";
+import {DSA_CONFIG} from "../../common/connection_handler";
 import {StreamStatus} from "../../common/interfaces";
 
 export class ListResponse extends Response {
@@ -140,7 +140,7 @@ export class ListResponse extends Response {
     if (this._sendingAfterAck) {
       return;
     }
-    if (this._waitingAckCount > ACK_WAIT_COUNT) {
+    if (this._waitingAckCount > DSA_CONFIG.ackWaitCount) {
       this._sendingAfterAck = true;
       return;
     }
