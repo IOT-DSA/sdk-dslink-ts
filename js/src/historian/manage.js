@@ -12,8 +12,8 @@ async;
     realName: string = NodeNamer.createName(name);
     var p = new Path(path);
     _link.addNode("${p.parentPath}/${realName}", {
-        r, "$is": "watchGroup",
-        r, "$name": name
+        "$is": "watchGroup",
+        "$name": name
     });
     _link.save();
 }
@@ -27,9 +27,9 @@ async;
     name: string = params["Name"];
     realName: string = NodeNamer.createName(name);
     _link.addNode("/${realName}", {
-        r, "$is": "database",
-        r, "$name": name,
-        r, "$$db_config": params
+        "$is": "database",
+        "$name": name,
+        "$$db_config": params
     });
     _link.save();
 }
@@ -46,10 +46,10 @@ async;
     var targetPath = "${p.parentPath}/${rp}";
     var node = await _link.requester.getRemoteNode(wp);
     _link.addNode(targetPath, {
-        r, "$name": wp,
-        r, "$path": wp,
-        r, "$is": "watchPath",
-        r, "$type": node.configs[r], "$type": 
+        "$name": wp,
+        "$path": wp,
+        "$is": "watchPath",
+        "$type": node.configs["$type"]
     });
     _link.save();
 }

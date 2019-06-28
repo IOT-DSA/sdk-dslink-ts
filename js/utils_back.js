@@ -239,7 +239,6 @@ this(new Duration(hours, hours));
 int;
 get;
 inMilliseconds => duration.inMilliseconds;
-void dispose();
 class FunctionDisposable extends Disposable {
 }
 exports.FunctionDisposable = FunctionDisposable;

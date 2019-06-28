@@ -8,11 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 class BroadcastStreamController {
     get stream() { return this._stream; }
-    BroadcastStreamController([], , onStartListen) { }
+    BroadcastStreamController([onStartListen]) { }
 }
 (),
-    void onAllCancel(),
-    void onListen(callback(value, T)),
+    onAllCancel(),
+    onListen(callback(value, T)),
     sync;
 boolean = false;
 {
@@ -137,7 +137,7 @@ __decorate([
     override
 ], CachedStreamWrapper.prototype, "Stream", null);
 (subscription) => ,
-    void onCancel(subscription, StreamSubscription());
+    onCancel(subscription, StreamSubscription());
 {
     return this;
 }
@@ -147,9 +147,9 @@ boolean;
 {
     return true;
 }
-StreamSubscription < T > listen(void onData(event, T), {
+StreamSubscription < T > listen(onData(event, T), {
     onError: Function,
-    void: onDone(),
+    onDone() { },
     boolean, cancelOnError
 });
 {

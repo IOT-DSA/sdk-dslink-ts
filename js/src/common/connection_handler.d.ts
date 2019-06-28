@@ -1,7 +1,9 @@
 import { ConnectionChannel, ConnectionProcessor, ProcessorResult } from "./interfaces";
 import { StreamSubscription } from "../utils/async";
-export declare const ACK_WAIT_COUNT = 16;
-export declare const defaultCacheSize = 256;
+export declare const DSA_CONFIG: {
+    ackWaitCount: number;
+    defaultCacheSize: number;
+};
 export declare abstract class ConnectionHandler {
     /** @ignore */
     _conn: ConnectionChannel;

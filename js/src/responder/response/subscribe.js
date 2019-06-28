@@ -1,402 +1,340 @@
 "use strict";
 // part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
-class RespSubscribeListener {
-    close() {
-        if (callback != null) {
-            node.unsubscribe(callback);
-            callback = null;
-        }
+const value_1 = require("../../common/value");
+const response_1 = require("../response");
+const connection_handler_1 = require("../../common/connection_handler");
+const Denque = require("denque");
+class SubscribeResponse extends response_1.Response {
+    constructor(responder, rid) {
+        super(responder, rid, 'subscribe');
+        this.subscriptions = new Map();
+        this.subsriptionids = new Map();
+        this.changed = new Set();
+        this._waitingAckCount = 0;
+        this._lastWaitingAckId = -1;
+        this._sendingAfterAck = false;
     }
-}
-exports.RespSubscribeListener = RespSubscribeListener;
-class SubscribeResponse extends Response {
-}
-exports.SubscribeResponse = SubscribeResponse;
-(responder, rid, 'subscribe');
-subscriptions: {
-    [key, string];
-    RespSubscribeController;
-}
-new { [key]: string, RespSubscribeController }();
-subsriptionids: object < int, RespSubscribeController > ;
-new object();
-changed: LinkedHashSet < RespSubscribeController > ;
-new LinkedHashSet();
-add(path, string, node, LocalNode, sid, number, qos, number);
-RespSubscribeController;
-{
-    controller: RespSubscribeController;
-    if (subscriptions[path] != null) {
-        controller = subscriptions[path];
-        if (controller.sid != sid) {
-            if (controller.sid >= 0) {
-                subsriptionids.remove(controller.sid);
+    add(path, node, sid, qos) {
+        let subscriber;
+        if (this.subscriptions.get(path) != null) {
+            subscriber = this.subscriptions.get(path);
+            if (subscriber.sid !== sid) {
+                if (subscriber.sid >= 0) {
+                    this.subsriptionids.delete(subscriber.sid);
+                }
+                subscriber.sid = sid;
+                if (sid >= 0) {
+                    this.subsriptionids.set(sid, subscriber);
+                }
             }
-            controller.sid = sid;
-            if (sid >= 0) {
-                subsriptionids[sid] = controller;
+            subscriber.qosLevel = qos;
+            if (sid > -1 && subscriber.lastValue != null) {
+                this.subscriptionChanged(subscriber);
             }
-        }
-        controller.qosLevel = qos;
-        if (sid > -1 && controller.lastValue != null) {
-            subscriptionChanged(controller);
-        }
-    }
-    else {
-        let permission = responder.nodeProvider.permissions
-            .getPermission(node.path, responder);
-        controller = new RespSubscribeController(this, node, sid, permission >= Permission.READ, qos);
-        subscriptions[path] = controller;
-        if (sid >= 0) {
-            subsriptionids[sid] = controller;
-        }
-        if (responder._traceCallbacks != null) {
-            let update = new ResponseTrace(path, 'subscribe', 0, '+');
-            for (ResponseTraceCallback; callback; of)
-                responder._traceCallbacks;
-            {
-                callback(update);
-            }
-        }
-    }
-    return controller;
-}
-remove(sid, number);
-{
-    if (subsriptionids[sid] != null) {
-        let controller = subsriptionids[sid];
-        subsriptionids[sid].destroy();
-        subsriptionids.remove(sid);
-        subscriptions.remove(controller.node.path);
-        if (responder._traceCallbacks != null) {
-            let update = new ResponseTrace(controller.node.path, 'subscribe', 0, '-');
-            for (ResponseTraceCallback; callback; of)
-                responder._traceCallbacks;
-            {
-                callback(update);
-            }
-        }
-        if (subsriptionids.isEmpty) {
-            _waitingAckCount = 0;
-        }
-    }
-}
-subscriptionChanged(controller, RespSubscribeController);
-{
-    changed.add(controller);
-    prepareSending();
-}
-startSendingData(currentTime, number, waitingAckId, number);
-{
-    _pendingSending = false;
-    if (waitingAckId != -1) {
-        _waitingAckCount++;
-        _lastWaitingAckId = waitingAckId;
-    }
-    updates: List = new List();
-    for (RespSubscribeController; controller; of)
-        changed;
-    {
-        updates.addAll(controller.process(waitingAckId));
-    }
-    responder.updateResponse(this, updates);
-    changed.clear();
-}
-_waitingAckCount: number = 0;
-_lastWaitingAckId: number = -1;
-ackReceived(receiveAckId, number, startTime, number, currentTime, number);
-{
-    if (receiveAckId == this._lastWaitingAckId) {
-        _waitingAckCount = 0;
-    }
-    else {
-        _waitingAckCount--;
-    }
-    subscriptions.forEach((path, controller) => {
-        if (controller._qosLevel > 0) {
-            controller.onAck(receiveAckId);
-        }
-    });
-    if (this._sendingAfterAck) {
-        _sendingAfterAck = false;
-        prepareSending();
-    }
-}
-_sendingAfterAck: boolean = false;
-prepareSending();
-{
-    if (this._sendingAfterAck) {
-        return;
-    }
-    if (this._waitingAckCount > ConnectionProcessor.ACK_WAIT_COUNT) {
-        _sendingAfterAck = true;
-        return;
-    }
-    if (responder.connection == null) {
-        // don't pend send, when requester is offline
-        return;
-    }
-    if (!_pendingSending) {
-        _pendingSending = true;
-        responder.addProcessor(this);
-    }
-}
-_close();
-{
-    pendingControllers: List;
-    subscriptions.forEach((path, controller) => {
-        if (controller._qosLevel < 2) {
-            controller.destroy();
         }
         else {
-            controller.sid = -1;
-            if (pendingControllers == null) {
-                pendingControllers = new List();
+            subscriber = new ValueSubscriber(this, node, sid, qos);
+            this.subscriptions.set(path, subscriber);
+            if (sid >= 0) {
+                this.subsriptionids.set(sid, subscriber);
             }
-            pendingControllers.add(controller);
         }
-    });
-    subscriptions.clear();
-    if (pendingControllers != null) {
-        for (RespSubscribeController; controller; of)
-            pendingControllers;
-        {
-            subscriptions[controller.node.path] = controller;
+        return subscriber;
+    }
+    remove(sid) {
+        if (this.subsriptionids.get(sid) != null) {
+            let subscriber = this.subsriptionids.get(sid);
+            this.subsriptionids.get(sid).destroy();
+            this.subsriptionids.delete(sid);
+            this.subscriptions.delete(subscriber.node.path);
+            if (this.subsriptionids.size === 0) {
+                this._waitingAckCount = 0;
+            }
         }
     }
-    subsriptionids.clear();
-    _waitingAckCount = 0;
-    _lastWaitingAckId = -1;
-    _sendingAfterAck = false;
-    _pendingSending = false;
+    subscriptionChanged(subscriber) {
+        this.changed.add(subscriber);
+        this.prepareSending();
+    }
+    startSendingData(currentTime, waitingAckId) {
+        this._pendingSending = false;
+        if (waitingAckId !== -1) {
+            this._waitingAckCount++;
+            this._lastWaitingAckId = waitingAckId;
+        }
+        let updates = [];
+        for (let subscriber of this.changed) {
+            updates = updates.concat(subscriber.process(waitingAckId));
+        }
+        this.responder.updateResponse(this, updates);
+        this.changed.clear();
+    }
+    ackReceived(receiveAckId, startTime, currentTime) {
+        if (receiveAckId === this._lastWaitingAckId) {
+            this._waitingAckCount = 0;
+        }
+        else {
+            this._waitingAckCount--;
+        }
+        for (let [path, subscriber] of this.subscriptions) {
+            if (subscriber._qosLevel > 0) {
+                subscriber.onAck(receiveAckId);
+            }
+        }
+        if (this._sendingAfterAck) {
+            this._sendingAfterAck = false;
+            this.prepareSending();
+        }
+    }
+    prepareSending() {
+        if (this._sendingAfterAck) {
+            return;
+        }
+        if (this._waitingAckCount > connection_handler_1.DSA_CONFIG.ackWaitCount) {
+            this._sendingAfterAck = true;
+            return;
+        }
+        if (this.responder.connection == null) {
+            // don't pend send, when requester is offline
+            return;
+        }
+        if (!this._pendingSending) {
+            this._pendingSending = true;
+            this.responder.addProcessor(this);
+        }
+    }
+    _close() {
+        let pendingControllers;
+        for (let [path, subscriber] of this.subscriptions) {
+            if (subscriber._qosLevel < 2) {
+                subscriber.destroy();
+            }
+            else {
+                subscriber.sid = -1;
+                if (pendingControllers == null) {
+                    pendingControllers = [];
+                }
+                pendingControllers.push(subscriber);
+            }
+        }
+        this.subscriptions.clear();
+        if (pendingControllers != null) {
+            for (let subscriber of pendingControllers) {
+                this.subscriptions.set(subscriber.node.path, subscriber);
+            }
+        }
+        this.subsriptionids.clear();
+        this._waitingAckCount = 0;
+        this._lastWaitingAckId = -1;
+        this._sendingAfterAck = false;
+        this._pendingSending = false;
+    }
 }
-addTraceCallback(_traceCallback, ResponseTraceCallback);
-{
-    subscriptions.forEach((path, controller) => {
-        let update = new ResponseTrace(controller.node.path, 'subscribe', 0, '+');
-        _traceCallback(update);
-    });
-}
-class RespSubscribeController {
-    constructor() {
-        this._permitted = true;
-        this.lastValues = new ValueUpdate[]();
+exports.SubscribeResponse = SubscribeResponse;
+class ValueSubscriber {
+    constructor(response, node, sid, qos) {
+        this.lastValues = [];
         this._qosLevel = -1;
         this._caching = false;
         this.cachingQueue = false;
         this._persist = false;
         this._isCacheValid = true;
-    }
-    set permitted(val) {
-        if (val == this._permitted)
-            return;
-        _permitted = val;
-        if (this._permitted && lastValues.length > 0) {
-            response.subscriptionChanged(this);
+        this.response = response;
+        this.node = node;
+        this.sid = sid;
+        this.qosLevel = qos;
+        node.setSubscriber(this);
+        if (node.lastValueUpdate) {
+            this.addValue(node.lastValueUpdate);
         }
     }
-    set qosLevel(int, v) {
+    set qosLevel(v) {
         if (v < 0 || v > 3)
             v = 0;
-        if (this._qosLevel == v)
+        if (this._qosLevel === v) {
             return;
-        _qosLevel = v;
-        if (waitingValues == null && this._qosLevel > 0) {
-            waitingValues = new ListQueue();
         }
-        caching = (v > 0);
-        cachingQueue = (v > 1);
-        persist = (v > 2);
-        _listener = node.subscribe(addValue, this._qosLevel);
+        this._qosLevel = v;
+        if (this.waitingValues == null && this._qosLevel > 0) {
+            this.waitingValues = new Denque();
+        }
+        this.caching = (v > 0);
+        this.cachingQueue = (v > 1);
+        this.persist = (v > 2);
     }
     set caching(val) {
-        if (val == this._caching)
+        if (val === this._caching)
             return;
-        _caching = val;
-        if (!_caching) {
-            lastValues.length = 0;
+        this._caching = val;
+        if (!this._caching) {
+            this.lastValues.length = 0;
         }
     }
     set persist(val) {
-        if (val == this._persist)
+        if (val === this._persist)
             return;
-        _persist = val;
-        storageM: ISubscriptionResponderStorage = response.responder.storage;
-        if (storageM != null) {
-            if (this._persist) {
-                _storage = storageM.getOrCreateValue(node.path);
-            }
-            else if (this._storage != null) {
-                storageM.destroyValue(node.path);
-                _storage = null;
-            }
+        this._persist = val;
+        // TODO implement qos storage
+        if (this._persist) {
+            // this._storage = storageM.getOrCreateValue(node.path);
         }
-    }
-    RespSubscribeController(response, node, sid, _permitted, let, qos) {
-        this.qosLevel = qos;
-        if (node.valueReady && node.lastValueUpdate != null) {
-            addValue(node.lastValueUpdate);
+        else if (this._storage != null) {
+            // storageM.destroyValue(node.path);
+            this._storage = null;
         }
     }
     addValue(val) {
         val = val.cloneForAckQueue();
         if (this._caching && this._isCacheValid) {
-            lastValues.add(val);
-            let needClearQueue = (lastValues.length > response.responder.maxCacheLength);
-            if (!needClearQueue && !cachingQueue && response._sendingAfterAck && lastValues.length > 1) {
+            this.lastValues.push(val);
+            let needClearQueue = (this.lastValues.length > connection_handler_1.DSA_CONFIG.defaultCacheSize);
+            if (!needClearQueue && !this.cachingQueue && this.response._sendingAfterAck && this.lastValues.length > 1) {
                 needClearQueue = true;
             }
             if (needClearQueue) {
                 // cache is no longer valid, fallback to rollup mode
-                _isCacheValid = false;
-                lastValue = new ValueUpdate(null, ts, '');
-                for (ValueUpdate; update; of)
-                    lastValues;
-                {
-                    lastValue.mergeAdd(update);
+                this._isCacheValid = false;
+                this.lastValue = new value_1.ValueUpdate(null, '');
+                for (let update of this.lastValues) {
+                    this.lastValue.mergeAdd(update);
                 }
-                lastValues.length = 0;
+                this.lastValues.length = 0;
                 if (this._qosLevel > 0) {
-                    if (this._storage != null) {
-                        _storage.setValue(waitingValues, lastValue);
+                    if (this._storage) {
+                        // this._storage.setValue(waitingValues, lastValue);
                     }
-                    waitingValues
-                        ..clear()
-                        ..add(lastValue);
+                    this.waitingValues.clear();
+                    this.waitingValues.push(this.lastValue);
                 }
             }
             else {
-                lastValue = val;
+                this.lastValue = val;
                 if (this._qosLevel > 0) {
-                    waitingValues.add(lastValue);
-                    if (this._storage != null) {
-                        _storage.addValue(lastValue);
+                    this.waitingValues.push(this.lastValue);
+                    if (this._storage) {
+                        // _storage.addValue(lastValue);
                     }
                 }
             }
         }
         else {
-            if (lastValue != null) {
-                lastValue = new ValueUpdate.merge(lastValue, val);
+            if (this.lastValue) {
+                this.lastValue = value_1.ValueUpdate.merge(this.lastValue, val);
             }
             else {
-                lastValue = val;
+                this.lastValue = val;
             }
             if (this._qosLevel > 0) {
-                if (this._storage != null) {
-                    _storage.setValue(waitingValues, lastValue);
+                if (this._storage) {
+                    // _storage.setValue(waitingValues, lastValue);
                 }
-                waitingValues
-                    ..clear()
-                    ..add(lastValue);
+                this.waitingValues.clear();
+                this.waitingValues.push(this.lastValue);
             }
         }
-        // TODO, don't allow this to be called from same controller more often than 100ms
+        // TODO, don't allow this to be called from same subscriber more often than 100ms
         // the first response can happen ASAP, but
-        if (this._permitted && sid > -1) {
-            response.subscriptionChanged(this);
+        if (this.sid > -1) {
+            this.response.subscriptionChanged(this);
         }
     }
     process(waitingAckId) {
-        rslts: List = new List();
+        let rslts = [];
         if (this._caching && this._isCacheValid) {
-            for (ValueUpdate; lastValue; of)
-                lastValues;
-            {
-                rslts.add([sid, lastValue.value, lastValue.ts]);
+            for (let lastValue of this.lastValues) {
+                rslts.push([this.sid, lastValue.value, lastValue.ts]);
             }
             if (this._qosLevel > 0) {
-                for (ValueUpdate; update; of)
-                    lastValues;
-                {
+                for (let update of this.lastValues) {
                     update.waitingAck = waitingAckId;
                 }
             }
-            lastValues.length = 0;
+            this.lastValues.length = 0;
         }
         else {
-            if (lastValue.count > 1 || lastValue.status != null) {
-                object;
-                m = lastValue.toMap();
-                m['sid'] = sid;
-                rslts.add(m);
+            if (this.lastValue.count > 1 || this.lastValue.status) {
+                let m = this.lastValue.toMap();
+                m['sid'] = this.sid;
+                rslts.push(m);
             }
             else {
-                rslts.add([sid, lastValue.value, lastValue.ts]);
+                rslts.push([this.sid, this.lastValue.value, this.lastValue.ts]);
             }
             if (this._qosLevel > 0) {
-                lastValue.waitingAck = waitingAckId;
+                this.lastValue.waitingAck = waitingAckId;
             }
-            _isCacheValid = true;
+            this._isCacheValid = true;
         }
-        lastValue = null;
+        this.lastValue = null;
         return rslts;
     }
     onAck(ackId) {
-        if (waitingValues.isEmpty) {
+        if (this.waitingValues.length === 0) {
             return;
         }
-        valueRemoved: boolean = false;
-        if (!waitingValues.isEmpty && waitingValues.first.waitingAck != ackId) {
+        let valueRemoved = false;
+        if (!this.waitingValues.isEmpty && this.waitingValues.peekFront().waitingAck !== ackId) {
             let matchUpdate;
-            for (ValueUpdate; update; of)
-                waitingValues;
-            {
-                if (update.waitingAck == ackId) {
+            let waitingLen = this.waitingValues.length;
+            for (let i = 0; i < waitingLen; ++i) {
+                let update = this.waitingValues.peekAt(i);
+                if (update.waitingAck === ackId) {
                     matchUpdate = update;
                     break;
                 }
             }
             if (matchUpdate != null) {
-                while (!waitingValues.isEmpty && waitingValues.first != matchUpdate) {
-                    let removed = waitingValues.removeFirst();
+                while (!this.waitingValues.isEmpty && this.waitingValues.peekFront() !== matchUpdate) {
+                    let removed = this.waitingValues.shift();
                     if (this._storage != null) {
-                        _storage.removeValue(removed);
-                        valueRemoved = true;
+                        // _storage.removeValue(removed);
+                        // valueRemoved = true;
                     }
                 }
             }
         }
-        while (!waitingValues.isEmpty && waitingValues.first.waitingAck == ackId) {
-            let removed = waitingValues.removeFirst();
+        while (!this.waitingValues.isEmpty && this.waitingValues.peekFront().waitingAck === ackId) {
+            let removed = this.waitingValues.shift();
             if (this._storage != null) {
-                _storage.removeValue(removed);
-                valueRemoved = true;
+                // _storage.removeValue(removed);
+                // valueRemoved = true;
             }
         }
-        if (valueRemoved && this._storage != null) {
-            _storage.valueRemoved(waitingValues);
-        }
+        // if (valueRemoved && this._storage != null) {
+        //   _storage.valueRemoved(this.waitingValues);
+        // }
     }
     resetCache(values) {
         if (this._caching) {
-            if (lastValues.length > 0 && lastValues.first.equals(values.last)) {
-                lastValues.removeAt(0);
+            if (this.lastValues.length > 0 && this.lastValues[0].equals(values[values.length - 1])) {
+                this.lastValues.shift();
             }
-            lastValues = values..addAll(lastValues);
-            if (waitingValues != null) {
-                waitingValues.clear();
-                waitingValues.addAll(lastValues);
+            this.lastValues = values.concat(this.lastValues);
+            if (this.waitingValues != null) {
+                this.waitingValues.clear();
+                for (let value of this.lastValues) {
+                    this.waitingValues.push(value);
+                }
             }
         }
         else {
-            lastValues.length = 0;
-            if (waitingValues != null) {
-                waitingValues.clear();
-                waitingValues.add(values.last);
+            this.lastValues.length = 0;
+            if (this.waitingValues != null) {
+                this.waitingValues.clear();
+                this.waitingValues.push(values[values.length - 1]);
             }
         }
-        lastValue = values.last;
+        this.lastValue = values[values.length - 1];
     }
     destroy() {
-        if (this._storage != null) {
-            let storageM = response.responder.storage;
-            storageM.destroyValue(node.path);
-            _storage = null;
+        if (this._storage) {
+            // let storageM: ISubscriptionResponderStorage = response.responder.storage;
+            // storageM.destroyValue(node.path);
+            // _storage = null;
         }
-        _listener.close();
+        this.node.setSubscriber(null);
     }
 }
-exports.RespSubscribeController = RespSubscribeController;
+exports.ValueSubscriber = ValueSubscriber;
 //# sourceMappingURL=subscribe.js.map

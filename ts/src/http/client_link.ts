@@ -10,6 +10,9 @@ import url from "url";
 import {Responder} from "../responder/responder";
 import {PrivateKey, sha256} from "../crypto/pk";
 import {DSA_VERSION} from "../../utils";
+import {LocalNode, NodeProvider} from "../responder/node_state";
+
+export {RootNode} from "../responder/node/RootNode";
 
 
 export class HttpClientLink extends ClientLink {
@@ -25,10 +28,12 @@ export class HttpClientLink extends ClientLink {
   readonly dsId: string;
   readonly privateKey: PrivateKey;
 
-  tokenHash: string;
+  readonly nodeProvider: NodeProvider;
 
-  requester: Requester;
-  responder: Responder;
+  readonly requester: Requester;
+  readonly responder: Responder;
+
+  tokenHash: string;
 
   useStandardWebSocket: boolean = true;
   readonly strictTls: boolean;
@@ -62,13 +67,12 @@ export class HttpClientLink extends ClientLink {
   format: string = 'json';
 
   constructor(conn: string, dsIdPrefix: string, privateKey: PrivateKey, options: {
-    // nodeProvider?: NodeProvider,
+    rootNode?: LocalNode,
     isRequester: boolean,
-    isResponder: boolean,
     token?: string,
     linkData?: {[key: string]: any},
     format?: string[] | string
-  } = {isRequester: false, isResponder: true}) {
+  } = {isRequester: false}) {
     super();
     this._conn = conn;
     this.privateKey = privateKey;
@@ -89,8 +93,10 @@ export class HttpClientLink extends ClientLink {
     }
 
 
-    if (options.isResponder) {
-      // this.responder = new Responder(this.nodeProvider);
+    if (options.rootNode) {
+      console.log('root');
+      this.nodeProvider = options.rootNode.provider;
+      this.responder = new Responder(this.nodeProvider);
     }
 
     if (options.token != null && options.token.length > 16) {

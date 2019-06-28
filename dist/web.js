@@ -394,7 +394,7 @@ Denque.prototype.remove = function remove(index, count) {
     return removed;
   }
 
-  if (index < size / 2) {
+  if (i < size / 2) {
     this._head = this._head + index + count + len & this._capacityMask;
 
     for (k = index; k > 0; k--) {
@@ -407,6 +407,8 @@ Denque.prototype.remove = function remove(index, count) {
       this._list[i = i - 1 + len & this._capacityMask] = void 0;
       del_count--;
     }
+
+    if (index < 0) this._tail = i;
   } else {
     this._tail = i;
     i = i + count + len & this._capacityMask;
@@ -5677,12 +5679,6 @@ DSError.DISCONNECTED = new DSError("disconnected", {
 });
 DSError.FAILED = new DSError("failed");
 exports.DSError = DSError;
-
-class Unspecified {}
-
-exports.Unspecified = Unspecified; /// Marks something as being unspecified.
-
-const unspecified = new Unspecified(); /// Unspecified means that something has never been set.
 },{"denque":"DPC0","../utils/codec":"TRmg"}],"bajV":[function(require,module,exports) {
 "use strict";
 
@@ -5760,6 +5756,10 @@ class Stream {
     if (!this._cached) {
       this._value = undefined;
     }
+  }
+
+  hasListener() {
+    return this._listeners.size !== 0;
   }
 
   close() {
@@ -5926,8 +5926,10 @@ Object.defineProperty(exports, "__esModule", {
 
 const interfaces_1 = require("./interfaces");
 
-exports.ACK_WAIT_COUNT = 16;
-exports.defaultCacheSize = 256;
+exports.DSA_CONFIG = {
+  ackWaitCount: 16,
+  defaultCacheSize: 256
+};
 
 class ConnectionHandler {
   constructor() {
@@ -6061,7 +6063,7 @@ Object.defineProperty(exports, "__esModule", {
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
 
 class Node {
-  constructor() {
+  constructor(profileName = 'node') {
     /// Node Attributes
     this.attributes = new Map(); /// Node Configs
 
@@ -6069,7 +6071,7 @@ class Node {
     /// object of Child Name to Child Node
 
     this.children = new Map();
-    this.configs.set('$is', 'node');
+    this.configs.set('$is', profileName);
   }
 
   static getDisplayName(nameOrPath) {
@@ -6248,6 +6250,8 @@ class Node {
 
     return rslt;
   }
+
+  destroy() {}
 
 }
 

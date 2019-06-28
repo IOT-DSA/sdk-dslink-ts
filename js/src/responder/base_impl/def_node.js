@@ -7,9 +7,7 @@ class DefinitionNode extends LocalNodeImpl {
 }
 exports.DefinitionNode = DefinitionNode;
 (path) => {
-    this.configs[r];
-    "$is";
-    "static";
+    this.configs["$is"] = "static";
 };
 _invokeCallback: InvokeCallback;
 setInvokeCallback(callback, InvokeCallback);

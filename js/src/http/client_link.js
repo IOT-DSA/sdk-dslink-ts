@@ -12,10 +12,13 @@ const node_1 = require("../common/node");
 const axios_1 = __importDefault(require("axios"));
 const codec_1 = require("../utils/codec");
 const url_1 = __importDefault(require("url"));
+const responder_1 = require("../responder/responder");
 const pk_1 = require("../crypto/pk");
 const utils_1 = require("../../utils");
+var RootNode_1 = require("../responder/node/RootNode");
+exports.RootNode = RootNode_1.RootNode;
 class HttpClientLink extends interfaces_1.ClientLink {
-    constructor(conn, dsIdPrefix, privateKey, options = { isRequester: false, isResponder: true }) {
+    constructor(conn, dsIdPrefix, privateKey, options = { isRequester: false }) {
         super();
         this._onReadyCompleter = new async_1.Completer();
         this.useStandardWebSocket = true;
@@ -42,8 +45,10 @@ class HttpClientLink extends interfaces_1.ClientLink {
         if (options.isRequester) {
             this.requester = new requester_1.Requester();
         }
-        if (options.isResponder) {
-            // this.responder = new Responder(this.nodeProvider);
+        if (options.rootNode) {
+            console.log('root');
+            this.nodeProvider = options.rootNode.provider;
+            this.responder = new responder_1.Responder(this.nodeProvider);
         }
         if (options.token != null && options.token.length > 16) {
             // pre-generate tokenHash

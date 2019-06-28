@@ -55,7 +55,7 @@ export class Responder extends ConnectionHandler {
 
   disabled: boolean = false;
 
-  onData(list: any[]) {
+  onData = (list: any[]) => {
     if (this.disabled) {
       return;
     }
@@ -64,7 +64,7 @@ export class Responder extends ConnectionHandler {
         this._onReceiveRequest(resp);
       }
     }
-  }
+  };
 
   _onReceiveRequest(m: any) {
     let method = m['method'];

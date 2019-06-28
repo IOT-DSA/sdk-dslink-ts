@@ -1,43 +1,37 @@
 "use strict";
-// part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
+const interfaces_1 = require("../common/interfaces");
 class Response {
-    constructor() {
-        this._sentStreamStatus = StreamStatus.initialize;
-        /// close the response now, no need to send more response update
+    constructor(responder, rid, type) {
+        this._sentStreamStatus = interfaces_1.StreamStatus.initialize;
+        this._pendingSending = false;
+        this.responder = responder;
+        this.rid = rid;
+        this.type = type;
     }
-    get sentStreamStatus() { return this._sentStreamStatus; }
-    ;
+    get sentStreamStatus() {
+        return this._sentStreamStatus;
+    }
     /// close the request from responder side and also notify the requester
     close(err = null) {
-        _sentStreamStatus = StreamStatus.closed;
-        responder.closeResponse(rid, error, err, response, this);
+        this._sentStreamStatus = interfaces_1.StreamStatus.closed;
+        this.responder.closeResponse(this.rid, this, err);
+    }
+    /// close the response now, no need to send more response update
+    _close() {
+    }
+    prepareSending() {
+        if (!this._pendingSending) {
+            this._pendingSending = true;
+            this.responder.addProcessor(this);
+        }
+    }
+    startSendingData(currentTime, waitingAckId) {
+        this._pendingSending = false;
+    }
+    ackReceived(receiveAckId, startTime, currentTime) {
+        // TODO: implement ackReceived
     }
 }
 exports.Response = Response;
-/// close the response now, no need to send more response update
-void _close();
-{ }
-prepareSending();
-{
-    if (!_pendingSending) {
-        _pendingSending = true;
-        responder.addProcessor(this);
-    }
-}
-_pendingSending: boolean = false;
-startSendingData(currentTime, number, waitingAckId, number);
-{
-    _pendingSending = false;
-}
-ackReceived(receiveAckId, number, startTime, number, currentTime, number);
-{
-    // TODO: implement ackReceived
-}
-/// for the broker trace action
-getTraceData(change, string = '+');
-ResponseTrace;
-{
-    return null;
-}
 //# sourceMappingURL=response.js.map

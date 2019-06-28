@@ -36,7 +36,7 @@ hasSync(key, string);
 string;
 removeSync(key, string);
 /// Store a key value pair.
-void storeSync(key, string, value, string);
+storeSync(key, string, value, string);
 /// Storage for DSA in Local Storage
 class LocalDataStorage extends DataStorage {
     constructor() {

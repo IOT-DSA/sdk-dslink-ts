@@ -6,16 +6,16 @@ async;
     _historian = adapter;
     _link = new LinkProvider(args, "${name}-", isRequester, true, autoInitialize, false, nodes, {
         "addDatabase": {
-            r, "$name": "Add Database",
-            r, "$invokable": "write",
-            r, "$params": [
+            "$name": "Add Database",
+            "$invokable": "write",
+            "$params": [
                 {
                     "name": "Name",
                     "type": "string",
                     "placeholder": "HistoryData"
                 }
             ]..addAll(adapter.getCreateDatabaseParameters()),
-            r, "$is": "addDatabase"
+            "$is": "addDatabase"
         }
     }, profiles, {
         "createWatchGroup": (path) => new CreateWatchGroupNode(path),

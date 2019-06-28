@@ -23,6 +23,7 @@ export declare class Node {
     getSimpleMap(): {
         [key: string]: any;
     };
+    destroy(): void;
 }
 export declare class Path {
     /** @ignore */
@@ -35,6 +36,10 @@ export declare class Path {
     static getValidNodePath(path: any, basePath?: string): Path;
     static getValidAttributePath(path: any, basePath?: string): Path;
     static getValidConfigPath(path: any, basePath?: string): Path;
+    /**
+     * concat parent path with child name without validation
+     */
+    static concat(parentPath: string, name: string): string;
     path: string;
     parentPath: string;
     /**  Get the parent of this path. */

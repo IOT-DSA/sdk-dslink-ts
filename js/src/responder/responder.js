@@ -1,567 +1,330 @@
 "use strict";
-// part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// a responder for one connection
 const connection_handler_1 = require("../common/connection_handler");
+const permission_1 = require("../common/permission");
+const subscribe_1 = require("./response/subscribe");
+const response_1 = require("./response");
+const interfaces_1 = require("../common/interfaces");
+const node_1 = require("../common/node");
+const list_1 = require("./response/list");
+const invoke_1 = require("./response/invoke");
 class Responder extends connection_handler_1.ConnectionHandler {
-    constructor() {
-        super(...arguments);
-        this.maxCacheLength = ConnectionProcessor.defaultCacheSize;
+    constructor(nodeProvider) {
+        super();
+        // maxCacheLength:number = ConnectionProcessor.defaultCacheSize;
+        // storage: ISubscriptionResponderStorage;
         /// max permisison of the remote requester, this requester won't be able to do anything with higher
         /// permission even when other permission setting allows it to.
         /// This feature allows reverse proxy to override the permission for each connection with url parameter 
-        this.maxPermission = Permission.CONFIG;
-        /// list of permission group
-        this.groups = [];
-    }
-    initStorage(ISubscriptionResponderStorage, s, nodes) {
-        if (storage != null) {
-            storage.destroy();
-        }
-        storage = s;
-        if (storage != null && nodes != null) {
-            for (ISubscriptionNodeStorage; node; of)
-                nodes;
-            {
-                var values = node.getLoadedValues();
-                let localnode = nodeProvider.getOrCreateNode(node.path, false);
-                let controller = this._subscription.add(node.path, localnode, -1, node.qos);
-                if (values.isNotEmpty) {
-                    controller.resetCache(values);
-                }
-            }
-        }
-    }
-    updateGroups(vals, ignoreId = false) {
-        if (ignoreId) {
-            groups = vals.where((str) => str != '').toList();
-        }
-        else {
-            groups = [reqId]..addAll(vals.where((str) => str != ''));
-        }
-    }
-}
-exports.Responder = Responder;
-, Response > ;
-new object();
-get;
-openResponseCount();
-number;
-{
-    return this._responses.length;
-}
-get;
-subscriptionCount();
-number;
-{
-    return this._subscription.subscriptions.length;
-}
-_subscription: SubscribeResponse;
-nodeProvider: NodeProvider;
-Responder(this.nodeProvider, [this.reqId]);
-{
-    _subscription = new SubscribeResponse(this, 0);
-    _responses[0] = this._subscription;
-    // TODO: load reqId
-    if (reqId != null) {
-        groups = [reqId];
-    }
-}
-addResponse(response, Response, path, Path = null, parameters, object = null);
-Response;
-{
-    if (response._sentStreamStatus != StreamStatus.closed) {
-        _responses[response.rid] = response;
-        if (this._traceCallbacks != null) {
-            let update = response.getTraceData();
-            for (ResponseTraceCallback; callback; of)
-                _traceCallbacks;
-            {
-                callback(update);
-            }
-        }
-    }
-    else {
-        if (this._traceCallbacks != null) {
-            let update = response.getTraceData(''); // no logged change is needed
-            for (ResponseTraceCallback; callback; of)
-                _traceCallbacks;
-            {
-                callback(update);
-            }
-        }
-    }
-    return response;
-}
-void traceResponseRemoved(response, Response);
-{
-    update: ResponseTrace = response.getTraceData('-');
-    for (ResponseTraceCallback; callback; of)
-        _traceCallbacks;
-    {
-        callback(update);
-    }
-}
-disabled: boolean = false;
-onData(list, List);
-{
-    if (disabled) {
-        return;
-    }
-    for (object; resp; of)
-        list;
-    {
-        if ((resp != null && resp instanceof Object)) {
-            _onReceiveRequest(resp);
-        }
-    }
-}
-_onReceiveRequest(object, m);
-{
-    method: object = m['method'];
-    if (m['rid'])
-        is;
-    int;
-    {
-        if (method == null) {
-            updateInvoke(m);
-            return;
-        }
-        else {
-            if (this._responses.hasOwnProperty(m['rid'])) {
-                if (method == 'close') {
-                    close(m);
-                }
-                // when rid is invalid, nothing needs to be sent back
+        this.maxPermission = permission_1.Permission.CONFIG;
+        this._responses = new Map();
+        this.disabled = false;
+        this.onData = (list) => {
+            if (this.disabled) {
                 return;
             }
-            switch (method) {
-                case 'list':
-                    list(m);
-                    return;
-                case 'subscribe':
-                    subscribe(m);
-                    return;
-                case 'unsubscribe':
-                    unsubscribe(m);
-                    return;
-                case 'invoke':
-                    invoke(m);
-                    return;
-                case 'set':
-                    set(m);
-                    return;
-                case 'remove':
-                    remove(m);
-                    return;
-            }
-        }
-    }
-    closeResponse(m['rid'], error, DSError.INVALID_METHOD);
-}
-/// close the response from responder side and notify requester
-closeResponse(rid, number, { response: Response, DSError, error });
-{
-    if (response != null) {
-        if (_responses[response.rid] != response) {
-            // this response is no longer valid
-            return;
-        }
-        response._sentStreamStatus = StreamStatus.closed;
-        rid = response.rid;
-    }
-    object;
-    m = { 'rid': rid, 'stream': StreamStatus.closed };
-    if (error != null) {
-        m['error'] = error.serialize();
-    }
-    _responses.remove(rid);
-    addToSendList(m);
-}
-void updateResponse(response, Response, updates, List, {
-    let, streamStatus: string,
-    let, columns: dynamic[],
-    let, meta: object,
-    void: handleMap(object, m)
-});
-{
-    if (_responses[response.rid] == response) {
-        object;
-        m = { 'rid': response.rid };
-        if (streamStatus != null && streamStatus != response._sentStreamStatus) {
-            response._sentStreamStatus = streamStatus;
-            m['stream'] = streamStatus;
-        }
-        if (columns != null) {
-            m['columns'] = columns;
-        }
-        if (updates != null) {
-            m['updates'] = updates;
-        }
-        if (meta != null) {
-            m['meta'] = meta;
-        }
-        if (handleMap != null) {
-            handleMap(m);
-        }
-        addToSendList(m);
-        if (response._sentStreamStatus == StreamStatus.closed) {
-            _responses.remove(response.rid);
-            if (this._traceCallbacks != null) {
-                traceResponseRemoved(response);
-            }
-        }
-    }
-}
-list(object, m);
-{
-    path: Path = Path.getValidNodePath(m['path']);
-    if (path != null && path.isAbsolute) {
-        let rid = m['rid'];
-        _getNode(path, (node) => {
-            addResponse(new ListResponse(this, rid, node), path);
-        }, (e, stack) => {
-            var error = new DSError("nodeError", msg, e.toString(), detail, stack.toString());
-            closeResponse(m['rid'], error, error);
-        });
-    }
-    else {
-        closeResponse(m['rid'], error, DSError.INVALID_PATH);
-    }
-}
-subscribe(object, m);
-{
-    if (Array.isArray(m['paths'])) {
-        for (object; p; of)
-            m['paths'];
-        {
-            let pathstr;
-            let qos = 0;
-            let sid = -1;
-            if ((p != null && p instanceof Object)) {
-                if (typeof p['path'] === 'string') {
-                    pathstr = p['path'];
-                }
-                else {
-                    continue;
-                }
-                if (p['sid'])
-                    is;
-                int;
-                {
-                    sid = p['sid'];
-                }
-                {
-                    continue;
-                }
-                if (p['qos'])
-                    is;
-                int;
-                {
-                    qos = p['qos'];
+            for (let resp of list) {
+                if (resp && resp instanceof Object) {
+                    this._onReceiveRequest(resp);
                 }
             }
-            let path = Path.getValidNodePath(pathstr);
-            if (path != null && path.isAbsolute) {
-                _getNode(path, (node) => {
-                    _subscription.add(path.path, node, sid, qos);
-                    closeResponse(m['rid']);
-                }, (e, stack) => {
-                    var error = new DSError("nodeError", msg, e.toString(), detail, stack.toString());
-                    closeResponse(m['rid'], error, error);
-                });
+        };
+        this.nodeProvider = nodeProvider;
+        this._subscription = new subscribe_1.SubscribeResponse(this, 0);
+        this._responses.set(0, this._subscription);
+    }
+    get openResponseCount() {
+        return this._responses.size;
+    }
+    get subscriptionCount() {
+        return this._subscription.subscriptions.size;
+    }
+    addResponse(response) {
+        if (response._sentStreamStatus !== interfaces_1.StreamStatus.closed) {
+            this._responses.set(response.rid, response);
+        }
+        return response;
+    }
+    _onReceiveRequest(m) {
+        let method = m['method'];
+        if (typeof m['rid'] === 'number') {
+            if (method == null) {
+                this.updateInvoke(m);
+                return;
             }
             else {
-                closeResponse(m['rid']);
-            }
-        }
-    }
-    else {
-        closeResponse(m['rid'], error, DSError.INVALID_PATHS);
-    }
-}
-_getNode(Path, p, func, Taker < LocalNode > , onError, TwoTaker(), {
-    try: {
-        let, node: LocalNode = nodeProvider.getOrCreateNode(p.path, false),
-        if(node) { }, instanceof: WaitForMe
-    }
-});
-{
-    node.onLoaded.then((n) => {
-        if (n instanceof LocalNode) {
-            node = n;
-        }
-        func(node);
-    }).catchError((e, stack) => {
-        if (onError != null) {
-            onError(e, stack);
-        }
-    });
-}
-{
-    func(node);
-}
-try { }
-catch (e) { }
-stack;
-{
-    if (onError != null) {
-        onError(e, stack);
-    }
-    else {
-        rethrow;
-    }
-}
-unsubscribe(object, m);
-{
-    if (Array.isArray(m['sids'])) {
-        for (object; sid; of)
-            m['sids'];
-        {
-            if (typeof sid === 'number') {
-                _subscription.remove(sid);
-            }
-        }
-        closeResponse(m['rid']);
-    }
-    else {
-        closeResponse(m['rid'], error, DSError.INVALID_PATHS);
-    }
-}
-invoke(object, m);
-{
-    path: Path = Path.getValidNodePath(m['path']);
-    if (path != null && path.isAbsolute) {
-        let rid = m['rid'];
-        let parentNode;
-        parentNode = nodeProvider.getOrCreateNode(path.parentPath, false);
-        doInvoke([LocalNode, overriden]);
-        {
-            let node = overriden == null ?
-                nodeProvider.getNode(path.path) :
-                overriden;
-            if (node == null) {
-                if (overriden == null) {
-                    node = parentNode.getChild(path.name);
-                    if (node == null) {
-                        closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-                        return;
+                if (this._responses.hasOwnProperty(m['rid'])) {
+                    if (method === 'close') {
+                        this.close(m);
                     }
-                    if (node instanceof WaitForMe) {
-                        node.onLoaded.then((_) => doInvoke(node));
-                        return;
-                    }
-                    else {
-                        doInvoke(node);
-                        return;
-                    }
-                }
-                else {
-                    closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
+                    // when rid is invalid, nothing needs to be sent back
                     return;
                 }
+                switch (method) {
+                    case 'list':
+                        this.list(m);
+                        return;
+                    case 'subscribe':
+                        this.subscribe(m);
+                        return;
+                    case 'unsubscribe':
+                        this.unsubscribe(m);
+                        return;
+                    case 'invoke':
+                        this.invoke(m);
+                        return;
+                    case 'set':
+                        this.set(m);
+                        return;
+                    case 'remove':
+                        this.remove(m);
+                        return;
+                }
             }
-            let permission = nodeProvider.permissions.getPermission(path.path, this);
-            let maxPermit = Permission.parse(m['permit']);
-            if (maxPermit < permission) {
-                permission = maxPermit;
+        }
+        this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+    }
+    /// close the response from responder side and notify requester
+    closeResponse(rid, response, error) {
+        if (response != null) {
+            if (this._responses.get(response.rid) !== response) {
+                // this response is no longer valid
+                return;
             }
+            response._sentStreamStatus = interfaces_1.StreamStatus.closed;
+            rid = response.rid;
+        }
+        let m = { 'rid': rid, 'stream': interfaces_1.StreamStatus.closed };
+        if (error != null) {
+            m['error'] = error.serialize();
+        }
+        this._responses.delete(rid);
+        this.addToSendList(m);
+    }
+    updateResponse(response, updates, options = {}) {
+        let { streamStatus, columns, meta } = options;
+        if (this._responses.get(response.rid) === response) {
+            let m = { 'rid': response.rid };
+            if (streamStatus != null && streamStatus !== response._sentStreamStatus) {
+                response._sentStreamStatus = streamStatus;
+                m['stream'] = streamStatus;
+            }
+            if (columns != null) {
+                m['columns'] = columns;
+            }
+            if (updates != null) {
+                m['updates'] = updates;
+            }
+            if (meta != null) {
+                m['meta'] = meta;
+            }
+            // if (handleMap != null) {
+            //   handleMap(m);
+            // }
+            this.addToSendList(m);
+            if (response._sentStreamStatus === interfaces_1.StreamStatus.closed) {
+                this._responses.delete(response.rid);
+            }
+        }
+    }
+    list(m) {
+        let path = node_1.Path.getValidNodePath(m['path']);
+        if (path != null && path.isAbsolute) {
+            let rid = m['rid'];
+            let state = this.nodeProvider.createState(path.path);
+            this.addResponse(new list_1.ListResponse(this, rid, state));
+        }
+        else {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+        }
+    }
+    subscribe(m) {
+        if (Array.isArray(m['paths'])) {
+            for (let p of m['paths']) {
+                let pathstr;
+                let qos = 0;
+                let sid = -1;
+                if (p instanceof Object) {
+                    if (typeof p['path'] === 'string') {
+                        pathstr = p['path'];
+                    }
+                    else {
+                        continue;
+                    }
+                    if (typeof p['sid'] === 'number') {
+                        sid = p['sid'];
+                    }
+                    else {
+                        continue;
+                    }
+                    if (typeof p['qos'] === 'number') {
+                        qos = p['qos'];
+                    }
+                }
+                let path = node_1.Path.getValidNodePath(pathstr);
+                if (path != null && path.isAbsolute) {
+                    let state = this.nodeProvider.createState(path.path);
+                    this._subscription.add(path.path, state, sid, qos);
+                    this.closeResponse(m['rid']);
+                }
+                else {
+                    this.closeResponse(m['rid']);
+                }
+            }
+        }
+        else {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATHS);
+        }
+    }
+    unsubscribe(m) {
+        if (Array.isArray(m['sids'])) {
+            for (let sid of m['sids']) {
+                if (typeof sid === 'number') {
+                    this._subscription.remove(sid);
+                }
+            }
+            this.closeResponse(m['rid']);
+        }
+        else {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATHS);
+        }
+    }
+    invoke(m) {
+        let path = node_1.Path.getValidNodePath(m['path']);
+        if (path != null && path.isAbsolute) {
+            let rid = m['rid'];
+            let parentNode = this.nodeProvider.getNode(path.parentPath);
+            let node = this.nodeProvider.getNode(path.path);
+            if (node == null) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.NOT_IMPLEMENTED);
+                return;
+            }
+            let permission = permission_1.Permission.parse(m['permit']);
             let params;
-            if (m["params"])
-                is;
-            {
-                [key, string];
-                dynamic;
-            }
-            {
+            if (m["params"] instanceof Object) {
                 params = m["params"];
             }
-            if (params == null) {
+            else {
                 params = {};
             }
             if (node.getInvokePermission() <= permission) {
-                node.invoke(params, this, addResponse(new InvokeResponse(this, rid, parentNode, node, path.name), path, params), parentNode, permission);
+                node.invoke(params, this, this.addResponse(new invoke_1.InvokeResponse(this, rid, parentNode, node, path.name)), parentNode, permission);
             }
             else {
-                closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
             }
         }
-        if (parentNode instanceof WaitForMe) {
-            parentNode.onLoaded.then((_) => {
-                doInvoke();
-            }).catchError((e, stack) => {
-                var err = new DSError("nodeError", msg, e.toString(), detail, stack.toString());
-                closeResponse(m['rid'], error, err);
-            });
-        }
         else {
-            doInvoke();
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
         }
     }
-    else {
-        closeResponse(m['rid'], error, DSError.INVALID_PATH);
-    }
-}
-updateInvoke(object, m);
-{
-    rid: number = m['rid'];
-    if (_responses[rid])
-        is;
-    InvokeResponse;
-    {
-        if (m['params'])
-            is;
-        object;
-        {
-            _responses[rid].updateReqParams(m['params']);
-        }
-    }
-    {
-        closeResponse(m['rid'], error, DSError.INVALID_METHOD);
-    }
-}
-set(object, m);
-{
-    path: Path = Path.getValidPath(m['path']);
-    if (path == null || !path.isAbsolute) {
-        closeResponse(m['rid'], error, DSError.INVALID_PATH);
-        return;
-    }
-    if (!m.hasOwnProperty('value')) {
-        closeResponse(m['rid'], error, DSError.INVALID_VALUE);
-        return;
-    }
-    value: object = m['value'];
-    rid: number = m['rid'];
-    if (path.isNode) {
-        _getNode(path, (node) => {
-            let permission = nodeProvider.permissions.getPermission(node.path, this);
-            let maxPermit = Permission.parse(m['permit']);
-            if (maxPermit < permission) {
-                permission = maxPermit;
-            }
-            if (node.getSetPermission() <= permission) {
-                node.setValue(value, this, addResponse(new Response(this, rid, 'set'), path, value));
-            }
-            else {
-                closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-            }
-            closeResponse(m['rid']);
-        }, (e, stack) => {
-            var error = new DSError("nodeError", msg, e.toString(), detail, stack.toString());
-            closeResponse(m['rid'], error, error);
-        });
-    }
-    else if (path.isConfig) {
-        let node;
-        node = nodeProvider.getOrCreateNode(path.parentPath, false);
-        let permission = nodeProvider.permissions.getPermission(node.path, this);
-        if (permission < Permission.CONFIG) {
-            closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-        }
-        else {
-            node.setConfig(path.name, value, this, addResponse(new Response(this, rid, 'set'), path, value));
-        }
-    }
-    else if (path.isAttribute) {
-        let node;
-        node = nodeProvider.getOrCreateNode(path.parentPath, false);
-        let permission = nodeProvider.permissions.getPermission(node.path, this);
-        if (permission < Permission.WRITE) {
-            closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-        }
-        else {
-            node.setAttribute(path.name, value, this, addResponse(new Response(this, rid, 'set'), path, value));
-        }
-    }
-    else {
-        // shouldn't be possible to reach here
-        throw 'unexpected case';
-    }
-}
-remove(object, m);
-{
-    path: Path = Path.getValidPath(m['path']);
-    if (path == null || !path.isAbsolute) {
-        closeResponse(m['rid'], error, DSError.INVALID_PATH);
-        return;
-    }
-    rid: number = m['rid'];
-    if (path.isNode) {
-        closeResponse(m['rid'], error, DSError.INVALID_METHOD);
-    }
-    else if (path.isConfig) {
-        let node;
-        node = nodeProvider.getOrCreateNode(path.parentPath, false);
-        let permission = nodeProvider.permissions.getPermission(node.path, this);
-        if (permission < Permission.CONFIG) {
-            closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-        }
-        else {
-            node.removeConfig(path.name, this, addResponse(new Response(this, rid, 'set'), path));
-        }
-    }
-    else if (path.isAttribute) {
-        let node;
-        node = nodeProvider.getOrCreateNode(path.parentPath, false);
-        let permission = nodeProvider.permissions.getPermission(node.path, this);
-        if (permission < Permission.WRITE) {
-            closeResponse(m['rid'], error, DSError.PERMISSION_DENIED);
-        }
-        else {
-            node.removeAttribute(path.name, this, addResponse(new Response(this, rid, 'set'), path));
-        }
-    }
-    else {
-        // shouldn't be possible to reach here
-        throw 'unexpected case';
-    }
-}
-close(object, m);
-{
-    if (m['rid'])
-        is;
-    int;
-    {
+    updateInvoke(m) {
         let rid = m['rid'];
-        if (this._responses.hasOwnProperty(rid)) {
-            _responses[rid]._close();
-            let resp = this._responses.remove(rid);
-            if (this._traceCallbacks != null) {
-                traceResponseRemoved(resp);
+        let response = this._responses.get(rid);
+        if (response instanceof invoke_1.InvokeResponse) {
+            if (m['params'] instanceof Object) {
+                response.updateReqParams(m['params']);
+            }
+        }
+        else {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+        }
+    }
+    set(m) {
+        let path = node_1.Path.getValidPath(m['path']);
+        if (path == null || !path.isAbsolute) {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            return;
+        }
+        if (!m.hasOwnProperty('value')) {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_VALUE);
+            return;
+        }
+        let value = m['value'];
+        let rid = m['rid'];
+        if (path.isNode) {
+            let node = this.nodeProvider.getNode(path.path);
+            if (node == null) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                return;
+            }
+            let permission = permission_1.Permission.parse(m['permit']);
+            if (node.getSetPermission() <= permission) {
+                node.setValue(value, this, this.addResponse(new response_1.Response(this, rid, 'set')));
+                this.closeResponse(m['rid']);
+            }
+            else {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+            }
+        }
+        else if (path.isAttribute) {
+            let node = this.nodeProvider.getNode(path.parentPath);
+            if (node == null) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                return;
+            }
+            let permission = permission_1.Permission.parse(m['permit']);
+            if (permission < permission_1.Permission.WRITE) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+            }
+            else {
+                node.setAttribute(path.name, value, this, this.addResponse(new response_1.Response(this, rid, 'set')));
+            }
+        }
+        else {
+            // shouldn't be possible to reach here
+            throw new Error('unexpected case');
+        }
+    }
+    remove(m) {
+        let path = node_1.Path.getValidPath(m['path']);
+        if (path == null || !path.isAbsolute) {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            return;
+        }
+        let rid = m['rid'];
+        if (path.isNode) {
+            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+        }
+        else if (path.isAttribute) {
+            let node = this.nodeProvider.getNode(path.parentPath);
+            if (node == null) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                return;
+            }
+            let permission = permission_1.Permission.parse(m['permit']);
+            if (permission < permission_1.Permission.WRITE) {
+                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+            }
+            else {
+                node.removeAttribute(path.name, this, this.addResponse(new response_1.Response(this, rid, 'set')));
+            }
+        }
+        else {
+            // shouldn't be possible to reach here
+            throw new Error('unexpected case');
+        }
+    }
+    close(m) {
+        if (typeof m['rid'] === 'number') {
+            let rid = m['rid'];
+            if (this._responses.has(rid)) {
+                this._responses.get(rid)._close();
             }
         }
     }
-}
-onDisconnected();
-{
-    clearProcessors();
-    _responses.forEach((id, resp) => {
-        resp._close();
-    });
-    _responses.clear();
-    _responses[0] = this._subscription;
-}
-onReconnected();
-{
-    super.onReconnected();
-}
-_traceCallbacks: ResponseTraceCallback[];
-addTraceCallback(_traceCallback, ResponseTraceCallback);
-{
-    _subscription.addTraceCallback(this._traceCallback);
-    _responses.forEach((rid, response) => {
-        _traceCallback(response.getTraceData());
-    });
-    if (this._traceCallbacks == null)
-        _traceCallbacks = new ResponseTraceCallback[]();
-    _traceCallbacks.add(this._traceCallback);
-}
-removeTraceCallback(_traceCallback, ResponseTraceCallback);
-{
-    _traceCallbacks.remove(this._traceCallback);
-    if (this._traceCallbacks.isEmpty) {
-        _traceCallbacks = null;
+    onDisconnected() {
+        this.clearProcessors();
+        for (let [id, resp] of this._responses) {
+            resp._close();
+        }
+        this._responses.clear();
+        this._responses.set(0, this._subscription);
+    }
+    onReconnected() {
+        super.onReconnected();
     }
 }
+exports.Responder = Responder;
 //# sourceMappingURL=responder.js.map

@@ -245,6 +245,16 @@ export class Path {
     return null;
   }
 
+  /**
+   * concat parent path with child name without validation
+   */
+  static concat(parentPath: string, name: string): string {
+    if (parentPath === '/') {
+      return `/${name}`;
+    }
+    return `${parentPath}/${name}`;
+  }
+
   /// Real Path
   path: string;
 

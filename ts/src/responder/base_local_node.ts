@@ -2,9 +2,15 @@ import {LocalNode} from "./node_state";
 import {Responder} from "./responder";
 import {Response} from "./response";
 import {Permission} from "../common/permission";
-
+import {Path} from "../common/node";
 
 export class BaseLocalNode extends LocalNode {
+
+  createChild(name: string, cls: typeof LocalNode, ...args: any[]) {
+    let childPath = Path.concat(this.path, name);
+    let childNode = new cls(childPath, this.provider, ...args);
+    this.addChild(name, childNode);
+  }
 
   save(): {[key: string]: any} {
     let data = {};

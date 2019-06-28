@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("./interfaces");
-exports.ACK_WAIT_COUNT = 16;
-exports.defaultCacheSize = 256;
+exports.DSA_CONFIG = {
+    ackWaitCount: 16,
+    defaultCacheSize: 256,
+};
 class ConnectionHandler {
     constructor() {
         /** @ignore */

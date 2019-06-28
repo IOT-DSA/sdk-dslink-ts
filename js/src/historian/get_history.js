@@ -5,18 +5,10 @@ class GetHistoryNode extends SimpleNode {
 }
 exports.GetHistoryNode = GetHistoryNode;
 (path, _link, provider) => {
-    configs[r];
-    "$is";
-    "getHistory";
-    configs[r];
-    "$name";
-    "Get History";
-    configs[r];
-    "$invokable";
-    "read";
-    configs[r];
-    "$params";
-    [
+    configs["$is"] = "getHistory";
+    configs["$name"] = "Get History";
+    configs["$invokable"] = "read";
+    configs["$params"] = [
         {
             "name": "Timerange",
             "type": "string",
@@ -76,9 +68,7 @@ exports.GetHistoryNode = GetHistoryNode;
             "default": 0
         }
     ];
-    configs[r];
-    "$columns";
-    [
+    configs["$columns"] = [
         {
             "name": "timestamp",
             "type": "time"
@@ -88,9 +78,7 @@ exports.GetHistoryNode = GetHistoryNode;
             "type": "dynamic"
         }
     ];
-    configs[r];
-    "$result";
-    "stream";
+    configs["$result"] = "stream";
 };
 onInvoke(params, { [key]: string, dynamic });
 async * {

@@ -186,10 +186,4 @@ DSError.INVALID_PARAMETER = new DSError("invalidParameter");
 DSError.DISCONNECTED = new DSError("disconnected", { phase: ErrorPhase.request });
 DSError.FAILED = new DSError("failed");
 exports.DSError = DSError;
-class Unspecified {
-}
-exports.Unspecified = Unspecified;
-/// Marks something as being unspecified.
-const unspecified = new Unspecified();
-/// Unspecified means that something has never been set.
 //# sourceMappingURL=interfaces.js.map

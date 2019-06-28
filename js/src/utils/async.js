@@ -53,6 +53,9 @@ class Stream {
             this._value = undefined;
         }
     }
+    hasListener() {
+        return this._listeners.size !== 0;
+    }
     close() {
         if (!this.isClosed) {
             this.isClosed = true;

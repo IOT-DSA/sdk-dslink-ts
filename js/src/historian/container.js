@@ -12,9 +12,10 @@ exports.DatabaseNode = DatabaseNode;
 onCreated();
 {
     new Future((), async, {
-        config = configs[r], "$$db_config": 
-    });
-    while (removed != true) {
+        config = configs["$$db_config"],
+        while(removed) { }
+    } != true);
+    {
         try {
             database = await _historian.getDatabase(config);
             while (onDatabaseReady.isNotEmpty) {
@@ -40,10 +41,10 @@ onCreated();
         return;
     }
     _link.addNode("${path}/createWatchGroup", {
-        r, "$name": "Add Watch Group",
-        r, "$is": "createWatchGroup",
-        r, "$invokable": "write",
-        r, "$params": [
+        "$name": "Add Watch Group",
+        "$is": "createWatchGroup",
+        "$invokable": "write",
+        "$params": [
             {
                 "name": "Name",
                 "type": "string"
@@ -51,9 +52,9 @@ onCreated();
         ]
     });
     _link.addNode("${path}/delete", {
-        r, "$name": "Delete",
-        r, "$invokable": "write",
-        r, "$is": "delete"
+        "$name": "Delete",
+        "$invokable": "write",
+        "$is": "delete"
     });
 }
 ;
@@ -74,41 +75,34 @@ exports.WatchPathNode = WatchPathNode;
 onCreated();
 async;
 {
-    rp: string = configs[r];
-    "$path";
-    ;
+    rp: string = configs["$path"];
     if (rp == null) {
-        rp = configs[r];
-        "$value_path";
-        ;
+        rp = configs["$value_path"];
     }
-    if (configs[r])
-        "$publish";
-     == true;
-    {
+    if (configs["$publish"] == true) {
         isPublishOnly = true;
     }
     valuePath = rp;
     group = _link[new Path(path).parentPath];
     groupName: string = group._watchName;
     _link.addNode("${path}/lwv", {
-        r, "$name": "Last Written Value",
-        r, "$type": "dynamic"
+        "$name": "Last Written Value",
+        "$type": "dynamic"
     });
     _link.addNode("${path}/startDate", {
-        r, "$name": "Start Date",
-        r, "$type": "string"
+        "$name": "Start Date",
+        "$type": "string"
     });
     _link.addNode("${path}/endDate", {
-        r, "$name": "End Date",
-        r, "$type": "string"
+        "$name": "End Date",
+        "$type": "string"
     });
     if (children["enabled"] == null) {
         _link.addNode("${path}/enabled", {
-            r, "$name": "Enabled",
-            r, "$type": "boolean",
+            "$name": "Enabled",
+            "$type": "boolean",
             "?value": true,
-            r, "$writable": "write"
+            "$writable": "write"
         });
     }
     if (group.db.database == null) {
@@ -140,21 +134,21 @@ async;
     this._link.provider.setNode(ghn.path, ghn);
     updateList("getHistory");
     _link.addNode("${path}/purge", {
-        r, "$name": "Purge",
-        r, "$invokable": "write",
-        r, "$params": [
+        "$name": "Purge",
+        "$invokable": "write",
+        "$params": [
             {
                 "name": "timeRange",
                 "type": "string",
                 "editor": "daterange"
             }
         ],
-        r, "$is": "purgePath"
+        "$is": "purgePath"
     });
     _link.addNode("${path}/delete", {
-        r, "$name": "Delete",
-        r, "$invokable": "write",
-        r, "$is": "delete"
+        "$name": "Delete",
+        "$invokable": "write",
+        "$is": "delete"
     });
     _link.onValueChange("${path}/enabled").listen((update) => {
         if (update.value == true) {
@@ -254,17 +248,15 @@ onCreated();
 {
     var p = new Path(path);
     db = _link[p.parentPath];
-    _watchName = configs[r];
-    "$name";
-    ;
+    _watchName = configs["$name"];
     if (this._watchName == null) {
         _watchName = NodeNamer.decodeName(p.name);
     }
     _link.addNode("${path}/addWatchPath", {
-        r, "$name": "Add Watch Path",
-        r, "$invokable": "write",
-        r, "$is": "addWatchPath",
-        r, "$params": [
+        "$name": "Add Watch Path",
+        "$invokable": "write",
+        "$is": "addWatchPath",
+        "$params": [
             {
                 "name": "Path",
                 "type": "string"
@@ -272,10 +264,10 @@ onCreated();
         ]
     });
     _link.addNode("${path}/publish", {
-        r, "$name": "Publish",
-        r, "$invokable": "write",
-        r, "$is": "publishValue",
-        r, "$params": [
+        "$name": "Publish",
+        "$invokable": "write",
+        "$is": "publishValue",
+        "$params": [
             {
                 "name": "Path",
                 "type": "string"
@@ -291,21 +283,21 @@ onCreated();
         ]
     });
     _link.addNode("${path}/delete", {
-        r, "$name": "Delete",
-        r, "$invokable": "write",
-        r, "$is": "delete"
+        "$name": "Delete",
+        "$invokable": "write",
+        "$is": "delete"
     });
     _link.addNode("${path}/purge", {
-        r, "$name": "Purge",
-        r, "$invokable": "write",
-        r, "$params": [
+        "$name": "Purge",
+        "$invokable": "write",
+        "$params": [
             {
                 "name": "timeRange",
                 "type": "string",
                 "editor": "daterange"
             }
         ],
-        r, "$is": "purgeGroup"
+        "$is": "purgeGroup"
     });
     new Future((), async, {
         if(db) { }, : .database == null

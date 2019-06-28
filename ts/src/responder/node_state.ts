@@ -19,6 +19,11 @@ export class LocalNode extends Node {
     super(profileName);
     this.path = path;
     this.provider = provider;
+    this.initialize();
+  }
+
+  initialize() {
+
   }
 
   addChild(name: string, node: LocalNode) {
@@ -58,6 +63,16 @@ export class LocalNode extends Node {
     response: InvokeResponse,
     parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
     response.close();
+  }
+
+
+  setConfig(name: string, value: any) {
+    if (!name.startsWith("$")) {
+      name = `\$${name}`;
+    }
+
+    this.configs.set(name, value);
+    this.provider.save();
   }
 
   /// Called by the link internals to set an attribute on this node.
@@ -140,8 +155,7 @@ export class NodeProvider {
   _root: LocalNode;
   _saveFunction: (data: any) => void;
 
-  constructor(root: LocalNode, options?: ProviderOptions) {
-    this._root = root;
+  constructor(options?: ProviderOptions) {
     if (options) {
       let {saveFunction, saveIntervalMs} = options;
       this._saveFunction = saveFunction;
@@ -149,8 +163,13 @@ export class NodeProvider {
         this._saveIntervalMs = saveIntervalMs;
       }
     }
+  }
 
-    this.createState('/').setNode(root);
+  setRoot(node: LocalNode) {
+    if (!this._root) {
+      this._root = node;
+      node._connectState();
+    }
   }
 
   _saveTimer: any = null;

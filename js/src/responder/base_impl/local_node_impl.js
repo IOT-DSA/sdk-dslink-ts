@@ -49,7 +49,7 @@ load(object, m);
         childPathPre = '$path/';
     }
     m.forEach((key, value) => {
-        if (key.startsWith(r, '$')) {
+        if (key.startsWith('$')) {
             configs[key] = value;
         }
         else if (key.startsWith('@')) {

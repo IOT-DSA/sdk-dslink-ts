@@ -18,14 +18,10 @@ updateJsonValue(input);
         updateValue(input);
         _json = input;
         let type = this._guessType(input);
-        let lastType = configs[r];
-        "$type";
-        ;
+        let lastType = configs["$type"];
         if (lastType != type) {
-            configs[r];
-            "$type";
-            type;
-            updateList(r, "$type");
+            configs["$type"] = type;
+            updateList("$type");
         }
         return;
     }
@@ -39,7 +35,7 @@ updateJsonValue(input);
         for (string; key in diff.added;) {
             var name = NodeNamer.createName(key);
             provider.addNode("${node.path}/${name}", buildNodeMap(diff.added[key]));
-            node.updateList(r, "$is");
+            node.updateList("$is");
         }
         for (string; key in diff.removed;) {
             var name = NodeNamer.createName(key);
@@ -109,7 +105,7 @@ object;
         if ((value != null && value instanceof Object)) {
             var m = , dynamic;
              > {
-                r, "$is": "json"
+                "$is": "json"
             };
             for (string; key in value;) {
                 m[NodeNamer.createName(key)] = create(value[key]);
@@ -125,8 +121,8 @@ object;
         }
         else {
             return {
-                r, "$is": "json",
-                r, "$type": _guessType(value),
+                "$is": "json",
+                "$type": _guessType(value),
                 "?_json": value
             };
         }

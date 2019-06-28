@@ -1,49 +1,40 @@
 "use strict";
-// part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
-/// Changes to nodes will be added to this controller's stream.
-/// See [updateList].
-get;
-listChangeController();
-BroadcastStreamController < string > {
-    : ._listChangeController == null
-};
-{
-    _listChangeController = new BroadcastStreamController(() => {
-        onStartListListen();
-    }, () => {
-        onAllListCancel();
-    }, null, true);
+const node_1 = require("../common/node");
+const async_1 = require("../utils/async");
+/// Base Class for responder-side nodes.
+class LocalNode extends node_1.Node {
+    constructor(path) {
+        super();
+        /// Subscription Callbacks
+        this.callbacks = new Map();
+        this.path = path;
+    }
+    /// Changes to nodes will be added to this controller's stream.
+    /// See [updateList].
+    get listStream() {
+        if (this._listChangeController === null) {
+            this._listChangeController = new async_1.Stream(() => {
+                this.onStartListListen();
+            }, () => {
+                this.onAllListCancel();
+            });
+        }
+        return this._listChangeController;
+    }
+    /// Callback for when listing this node has started.
+    onStartListListen() {
+    }
+    /// Callback for when all lists are canceled.
+    onAllListCancel() {
+    }
+    _hasListListener() {
+        return this._listChangeController && this._listChangeController.hasListener;
+    }
+    subscribe(callback) { }
 }
-return this._listChangeController;
-overrideListChangeController(controller, BroadcastStreamController(), {
-    _listChangeController = controller
-}
-/// List Stream.
-/// See [listChangeController].
-, 
-/// List Stream.
-/// See [listChangeController].
-Stream < string > get, listStream => listChangeController.stream);
-/// Callback for when listing this node has started.
-void onStartListListen();
-{ }
-/// Callback for when all lists are canceled.
-void onAllListCancel();
-{ }
-boolean;
-get;
-_hasListListener => _listChangeController ? .hasListener ?  ? false :  :  : ;
-/// Node Provider
-provider: NodeProvider;
-path: string;
-LocalNode(this.path);
-/// Subscription Callbacks
-callbacks: object < ValueUpdateCallback, int > ;
-new object();
-/// Subscribes the given [callback] to this node.
-RespSubscribeListener;
-subscribe(callback(update, ValueUpdate), [qos, number = 0]);
+exports.LocalNode = LocalNode;
+(update) => , [qos, number = 0];
 {
     callbacks[callback] = qos;
     return new RespSubscribeListener(this, callback);
@@ -135,7 +126,7 @@ getDisconnectedListResponse();
 List;
 {
     return [
-        [r, '$disconnectedTs', disconnected]
+        ['$disconnectedTs', disconnected]
     ];
 }
 /// Checks if this node has a subscriber.
@@ -148,16 +139,16 @@ hasSubscriber => callbacks.isNotEmpty;
 getInvokePermission();
 number;
 {
-    return Permission.parse(getConfig(r, '$invokable'));
+    return Permission.parse(getConfig('$invokable'));
 }
 /// Gets the set permission for this node.
 getSetPermission();
 number;
 {
-    return Permission.parse(getConfig(r, '$writable'));
+    return Permission.parse(getConfig('$writable'));
 }
 /// Called by the link internals to invoke this node.
-invoke(params, { [key]: string, dynamic }, responder, Responder, response, InvokeResponse, parentNode, Node, maxPermission, number = Permission.CONFIG);
+invoke(params, { [key]: string, dynamic }, responder, Responder, response, InvokeResponse, parentNode, node_1.Node, maxPermission, number = Permission.CONFIG);
 InvokeResponse;
 {
     return response..close();
@@ -206,7 +197,7 @@ Response;
         return response..close();
     }
     else {
-        if (!name.startsWith(r, "$")) {
+        if (!name.startsWith("$")) {
             name = "\$${name}";
         }
         configs[name] = value;
@@ -221,7 +212,7 @@ Response;
         return response..close();
     }
     else {
-        if (!name.startsWith(r, "$")) {
+        if (!name.startsWith("$")) {
             name = "\$${name}";
         }
         configs.remove(name);
@@ -241,13 +232,13 @@ operator[](name, string);
 }
 /// Set a config, attribute, or child on this node.
 operator[] = (name, value) => {
-    if (name.startsWith(r, "$")) {
+    if (name.startsWith("$")) {
         configs[name] = value;
     }
     else if (name.startsWith(r, "@")) {
         attributes[name] = value;
     }
-    else if (value instanceof Node) {
+    else if (value instanceof node_1.Node) {
         addChild(name, value);
     }
 };

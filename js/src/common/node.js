@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
 class Node {
-    constructor() {
+    constructor(profileName = 'node') {
         /// Node Attributes
         this.attributes = new Map();
         /// Node Configs
@@ -11,7 +11,7 @@ class Node {
         /// Node Children
         /// object of Child Name to Child Node
         this.children = new Map();
-        this.configs.set('$is', 'node');
+        this.configs.set('$is', profileName);
     }
     static getDisplayName(nameOrPath) {
         if (nameOrPath.includes('/')) {
@@ -150,6 +150,8 @@ class Node {
         }
         return rslt;
     }
+    destroy() {
+    }
 }
 exports.Node = Node;
 /// Utility class for node and config/attribute paths.
@@ -206,6 +208,15 @@ class Path {
             }
         }
         return null;
+    }
+    /**
+     * concat parent path with child name without validation
+     */
+    static concat(parentPath, name) {
+        if (parentPath === '/') {
+            return `/${name}`;
+        }
+        return `${parentPath}/${name}`;
     }
     /**  Get the parent of this path. */
     get parent() {

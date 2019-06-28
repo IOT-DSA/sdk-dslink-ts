@@ -27,11 +27,11 @@ onInvoke(params, { [key]: string, dynamic });
     pn: WatchPathNode;
     if (!(node instanceof WatchPathNode)) {
         pn = this._link.addNode(tp, {
-            r, "$name": inputPath,
-            r, "$is": "watchPath",
-            r, "$publish": true,
-            r, "$type": "dynamic",
-            r, "$path": inputPath
+            "$name": inputPath,
+            "$is": "watchPath",
+            "$publish": true,
+            "$type": "dynamic",
+            "$path": inputPath
         });
         _link.save();
     }

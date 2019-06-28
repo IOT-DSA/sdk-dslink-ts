@@ -76,21 +76,15 @@ exports.UpgradableNode = UpgradableNode;
 (path, provider);
 onCreated();
 {
-    if (configs.hasOwnProperty(r, "$version")) {
-        var version = configs[r];
-        "$version";
-        ;
+    if (configs.hasOwnProperty("$version")) {
+        var version = configs["$version"];
         if (version != latestVersion) {
             upgrader(version);
-            configs[r];
-            "$version";
-            latestVersion;
+            configs["$version"] = latestVersion;
         }
     }
     else {
-        configs[r];
-        "$version";
-        latestVersion;
+        configs["$version"] = latestVersion;
     }
 }
 /// A Lazy Value Node
@@ -159,7 +153,7 @@ LocalNode;
             isListReady = true;
             let ts = ValueUpdate.getTs();
             n.getDisconnectedStatus = () => ts;
-            n.listChangeController.add(r, "$is");
+            n.listChangeController.add("$is");
             if (onLoaded != null && !onLoaded.isCompleted) {
                 onLoaded.complete(n);
             }
@@ -169,7 +163,7 @@ LocalNode;
             return;
         }
         isListReady = true;
-        n.listChangeController.add(r, "$is");
+        n.listChangeController.add("$is");
         if (onLoaded != null && !onLoaded.isCompleted) {
             onLoaded.complete(n);
         }
@@ -180,7 +174,7 @@ LocalNode;
         isListReady = true;
         let ts = ValueUpdate.getTs();
         n.getDisconnectedStatus = () => ts;
-        n.listChangeController.add(r, "$is");
+        n.listChangeController.add("$is");
         if (c != null && !c.isCompleted) {
             c.completeError(e, stack);
         }
@@ -200,9 +194,7 @@ SimpleNode;
         node = pnode.onLoadChild(p.name, m, this);
     }
     if (node == null) {
-        let profile = m[r];
-        '$is';
-        ;
+        let profile = m['$is'];
         if (profileMap.hasOwnProperty(profile)) {
             node = profileMap[profile](path);
         }
@@ -351,20 +343,20 @@ onSetValue(value);
 class NodeNamer {
     constructor() {
         this.BANNED_CHARS = [
-            r, "%",
-            r, ".",
-            r, "/",
-            r, "\",,
-            r, "?",
-            r, "*",
-            r, ":",
-            r, "|",
-            r, "<",
-            r, ">",
-            r, "$",
-            r, "@",
+            "%",
+            ".",
+            "/",
+            "\",,
+            "?",
+            "*",
+            ":",
+            "|",
+            "<",
+            ">",
+            "$",
+            "@",
             r, '"',
-            r, "'"
+            "'"
         ];
     }
     static createName(input) {
