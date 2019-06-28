@@ -31,7 +31,7 @@ class BaseLocalNode extends node_state_1.LocalNode {
         }
     }
     shouldSaveConfig(key) {
-        return false;
+        return key === '$is';
     }
     saveConfigs(data) {
         for (let [key, value] of this.configs) {
@@ -57,16 +57,24 @@ class BaseLocalNode extends node_state_1.LocalNode {
                     continue;
                 default:
                     if (data instanceof Object) {
-                        let child = this.loadChild(key, data);
-                        if (child) {
-                            this.addChild(key, child);
+                        let newChild = this.loadChild(key, data);
+                        if (newChild) {
+                            this.addChild(key, newChild);
                         }
                     }
             }
         }
     }
+    /**
+     * load child, return the child if a new child node is created
+     */
     loadChild(key, data) {
-        // create node and load data here
+        let child = this.children.get(key);
+        if (child instanceof BaseLocalNode) {
+            // load data to existing child
+            child.load(data);
+        }
+        // default implementation doesn't know how to create a new child, return null
         return null;
     }
 }

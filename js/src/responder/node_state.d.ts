@@ -59,6 +59,7 @@ export declare class NodeState {
     initListUpdate(): void;
     _lastValueUpdate: ValueUpdate;
     readonly lastValueUpdate: ValueUpdate;
+    updateValue(value: any): void;
     setNode(node: LocalNode): void;
     setSubscriber(s: Subscriber): void;
     checkDestroy(): void;

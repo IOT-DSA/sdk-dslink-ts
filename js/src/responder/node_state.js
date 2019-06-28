@@ -76,6 +76,9 @@ class LocalNode extends node_1.Node {
     /// Called by the link internals to set a value of a node.
     setValue(value, responder, response, maxPermission = permission_1.Permission.CONFIG) {
         this._value = value;
+        if (this._state) {
+            this._state.updateValue(value);
+        }
         response.close();
     }
     save() {
@@ -167,12 +170,18 @@ class NodeState {
         }
         return this._lastValueUpdate;
     }
+    updateValue(value) {
+        this._lastValueUpdate = new value_1.ValueUpdate(this._node._value);
+        if (this._subscriber) {
+            this._subscriber.addValue(this._lastValueUpdate);
+        }
+    }
     setNode(node) {
         this._node = node;
         if (node) {
             node._state = this;
-            if (this._subscriber && node._valueReady) {
-                this._subscriber.addValue(this.lastValueUpdate);
+            if (node._valueReady) {
+                this.updateValue(node._value);
             }
             for (let listener of this.listStream._listeners) {
                 listener(null); // use null to update all
@@ -184,9 +193,15 @@ class NodeState {
         }
     }
     setSubscriber(s) {
+        if (s === this._subscriber) {
+            return;
+        }
         this._subscriber = s;
         if (!s) {
             this.checkDestroy();
+        }
+        else if (this._lastValueUpdate) {
+            s.addValue(this._lastValueUpdate);
         }
     }
     checkDestroy() {

@@ -38,7 +38,7 @@ export class BaseLocalNode extends LocalNode {
   }
 
   shouldSaveConfig(key: string) {
-    return false;
+    return key === '$is';
   }
 
   saveConfigs(data: {[key: string]: any}) {
@@ -65,17 +65,25 @@ export class BaseLocalNode extends LocalNode {
           continue;
         default:
           if (data instanceof Object) {
-            let child = this.loadChild(key, data);
-            if (child) {
-              this.addChild(key, child);
+            let newChild = this.loadChild(key, data);
+            if (newChild) {
+              this.addChild(key, newChild);
             }
           }
       }
     }
   }
 
+  /**
+   * load child, return the child if a new child node is created
+   */
   loadChild(key: string, data: {[key: string]: any}): LocalNode {
-    // create node and load data here
+    let child = this.children.get(key);
+    if (child instanceof BaseLocalNode) {
+      // load data to existing child
+      child.load(data);
+    }
+    // default implementation doesn't know how to create a new child, return null
     return null;
   }
 }

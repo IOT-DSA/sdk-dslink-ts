@@ -3,7 +3,7 @@ import {Stream} from "../utils/async";
 import {ConnectionHandler} from "./connection_handler";
 import {DsCodec} from "../utils/codec";
 import {PrivateKey, PublicKey} from "../crypto/pk";
-import {LocalNode} from "../responder/node_provider";
+import {LocalNode} from "../responder/node_state";
 import {Responder} from "../responder/responder";
 import {Requester} from "../requester/requester";
 

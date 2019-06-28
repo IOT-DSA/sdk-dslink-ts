@@ -110,6 +110,9 @@ export class LocalNode extends Node {
   setValue(value: any, responder: Responder, response: Response,
            maxPermission: number = Permission.CONFIG) {
     this._value = value;
+    if (this._state) {
+      this._state.updateValue(value);
+    }
     response.close();
   }
 
@@ -237,12 +240,19 @@ export class NodeState {
     return this._lastValueUpdate;
   }
 
+  updateValue(value: any) {
+    this._lastValueUpdate = new ValueUpdate(this._node._value);
+    if (this._subscriber) {
+      this._subscriber.addValue(this._lastValueUpdate);
+    }
+  }
+
   setNode(node: LocalNode) {
     this._node = node;
     if (node) {
       node._state = this;
-      if (this._subscriber && node._valueReady) {
-        this._subscriber.addValue(this.lastValueUpdate);
+      if (node._valueReady) {
+        this.updateValue(node._value);
       }
       for (let listener of this.listStream._listeners) {
         listener(null); // use null to update all
@@ -254,9 +264,14 @@ export class NodeState {
   }
 
   setSubscriber(s: Subscriber) {
+    if (s === this._subscriber) {
+      return;
+    }
     this._subscriber = s;
     if (!s) {
       this.checkDestroy();
+    } else if (this._lastValueUpdate) {
+      s.addValue(this._lastValueUpdate);
     }
   }
 

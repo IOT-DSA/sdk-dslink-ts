@@ -1,8 +1,16 @@
+const {NodeProvider} = require( "../../js/src/responder/node_state");
+const {Permission} = require( "../../js/src/common/permission");
+
 const {BaseLocalNode} = require("../../js/src/responder/base_local_node");
-const {HttpClientLink: DSLink, RootNode} = require("../../js/src/http/client_link");
+const {HttpClientLink: DSLink, RootNode, ValueNode} = require("../../js/src/http/client_link");
 const {PrivateKey} = require("../../js/src/crypto/pk");
 
-class MyChildNode extends BaseLocalNode {
+class MyValueNode extends ValueNode {
+  constructor(path, provider) {
+    super(path, provider, 'myvalue', 'number', Permission.WRITE);
+    this._value = 123;
+  }
+
   initialize() {
     this.setConfig('$hello', 'world');
   }
@@ -11,7 +19,7 @@ class MyChildNode extends BaseLocalNode {
 class MyRootNOde extends RootNode {
   initialize() {
     this.setConfig('$hello', 'world');
-    this.createChild('a', MyChildNode);
+    this.createChild('a', MyValueNode);
   }
 }
 

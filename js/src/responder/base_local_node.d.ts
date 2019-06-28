@@ -17,6 +17,9 @@ export declare class BaseLocalNode extends LocalNode {
     load(data: {
         [key: string]: any;
     }): void;
+    /**
+     * load child, return the child if a new child node is created
+     */
     loadChild(key: string, data: {
         [key: string]: any;
     }): LocalNode;

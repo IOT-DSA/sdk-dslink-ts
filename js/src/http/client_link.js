@@ -17,6 +17,8 @@ const pk_1 = require("../crypto/pk");
 const utils_1 = require("../../utils");
 var RootNode_1 = require("../responder/node/RootNode");
 exports.RootNode = RootNode_1.RootNode;
+var ValueNode_1 = require("../responder/node/ValueNode");
+exports.ValueNode = ValueNode_1.ValueNode;
 class HttpClientLink extends interfaces_1.ClientLink {
     constructor(conn, dsIdPrefix, privateKey, options = { isRequester: false }) {
         super();
