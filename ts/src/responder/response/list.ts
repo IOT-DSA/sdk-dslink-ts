@@ -25,7 +25,7 @@ export class ListResponse extends Response {
     } else {
       this.changes.add(key);
     }
-    if (!this._pendingSending && this.state._node) {
+    if (!this._pendingSending) {
       this.prepareSending();
     }
   };
@@ -34,86 +34,89 @@ export class ListResponse extends Response {
     this._pendingSending = false;
 
     let node = this.state._node;
-    if (!node) {
-      // TODO send disconnectedTs
-      return;
-    }
+
     if (waitingAckId !== -1) {
       this._waitingAckCount++;
       this._lastWatingAckId = waitingAckId;
     }
 
-    let updateIs: any;
-    let updateBase: any;
-    let updateConfigs: any[] = [];
-    let updateAttributes: any[] = [];
-    let updateChildren: any[] = [];
 
-    if (this.initialResponse || this.changes.has('$is')) {
+    let updates: any[] = [];
 
-      this.initialResponse = false;
-
-      for (let [name, value] of node.configs) {
-        let update: object = [name, value];
-        if (name === '$is') {
-          updateIs = update;
-        } else if (name === '$base') {
-          updateBase = update;
-        } else {
-          updateConfigs.push(update);
-        }
-      }
-      for (let [name, value] of node.attributes) {
-        updateAttributes.push([name, value]);
-      }
-      for (let [name, value] of node.children) {
-        let simpleMap: object = value.getSimpleMap();
-        updateChildren.push([name, simpleMap]);
-      }
-
-      if (updateIs == null) {
-        updateIs = ['$is', 'node'];
-      }
+    if (!node) {
+      updates.push(['$disconnectedTs', this.state._disconnectedTs]);
     } else {
-      for (let change of this.changes) {
-        let update: object;
-        if (change.startsWith('$')) {
-          if (node.configs.has(change)) {
-            update = [change, node.configs.get(change)];
+      let updateIs: any;
+      let updateBase: any;
+      let updateConfigs: any[] = [];
+      let updateAttributes: any[] = [];
+      let updateChildren: any[] = [];
+
+      if (this.initialResponse || this.changes.has('$is')) {
+
+        this.initialResponse = false;
+
+        for (let [name, value] of node.configs) {
+          let update: object = [name, value];
+          if (name === '$is') {
+            updateIs = update;
+          } else if (name === '$base') {
+            updateBase = update;
           } else {
-            update = {'name': change, 'change': 'remove'};
+            updateConfigs.push(update);
           }
-          updateConfigs.push(update);
-        } else if (change.startsWith('@')) {
-          if (node.attributes.has(change)) {
-            update = [change, node.attributes.get(change)];
+        }
+        for (let [name, value] of node.attributes) {
+          updateAttributes.push([name, value]);
+        }
+        for (let [name, value] of node.children) {
+          let simpleMap: object = value.getSimpleMap();
+          updateChildren.push([name, simpleMap]);
+        }
+
+        if (updateIs == null) {
+          updateIs = ['$is', 'node'];
+        }
+      } else {
+        for (let change of this.changes) {
+          let update: object;
+          if (change.startsWith('$')) {
+            if (node.configs.has(change)) {
+              update = [change, node.configs.get(change)];
+            } else {
+              update = {'name': change, 'change': 'remove'};
+            }
+            updateConfigs.push(update);
+          } else if (change.startsWith('@')) {
+            if (node.attributes.has(change)) {
+              update = [change, node.attributes.get(change)];
+            } else {
+              update = {'name': change, 'change': 'remove'};
+            }
+            updateAttributes.push(update);
           } else {
-            update = {'name': change, 'change': 'remove'};
+            if (node.children.has(change)) {
+              let simpleMap: object = node.children.get(change).getSimpleMap();
+              update = [change, simpleMap];
+            } else {
+              update = {'name': change, 'change': 'remove'};
+            }
+            updateChildren.push(update);
           }
-          updateAttributes.push(update);
-        } else {
-          if (node.children.has(change)) {
-            let simpleMap: object = node.children.get(change).getSimpleMap();
-            update = [change, simpleMap];
-          } else {
-            update = {'name': change, 'change': 'remove'};
-          }
-          updateChildren.push(update);
         }
       }
+
+      if (updateBase != null) {
+        updates.push(updateBase);
+      }
+
+      if (updateIs != null) {
+        updates.push(updateIs);
+      }
+      updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
     }
 
     this.changes.clear();
-
-    let updates: any[] = [];
-    if (updateBase != null) {
-      updates.push(updateBase);
-    }
-
-    if (updateIs != null) {
-      updates.push(updateIs);
-    }
-    updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
 
     this.responder.updateResponse(this, updates, {streamStatus: StreamStatus.open});
   }

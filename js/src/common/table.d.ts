@@ -20,6 +20,9 @@ export declare class Table {
     constructor(columns: TableColumn[], rows: any[][], meta: {
         [key: string]: any;
     });
+    static parse(columns: any[], rows: any[][], meta: {
+        [key: string]: any;
+    }): Table;
 }
 export declare class TableColumns {
     readonly columns: TableColumn[];

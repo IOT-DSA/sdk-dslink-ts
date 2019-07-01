@@ -60,6 +60,9 @@ class Table {
         this.rows = rows;
         this.meta = meta;
     }
+    static parse(columns, rows, meta) {
+        return new Table(TableColumn.parseColumns(columns), rows, meta);
+    }
 }
 exports.Table = Table;
 class TableColumns {

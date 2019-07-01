@@ -15,7 +15,7 @@ class ListResponse extends response_1.Response {
             else {
                 this.changes.add(key);
             }
-            if (!this._pendingSending && this.state._node) {
+            if (!this._pendingSending) {
                 this.prepareSending();
             }
         };
@@ -31,86 +31,87 @@ class ListResponse extends response_1.Response {
     startSendingData(currentTime, waitingAckId) {
         this._pendingSending = false;
         let node = this.state._node;
-        if (!node) {
-            // TODO send disconnectedTs
-            return;
-        }
         if (waitingAckId !== -1) {
             this._waitingAckCount++;
             this._lastWatingAckId = waitingAckId;
         }
-        let updateIs;
-        let updateBase;
-        let updateConfigs = [];
-        let updateAttributes = [];
-        let updateChildren = [];
-        if (this.initialResponse || this.changes.has('$is')) {
-            this.initialResponse = false;
-            for (let [name, value] of node.configs) {
-                let update = [name, value];
-                if (name === '$is') {
-                    updateIs = update;
-                }
-                else if (name === '$base') {
-                    updateBase = update;
-                }
-                else {
-                    updateConfigs.push(update);
-                }
-            }
-            for (let [name, value] of node.attributes) {
-                updateAttributes.push([name, value]);
-            }
-            for (let [name, value] of node.children) {
-                let simpleMap = value.getSimpleMap();
-                updateChildren.push([name, simpleMap]);
-            }
-            if (updateIs == null) {
-                updateIs = ['$is', 'node'];
-            }
+        let updates = [];
+        if (!node) {
+            updates.push(['$disconnectedTs', this.state._disconnectedTs]);
         }
         else {
-            for (let change of this.changes) {
-                let update;
-                if (change.startsWith('$')) {
-                    if (node.configs.has(change)) {
-                        update = [change, node.configs.get(change)];
+            let updateIs;
+            let updateBase;
+            let updateConfigs = [];
+            let updateAttributes = [];
+            let updateChildren = [];
+            if (this.initialResponse || this.changes.has('$is')) {
+                this.initialResponse = false;
+                for (let [name, value] of node.configs) {
+                    let update = [name, value];
+                    if (name === '$is') {
+                        updateIs = update;
+                    }
+                    else if (name === '$base') {
+                        updateBase = update;
                     }
                     else {
-                        update = { 'name': change, 'change': 'remove' };
+                        updateConfigs.push(update);
                     }
-                    updateConfigs.push(update);
                 }
-                else if (change.startsWith('@')) {
-                    if (node.attributes.has(change)) {
-                        update = [change, node.attributes.get(change)];
-                    }
-                    else {
-                        update = { 'name': change, 'change': 'remove' };
-                    }
-                    updateAttributes.push(update);
+                for (let [name, value] of node.attributes) {
+                    updateAttributes.push([name, value]);
                 }
-                else {
-                    if (node.children.has(change)) {
-                        let simpleMap = node.children.get(change).getSimpleMap();
-                        update = [change, simpleMap];
-                    }
-                    else {
-                        update = { 'name': change, 'change': 'remove' };
-                    }
-                    updateChildren.push(update);
+                for (let [name, value] of node.children) {
+                    let simpleMap = value.getSimpleMap();
+                    updateChildren.push([name, simpleMap]);
+                }
+                if (updateIs == null) {
+                    updateIs = ['$is', 'node'];
                 }
             }
+            else {
+                for (let change of this.changes) {
+                    let update;
+                    if (change.startsWith('$')) {
+                        if (node.configs.has(change)) {
+                            update = [change, node.configs.get(change)];
+                        }
+                        else {
+                            update = { 'name': change, 'change': 'remove' };
+                        }
+                        updateConfigs.push(update);
+                    }
+                    else if (change.startsWith('@')) {
+                        if (node.attributes.has(change)) {
+                            update = [change, node.attributes.get(change)];
+                        }
+                        else {
+                            update = { 'name': change, 'change': 'remove' };
+                        }
+                        updateAttributes.push(update);
+                    }
+                    else {
+                        if (node.children.has(change)) {
+                            let simpleMap = node.children.get(change).getSimpleMap();
+                            update = [change, simpleMap];
+                        }
+                        else {
+                            update = { 'name': change, 'change': 'remove' };
+                        }
+                        updateChildren.push(update);
+                    }
+                }
+            }
+            if (updateBase != null) {
+                updates.push(updateBase);
+            }
+            if (updateIs != null) {
+                updates.push(updateIs);
+            }
+            updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
         }
         this.changes.clear();
-        let updates = [];
-        if (updateBase != null) {
-            updates.push(updateBase);
-        }
-        if (updateIs != null) {
-            updates.push(updateIs);
-        }
-        updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
         this.responder.updateResponse(this, updates, { streamStatus: interfaces_1.StreamStatus.open });
     }
     ackReceived(receiveAckId, startTime, currentTime) {

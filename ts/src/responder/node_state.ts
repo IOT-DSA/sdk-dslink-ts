@@ -5,6 +5,7 @@ import {InvokeResponse} from "./response/invoke";
 import {Responder} from "./responder";
 import {Response} from "./response";
 import {ValueUpdate, ValueUpdateCallback} from "../common/value";
+import {DSError} from "../common/interfaces";
 
 export class LocalNode extends Node {
   /// Node Provider
@@ -62,7 +63,7 @@ export class LocalNode extends Node {
     responder: Responder,
     response: InvokeResponse,
     parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
-    response.close();
+    response.close(DSError.NOT_IMPLEMENTED);
   }
 
 
@@ -207,6 +208,8 @@ export class NodeState {
   readonly provider: NodeProvider;
   readonly path: string;
 
+  _disconnectedTs: string = ValueUpdate.getTs();
+
   constructor(path: string, provider: NodeProvider) {
     this.path = path;
     this.provider = provider;
@@ -214,7 +217,9 @@ export class NodeState {
 
   onList = (listener: Listener<string>) => {
     if (this._node) {
-      // TODO
+      listener(null);
+    } else {
+      listener('$disconnectedTs');
     }
   };
 
@@ -259,6 +264,13 @@ export class NodeState {
       }
     } else {
       this._lastValueUpdate = null;
+      if (this._subscriber) {
+        // TODO: to be defined
+      }
+      this._disconnectedTs = ValueUpdate.getTs();
+      for (let listener of this.listStream._listeners) {
+        listener('$disconnectedTs');
+      }
       this.checkDestroy();
     }
   }

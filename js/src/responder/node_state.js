@@ -4,6 +4,7 @@ const async_1 = require("../utils/async");
 const node_1 = require("../common/node");
 const permission_1 = require("../common/permission");
 const value_1 = require("../common/value");
+const interfaces_1 = require("../common/interfaces");
 class LocalNode extends node_1.Node {
     constructor(path, provider, profileName = 'node') {
         super(profileName);
@@ -42,7 +43,7 @@ class LocalNode extends node_1.Node {
     }
     /// Called by the link internals to invoke this node.
     invoke(params, responder, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
-        response.close();
+        response.close(interfaces_1.DSError.NOT_IMPLEMENTED);
     }
     setConfig(name, value) {
         if (!name.startsWith("$")) {
@@ -147,9 +148,13 @@ class NodeProvider {
 exports.NodeProvider = NodeProvider;
 class NodeState {
     constructor(path, provider) {
+        this._disconnectedTs = value_1.ValueUpdate.getTs();
         this.onList = (listener) => {
             if (this._node) {
-                // TODO
+                listener(null);
+            }
+            else {
+                listener('$disconnectedTs');
             }
         };
         this.listStream = new async_1.Stream(null, () => this.checkDestroy(), // onAllCancel
@@ -189,6 +194,13 @@ class NodeState {
         }
         else {
             this._lastValueUpdate = null;
+            if (this._subscriber) {
+                // TODO: to be defined
+            }
+            this._disconnectedTs = value_1.ValueUpdate.getTs();
+            for (let listener of this.listStream._listeners) {
+                listener('$disconnectedTs');
+            }
             this.checkDestroy();
         }
     }

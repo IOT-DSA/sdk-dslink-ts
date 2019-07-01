@@ -1,9 +1,24 @@
-const {NodeProvider} = require( "../../js/src/responder/node_state");
-const {Permission} = require( "../../js/src/common/permission");
+const {NodeProvider} = require("../../js/src/responder/node_state");
+const {Permission} = require("../../js/src/common/permission");
 
 const {BaseLocalNode} = require("../../js/src/responder/base_local_node");
-const {HttpClientLink: DSLink, RootNode, ValueNode} = require("../../js/src/http/client_link");
+const {HttpClientLink: DSLink, RootNode, ValueNode, ActionNode} = require("../../js/src/http/client_link");
 const {PrivateKey} = require("../../js/src/crypto/pk");
+
+class MyActionNode extends ActionNode {
+  constructor(path, provider) {
+    super(path, provider, 'myaction', Permission.READ);
+  }
+
+  initialize() {
+    this.setConfig('$params', [{name: 'value', type: 'number'}]);
+    this.setConfig('$columns', [{name: 'c1', type: 'number'}, {name: 'c2', type: 'string'}]);
+  }
+
+  onInvoke(params) {
+    return [params['a'], 'str'];
+  }
+}
 
 class MyValueNode extends ValueNode {
   constructor(path, provider) {
@@ -13,6 +28,7 @@ class MyValueNode extends ValueNode {
 
   initialize() {
     this.setConfig('$hello', 'world');
+    this.createChild('b', MyActionNode);
   }
 }
 
@@ -33,19 +49,19 @@ async function main() {
   await link.connect();
   console.log('connected');
 
-  let {requester} = link;
-
-  console.log(await requester.subscribeOnce('/sys/dataOutPerSecond'));
-
-  console.log(
-    (await requester.listOnce('/sys'))
-      .children.size
-  );
-
-  console.log(
-    (await requester.invokeOnce('/sys/get_server_log', {lines: 5}))
-      .result.log
-  );
+  // let {requester} = link;
+  //
+  // console.log(await requester.subscribeOnce('/sys/dataOutPerSecond'));
+  //
+  // console.log(
+  //   (await requester.listOnce('/sys'))
+  //     .children.size
+  // );
+  //
+  // console.log(
+  //   (await requester.invokeOnce('/sys/get_server_log', {lines: 5}))
+  //     .result.log
+  // );
 }
 
 main();

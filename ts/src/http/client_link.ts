@@ -14,6 +14,7 @@ import {LocalNode, NodeProvider} from "../responder/node_state";
 
 export {RootNode} from "../responder/node/RootNode";
 export {ValueNode} from "../responder/node/ValueNode";
+export {ActionNode} from "../responder/node/ActionNode";
 
 export class HttpClientLink extends ClientLink {
   _onReadyCompleter: Completer<[Requester, Responder]> = new Completer<[Requester, Responder]>();

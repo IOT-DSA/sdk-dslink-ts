@@ -53,6 +53,7 @@ export declare class NodeState {
     _subscriber: Subscriber;
     readonly provider: NodeProvider;
     readonly path: string;
+    _disconnectedTs: string;
     constructor(path: string, provider: NodeProvider);
     onList: (listener: Listener<string>) => void;
     listStream: Stream<string>;

@@ -9,7 +9,7 @@ export class TableColumn {
     this.defaultValue = defaultValue;
   }
 
-  getData(): { [key: string]: any } {
+  getData(): {[key: string]: any} {
     let rslt: any = {
       "type": this.type,
       "name": this.name
@@ -22,8 +22,8 @@ export class TableColumn {
   }
 
   /// convert tableColumns into List of object
-  static serializeColumns(list: any[]): { [key: string]: any }[] {
-    let rslts: { [key: string]: any }[] = [];
+  static serializeColumns(list: any[]): {[key: string]: any}[] {
+    let rslts: {[key: string]: any}[] = [];
     for (let m of list) {
       if (m instanceof Object) {
         if (m instanceof TableColumn) {
@@ -60,12 +60,16 @@ export class TableColumn {
 export class Table {
   columns: TableColumn[];
   rows: any[][];
-  meta: { [key: string]: any };
+  meta: {[key: string]: any};
 
-  constructor(columns: TableColumn[], rows: any[][], meta: { [key: string]: any }) {
+  constructor(columns: TableColumn[], rows: any[][], meta: {[key: string]: any}) {
     this.columns = columns;
     this.rows = rows;
     this.meta = meta;
+  }
+
+  static parse(columns: any[], rows: any[][], meta: {[key: string]: any}) {
+    return new Table(TableColumn.parseColumns(columns), rows, meta);
   }
 }
 
@@ -78,9 +82,9 @@ export class TableColumns {
 }
 
 export class TableMetadata {
-  readonly meta: { [key: string]: any };
+  readonly meta: {[key: string]: any};
 
-  constructor(meta: { [key: string]: any }) {
+  constructor(meta: {[key: string]: any}) {
     this.meta = meta;
   }
 }
