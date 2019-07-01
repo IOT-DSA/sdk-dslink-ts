@@ -97,6 +97,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
                     //        logger.fine("$m");
+                    //        console.log('receive', DsJson.encode(m, true));
                     let needAck = false;
                     if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
                         needAck = true;
@@ -231,6 +232,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 }
             }
             //      logger.fine("send: $m");
+            //      console.log('send', DsJson.encode(m, true));
             let encoded = this.codec.encodeFrame(m);
             try {
                 this.socket.send(encoded);

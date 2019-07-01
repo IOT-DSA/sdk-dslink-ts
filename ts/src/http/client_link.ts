@@ -95,7 +95,6 @@ export class HttpClientLink extends ClientLink {
 
 
     if (options.rootNode) {
-      console.log('root');
       this.nodeProvider = options.rootNode.provider;
       this.responder = new Responder(this.nodeProvider);
     }

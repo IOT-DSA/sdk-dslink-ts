@@ -50,7 +50,6 @@ class HttpClientLink extends interfaces_1.ClientLink {
             this.requester = new requester_1.Requester();
         }
         if (options.rootNode) {
-            console.log('root');
             this.nodeProvider = options.rootNode.provider;
             this.responder = new responder_1.Responder(this.nodeProvider);
         }

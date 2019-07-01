@@ -16,7 +16,7 @@ class MyActionNode extends ActionNode {
   }
 
   onInvoke(params) {
-    return [params['a'], 'str'];
+    return {c1:params['value'], c2:'str'};
   }
 }
 
@@ -48,20 +48,6 @@ async function main() {
   });
   await link.connect();
   console.log('connected');
-
-  // let {requester} = link;
-  //
-  // console.log(await requester.subscribeOnce('/sys/dataOutPerSecond'));
-  //
-  // console.log(
-  //   (await requester.listOnce('/sys'))
-  //     .children.size
-  // );
-  //
-  // console.log(
-  //   (await requester.invokeOnce('/sys/get_server_log', {lines: 5}))
-  //     .result.log
-  // );
 }
 
 main();

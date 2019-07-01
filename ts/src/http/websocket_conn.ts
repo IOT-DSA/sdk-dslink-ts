@@ -9,7 +9,7 @@ import {
 } from "../common/interfaces";
 import {PassiveChannel} from "../common/connection_channel";
 import {Completer} from "../utils/async";
-import {DsCodec} from "../utils/codec";
+import {DsCodec, DsJson} from "../utils/codec";
 
 
 export class WebSocketConnection extends Connection {
@@ -192,7 +192,7 @@ export class WebSocketConnection extends Connection {
       try {
         m = this.codec.decodeStringFrame(e.data);
 //        logger.fine("$m");
-
+//        console.log('receive', DsJson.encode(m, true));
         let needAck = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
@@ -283,6 +283,7 @@ export class WebSocketConnection extends Connection {
       }
 
 //      logger.fine("send: $m");
+//      console.log('send', DsJson.encode(m, true));
       let encoded = this.codec.encodeFrame(m);
 
       try {
