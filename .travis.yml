@@ -11,5 +11,5 @@ script:
   - yarn tsc
   - yarn test-nyc
 #  - yarn test-karma
-after_success:
-  - yarn run coveralls coverage/nyc.log
+# after_success:
+  - yarn coveralls coverage/nyc.log
