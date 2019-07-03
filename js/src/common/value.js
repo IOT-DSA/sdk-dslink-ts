@@ -1,16 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const TIME_ZONE = (function () {
-    let timeZoneOffset = (new Date()).getTimezoneOffset();
-    let s = "+";
-    if (timeZoneOffset < 0) {
-        timeZoneOffset = -timeZoneOffset;
-        s = "-";
+let _lastTZStr;
+let _lastTZ;
+function timeZone(date) {
+    let timeZoneOffset = date.getTimezoneOffset();
+    if (timeZoneOffset !== _lastTZ) {
+        let s = "+";
+        if (timeZoneOffset < 0) {
+            timeZoneOffset = -timeZoneOffset;
+            s = "-";
+        }
+        let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
+        let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
+        _lastTZ = timeZoneOffset;
+        _lastTZStr = `${s}${hhstr}:${mmstr}`;
     }
-    let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
-    let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
-    return `${s}${hhstr}:${mmstr}`;
-})();
+    return _lastTZStr;
+}
+exports.timeZone = timeZone;
 /// Represents an update to a value subscription.
 class ValueUpdate {
     constructor(value, ts, options) {
@@ -44,7 +51,7 @@ class ValueUpdate {
         }
         ValueUpdate._lastTs = d.getTime();
         let offsetISOStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
-        ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${TIME_ZONE}`;
+        ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${timeZone(d)}`;
         return this._lastTsStr;
     }
     /// Gets a [DateTime] representation of the timestamp for this value.

@@ -1,24 +1,32 @@
 export type ValueUpdateCallback = (update: ValueUpdate) => any;
 export type ValueCallback<T> = (value: T) => any;
 
-const TIME_ZONE = (function () {
-  let timeZoneOffset: number = (new Date()).getTimezoneOffset();
-  let s = "+";
-  if (timeZoneOffset < 0) {
-    timeZoneOffset = -timeZoneOffset;
-    s = "-";
+let _lastTZStr: string;
+let _lastTZ: number;
+
+export function timeZone(date: Date) {
+  let timeZoneOffset = date.getTimezoneOffset();
+  if (timeZoneOffset !== _lastTZ) {
+    let s = "+";
+    if (timeZoneOffset < 0) {
+      timeZoneOffset = -timeZoneOffset;
+      s = "-";
+    }
+    let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
+    let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
+
+    _lastTZ = timeZoneOffset;
+    _lastTZStr = `${s}${hhstr}:${mmstr}`;
   }
-  let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
-  let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
-  return `${s}${hhstr}:${mmstr}`;
-})();
+  return _lastTZStr;
+}
 
 
 /// Represents an update to a value subscription.
 export class ValueUpdate {
   /// DSA formatted timezone.
   static _lastTsStr: string;
-  static _lastTs: number = 0;
+  static _lastTs = 0;
 
   /// Generates a timestamp in the proper DSA format.
   static getTs(): string {
@@ -28,7 +36,7 @@ export class ValueUpdate {
     }
     ValueUpdate._lastTs = d.getTime();
     let offsetISOStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
-    ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${TIME_ZONE}`;
+    ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${timeZone(d)}`;
     return this._lastTsStr;
   }
 
@@ -61,7 +69,7 @@ export class ValueUpdate {
   /// The timestamp for when this value update was created.
   created: Date;
 
-  constructor(value: any, ts?: string, options?: { status?: string, count?: number }) {
+  constructor(value: any, ts?: string, options?: {status?: string, count?: number}) {
     this.value = value;
     if (ts) {
       this.ts = ts;
@@ -125,7 +133,7 @@ export class ValueUpdate {
   }
 
   /// Generates a map representation of this value update.
-  toMap(): { [key: string]: any } {
+  toMap(): {[key: string]: any} {
     let m: any = {"ts": this.ts, "value": this.value};
     if (this.count !== 1) {
       m["count"] = this.count;
@@ -134,7 +142,7 @@ export class ValueUpdate {
   }
 
   /// could be the value or the key stored by ValueStorage
-  storedData: { [key: string]: any };
+  storedData: {[key: string]: any};
 
   _cloned: boolean = false;
 

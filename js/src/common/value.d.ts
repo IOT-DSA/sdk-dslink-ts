@@ -1,5 +1,6 @@
 export declare type ValueUpdateCallback = (update: ValueUpdate) => any;
 export declare type ValueCallback<T> = (value: T) => any;
+export declare function timeZone(date: Date): string;
 export declare class ValueUpdate {
     static _lastTsStr: string;
     static _lastTs: number;
