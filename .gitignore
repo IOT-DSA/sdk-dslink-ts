@@ -11,3 +11,4 @@ node_modules
 /js/typedocconfig.js
 /js/ts
 /js/test
+/js/**/spec

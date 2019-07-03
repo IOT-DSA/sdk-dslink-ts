@@ -1,11 +1,12 @@
-export declare const TRACE = 1;
-export declare const DEBUG = 2;
-export declare const INFO = 4;
-export declare const WARN = 8;
-export declare const ERROR = 16;
 export declare function getTs(): string;
 export declare class Logger {
-    level: number;
+    static readonly TRACE = 1;
+    static readonly DEBUG = 2;
+    static readonly INFO = 4;
+    static readonly WARN = 8;
+    static readonly ERROR = 16;
+    _level: number;
+    setLevel(level: number, coverHigherLevel?: boolean): void;
     formatter: (msg: string, level: number, tag?: string) => string;
     printer: (str: string, level: number) => void;
     private _log;

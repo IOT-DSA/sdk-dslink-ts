@@ -1,14 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRACE = 1;
-exports.DEBUG = 2;
-exports.INFO = 4;
-exports.WARN = 8;
-exports.ERROR = 16;
-const _DEBUG = exports.TRACE | exports.DEBUG;
-const _INFO = _DEBUG | exports.INFO;
-const _WARN = _INFO | exports.WARN;
-const _ERROR = _WARN | exports.ERROR;
+const TRACE = 1;
+const DEBUG = 2;
+const INFO = 4;
+const WARN = 8;
+const ERROR = 16;
 function getTs() {
     let d = new Date();
     let offsetISOStr = d.toISOString(); // new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
@@ -16,19 +12,19 @@ function getTs() {
 }
 exports.getTs = getTs;
 function getLevelLabel(level) {
-    if (level >= exports.ERROR) {
+    if (level >= ERROR) {
         return 'ERROR';
     }
-    else if (level >= exports.WARN) {
+    else if (level >= WARN) {
         return 'WARN';
     }
-    else if (level >= exports.INFO) {
+    else if (level >= INFO) {
         return 'INFO';
     }
-    else if (level >= exports.DEBUG) {
+    else if (level >= DEBUG) {
         return 'DEBUG';
     }
-    else if (level >= exports.TRACE) {
+    else if (level >= TRACE) {
         return 'TRACE';
     }
     else {
@@ -37,23 +33,23 @@ function getLevelLabel(level) {
 }
 class Logger {
     constructor() {
-        this.level = exports.INFO;
+        this._level = INFO | WARN | ERROR;
         this.formatter = (msg, level, tag) => {
             if (tag) {
-                return `${getTs} [${tag}] ${getLevelLabel(level)} ${msg}`;
+                return `${getTs()} [${tag}] ${getLevelLabel(level)} ${msg}`;
             }
             else {
-                return `${getTs} ${getLevelLabel(level)} ${msg}`;
+                return `${getTs()} ${getLevelLabel(level)} ${msg}`;
             }
         };
         this.printer = (str, level) => {
-            if (level >= exports.ERROR) {
+            if (level >= ERROR) {
                 console.error(str);
             }
-            else if (level >= exports.WARN) {
+            else if (level >= WARN) {
                 console.warn(str);
             }
-            else if (level >= exports.INFO) {
+            else if (level >= INFO) {
                 console.info(str);
             }
             else {
@@ -61,32 +57,47 @@ class Logger {
             }
         };
     }
+    setLevel(level, coverHigherLevel = true) {
+        let mergedLevel = level;
+        if (coverHigherLevel) {
+            while (level < ERROR) {
+                level <<= 1;
+                mergedLevel |= level;
+            }
+        }
+        this._level = mergedLevel;
+    }
     _log(level, msg, tag) {
-        if (level | this.level) {
+        if (level & this._level) {
             if (this.formatter) {
                 this.printer(this.formatter(msg, level, tag), level);
             }
         }
     }
     trace(msg, tag) {
-        this._log(exports.TRACE, msg, tag);
+        this._log(TRACE, msg, tag);
     }
     debug(msg, tag) {
-        this._log(_DEBUG, msg, tag);
+        this._log(DEBUG, msg, tag);
     }
     info(msg, tag) {
-        this._log(_INFO, msg, tag);
+        this._log(INFO, msg, tag);
     }
     warn(msg, tag) {
-        this._log(_WARN, msg, tag);
+        this._log(WARN, msg, tag);
     }
     error(msg, tag) {
-        this._log(_ERROR, msg, tag);
+        this._log(ERROR, msg, tag);
     }
     tag(tag) {
         return new TaggedLogger(this, tag);
     }
 }
+Logger.TRACE = TRACE;
+Logger.DEBUG = DEBUG;
+Logger.INFO = INFO;
+Logger.WARN = WARN;
+Logger.ERROR = ERROR;
 exports.Logger = Logger;
 class TaggedLogger {
     constructor(logger, tag) {

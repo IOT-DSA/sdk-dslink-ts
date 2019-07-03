@@ -1,4 +1,4 @@
-import {PrivateKey} from "../ts/src/crypto/pk";
+import {PrivateKey} from "../pk";
 import {assert} from "chai";
 
 const clientPrivate = "M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE";

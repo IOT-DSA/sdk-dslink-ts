@@ -1,13 +1,9 @@
-export const TRACE = 1;
-export const DEBUG = 2;
-export const INFO = 4;
-export const WARN = 8;
-export const ERROR = 16;
+const TRACE = 1;
+const DEBUG = 2;
+const INFO = 4;
+const WARN = 8;
+const ERROR = 16;
 
-const _DEBUG = TRACE | DEBUG;
-const _INFO = _DEBUG | INFO;
-const _WARN = _INFO | WARN;
-const _ERROR = _WARN | ERROR;
 
 export function getTs(): string {
   let d = new Date();
@@ -32,15 +28,31 @@ function getLevelLabel(level: number): string {
 }
 
 export class Logger {
+  static readonly TRACE = TRACE;
+  static readonly DEBUG = DEBUG;
+  static readonly INFO = INFO;
+  static readonly WARN = WARN;
+  static readonly ERROR = ERROR;
 
 
-  level: number = INFO;
+  _level: number = INFO | WARN | ERROR;
+
+  setLevel(level: number, coverHigherLevel = true) {
+    let mergedLevel = level;
+    if (coverHigherLevel) {
+      while (level < ERROR) {
+        level <<= 1;
+        mergedLevel |= level;
+      }
+    }
+    this._level = mergedLevel;
+  }
 
   formatter = (msg: string, level: number, tag?: string) => {
     if (tag) {
-      return `${getTs} [${tag}] ${getLevelLabel(level)} ${msg}`;
+      return `${getTs()} [${tag}] ${getLevelLabel(level)} ${msg}`;
     } else {
-      return `${getTs} ${getLevelLabel(level)} ${msg}`;
+      return `${getTs()} ${getLevelLabel(level)} ${msg}`;
     }
   };
 
@@ -57,7 +69,7 @@ export class Logger {
   };
 
   private _log(level: number, msg: string, tag?: string) {
-    if (level | this.level) {
+    if (level & this._level) {
       if (this.formatter) {
         this.printer(
           this.formatter(msg, level, tag), level
@@ -71,19 +83,19 @@ export class Logger {
   }
 
   debug(msg: string, tag?: string) {
-    this._log(_DEBUG, msg, tag);
+    this._log(DEBUG, msg, tag);
   }
 
   info(msg: string, tag?: string) {
-    this._log(_INFO, msg, tag);
+    this._log(INFO, msg, tag);
   }
 
   warn(msg: string, tag?: string) {
-    this._log(_WARN, msg, tag);
+    this._log(WARN, msg, tag);
   }
 
   error(msg: string, tag?: string) {
-    this._log(_ERROR, msg, tag);
+    this._log(ERROR, msg, tag);
   }
 
   tag(tag: string) {
