@@ -41,7 +41,7 @@
     "js-example": "parcel example/js/basic.html --out-dir temp --open --no-source-maps ",
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.ts",
-    "test": "mocha ts/**/*.spec.ts",
+    "test": "mocha ts/src/**/*.spec.ts",
     "test-nyc": "nyc --skip-full mocha ts/**/*.spec.ts && nyc report --reporter=text-lcov > coverage/nyc.log",
     "test-karma": "karma start"
   }

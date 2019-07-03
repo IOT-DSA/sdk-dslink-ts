@@ -1,15 +1,16 @@
 {
+  "cache": false,
   "extension": [
-    ".ts", ".js"
+    ".ts"
   ],
   "include": [
-    "ts/**/*",
-    "js/**/*"
+    "ts/src/**/*",
+    "js/src/**/*"
   ],
   "exclude": [
-    "ts/**/*.d.ts"
+    "**/*.d.ts",
+    "**/node_modules/**"
   ],
   "all": true,
-  "sourceMap": true,
-  "instrument": true
+  "check-coverage": true
 }
