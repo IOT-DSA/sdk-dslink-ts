@@ -42,7 +42,6 @@
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.ts",
     "test": "mocha ts/**/*.spec.ts",
-    "nyc-cache": "nyc -s --nycrc-path cache.nycrc mocha ts/**/*.spec.ts && mkdir coverage",
     "test-nyc": "nyc --skip-full mocha ts/**/*.spec.ts && nyc report --reporter=text-lcov > coverage/nyc.log",
     "test-karma": "karma start"
   }

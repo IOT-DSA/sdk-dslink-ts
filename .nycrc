@@ -1,11 +1,15 @@
 {
   "extension": [
-    ".ts"
+    ".ts", ".js"
   ],
   "include": [
-    "ts/**/*.ts"
+    "ts/**/*",
+    "js/**/*"
+  ],
+  "exclude": [
+    "ts/**/*.d.ts"
   ],
   "all": true,
-  "sourceMap": false,
-  "instrument": false
+  "sourceMap": true,
+  "instrument": true
 }

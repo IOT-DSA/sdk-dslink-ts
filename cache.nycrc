@@ -1,9 +1,0 @@
-{
-  "extension": [
-    ".ts"
-  ],
-  "include": [
-    "ts/**/*.ts"
-  ],
-  "all": true
-}

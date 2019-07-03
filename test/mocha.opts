@@ -1,2 +1,2 @@
---require ts-node/register -O '{"module": "commonjs"}'
+--require ts-node/register
 --recursive

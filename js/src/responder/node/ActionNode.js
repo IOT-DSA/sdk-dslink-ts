@@ -44,7 +44,7 @@ class ActionNode extends node_state_1.LocalNode {
         else if (rslt != null && rslt instanceof Object) {
             let columns = [];
             let out = [];
-            for (let x in rslt) {
+            for (let x of rslt) {
                 columns.push({
                     "name": x,
                     "type": "dynamic"
