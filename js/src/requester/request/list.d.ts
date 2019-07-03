@@ -1,5 +1,5 @@
 import { Requester } from "../requester";
-import { Request } from "../Request";
+import { Request } from "../request";
 import { Stream, StreamSubscription } from "../../utils/async";
 import { ConnectionProcessor, DSError } from "../../common/interfaces";
 import { RemoteNode } from "../node_cache";

@@ -1,5 +1,5 @@
 import { Requester } from "../requester";
-import { Request } from "../Request";
+import { Request } from "../request";
 import { Stream } from "../../utils/async";
 import { DSError } from "../../common/interfaces";
 import { TableColumn } from "../../common/table";

@@ -11,6 +11,5 @@
     "**/*.d.ts",
     "**/node_modules/**"
   ],
-  "all": true,
-  "check-coverage": true
+  "all": true
 }

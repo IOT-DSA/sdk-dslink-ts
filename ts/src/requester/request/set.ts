@@ -1,5 +1,5 @@
 import {Requester} from "../requester";
-import {Request} from "../Request";
+import {Request} from "../request";
 import {Completer} from "../../utils/async";
 import {Permission} from "../../common/permission";
 import {DSError} from "../../common/interfaces";

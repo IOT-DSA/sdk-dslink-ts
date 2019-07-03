@@ -1,5 +1,5 @@
 import {Requester} from "../requester";
-import {Request} from "../Request";
+import {Request} from "../request";
 import {Completer, Stream, StreamSubscription} from "../../utils/async";
 import {Permission} from "../../common/permission";
 import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interfaces";
