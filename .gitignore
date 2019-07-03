@@ -12,3 +12,5 @@ node_modules
 /js/ts
 /js/test
 /js/**/spec
+/.nyc_output
+/coverage

@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "10"
+sudo: required
+addons:
+  chrome: stable
+cache:
+  yarn: true
+script:
+  - yarn nyc-cache
+  - yarn test-nyc
+#  - yarn test-karma
+#after_success:
+#  - yarn run coveralls
