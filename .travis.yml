@@ -8,6 +8,7 @@ cache:
   yarn: true
 script:
   - mkdir coverage
+  - yarn tsc
   - yarn test-nyc
 #  - yarn test-karma
 after_success:

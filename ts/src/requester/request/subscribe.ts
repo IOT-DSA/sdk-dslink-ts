@@ -4,7 +4,7 @@ import {Requester} from "../requester";
 import {ConnectionProcessor, DSError} from "../../common/interfaces";
 import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
 import {RemoteNode} from "../node_cache";
-import {ACK_WAIT_COUNT} from "../../common/connection_handler";
+import {DSA_CONFIG} from "../../common/connection_handler";
 import {RequestUpdater} from "../interface";
 
 export class ReqSubscribeListener implements Cancelable {
@@ -41,7 +41,7 @@ export class SubscribeController implements RequestUpdater {
     // TODO: implement onReconnect
   }
 
-  onUpdate(status: string, updates: any[], columns: any[], meta: { [key: string]: any },
+  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any},
            error: DSError) {
     // do nothing
   }
@@ -86,15 +86,15 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     this._sendingAfterAck = false;
   }
 
-  _update(m: { [key: string]: any }) {
+  _update(m: {[key: string]: any}) {
     let updates = m['updates'];
     if (Array.isArray(updates)) {
       for (let update of updates) {
         let path: string;
         let sid = -1;
-        let value: { [key: string]: any };
+        let value: {[key: string]: any};
         let ts: string;
-        let options: { [key: string]: any };
+        let options: {[key: string]: any};
         if (Array.isArray(update) && update.length > 2) {
           if (typeof update[0] === 'string') {
             path = update[0];
@@ -228,7 +228,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
       return;
     }
 
-    if (this._waitingAckCount > ACK_WAIT_COUNT) {
+    if (this._waitingAckCount > DSA_CONFIG.ackWaitCount) {
       this._sendingAfterAck = true;
       return;
     }

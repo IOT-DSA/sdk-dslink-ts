@@ -3,7 +3,6 @@ import {Permission} from "../../common/permission";
 import {Responder} from "../responder";
 import {InvokeResponse} from "../response/invoke";
 import {DSError, StreamStatus} from "../../common/interfaces";
-import {AsyncTableResult, LiveTable, SimpleTableResult} from "../simple/simple_node";
 import {Table} from "../../common/table";
 
 export class ActionNode extends LocalNode {

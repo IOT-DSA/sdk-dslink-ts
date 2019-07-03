@@ -200,7 +200,7 @@ class SubscribeRequest extends request_1.Request {
         if (this._sendingAfterAck) {
             return;
         }
-        if (this._waitingAckCount > connection_handler_1.ACK_WAIT_COUNT) {
+        if (this._waitingAckCount > connection_handler_1.DSA_CONFIG.ackWaitCount) {
             this._sendingAfterAck = true;
             return;
         }

@@ -6327,6 +6327,18 @@ class Path {
 
     return null;
   }
+  /**
+   * concat parent path with child name without validation
+   */
+
+
+  static concat(parentPath, name) {
+    if (parentPath === '/') {
+      return `/${name}`;
+    }
+
+    return `${parentPath}/${name}`;
+  }
   /**  Get the parent of this path. */
 
 
@@ -6450,20 +6462,31 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const TIME_ZONE = function () {
-  let timeZoneOffset = new Date().getTimezoneOffset();
-  let s = "+";
+let _lastTZStr;
 
-  if (timeZoneOffset < 0) {
-    timeZoneOffset = -timeZoneOffset;
-    s = "-";
+let _lastTZ;
+
+function timeZone(date) {
+  let timeZoneOffset = date.getTimezoneOffset();
+
+  if (timeZoneOffset !== _lastTZ) {
+    let s = "+";
+
+    if (timeZoneOffset < 0) {
+      timeZoneOffset = -timeZoneOffset;
+      s = "-";
+    }
+
+    let hhstr = `${timeZoneOffset / 60 | 0}`.padStart(2, '0');
+    let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
+    _lastTZ = timeZoneOffset;
+    _lastTZStr = `${s}${hhstr}:${mmstr}`;
   }
 
-  let hhstr = `${timeZoneOffset / 60 | 0}`.padStart(2, '0');
-  let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
-  return `${s}${hhstr}:${mmstr}`;
-}(); /// Represents an update to a value subscription.
+  return _lastTZStr;
+}
 
+exports.timeZone = timeZone; /// Represents an update to a value subscription.
 
 class ValueUpdate {
   constructor(value, ts, options) {
@@ -6503,7 +6526,7 @@ class ValueUpdate {
 
     ValueUpdate._lastTs = d.getTime();
     let offsetISOStr = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
-    ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${TIME_ZONE}`;
+    ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${timeZone(d)}`;
     return this._lastTsStr;
   } /// Gets a [DateTime] representation of the timestamp for this value.
 
@@ -7177,7 +7200,7 @@ class SubscribeRequest extends request_1.Request {
       return;
     }
 
-    if (this._waitingAckCount > connection_handler_1.ACK_WAIT_COUNT) {
+    if (this._waitingAckCount > connection_handler_1.DSA_CONFIG.ackWaitCount) {
       this._sendingAfterAck = true;
       return;
     }
@@ -7391,6 +7414,10 @@ class Table {
     this.columns = columns;
     this.rows = rows;
     this.meta = meta;
+  }
+
+  static parse(columns, rows, meta) {
+    return new Table(TableColumn.parseColumns(columns), rows, meta);
   }
 
 }

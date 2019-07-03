@@ -5,7 +5,6 @@ import {Permission} from "../../common/permission";
 import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interfaces";
 import {RemoteNode} from "../node_cache";
 import {ValueUpdate} from "../../common/value";
-import {DsTimer} from "../../utils/timer";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
 export class RequesterListUpdate extends RequesterUpdate {
