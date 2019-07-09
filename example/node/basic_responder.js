@@ -32,7 +32,7 @@ class MyValueNode extends ValueNode {
   }
 }
 
-class MyRootNOde extends RootNode {
+class MyRootNode extends RootNode {
   initialize() {
     this.setConfig('$hello', 'world');
     this.createChild('a', MyValueNode);
@@ -43,7 +43,7 @@ async function main() {
   let key = PrivateKey.loadFromString('M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE');
   let link = new DSLink('http://localhost:8080/conn', 'test-', key, {
     isRequester: true,
-    rootNode: new MyRootNOde(),
+    rootNode: new MyRootNode(),
     format: 'json'
   });
   await link.connect();
