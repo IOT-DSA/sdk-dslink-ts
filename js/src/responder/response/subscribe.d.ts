@@ -41,6 +41,7 @@ export declare class ValueSubscriber {
     addValue(val: ValueUpdate): void;
     process(waitingAckId: number): any[];
     onAck(ackId: number): void;
+    rollback(): void;
     resetCache(values: ValueUpdate[]): void;
     destroy(): void;
 }

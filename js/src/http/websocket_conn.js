@@ -41,7 +41,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         };
         this._opened = false;
         this._onOpen = (e) => {
-            //    logger.info("Connected");
+            logger.info("Connected");
             this._opened = true;
             if (this.onConnect != null) {
                 this.onConnect();
@@ -134,6 +134,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             if (this._onDoneHandled) {
                 return;
             }
+            logger.info('Disconnected');
             this._onDoneHandled = true;
             if (!this._requesterChannel.onReceive.isClosed) {
                 this._requesterChannel.onReceive.close();

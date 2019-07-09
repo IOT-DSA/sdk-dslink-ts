@@ -105,24 +105,20 @@ class SubscribeResponse extends response_1.Response {
         }
     }
     _close() {
-        let pendingControllers;
+        let qosControllers = [];
         for (let [path, subscriber] of this.subscriptions) {
             if (subscriber._qosLevel < 2) {
                 subscriber.destroy();
             }
             else {
                 subscriber.sid = -1;
-                if (pendingControllers == null) {
-                    pendingControllers = [];
-                }
-                pendingControllers.push(subscriber);
+                subscriber.rollback();
+                qosControllers.push(subscriber);
             }
         }
         this.subscriptions.clear();
-        if (pendingControllers != null) {
-            for (let subscriber of pendingControllers) {
-                this.subscriptions.set(subscriber.node.path, subscriber);
-            }
+        for (let subscriber of qosControllers) {
+            this.subscriptions.set(subscriber.node.path, subscriber);
         }
         this.subsriptionids.clear();
         this._waitingAckCount = 0;
@@ -145,9 +141,6 @@ class ValueSubscriber {
         this.sid = sid;
         this.qosLevel = qos;
         node.setSubscriber(this);
-        if (node._lastValueUpdate) {
-            this.addValue(node._lastValueUpdate);
-        }
     }
     set qosLevel(v) {
         if (v < 0 || v > 3)
@@ -305,6 +298,15 @@ class ValueSubscriber {
         //   _storage.valueRemoved(this.waitingValues);
         // }
     }
+    // invalidate all waiting values, move them back to queue
+    rollback() {
+        this.lastValues = [];
+        for (let i = 0; i < this.waitingValues.length; ++i) {
+            this.lastValues.push(this.waitingValues.peekAt(i));
+        }
+        this.lastValue = this.lastValues[this.lastValues.length - 1];
+    }
+    // load qos cache for qos 3
     resetCache(values) {
         if (this._caching) {
             if (this.lastValues.length > 0 && this.lastValues[0].equals(values[values.length - 1])) {

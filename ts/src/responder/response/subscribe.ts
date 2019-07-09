@@ -127,23 +127,19 @@ export class SubscribeResponse extends Response {
   }
 
   _close() {
-    let pendingControllers: ValueSubscriber[];
+    let qosControllers: ValueSubscriber[] = [];
     for (let [path, subscriber] of this.subscriptions) {
       if (subscriber._qosLevel < 2) {
         subscriber.destroy();
       } else {
         subscriber.sid = -1;
-        if (pendingControllers == null) {
-          pendingControllers = [];
-        }
-        pendingControllers.push(subscriber);
+        subscriber.rollback();
+        qosControllers.push(subscriber);
       }
     }
     this.subscriptions.clear();
-    if (pendingControllers != null) {
-      for (let subscriber of pendingControllers) {
-        this.subscriptions.set(subscriber.node.path, subscriber);
-      }
+    for (let subscriber of qosControllers) {
+      this.subscriptions.set(subscriber.node.path, subscriber);
     }
 
     this.subsriptionids.clear();
@@ -214,9 +210,6 @@ export class ValueSubscriber {
     this.sid = sid;
     this.qosLevel = qos;
     node.setSubscriber(this);
-    if (node._lastValueUpdate) {
-      this.addValue(node._lastValueUpdate);
-    }
   }
 
   _isCacheValid: boolean = true;
@@ -344,6 +337,17 @@ export class ValueSubscriber {
     // }
   }
 
+  // invalidate all waiting values, move them back to queue
+  rollback() {
+    this.lastValues = [];
+    for (let i = 0; i < this.waitingValues.length; ++i) {
+      this.lastValues.push(this.waitingValues.peekAt(i));
+    }
+
+    this.lastValue = this.lastValues[this.lastValues.length - 1];
+  }
+
+  // load qos cache for qos 3
   resetCache(values: ValueUpdate[]) {
     if (this._caching) {
       if (this.lastValues.length > 0 && this.lastValues[0].equals(values[values.length - 1])) {

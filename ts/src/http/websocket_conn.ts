@@ -117,7 +117,7 @@ export class WebSocketConnection extends Connection {
   }
 
   _onOpen = (e: {target: WebSocket}) => {
-//    logger.info("Connected");
+    logger.info("Connected");
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
@@ -299,6 +299,7 @@ export class WebSocketConnection extends Connection {
     if (this._onDoneHandled) {
       return;
     }
+    logger.info('Disconnected');
 
     this._onDoneHandled = true;
 
