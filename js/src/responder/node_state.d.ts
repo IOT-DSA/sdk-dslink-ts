@@ -18,11 +18,11 @@ export declare class LocalNode extends Node {
         [key: string]: any;
     }, responder: Responder, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number): void;
     setConfig(name: string, value: any): void;
-    setAttribute(name: string, value: any, responder: Responder, response: Response): void;
-    removeAttribute(name: string, responder: Responder, response: Response): void;
+    setAttribute(name: string, value: any, responder?: Responder, response?: Response): void;
+    removeAttribute(name: string, responder?: Responder, response?: Response): void;
     _value: any;
     _valueReady: boolean;
-    setValue(value: any, responder: Responder, response: Response, maxPermission?: number): void;
+    setValue(value: any, responder?: Responder, response?: Response, maxPermission?: number): void;
     save(): {
         [key: string]: any;
     };
@@ -59,7 +59,6 @@ export declare class NodeState {
     listStream: Stream<string>;
     initListUpdate(): void;
     _lastValueUpdate: ValueUpdate;
-    readonly lastValueUpdate: ValueUpdate;
     updateValue(value: any): void;
     setNode(node: LocalNode): void;
     setSubscriber(s: Subscriber): void;

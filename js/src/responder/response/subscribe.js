@@ -145,8 +145,8 @@ class ValueSubscriber {
         this.sid = sid;
         this.qosLevel = qos;
         node.setSubscriber(this);
-        if (node.lastValueUpdate) {
-            this.addValue(node.lastValueUpdate);
+        if (node._lastValueUpdate) {
+            this.addValue(node._lastValueUpdate);
         }
     }
     set qosLevel(v) {

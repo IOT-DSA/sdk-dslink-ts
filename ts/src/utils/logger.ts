@@ -4,6 +4,7 @@ const INFO = 4;
 const WARN = 8;
 const ERROR = 16;
 
+type MsgType = string | (() => string);
 
 export function getTs(): string {
   let d = new Date();
@@ -68,33 +69,34 @@ export class Logger {
     }
   };
 
-  private _log(level: number, msg: string, tag?: string) {
+  private _log(level: number, msg: MsgType, tag?: string) {
     if (level & this._level) {
       if (this.formatter) {
+        let str = typeof msg === 'function' ? msg() : msg;
         this.printer(
-          this.formatter(msg, level, tag), level
+          this.formatter(str, level, tag), level
         );
       }
     }
   }
 
-  trace(msg: string, tag?: string) {
+  trace(msg: MsgType, tag?: string) {
     this._log(TRACE, msg, tag);
   }
 
-  debug(msg: string, tag?: string) {
+  debug(msg: MsgType, tag?: string) {
     this._log(DEBUG, msg, tag);
   }
 
-  info(msg: string, tag?: string) {
+  info(msg: MsgType, tag?: string) {
     this._log(INFO, msg, tag);
   }
 
-  warn(msg: string, tag?: string) {
+  warn(msg: MsgType, tag?: string) {
     this._log(WARN, msg, tag);
   }
 
-  error(msg: string, tag?: string) {
+  error(msg: MsgType, tag?: string) {
     this._log(ERROR, msg, tag);
   }
 
@@ -109,26 +111,27 @@ export class TaggedLogger {
 
   constructor(logger: Logger, tag: string) {
     this.logger = logger;
+    this.tag = tag;
   }
 
 
-  trace(msg: string) {
+  trace(msg: MsgType) {
     this.logger.trace(msg, this.tag);
   }
 
-  debug(msg: string) {
+  debug(msg: MsgType) {
     this.logger.debug(msg, this.tag);
   }
 
-  info(msg: string) {
+  info(msg: MsgType) {
     this.logger.info(msg, this.tag);
   }
 
-  warn(msg: string) {
+  warn(msg: MsgType) {
     this.logger.warn(msg, this.tag);
   }
 
-  error(msg: string) {
+  error(msg: MsgType) {
     this.logger.error(msg, this.tag);
   }
 }

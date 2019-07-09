@@ -7,6 +7,7 @@ class BaseLocalNode extends node_state_1.LocalNode {
         let childPath = node_1.Path.concat(this.path, name);
         let childNode = new cls(childPath, this.provider, ...args);
         this.addChild(name, childNode);
+        return childNode;
     }
     save() {
         let data = {};

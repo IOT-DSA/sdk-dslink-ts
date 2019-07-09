@@ -35,6 +35,6 @@ describe('logger', function () {
     assert.isFalse(loggedMsg.includes('['), 'should not have tag');
 
     tagged.info('');
-    assert.isFalse(loggedMsg.includes(' [a] INFO '), 'should have tag');
+    assert.isTrue(loggedMsg.includes(' [a] INFO '), 'should have tag');
   });
 });

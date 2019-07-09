@@ -39,6 +39,6 @@ export declare class WebSocketConnection extends Connection {
     nextMsgId: number;
     _sending: boolean;
     _send(): void;
-    _onDone(): void;
+    _onDone: () => void;
     close(): void;
 }

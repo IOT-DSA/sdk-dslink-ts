@@ -7,6 +7,9 @@ const ws_1 = __importDefault(require("ws"));
 const interfaces_1 = require("../common/interfaces");
 const connection_channel_1 = require("../common/connection_channel");
 const async_1 = require("../utils/async");
+const codec_1 = require("../utils/codec");
+const logger_1 = require("../utils/logger");
+let logger = logger_1.logger.tag('ws');
 class WebSocketConnection extends interfaces_1.Connection {
     /// clientLink is not needed when websocket works in server link
     // WebSocketConnection(socket:WebSocket,
@@ -61,8 +64,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
-                    //        logger.fine("$m");
-                    console.log(m);
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
                     if (typeof m["salt"] === 'string') {
                         this.clientLink.updateSalt(m["salt"]);
                     }
@@ -96,8 +98,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             else if (typeof e.data === 'string') {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
-                    //        logger.fine("$m");
-                    //        console.log('receive', DsJson.encode(m, true));
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
                     let needAck = false;
                     if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
                         needAck = true;
@@ -129,6 +130,32 @@ class WebSocketConnection extends interfaces_1.Connection {
         /// when nextMsgId = -1, ack is disabled
         this.nextMsgId = 1;
         this._sending = false;
+        this._onDone = () => {
+            if (this._onDoneHandled) {
+                return;
+            }
+            this._onDoneHandled = true;
+            if (!this._requesterChannel.onReceive.isClosed) {
+                this._requesterChannel.onReceive.close();
+            }
+            if (!this._requesterChannel.onDisconnectController.isCompleted) {
+                this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
+            }
+            if (!this._responderChannel.onReceive.isClosed) {
+                this._responderChannel.onReceive.close();
+            }
+            if (!this._responderChannel.onDisconnectController.isCompleted) {
+                this._responderChannel.onDisconnectController.complete(this._responderChannel);
+            }
+            if (!this._onDisconnectedCompleter.isCompleted) {
+                this._onDisconnectedCompleter.complete(false);
+            }
+            if (this.pingTimer != null) {
+                clearInterval(this.pingTimer);
+                this.pingTimer = null;
+            }
+            this._sending = false;
+        };
         this.socket = socket;
         this.clientLink = clientLink;
         this.onConnect = onConnect;
@@ -185,7 +212,6 @@ class WebSocketConnection extends interfaces_1.Connection {
         if (this.socket.readyState !== ws_1.default.OPEN) {
             return;
         }
-        //    logger.fine("browser sending");
         let needSend = false;
         let m;
         if (this._msgCommand != null) {
@@ -231,8 +257,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this.nextMsgId = 1;
                 }
             }
-            //      logger.fine("send: $m");
-            //      console.log('send', DsJson.encode(m, true));
+            logger.trace(() => 'send' + codec_1.DsJson.encode(m, true));
             let encoded = this.codec.encodeFrame(m);
             try {
                 this.socket.send(encoded);
@@ -243,32 +268,6 @@ class WebSocketConnection extends interfaces_1.Connection {
             }
             this._dataSent = true;
         }
-    }
-    _onDone() {
-        if (this._onDoneHandled) {
-            return;
-        }
-        this._onDoneHandled = true;
-        if (!this._requesterChannel.onReceive.isClosed) {
-            this._requesterChannel.onReceive.close();
-        }
-        if (!this._requesterChannel.onDisconnectController.isCompleted) {
-            this._requesterChannel.onDisconnectController.complete(this._requesterChannel);
-        }
-        if (!this._responderChannel.onReceive.isClosed) {
-            this._responderChannel.onReceive.close();
-        }
-        if (!this._responderChannel.onDisconnectController.isCompleted) {
-            this._responderChannel.onDisconnectController.complete(this._responderChannel);
-        }
-        if (!this._onDisconnectedCompleter.isCompleted) {
-            this._onDisconnectedCompleter.complete(false);
-        }
-        if (this.pingTimer != null) {
-            clearInterval(this.pingTimer);
-            this.pingTimer = null;
-        }
-        this._sending = false;
     }
     close() {
         if (this.socket.readyState === ws_1.default.OPEN ||

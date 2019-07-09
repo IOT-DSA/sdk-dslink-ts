@@ -1,17 +1,20 @@
 import http from 'http';
 import WebSocket from 'ws';
 import {AddressInfo} from "net";
+import {LocalNode} from "../src/responder/node_state";
+import {PrivateKey} from "../src/crypto/pk";
+import {HttpClientLink} from "../src/http/client_link";
 
 
 class Client {
-  server: MockServer;
+  server: MockBroker;
   socket: WebSocket;
 
   paired: Client;
 
   queued: WebSocket.Data[] = [];
 
-  constructor(server: MockServer, socket: WebSocket) {
+  constructor(server: MockBroker, socket: WebSocket) {
     this.server = server;
     this.socket = socket;
     socket.send('{}');
@@ -66,17 +69,17 @@ const connResponse = {
   "format": "json"
 };
 
-export class MockServer {
+export class MockBroker {
   server = http.createServer((req, resp) => {
     if (req.url.includes('format=msgpack')) {
       connResponse.format = 'msgpack';
     } else {
       connResponse.format = 'json';
     }
-    var body = JSON.stringify(connResponse);
-    var content_length = body.length;
+    let body = JSON.stringify(connResponse);
+    let contentLength = body.length;
     resp.writeHead(200, {
-      'Content-Length': content_length,
+      'Content-Length': contentLength,
       'Content-Type': 'application/json'
     });
     resp.end(body);
@@ -90,7 +93,6 @@ export class MockServer {
 
   constructor() {
     this.serverSocket.on('connection', (socket: WebSocket, request: http.IncomingMessage) => {
-      console.log('ws');
       if (request.url.includes('dsId=requester')) {
         if (this.requester) {
           this.disconnect();
@@ -107,10 +109,33 @@ export class MockServer {
     });
     this.onListen = new Promise<number>((resolve) => {
       this.server.listen(0, '127.0.0.1', () => {
-        console.log(this.server.address() as AddressInfo);
         resolve((this.server.address() as AddressInfo).port);
       });
     });
+  }
+
+
+  key = PrivateKey.loadFromString('M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE');
+
+  async createRequester() {
+    let port = await this.onListen;
+    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'requester-', this.key, {
+      isRequester: true,
+      format: 'json'
+    });
+    await link.connect();
+    return link;
+  }
+
+  async createResponder(rootNode: LocalNode) {
+    let port = await this.onListen;
+    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'responder-', this.key, {
+      isRequester: true,
+      rootNode,
+      format: 'json'
+    });
+    await link.connect();
+    return link;
   }
 
   disconnect() {

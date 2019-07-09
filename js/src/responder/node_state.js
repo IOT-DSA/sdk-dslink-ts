@@ -9,7 +9,7 @@ class LocalNode extends node_1.Node {
     constructor(path, provider, profileName = 'node') {
         super(profileName);
         this._value = null;
-        this._valueReady = true;
+        this._valueReady = false;
         this.path = path;
         this.provider = provider;
         this.initialize();
@@ -59,7 +59,7 @@ class LocalNode extends node_1.Node {
         }
         this.attributes.set(name, value);
         this.provider.save();
-        if (response != null) {
+        if (response) {
             response.close();
         }
     }
@@ -70,7 +70,7 @@ class LocalNode extends node_1.Node {
         }
         this.attributes.delete(name);
         this.provider.save();
-        if (response != null) {
+        if (response) {
             response.close();
         }
     }
@@ -80,7 +80,9 @@ class LocalNode extends node_1.Node {
         if (this._state) {
             this._state.updateValue(value);
         }
-        response.close();
+        if (response) {
+            response.close();
+        }
     }
     save() {
         return null;
@@ -168,15 +170,13 @@ class NodeState {
             listener(null); // use null to update all
         }
     }
-    /// Gets the last value update of this node.
-    get lastValueUpdate() {
-        if (!this._lastValueUpdate && this._node && this._node._valueReady) {
+    updateValue(value) {
+        if (this._node._value instanceof value_1.ValueUpdate) {
+            this._lastValueUpdate = this._node._value;
+        }
+        else {
             this._lastValueUpdate = new value_1.ValueUpdate(this._node._value);
         }
-        return this._lastValueUpdate;
-    }
-    updateValue(value) {
-        this._lastValueUpdate = new value_1.ValueUpdate(this._node._value);
         if (this._subscriber) {
             this._subscriber.addValue(this._lastValueUpdate);
         }

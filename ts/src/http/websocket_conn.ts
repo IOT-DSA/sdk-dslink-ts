@@ -10,7 +10,9 @@ import {
 import {PassiveChannel} from "../common/connection_channel";
 import {Completer} from "../utils/async";
 import {DsCodec, DsJson} from "../utils/codec";
+import {logger as baseLogger} from "../utils/logger";
 
+let logger = baseLogger.tag('ws');
 
 export class WebSocketConnection extends Connection {
   _responderChannel: PassiveChannel;
@@ -156,8 +158,7 @@ export class WebSocketConnection extends Connection {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
-//        logger.fine("$m");
-        console.log(m);
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
 
         if (typeof m["salt"] === 'string') {
           this.clientLink.updateSalt(m["salt"]);
@@ -191,8 +192,7 @@ export class WebSocketConnection extends Connection {
     } else if (typeof e.data === 'string') {
       try {
         m = this.codec.decodeStringFrame(e.data);
-//        logger.fine("$m");
-//        console.log('receive', DsJson.encode(m, true));
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
         let needAck = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
@@ -234,7 +234,6 @@ export class WebSocketConnection extends Connection {
     if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
-//    logger.fine("browser sending");
     let needSend = false;
     let m: {[key: string]: any};
     if (this._msgCommand != null) {
@@ -282,8 +281,7 @@ export class WebSocketConnection extends Connection {
         }
       }
 
-//      logger.fine("send: $m");
-//      console.log('send', DsJson.encode(m, true));
+      logger.trace(() => 'send' + DsJson.encode(m, true));
       let encoded = this.codec.encodeFrame(m);
 
       try {
@@ -297,7 +295,7 @@ export class WebSocketConnection extends Connection {
   }
 
 
-  _onDone() {
+  _onDone = () => {
     if (this._onDoneHandled) {
       return;
     }
@@ -329,7 +327,7 @@ export class WebSocketConnection extends Connection {
       this.pingTimer = null;
     }
     this._sending = false;
-  }
+  };
 
   close() {
     if (this.socket.readyState === WebSocket.OPEN ||

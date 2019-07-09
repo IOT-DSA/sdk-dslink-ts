@@ -78,43 +78,45 @@ export class LocalNode extends Node {
 
   /// Called by the link internals to set an attribute on this node.
   setAttribute(
-    name: string, value: any, responder: Responder, response: Response) {
+    name: string, value: any, responder?: Responder, response?: Response) {
     if (!name.startsWith("@")) {
       name = `@${name}`;
     }
 
     this.attributes.set(name, value);
     this.provider.save();
-    if (response != null) {
+    if (response) {
       response.close();
     }
   }
 
 /// Called by the link internals to remove an attribute from this node.
   removeAttribute(
-    name: string, responder: Responder, response: Response) {
+    name: string, responder?: Responder, response?: Response) {
     if (!name.startsWith("@")) {
       name = `@${name}`;
     }
 
     this.attributes.delete(name);
     this.provider.save();
-    if (response != null) {
+    if (response) {
       response.close();
     }
   }
 
   _value: any = null;
-  _valueReady = true;
+  _valueReady = false;
 
   /// Called by the link internals to set a value of a node.
-  setValue(value: any, responder: Responder, response: Response,
+  setValue(value: any, responder?: Responder, response?: Response,
            maxPermission: number = Permission.CONFIG) {
     this._value = value;
     if (this._state) {
       this._state.updateValue(value);
     }
-    response.close();
+    if (response) {
+      response.close();
+    }
   }
 
   save(): {[key: string]: any} {
@@ -237,16 +239,12 @@ export class NodeState {
 
   _lastValueUpdate: ValueUpdate;
 
-  /// Gets the last value update of this node.
-  get lastValueUpdate(): ValueUpdate {
-    if (!this._lastValueUpdate && this._node && this._node._valueReady) {
+  updateValue(value: any) {
+    if (this._node._value instanceof ValueUpdate) {
+      this._lastValueUpdate = this._node._value;
+    } else {
       this._lastValueUpdate = new ValueUpdate(this._node._value);
     }
-    return this._lastValueUpdate;
-  }
-
-  updateValue(value: any) {
-    this._lastValueUpdate = new ValueUpdate(this._node._value);
     if (this._subscriber) {
       this._subscriber.addValue(this._lastValueUpdate);
     }

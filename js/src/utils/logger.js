@@ -70,7 +70,8 @@ class Logger {
     _log(level, msg, tag) {
         if (level & this._level) {
             if (this.formatter) {
-                this.printer(this.formatter(msg, level, tag), level);
+                let str = typeof msg === 'function' ? msg() : msg;
+                this.printer(this.formatter(str, level, tag), level);
             }
         }
     }
@@ -102,6 +103,7 @@ exports.Logger = Logger;
 class TaggedLogger {
     constructor(logger, tag) {
         this.logger = logger;
+        this.tag = tag;
     }
     trace(msg) {
         this.logger.trace(msg, this.tag);
