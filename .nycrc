@@ -5,7 +5,9 @@
   ],
   "include": [
     "ts/src/**/*",
-    "js/src/**/*"
+    "js/src/**/*",
+    "ts/test/**/*",
+    "js/test/**/*"
   ],
   "exclude": [
     "**/*.d.ts",
