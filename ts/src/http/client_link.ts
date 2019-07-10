@@ -118,7 +118,7 @@ export class HttpClientLink extends ClientLink {
     if (!this._connDelayTimer) {
       this._connDelayTimer = setTimeout(() => {
         this._connDelayTimer = null;
-        this.connect();
+        this._connect();
       }, delay);
     }
 
@@ -126,7 +126,7 @@ export class HttpClientLink extends ClientLink {
   }
 
 
-  async connect() {
+  async _connect() {
     if (this._connDelayTimer) {
       clearTimeout(this._connDelayTimer);
       this._connDelayTimer = null;
@@ -230,7 +230,7 @@ export class HttpClientLink extends ClientLink {
 
       this._wsConnection = new WebSocketConnection(
         socket,
-        this, null,
+        this, this._onConnect,
         DsCodec.getCodec(this.format)
       );
 
@@ -256,6 +256,7 @@ export class HttpClientLink extends ClientLink {
       }
 
       this._wsConnection.onDisconnected.then((connection) => {
+        this._onDisconnect();
         this.initWebsocket();
       });
     } catch (error) {
@@ -275,7 +276,7 @@ export class HttpClientLink extends ClientLink {
         if (!this._wsDelayTimer) {
           this._wsDelayTimer = setTimeout(() => {
             this._wsDelayTimer = null;
-            this.connect();
+            this._connect();
           }, delay);
         }
 
@@ -289,7 +290,7 @@ export class HttpClientLink extends ClientLink {
   close() {
     if (this._closed) return;
     this._onReadyCompleter = new Completer();
-    this._closed = true;
+    this._closed = true
     if (this._wsConnection != null) {
       this._wsConnection.close();
       this._wsConnection = null;

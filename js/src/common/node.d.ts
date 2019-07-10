@@ -5,7 +5,7 @@ export declare class Node {
     getAttribute(name: string): any;
     configs: Map<string, any>;
     constructor(profileName?: string);
-    getConfig(name: string): object;
+    getConfig(name: string): any;
     children: Map<string, Node>;
     /** @ignore */
     addChild(name: string, node: Node): void;

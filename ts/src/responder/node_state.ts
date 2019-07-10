@@ -38,6 +38,7 @@ export class LocalNode extends Node {
     this.children.set(name, node);
     if (this._state) {
       node._connectState();
+      this._state.listStream.add(name);
     }
   }
 
@@ -74,6 +75,9 @@ export class LocalNode extends Node {
 
     this.configs.set(name, value);
     this.provider.save();
+    if (this._state) {
+      this._state.listStream.add(name);
+    }
   }
 
   /// Called by the link internals to set an attribute on this node.
@@ -85,6 +89,9 @@ export class LocalNode extends Node {
 
     this.attributes.set(name, value);
     this.provider.save();
+    if (this._state) {
+      this._state.listStream.add(name);
+    }
     if (response) {
       response.close();
     }
@@ -99,6 +106,9 @@ export class LocalNode extends Node {
 
     this.attributes.delete(name);
     this.provider.save();
+    if (this._state) {
+      this._state.listStream.add(name);
+    }
     if (response) {
       response.close();
     }

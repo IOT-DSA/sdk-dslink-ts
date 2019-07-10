@@ -58,12 +58,16 @@ class Stream {
     }
     close() {
         if (!this.isClosed) {
+            this._value = undefined;
             this.isClosed = true;
             this._listeners.clear();
             if (this._onClose) {
                 this._onClose();
             }
         }
+    }
+    reset() {
+        this._value = undefined;
     }
 }
 exports.Stream = Stream;

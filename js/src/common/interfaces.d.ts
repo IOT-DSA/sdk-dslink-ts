@@ -79,7 +79,12 @@ export declare abstract class ClientLink extends BaseLink {
     readonly logName: string;
     /** @ignore */
     formatLogMessage(msg: string): string;
-    abstract connect(): void;
+    abstract _connect(): void;
+    onConnect: Stream<boolean>;
+    _onConnect: () => void;
+    onDisconnect: Stream<boolean>;
+    _onDisconnect: () => void;
+    connect(): Promise<any>;
 }
 export interface ServerLinkManager {
     getLinkPath(dsId: string, token: string): string;

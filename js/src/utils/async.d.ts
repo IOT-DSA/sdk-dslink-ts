@@ -27,6 +27,7 @@ export declare class Stream<T> {
     hasListener(): boolean;
     isClosed: boolean;
     close(): void;
+    reset(): void;
 }
 /** @ignore */
 export interface Cancelable {

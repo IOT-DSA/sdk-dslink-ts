@@ -34,7 +34,7 @@ describe('subscribe', function () {
 
   it('subscribe', async function () {
     let updates: any[] = [];
-    requester.subscribe('/val', (update: ValueUpdate) => {
+    let subscription = requester.subscribe('/val', (update: ValueUpdate) => {
       updates.push(update.value);
     });
     await shouldHappen(() => updates[0] === 123);
@@ -42,6 +42,11 @@ describe('subscribe', function () {
     await shouldHappen(() => updates[1] === 456);
     rootNode.val.setValue(null);
     await shouldHappen(() => updates[2] === null);
+
+    subscription.close();
+    rootNode.val.setValue(789);
+    await sleep(10);
+    assert.equal(updates.length, 3); // should not receive new update after close() subscription;
   });
 
   it('subscribeOnce', async function () {
@@ -95,7 +100,17 @@ describe('subscribe', function () {
       rootNode.val.setValue(i);
     }
     await shouldHappen(() => updates[updates.length - 1] === 9);
-    // no skip in qos 1
+    // no skip in qos 2
     assert.isTrue(updates.length >= 11);
+
+    updates.length = 0;
+    // the subscription should continue
+    for (let i = 0; i < 10; ++i) {
+      rootNode.val.setValue(i);
+    }
+    await shouldHappen(() => updates[updates.length - 1] === 9);
+    assert.isTrue(updates.length === 10);
+
+
   });
 });

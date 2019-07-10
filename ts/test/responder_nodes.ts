@@ -6,7 +6,7 @@ import {Permission} from "../src/common/permission";
 
 class TestActionNode extends ActionNode {
   constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'myaction', Permission.READ);
+    super(path, provider, 'testaction', Permission.READ);
   }
 
   initialize() {
@@ -21,21 +21,18 @@ class TestActionNode extends ActionNode {
 
 class TestValueNode extends ValueNode {
   constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'myvalue', 'number', Permission.WRITE);
+    super(path, provider, 'testvalue', 'number', Permission.WRITE);
     this._value = 123;
-  }
-
-  initialize() {
-    this.setConfig('$hello', 'world');
-    this.createChild('b', TestActionNode);
   }
 }
 
 export class TestRootNode extends RootNode {
   val: TestValueNode;
+  action: TestActionNode;
 
   initialize() {
-    this.setConfig('$hello', 'world');
+    this.setConfig('$config1', 'hello');
     this.val = this.createChild('val', TestValueNode) as TestValueNode;
+    this.action = this.createChild('act', TestActionNode) as TestActionNode;
   }
 }

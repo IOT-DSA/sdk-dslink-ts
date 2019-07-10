@@ -44,7 +44,7 @@ export declare class HttpClientLink extends ClientLink {
     _connDelay: number;
     _connDelayTimer: any;
     connDelay(): void;
-    connect(): Promise<void>;
+    _connect(): Promise<void>;
     _wsDelay: number;
     _wsDelayTimer: any;
     reconnectWSCount: number;

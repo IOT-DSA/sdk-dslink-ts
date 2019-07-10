@@ -77,13 +77,13 @@ class HttpClientLink extends interfaces_1.ClientLink {
         if (!this._connDelayTimer) {
             this._connDelayTimer = setTimeout(() => {
                 this._connDelayTimer = null;
-                this.connect();
+                this._connect();
             }, delay);
         }
         if (this._connDelay < 30)
             this._connDelay++;
     }
-    async connect() {
+    async _connect() {
         if (this._connDelayTimer) {
             clearTimeout(this._connDelayTimer);
             this._connDelayTimer = null;
@@ -165,7 +165,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 wsUrl = `${wsUrl}${this.tokenHash}`;
             }
             let socket = new ws_1.default(wsUrl);
-            this._wsConnection = new websocket_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format));
+            this._wsConnection = new websocket_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
             //      logger.info(formatLogMessage("Connected"));
             // delays: Reset, we've successfully connected.
             this._connDelay = 0;
@@ -183,6 +183,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 });
             }
             this._wsConnection.onDisconnected.then((connection) => {
+                this._onDisconnect();
                 this.initWebsocket();
             });
         }
@@ -204,7 +205,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 if (!this._wsDelayTimer) {
                     this._wsDelayTimer = setTimeout(() => {
                         this._wsDelayTimer = null;
-                        this.connect();
+                        this._connect();
                     }, delay);
                 }
                 if (this._wsDelay < 30)

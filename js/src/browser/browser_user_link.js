@@ -33,7 +33,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     updateSalt(salt) {
         // do nothing
     }
-    connect() {
+    _connect() {
         this.initWebsocket(false);
         return this.onRequesterReady;
     }
@@ -47,7 +47,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     initWebsocket(reconnect = true) {
         this._initSocketTimer = null;
         let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-        this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format));
+        this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
         // if (this.responder != null) {
         //   this.responder.connection = this._wsConnection.responderChannel;
         // }
@@ -61,6 +61,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
         }
         this._wsConnection.onDisconnected.then((connection) => {
             //      logger.info("Disconnected");
+            this._onDisconnect();
             if (this._wsConnection == null) {
                 // connection is closed
                 return;

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const denque_1 = __importDefault(require("denque"));
+const async_1 = require("../utils/async");
 const codec_1 = require("../utils/codec");
 class ECDH {
     verifySalt(salt, hash) {
@@ -86,6 +87,19 @@ class ServerLink extends BaseLink {
 exports.ServerLink = ServerLink;
 /// Base Class for Client Link implementations.
 class ClientLink extends BaseLink {
+    constructor() {
+        super(...arguments);
+        this.onConnect = new async_1.Stream();
+        this._onConnect = () => {
+            this.onConnect.add(true);
+            this.onDisconnect.reset();
+        };
+        this.onDisconnect = new async_1.Stream();
+        this._onDisconnect = () => {
+            this.onDisconnect.add(true);
+            this.onConnect.reset();
+        };
+    }
     /** @ignore */
     get logName() {
         return null;
@@ -96,6 +110,15 @@ class ClientLink extends BaseLink {
             return `[${this.logName}] ${msg}`;
         }
         return msg;
+    }
+    async connect() {
+        this._connect();
+        return new Promise((resolve) => {
+            let listener = this.onConnect.listen((connected) => {
+                resolve(connected);
+                listener.close();
+            });
+        });
     }
 }
 exports.ClientLink = ClientLink;

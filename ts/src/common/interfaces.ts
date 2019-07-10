@@ -184,7 +184,29 @@ export abstract class ClientLink extends BaseLink {
     return msg;
   }
 
-  abstract connect(): void;
+  abstract _connect(): void;
+
+  onConnect: Stream<boolean> = new Stream();
+  _onConnect = () => {
+    this.onConnect.add(true);
+    this.onDisconnect.reset();
+  };
+
+  onDisconnect: Stream<boolean> = new Stream();
+  _onDisconnect = () => {
+    this.onDisconnect.add(true);
+    this.onConnect.reset();
+  };
+
+  async connect() {
+    this._connect();
+    return new Promise<any>((resolve) => {
+      let listener = this.onConnect.listen((connected: boolean) => {
+        resolve(connected);
+        listener.close();
+      });
+    });
+  }
 }
 
 export interface ServerLinkManager {

@@ -55,7 +55,7 @@ export class BrowserUserLink extends ClientLink {
   }
 
 
-  connect() {
+  _connect() {
     this.initWebsocket(false);
     return this.onRequesterReady;
   }
@@ -76,7 +76,7 @@ export class BrowserUserLink extends ClientLink {
     this._initSocketTimer = null;
     let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
     this._wsConnection = new WebSocketConnection(
-      socket, this, null, DsCodec.getCodec(this.format));
+      socket, this, this._onConnect, DsCodec.getCodec(this.format));
 
     // if (this.responder != null) {
     //   this.responder.connection = this._wsConnection.responderChannel;
@@ -92,6 +92,8 @@ export class BrowserUserLink extends ClientLink {
     }
     this._wsConnection.onDisconnected.then((connection) => {
 //      logger.info("Disconnected");
+      this._onDisconnect();
+
       if (this._wsConnection == null) {
         // connection is closed
         return;

@@ -23,7 +23,7 @@ export declare class BrowserUserLink extends ClientLink {
     /** @ignore */
     format: string;
     constructor(wsUpdateUri: string, format?: string);
-    connect(): Promise<Requester>;
+    _connect(): Promise<Requester>;
     /** @ignore */
     _wsDelay: number;
     /** @ignore */

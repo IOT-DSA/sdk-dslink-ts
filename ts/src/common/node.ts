@@ -43,7 +43,7 @@ export class Node {
   }
 
   /// Get a Config
-  getConfig(name: string): object {
+  getConfig(name: string): any {
     if (this.configs.has(name)) {
       return this.configs.get(name);
     }
