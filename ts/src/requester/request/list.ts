@@ -38,6 +38,9 @@ export class ListDefListener {
     this.requester = requester;
     this.listener = requester.list(node.remotePath, (update: RequesterListUpdate) => {
       this.ready = update.streamStatus !== StreamStatus.initialize;
+      if (update.node.configs.has('$disconnectedTs')) {
+        update.node.configs.delete('$disconnectedTs');
+      }
       callback(update);
     });
   }
@@ -188,8 +191,9 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
   static readonly _ignoreProfileProps: string[] = [
     '$is',
-    '$permission',
-    '$settings'
+    // '$permission',
+    // '$settings',
+    '$disconnectedTs',
   ];
 
   _onProfileUpdate = (update: RequesterListUpdate) => {

@@ -22,6 +22,9 @@ class ListDefListener {
         this.requester = requester;
         this.listener = requester.list(node.remotePath, (update) => {
             this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
+            if (update.node.configs.has('$disconnectedTs')) {
+                update.node.configs.delete('$disconnectedTs');
+            }
             callback(update);
         });
     }
@@ -263,8 +266,9 @@ class ListController {
 }
 ListController._ignoreProfileProps = [
     '$is',
-    '$permission',
-    '$settings'
+    // '$permission',
+    // '$settings',
+    '$disconnectedTs',
 ];
 exports.ListController = ListController;
 //# sourceMappingURL=list.js.map
