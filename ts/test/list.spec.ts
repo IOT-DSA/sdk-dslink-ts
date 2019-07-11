@@ -44,8 +44,8 @@ describe('list', function () {
     assert.equal(node.getChild('act').getConfig('$is'), 'testaction');
     assert.isTrue(node.getConfig('$config2') == null);
 
-    rootNode.setConfig('$config2', 'world');
-    await shouldHappen(() => node && node.getConfig('$config2') === 'world');
+    await requester.set('/@attribute1', 'world');
+    await shouldHappen(() => node && node.getAttribute('@attribute1') === 'world');
 
     subscription.close();
     rootNode.setConfig('$config3', 'hmm?');
