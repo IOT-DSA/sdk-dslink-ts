@@ -6,6 +6,7 @@ import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
 import {HttpClientLink} from "../src/http/client_link";
 import {Requester} from "../src/requester/requester";
+import {Path} from "../src/common/node";
 
 describe('subscribe', function () {
   let broker = new MockBroker();
@@ -20,12 +21,18 @@ describe('subscribe', function () {
   let requesterClient: HttpClientLink;
   let responderClient: HttpClientLink;
   let requester: Requester;
+  let responderPath: string;
+
+  function resolve(str: string) {
+    return Path.concat(responderPath, str);
+  }
 
   beforeEach(async () => {
     rootNode = new TestRootNode();
     requesterClient = await broker.createRequester();
     responderClient = await broker.createResponder(rootNode);
     requester = requesterClient.requester;
+    responderPath = responderClient.remotePath;
   });
   afterEach(() => {
     requesterClient.close();
@@ -34,11 +41,11 @@ describe('subscribe', function () {
 
   it('subscribe', async function () {
     let updates: any[] = [];
-    let subscription = requester.subscribe('/val', (update: ValueUpdate) => {
+    let subscription = requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
     });
     await shouldHappen(() => updates[0] === 123);
-    await requester.set('/val', 456);
+    await requester.set(resolve('val'), 456);
     await shouldHappen(() => updates[1] === 456);
     rootNode.val.setValue(null);
     await shouldHappen(() => updates[2] === null);
@@ -50,14 +57,14 @@ describe('subscribe', function () {
   });
 
   it('subscribeOnce', async function () {
-    assert.equal((await requester.subscribeOnce('/val')).value, 123);
+    assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
     await sleep();
     assert.equal(requester._subscription.subscriptions.size, 0); // everything should be unsubscribed
   });
 
   it('qos 0', async function () {
     let updates: any[] = [];
-    requester.subscribe('/val', (update: ValueUpdate) => {
+    requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
     });
     await shouldHappen(() => updates[0] === 123);
@@ -72,7 +79,7 @@ describe('subscribe', function () {
 
   it('qos 1', async function () {
     let updates: any[] = [];
-    requester.subscribe('/val', (update: ValueUpdate) => {
+    requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
     }, 1);
     await shouldHappen(() => updates[0] === 123);
@@ -87,7 +94,7 @@ describe('subscribe', function () {
 
   it('qos 2', async function () {
     let updates: any[] = [];
-    requester.subscribe('/val', (update: ValueUpdate) => {
+    requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
     }, 2);
     await shouldHappen(() => updates[0] === 123);

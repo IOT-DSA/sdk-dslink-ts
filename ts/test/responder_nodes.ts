@@ -27,6 +27,7 @@ export class TestValueNode extends ValueNode {
   }
 
   initialize() {
+    this.setConfig('$config1', 'hello');
     this.createChild('valAct', TestActionNode);
   }
 }
@@ -36,7 +37,6 @@ export class TestRootNode extends RootNode {
   action: TestActionNode;
 
   initialize() {
-    this.setConfig('$config1', 'hello');
     this.val = this.createChild('val', TestValueNode) as TestValueNode;
     this.action = this.createChild('act', TestActionNode) as TestActionNode;
   }

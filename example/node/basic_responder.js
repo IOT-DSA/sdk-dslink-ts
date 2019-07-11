@@ -28,7 +28,6 @@ class MyValueNode extends ValueNode {
   }
 
   initialize() {
-    this.setConfig('$hello', 'world');
     this.createChild('b', MyActionNode);
   }
 }

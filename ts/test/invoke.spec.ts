@@ -10,6 +10,7 @@ import {RequesterListUpdate} from "../src/requester/request/list";
 import {RemoteNode} from "../src/requester/node_cache";
 import {RequesterInvokeUpdate} from "../src/requester/request/invoke";
 import {DSError} from "../src/common/interfaces";
+import {Path} from "../src/common/node";
 
 describe('invoke', function () {
   let broker = new MockBroker();
@@ -24,12 +25,18 @@ describe('invoke', function () {
   let requesterClient: HttpClientLink;
   let responderClient: HttpClientLink;
   let requester: Requester;
+  let responderPath: string;
 
+  function resolve(str: string) {
+    return Path.concat(responderPath, str);
+  }
+  
   beforeEach(async () => {
     rootNode = new TestRootNode();
     requesterClient = await broker.createRequester();
     responderClient = await broker.createResponder(rootNode);
     requester = requesterClient.requester;
+    responderPath = responderClient.remotePath;
   });
   afterEach(() => {
     requesterClient.close();
@@ -38,7 +45,7 @@ describe('invoke', function () {
 
   it('simple invoke', async function () {
     let data: any;
-    requester.invoke('/act', {value: 2}, (update: RequesterInvokeUpdate) => {
+    requester.invoke(resolve('act'), {value: 2}, (update: RequesterInvokeUpdate) => {
       data = update.result;
     });
     await shouldHappen(() => data);
@@ -46,13 +53,13 @@ describe('invoke', function () {
   });
 
   it('invoke once', async function () {
-    let data = await requester.invokeOnce('/act', {value: 2});
+    let data = await requester.invokeOnce(resolve('act'), {value: 2});
     assert.deepEqual(data.result, {c1: 2, c2: '2'});
   });
 
   it('invoke invalid path', async function () {
     let error: DSError;
-    requester.invoke('/invalidPath', {}, (update: RequesterInvokeUpdate) => {
+    requester.invoke(resolve('invalidPath'), {}, (update: RequesterInvokeUpdate) => {
       error = update.error;
     });
     await shouldHappen(() => error);
@@ -62,7 +69,7 @@ describe('invoke', function () {
   it('invoke once invalid path', async function () {
     let error: DSError;
     try {
-      await requester.invokeOnce('/invalidPath', {});
+      await requester.invokeOnce(resolve('invalidPath'), {});
     } catch (e) {
       error = e;
     }

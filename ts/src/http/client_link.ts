@@ -16,6 +16,10 @@ export {RootNode} from "../responder/node/RootNode";
 export {ValueNode} from "../responder/node/ValueNode";
 export {ActionNode} from "../responder/node/ActionNode";
 
+import {logger as mainLogger} from "../utils/logger";
+
+let logger = mainLogger.tag('link');
+
 export class HttpClientLink extends ClientLink {
   _onReadyCompleter: Completer<[Requester, Responder]> = new Completer<[Requester, Responder]>();
 
@@ -260,15 +264,10 @@ export class HttpClientLink extends ClientLink {
         this.initWebsocket();
       });
     } catch (error) {
-//      logger.fine(
-//         formatLogMessage("Error while initializing WebSocket"),
-//         error,
-//         stack
-//       );
       if (error.message.contains('not upgraded to websocket')
         || error.message.contains('(401)')
       ) {
-        console.log(error.message);
+        logger.warn(error.message);
         this.connDelay();
       } else if (reconnect) {
         let delay = this._wsDelay * 500;

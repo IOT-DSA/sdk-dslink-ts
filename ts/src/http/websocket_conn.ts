@@ -10,9 +10,9 @@ import {
 import {PassiveChannel} from "../common/connection_channel";
 import {Completer} from "../utils/async";
 import {DsCodec, DsJson} from "../utils/codec";
-import {logger as baseLogger} from "../utils/logger";
+import {logger as mainLogger} from "../utils/logger";
 
-let logger = baseLogger.tag('ws');
+let logger = mainLogger.tag('ws');
 
 export class WebSocketConnection extends Connection {
   _responderChannel: PassiveChannel;

@@ -21,6 +21,8 @@ var ValueNode_1 = require("../responder/node/ValueNode");
 exports.ValueNode = ValueNode_1.ValueNode;
 var ActionNode_1 = require("../responder/node/ActionNode");
 exports.ActionNode = ActionNode_1.ActionNode;
+const logger_1 = require("../utils/logger");
+let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
     constructor(conn, dsIdPrefix, privateKey, options = { isRequester: false }) {
         super();
@@ -188,14 +190,9 @@ class HttpClientLink extends interfaces_1.ClientLink {
             });
         }
         catch (error) {
-            //      logger.fine(
-            //         formatLogMessage("Error while initializing WebSocket"),
-            //         error,
-            //         stack
-            //       );
             if (error.message.contains('not upgraded to websocket')
                 || error.message.contains('(401)')) {
-                console.log(error.message);
+                logger.warn(error.message);
                 this.connDelay();
             }
             else if (reconnect) {
