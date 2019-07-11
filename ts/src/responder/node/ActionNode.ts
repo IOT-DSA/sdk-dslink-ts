@@ -5,17 +5,24 @@ import {InvokeResponse} from "../response/invoke";
 import {DSError, StreamStatus} from "../../common/interfaces";
 import {Table} from "../../common/table";
 
+
 export class ActionNode extends LocalNode {
   constructor(path: string, provider: NodeProvider, profileName: string = 'node', invokable = Permission.WRITE) {
     super(path, provider, profileName);
     this.setConfig('$invokable', Permission.names[invokable]);
   }
 
-  onInvoke(params: {[key: string]: any}): any {
+  /**
+   *  Override this to have simple customized invoke callback
+   */
+  onInvoke(params: {[key: string]: any}, parentNode: LocalNode, maxPermission: number = Permission.CONFIG): any {
 
   }
 
-  /// Called by the link internals to invoke this node.
+  /**
+   *  Called by the link internals to invoke this node.
+   *  Override this to have a full customized invoke callback
+   */
   invoke(
     params: {[key: string]: any},
     responder: Responder,
@@ -24,7 +31,7 @@ export class ActionNode extends LocalNode {
 
     let rslt: any;
     try {
-      rslt = this.onInvoke(params);
+      rslt = this.onInvoke(params, parentNode, maxPermission);
     } catch (err) {
       let error = new DSError("invokeException", {msg: String(err)});
       response.close(error);
@@ -52,7 +59,7 @@ export class ActionNode extends LocalNode {
     } else if (rslt != null && rslt instanceof Object) {
       let columns: any[] = [];
       let out: any[] = [];
-      for (let x of rslt) {
+      for (let x in rslt) {
         columns.push({
           "name": x,
           "type": "dynamic"

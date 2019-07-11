@@ -15,7 +15,8 @@ class TestActionNode extends ActionNode {
   }
 
   onInvoke(params: {[key: string]: any}) {
-    return {c1: params['value'], c2: 'str'};
+    let input = params['value'];
+    return {c1: Number(input), c2: String(input)};
   }
 }
 
@@ -24,6 +25,7 @@ export class TestValueNode extends ValueNode {
     super(path, provider, 'testvalue', 'number', Permission.WRITE);
     this._value = 123;
   }
+
   initialize() {
     this.createChild('valAct', TestActionNode);
   }

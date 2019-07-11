@@ -47,6 +47,9 @@ describe('list', function () {
     await requester.set('/@attribute1', 'world');
     await shouldHappen(() => node && node.getAttribute('@attribute1') === 'world');
 
+    await requester.remove('/@attribute1');
+    await shouldHappen(() => node && !node.attributes.has('@attribute1'));
+
     subscription.close();
     rootNode.setConfig('$config3', 'hmm?');
     await sleep(10);

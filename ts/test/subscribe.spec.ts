@@ -38,7 +38,7 @@ describe('subscribe', function () {
       updates.push(update.value);
     });
     await shouldHappen(() => updates[0] === 123);
-    rootNode.val.setValue(456);
+    await requester.set('/val', 456);
     await shouldHappen(() => updates[1] === 456);
     rootNode.val.setValue(null);
     await shouldHappen(() => updates[2] === null);

@@ -16,7 +16,8 @@ class MyActionNode extends ActionNode {
   }
 
   onInvoke(params) {
-    return {c1:params['value'], c2:'str'};
+    let input = params['value'];
+    return {c1: Number(input), c2: String(input)};
   }
 }
 

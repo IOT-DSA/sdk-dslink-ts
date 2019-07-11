@@ -9,13 +9,19 @@ class ActionNode extends node_state_1.LocalNode {
         super(path, provider, profileName);
         this.setConfig('$invokable', permission_1.Permission.names[invokable]);
     }
-    onInvoke(params) {
+    /**
+     *  Override this to have simple customized invoke callback
+     */
+    onInvoke(params, parentNode, maxPermission = permission_1.Permission.CONFIG) {
     }
-    /// Called by the link internals to invoke this node.
+    /**
+     *  Called by the link internals to invoke this node.
+     *  Override this to have a full customized invoke callback
+     */
     invoke(params, responder, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
         let rslt;
         try {
-            rslt = this.onInvoke(params);
+            rslt = this.onInvoke(params, parentNode, maxPermission);
         }
         catch (err) {
             let error = new interfaces_1.DSError("invokeException", { msg: String(err) });
@@ -44,7 +50,7 @@ class ActionNode extends node_state_1.LocalNode {
         else if (rslt != null && rslt instanceof Object) {
             let columns = [];
             let out = [];
-            for (let x of rslt) {
+            for (let x in rslt) {
                 columns.push({
                     "name": x,
                     "type": "dynamic"
