@@ -1,6 +1,6 @@
 import {MockBroker} from "./mock_broker";
 import {assert} from "chai";
-import {TestRootNode} from "./responder_nodes";
+import {TestRootNode, TestValueNode} from "./responder_nodes";
 import {shouldHappen, sleep} from "./test_util";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
@@ -35,7 +35,6 @@ describe('list', function () {
   });
 
   it('list', async function () {
-    let updates: any[] = [];
     let node: RemoteNode;
     let subscription = requester.list('/', (update: RequesterListUpdate) => {
       node = update.node;
@@ -59,6 +58,47 @@ describe('list', function () {
     let node = await requester.listOnce('/');
     assert.equal(node.getChild('val').getConfig('$is'), 'testvalue');
     assert.equal(node.getChild('act').getConfig('$is'), 'testaction');
+
+    // test invalid path
+    let invalidNode = await requester.listOnce('/invalid/path');
+    assert.isTrue(invalidNode.getConfig('$disconnectedTs') != null);
   });
 
+  it('list parent and add child', async function () {
+    let node: RemoteNode;
+    let subscription = requester.list('/', (update: RequesterListUpdate) => {
+      node = update.node;
+    });
+    await shouldHappen(() => node && node.getConfig('$config1') === 'hello');
+    assert.isTrue(node.getChild('newChild') == null);
+
+    rootNode.createChild('newChild', TestValueNode);
+
+    await shouldHappen(() => node && node.getChild('newChild'));
+    assert.equal(node.getChild('newChild').getConfig('$is'), 'testvalue');
+  });
+
+  it('list and add child', async function () {
+    let node: RemoteNode;
+    let subscription = requester.list('/newChild', (update: RequesterListUpdate) => {
+      node = update.node;
+    });
+    await shouldHappen(() => node && node.getConfig('$disconnectedTs'));
+
+    rootNode.createChild('newChild', TestValueNode);
+
+    await shouldHappen(() => node.getConfig('$is') === 'testvalue');
+  });
+
+  it('list child and add parent', async function () {
+    let node: RemoteNode;
+    let subscription = requester.list('/newChild/valAct', (update: RequesterListUpdate) => {
+      node = update.node;
+    });
+    await shouldHappen(() => node && node.getConfig('$disconnectedTs'));
+
+    rootNode.createChild('newChild', TestValueNode);
+
+    await shouldHappen(() => node.getConfig('$is') === 'testaction');
+  });
 });

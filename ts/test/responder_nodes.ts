@@ -19,10 +19,13 @@ class TestActionNode extends ActionNode {
   }
 }
 
-class TestValueNode extends ValueNode {
+export class TestValueNode extends ValueNode {
   constructor(path: string, provider: NodeProvider) {
     super(path, provider, 'testvalue', 'number', Permission.WRITE);
     this._value = 123;
+  }
+  initialize() {
+    this.createChild('valAct', TestActionNode);
   }
 }
 
