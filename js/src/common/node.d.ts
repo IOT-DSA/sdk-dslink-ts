@@ -1,20 +1,16 @@
-export declare class Node {
+export declare class Node<ChildType extends Node<any> = Node<any>> {
     static getDisplayName(nameOrPath: string): string;
-    profile: Node;
+    profile: Node<any>;
     attributes: Map<string, any>;
     getAttribute(name: string): any;
     configs: Map<string, any>;
     constructor(profileName?: string);
     getConfig(name: string): any;
-    children: Map<string, Node>;
-    /** @ignore */
-    addChild(name: string, node: Node): void;
-    /** @ignore */
-    removeChild(input: string): void;
-    getChild(name: string): Node;
+    children: Map<string, ChildType>;
+    getChild(name: string): ChildType;
     get(name: string): object;
     /** @ignore */
-    forEachChild(callback: (name: string, node: Node) => void): void;
+    forEachChild(callback: (name: string, node: ChildType) => void): void;
     /** @ignore */
     forEachConfig(callback: (name: string, val: any) => void): void;
     /** @ignore */

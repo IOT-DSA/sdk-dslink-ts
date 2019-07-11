@@ -34,7 +34,7 @@ class Node {
         if (this.profile != null && this.profile.attributes.has(name)) {
             return this.profile.attributes.get(name);
         }
-        return null;
+        return undefined;
     }
     /// Get a Config
     getConfig(name) {
@@ -44,18 +44,7 @@ class Node {
         if (this.profile != null && this.profile.configs.has(name)) {
             return this.profile.configs.get(name);
         }
-        return null;
-    }
-    /// Adds a child to this node.
-    /** @ignore */
-    addChild(name, node) {
-        this.children.set(name, node);
-    }
-    /// Remove a child from this node.
-    /// [input] can be either an instance of [Node] or a [string].
-    /** @ignore */
-    removeChild(input) {
-        this.children.delete(input);
+        return undefined;
     }
     /// Get a Child Node
     getChild(name) {
@@ -65,7 +54,7 @@ class Node {
         if (this.profile != null && this.profile.children.has(name)) {
             return this.profile.children.get(name);
         }
-        return null;
+        return undefined;
     }
     /// Get a property of this node.
     /// If [name] starts with '$', this will fetch a config.

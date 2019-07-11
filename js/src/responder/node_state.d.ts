@@ -4,13 +4,14 @@ import { InvokeResponse } from "./response/invoke";
 import { Responder } from "./responder";
 import { Response } from "./response";
 import { ValueUpdate, ValueUpdateCallback } from "../common/value";
-export declare class LocalNode extends Node {
+export declare class LocalNode extends Node<LocalNode> {
     provider: NodeProvider;
     readonly path: string;
     _state: NodeState;
     constructor(path: string, provider: NodeProvider, profileName?: string);
     initialize(): void;
     addChild(name: string, node: LocalNode): void;
+    removeChild(nameOrNode: string | LocalNode): void;
     _connectState(): void;
     getInvokePermission(): number;
     getSetPermission(): number;

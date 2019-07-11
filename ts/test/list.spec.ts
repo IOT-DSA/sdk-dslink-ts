@@ -67,7 +67,7 @@ describe('list', function () {
     assert.isTrue(invalidNode.getConfig('$disconnectedTs') != null);
   });
 
-  it('list parent and add child', async function () {
+  it('list parent and add/remove child', async function () {
     let node: RemoteNode;
     let subscription = requester.list('/', (update: RequesterListUpdate) => {
       node = update.node;
@@ -79,9 +79,12 @@ describe('list', function () {
 
     await shouldHappen(() => node && node.getChild('newChild'));
     assert.equal(node.getChild('newChild').getConfig('$is'), 'testvalue');
+
+    rootNode.removeChild('val');
+    await shouldHappen(() => node && !node.children.has('val'));
   });
 
-  it('list and add child', async function () {
+  it('list and add/remove child', async function () {
     let node: RemoteNode;
     let subscription = requester.list('/newChild', (update: RequesterListUpdate) => {
       node = update.node;
@@ -89,11 +92,13 @@ describe('list', function () {
     await shouldHappen(() => node && node.getConfig('$disconnectedTs'));
 
     rootNode.createChild('newChild', TestValueNode);
+    await shouldHappen(() => node.getConfig('$is') === 'testvalue' && node.getConfig('$disconnectedTs') == null);
 
-    await shouldHappen(() => node.getConfig('$is') === 'testvalue');
+    rootNode.removeChild('newChild');
+    await shouldHappen(() => node.getConfig('$disconnectedTs'));
   });
 
-  it('list child and add parent', async function () {
+  it('list child and add/remove parent', async function () {
     let node: RemoteNode;
     let subscription = requester.list('/newChild/valAct', (update: RequesterListUpdate) => {
       node = update.node;
@@ -101,7 +106,10 @@ describe('list', function () {
     await shouldHappen(() => node && node.getConfig('$disconnectedTs'));
 
     rootNode.createChild('newChild', TestValueNode);
+    await shouldHappen(() => node.getConfig('$is') === 'testaction' && node.getConfig('$disconnectedTs') == null);
 
-    await shouldHappen(() => node.getConfig('$is') === 'testaction');
+    rootNode.removeChild('newChild');
+    await shouldHappen(() => node.getConfig('$disconnectedTs'));
+
   });
 });

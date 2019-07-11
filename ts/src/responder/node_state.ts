@@ -7,7 +7,8 @@ import {Response} from "./response";
 import {ValueUpdate, ValueUpdateCallback} from "../common/value";
 import {DSError} from "../common/interfaces";
 
-export class LocalNode extends Node {
+export class LocalNode extends Node<LocalNode> {
+
   /// Node Provider
   provider: NodeProvider;
 
@@ -39,6 +40,29 @@ export class LocalNode extends Node {
     if (this._state) {
       node._connectState();
       this._state.listStream.add(name);
+    }
+  }
+
+  removeChild(nameOrNode: string | LocalNode) {
+    let name: string;
+    let node: LocalNode;
+    if (nameOrNode instanceof LocalNode) {
+      for (let [key, n] of this.children) {
+        if (n === node) {
+          name = key;
+          break;
+        }
+      }
+    } else if (typeof nameOrNode === 'string') {
+      name = nameOrNode;
+      node = this.children.get(name);
+    }
+    if (name && node) {
+      node.destroy();
+      this.children.delete(name);
+      if (this._state) {
+        this._state.listStream.add(name);
+      }
     }
   }
 

@@ -30,6 +30,29 @@ class LocalNode extends node_1.Node {
             this._state.listStream.add(name);
         }
     }
+    removeChild(nameOrNode) {
+        let name;
+        let node;
+        if (nameOrNode instanceof LocalNode) {
+            for (let [key, n] of this.children) {
+                if (n === node) {
+                    name = key;
+                    break;
+                }
+            }
+        }
+        else if (typeof nameOrNode === 'string') {
+            name = nameOrNode;
+            node = this.children.get(name);
+        }
+        if (name && node) {
+            node.destroy();
+            this.children.delete(name);
+            if (this._state) {
+                this._state.listStream.add(name);
+            }
+        }
+    }
     _connectState() {
         this.provider.createState(this.path).setNode(this);
         for (let [name, child] of this.children) {

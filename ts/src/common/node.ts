@@ -1,6 +1,6 @@
 /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
-export class Node {
+export class Node<ChildType extends Node<any> = Node<any>> {
   static getDisplayName(nameOrPath: string): string {
     if (nameOrPath.includes('/')) {
       let names = nameOrPath.split('/');
@@ -18,7 +18,7 @@ export class Node {
   }
 
   /// This node's profile.
-  profile: Node;
+  profile: Node<any>;
 
   /// Node Attributes
   attributes: Map<string, any> = new Map();
@@ -32,7 +32,7 @@ export class Node {
     if (this.profile != null && this.profile.attributes.has(name)) {
       return this.profile.attributes.get(name);
     }
-    return null;
+    return undefined;
   }
 
   /// Node Configs
@@ -51,28 +51,15 @@ export class Node {
     if (this.profile != null && this.profile.configs.has(name)) {
       return this.profile.configs.get(name);
     }
-    return null;
+    return undefined;
   }
 
   /// Node Children
   /// object of Child Name to Child Node
-  children: Map<string, Node> = new Map();
-
-  /// Adds a child to this node.
-  /** @ignore */
-  addChild(name: string, node: Node) {
-    this.children.set(name, node);
-  }
-
-  /// Remove a child from this node.
-  /// [input] can be either an instance of [Node] or a [string].
-  /** @ignore */
-  removeChild(input: string) {
-    this.children.delete(input);
-  }
+  children: Map<string, ChildType> = new Map();
 
   /// Get a Child Node
-  getChild(name: string): Node {
+  getChild(name: string): ChildType {
     if (this.children.has(name)) {
       return this.children.get(name);
     }
@@ -80,7 +67,7 @@ export class Node {
     if (this.profile != null && this.profile.children.has(name)) {
       return this.profile.children.get(name);
     }
-    return null;
+    return undefined;
   }
 
   /// Get a property of this node.
@@ -100,7 +87,7 @@ export class Node {
 
   /// Iterates over all the children of this node and passes them to the specified [callback].
   /** @ignore */
-  forEachChild(callback: (name: string, node: Node) => void) {
+  forEachChild(callback: (name: string, node: ChildType) => void) {
     for (let [name, node] of this.children) {
       callback(name, node);
     }
