@@ -7,7 +7,7 @@ import {Requester} from "./requester";
 import {Stream} from "../utils/async";
 import {Permission} from "../common/permission";
 import {InvokeController, RequesterInvokeStream, RequesterInvokeUpdate} from "./request/invoke";
-import {buildEnumType} from "../../utils";
+import {buildEnumType} from "../utils";
 
 /** @ignore */
 export class RemoteNodeCache {

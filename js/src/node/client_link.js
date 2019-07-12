@@ -15,13 +15,7 @@ const codec_1 = require("../utils/codec");
 const url_1 = __importDefault(require("url"));
 const responder_1 = require("../responder/responder");
 const pk_1 = require("../crypto/pk");
-const utils_1 = require("../../utils");
-var RootNode_1 = require("../responder/node/RootNode");
-exports.RootNode = RootNode_1.RootNode;
-var ValueNode_1 = require("../responder/node/ValueNode");
-exports.ValueNode = ValueNode_1.ValueNode;
-var ActionNode_1 = require("../responder/node/ActionNode");
-exports.ActionNode = ActionNode_1.ActionNode;
+const utils_1 = require("../utils");
 const logger_1 = require("../utils/logger");
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {

@@ -11,12 +11,8 @@ import {DsCodec, DsJson} from "../utils/codec";
 import url from "url";
 import {Responder} from "../responder/responder";
 import {PrivateKey, sha256} from "../crypto/pk";
-import {DSA_VERSION} from "../../utils";
+import {DSA_VERSION} from "../utils";
 import {LocalNode, NodeProvider} from "../responder/node_state";
-
-export {RootNode} from "../responder/node/RootNode";
-export {ValueNode} from "../responder/node/ValueNode";
-export {ActionNode} from "../responder/node/ActionNode";
 
 import {logger as mainLogger} from "../utils/logger";
 

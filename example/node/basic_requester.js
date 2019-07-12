@@ -1,9 +1,5 @@
-const {NodeProvider} = require("../../js/src/responder/node_state");
-const {Permission} = require("../../js/src/common/permission");
-
-const {BaseLocalNode} = require("../../js/src/responder/base_local_node");
-const {HttpClientLink: DSLink, RootNode, ValueNode, ActionNode} = require("../../js/src/node/client_link");
-const {PrivateKey} = require("../../js/src/crypto/pk");
+// const {DSLink, RootNode, ValueNode, ActionNode} = require("dslink-js");
+const {DSLink, RootNode, ValueNode, ActionNode} = require("../../js/node");
 
 
 async function main() {
@@ -12,7 +8,6 @@ async function main() {
     format: 'json'
   });
   await link.connect();
-  console.log('connected');
 
   let {requester} = link;
 

@@ -6,7 +6,7 @@ const list_1 = require("./request/list");
 const subscribe_1 = require("./request/subscribe");
 const permission_1 = require("../common/permission");
 const invoke_1 = require("./request/invoke");
-const utils_1 = require("../../utils");
+const utils_1 = require("../utils");
 /** @ignore */
 class RemoteNodeCache {
     constructor() {

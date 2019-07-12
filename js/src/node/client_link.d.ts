@@ -5,9 +5,6 @@ import { WebSocketConnection } from "./websocket_conn";
 import { Responder } from "../responder/responder";
 import { PrivateKey } from "../crypto/pk";
 import { LocalNode, NodeProvider } from "../responder/node_state";
-export { RootNode } from "../responder/node/RootNode";
-export { ValueNode } from "../responder/node/ValueNode";
-export { ActionNode } from "../responder/node/ActionNode";
 export declare class HttpClientLink extends ClientLink {
     _onReadyCompleter: Completer<[Requester, Responder]>;
     readonly onReady: Promise<[Requester, Responder]>;
