@@ -33,6 +33,7 @@ export declare class HttpClientLink extends ClientLink {
         rootNode?: LocalNode;
         privateKey?: PrivateKey;
         isRequester: boolean;
+        saveNodes?: boolean | string | ((data: any) => void);
         token?: string;
         linkData?: {
             [key: string]: any;

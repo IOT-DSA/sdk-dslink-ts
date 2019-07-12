@@ -65,8 +65,9 @@ export class BaseLocalNode extends LocalNode {
         case 63 : /* ? */
           continue;
         default:
-          if (data instanceof Object) {
-            let newChild = this.loadChild(key, data);
+          let childData = data[key];
+          if (childData instanceof Object) {
+            let newChild = this.loadChild(key, childData);
             if (newChild) {
               this.addChild(key, newChild);
             }

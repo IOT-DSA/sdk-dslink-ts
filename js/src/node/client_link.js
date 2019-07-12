@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = __importDefault(require("fs"));
 const interfaces_1 = require("../common/interfaces");
 const async_1 = require("../utils/async");
 const requester_1 = require("../requester/requester");
@@ -17,6 +16,7 @@ const responder_1 = require("../responder/responder");
 const pk_1 = require("../crypto/pk");
 const utils_1 = require("../utils");
 const logger_1 = require("../utils/logger");
+const serialize_1 = require("./serialize");
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
     constructor(conn, dsIdPrefix, options = { isRequester: false }) {
@@ -36,7 +36,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             this.privateKey = options.privateKey;
         }
         else {
-            this.privateKey = getKeyFromFile('.dslink.key');
+            this.privateKey = serialize_1.getKeyFromFile('.dslink.key');
         }
         this.linkData = options.linkData;
         if (options.format) {
@@ -54,6 +54,21 @@ class HttpClientLink extends interfaces_1.ClientLink {
         if (options.rootNode) {
             this.nodeProvider = options.rootNode.provider;
             this.responder = new responder_1.Responder(this.nodeProvider);
+            let { saveNodes } = options;
+            if (typeof saveNodes === 'function') {
+                this.nodeProvider._saveFunction = saveNodes;
+            }
+            else if (saveNodes) {
+                if (saveNodes === true) {
+                    saveNodes = 'nodes.json';
+                }
+                let serializer = new serialize_1.NodeSerializer(saveNodes);
+                let data = serializer.loadNodesFromFile();
+                if (data) {
+                    options.rootNode.load(data);
+                }
+                this.nodeProvider._saveFunction = serializer.saveNodesToFile;
+            }
         }
         if (options.token != null && options.token.length > 16) {
             // pre-generate tokenHash
@@ -213,6 +228,10 @@ class HttpClientLink extends interfaces_1.ClientLink {
     close() {
         if (this._closed)
             return;
+        // finish all pending timer, other wise the process might fail to save before killed by OS
+        if (this.nodeProvider) {
+            this.nodeProvider.finishSaveTimer();
+        }
         this._onReadyCompleter = new async_1.Completer();
         this._closed = true;
         if (this._wsConnection != null) {
@@ -222,15 +241,4 @@ class HttpClientLink extends interfaces_1.ClientLink {
     }
 }
 exports.HttpClientLink = HttpClientLink;
-function getKeyFromFile(path) {
-    let key;
-    if (!fs_1.default.existsSync(path)) {
-        key = pk_1.PrivateKey.generate();
-        fs_1.default.writeFileSync(path, key.saveToString());
-    }
-    else {
-        key = pk_1.PrivateKey.loadFromString(fs_1.default.readFileSync(path, { encoding: 'utf8' }));
-    }
-    return key;
-}
 //# sourceMappingURL=client_link.js.map

@@ -41,6 +41,7 @@ export class LocalNode extends Node<LocalNode> {
       node._connectState();
       this._state.listStream.add(name);
     }
+    this.provider.save();
   }
 
   removeChild(nameOrNode: string | LocalNode) {
@@ -63,6 +64,7 @@ export class LocalNode extends Node<LocalNode> {
       if (this._state) {
         this._state.listStream.add(name);
       }
+      this.provider.save();
     }
   }
 
@@ -144,17 +146,30 @@ export class LocalNode extends Node<LocalNode> {
   /// Called by the link internals to set a value of a node.
   setValue(value: any, responder?: Responder, response?: Response,
            maxPermission: number = Permission.CONFIG) {
-    this._value = value;
-    if (this._state) {
-      this._state.updateValue(value);
+    if (this.changeValue(value)) {
+      if (this._state) {
+        this._state.updateValue(value);
+      }
     }
     if (response) {
       response.close();
     }
   }
 
+  changeValue(newVal: any): boolean {
+    if (this._value === newVal) {
+      return false;
+    }
+    this._value = newVal;
+    return true;
+  }
+
   save(): {[key: string]: any} {
     return null;
+  }
+
+  load(data: {[key: string]: any}) {
+
   }
 
   destroy() {
@@ -229,6 +244,13 @@ export class NodeProvider {
       if (data) {
         this._saveFunction(data);
       }
+    }
+  };
+
+  finishSaveTimer() {
+    if (this._saveTimer) {
+      clearTimeout(this._saveTimer);
+      this.onSaveTimer();
     }
   }
 }

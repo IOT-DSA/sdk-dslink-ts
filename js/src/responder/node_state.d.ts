@@ -24,9 +24,13 @@ export declare class LocalNode extends Node<LocalNode> {
     _value: any;
     _valueReady: boolean;
     setValue(value: any, responder?: Responder, response?: Response, maxPermission?: number): void;
+    changeValue(newVal: any): boolean;
     save(): {
         [key: string]: any;
     };
+    load(data: {
+        [key: string]: any;
+    }): void;
     destroy(): void;
 }
 interface ProviderOptions {
@@ -45,6 +49,7 @@ export declare class NodeProvider {
     _saveIntervalMs: number;
     save(): void;
     onSaveTimer: () => void;
+    finishSaveTimer(): void;
 }
 interface Subscriber {
     addValue: ValueUpdateCallback;

@@ -1,12 +1,17 @@
 import { BaseLocalNode } from "../base_local_node";
 import { NodeProvider } from "../node_state";
+/**
+ * base class for a serializable value node
+ */
 export declare class ValueNode extends BaseLocalNode {
     _valueReady: boolean;
-    constructor(path: string, provider: NodeProvider, profileName?: string, type?: string, writtable?: number);
+    _saveValue: boolean;
+    constructor(path: string, provider: NodeProvider, profileName?: string, type?: string, writable?: number, saveValue?: boolean);
     save(): {
         [p: string]: any;
     };
     load(data: {
         [p: string]: any;
     }): void;
+    changeValue(newValue: any): boolean;
 }

@@ -2,29 +2,43 @@ import {BaseLocalNode} from "../base_local_node";
 import {NodeProvider} from "../node_state";
 import {Permission} from "../../common/permission";
 
-
+/**
+ * base class for a serializable value node
+ */
 export class ValueNode extends BaseLocalNode {
 
   _valueReady = true;
+  _saveValue: boolean;
 
-  constructor(path: string, provider: NodeProvider, profileName: string = 'node', type = 'dynamic', writtable = Permission.NEVER) {
+  constructor(path: string, provider: NodeProvider, profileName: string = 'node', type = 'dynamic', writable = Permission.NEVER, saveValue = false) {
     super(path, provider, profileName);
     this.setConfig('$type', type);
-    if (writtable < Permission.NEVER) {
-      this.setConfig('$writable', Permission.names[writtable]);
+    this._saveValue = saveValue;
+    if (writable < Permission.NEVER) {
+      this.setConfig('$writable', Permission.names[writable]);
     }
   }
 
   save(): {[p: string]: any} {
     let data = super.save();
-    data['?value'] = this._value;
+    if (this._saveValue) {
+      data['?value'] = this._value;
+    }
     return data;
   }
 
   load(data: {[p: string]: any}) {
     super.load(data);
-    if (data.hasOwnProperty('?value')) {
+    if (this._saveValue && data.hasOwnProperty('?value')) {
       this._value = data;
     }
+  }
+
+  changeValue(newValue: any) {
+    let changed = super.changeValue((newValue));
+    if (changed && this._saveValue) {
+      this.provider.save();
+    }
+    return changed;
   }
 }

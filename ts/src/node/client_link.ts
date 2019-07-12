@@ -15,6 +15,7 @@ import {DSA_VERSION} from "../utils";
 import {LocalNode, NodeProvider} from "../responder/node_state";
 
 import {logger as mainLogger} from "../utils/logger";
+import {getKeyFromFile, NodeSerializer} from "./serialize";
 
 let logger = mainLogger.tag('link');
 
@@ -73,6 +74,7 @@ export class HttpClientLink extends ClientLink {
     rootNode?: LocalNode,
     privateKey?: PrivateKey,
     isRequester: boolean,
+    saveNodes?: boolean | string | ((data: any) => void),
     token?: string,
     linkData?: {[key: string]: any},
     format?: string[] | string
@@ -105,7 +107,23 @@ export class HttpClientLink extends ClientLink {
     if (options.rootNode) {
       this.nodeProvider = options.rootNode.provider;
       this.responder = new Responder(this.nodeProvider);
+
+      let {saveNodes} = options;
+      if (typeof saveNodes === 'function') {
+        this.nodeProvider._saveFunction = saveNodes;
+      } else if (saveNodes) {
+        if (saveNodes === true) {
+          saveNodes = 'nodes.json';
+        }
+        let serializer = new NodeSerializer(saveNodes);
+        let data = serializer.loadNodesFromFile();
+        if (data) {
+          options.rootNode.load(data);
+        }
+        this.nodeProvider._saveFunction = serializer.saveNodesToFile;
+      }
     }
+
 
     if (options.token != null && options.token.length > 16) {
       // pre-generate tokenHash
@@ -292,6 +310,12 @@ export class HttpClientLink extends ClientLink {
 
   close() {
     if (this._closed) return;
+
+    // finish all pending timer, other wise the process might fail to save before killed by OS
+    if (this.nodeProvider) {
+      this.nodeProvider.finishSaveTimer();
+    }
+
     this._onReadyCompleter = new Completer();
     this._closed = true;
     if (this._wsConnection != null) {
@@ -299,17 +323,4 @@ export class HttpClientLink extends ClientLink {
       this._wsConnection = null;
     }
   }
-}
-
-function getKeyFromFile(path: string): PrivateKey {
-  let key: PrivateKey;
-  if (!fs.existsSync(path)) {
-    key = PrivateKey.generate();
-    fs.writeFileSync(path, key.saveToString());
-  } else {
-    key = PrivateKey.loadFromString(
-      fs.readFileSync(path, {encoding: 'utf8'})
-    );
-  }
-  return key;
 }
