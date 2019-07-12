@@ -1,8 +1,8 @@
-import {ActionNode} from "../src/responder/node/ActionNode";
-import {ValueNode} from "../src/responder/node/ValueNode";
-import {RootNode} from "../src/responder/node/RootNode";
-import {NodeProvider} from "../src/responder/node_state";
-import {Permission} from "../src/common/permission";
+import {ActionNode} from "../../src/responder/node/ActionNode";
+import {ValueNode} from "../../src/responder/node/ValueNode";
+import {RootNode} from "../../src/responder/node/RootNode";
+import {NodeProvider} from "../../src/responder/node_state";
+import {Permission} from "../../src/common/permission";
 
 class TestActionNode extends ActionNode {
   constructor(path: string, provider: NodeProvider) {

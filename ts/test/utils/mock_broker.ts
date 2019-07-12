@@ -1,9 +1,9 @@
 import http from 'http';
 import WebSocket from 'ws';
 import {AddressInfo} from "net";
-import {LocalNode} from "../src/responder/node_state";
-import {PrivateKey} from "../src/crypto/pk";
-import {HttpClientLink} from "../src/node/client_link";
+import {LocalNode} from "../../src/responder/node_state";
+import {PrivateKey} from "../../src/crypto/pk";
+import {HttpClientLink} from "../../src/node/client_link";
 
 
 class Client {
