@@ -2,7 +2,7 @@ const {NodeProvider} = require("../../js/src/responder/node_state");
 const {Permission} = require("../../js/src/common/permission");
 
 const {BaseLocalNode} = require("../../js/src/responder/base_local_node");
-const {HttpClientLink: DSLink, RootNode, ValueNode, ActionNode} = require("../../js/src/http/client_link");
+const {HttpClientLink: DSLink, RootNode, ValueNode, ActionNode} = require("../../js/src/node/client_link");
 const {PrivateKey} = require("../../js/src/crypto/pk");
 
 class MyActionNode extends ActionNode {
@@ -40,8 +40,7 @@ class MyRootNode extends RootNode {
 }
 
 async function main() {
-  let key = PrivateKey.loadFromString('M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE');
-  let link = new DSLink('http://localhost:8080/conn', 'test-', key, {
+  let link = new DSLink('http://localhost:8080/conn', 'test-', {
     isRequester: true,
     rootNode: new MyRootNode(),
     format: 'json'

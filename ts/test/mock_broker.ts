@@ -3,7 +3,7 @@ import WebSocket from 'ws';
 import {AddressInfo} from "net";
 import {LocalNode} from "../src/responder/node_state";
 import {PrivateKey} from "../src/crypto/pk";
-import {HttpClientLink} from "../src/http/client_link";
+import {HttpClientLink} from "../src/node/client_link";
 
 
 class Client {
@@ -119,7 +119,8 @@ export class MockBroker {
 
   async createRequester() {
     let port = await this.onListen;
-    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'requester-', this.key, {
+    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'requester-', {
+      privateKey: this.key,
       isRequester: true,
       format: 'json'
     });
@@ -129,7 +130,8 @@ export class MockBroker {
 
   async createResponder(rootNode: LocalNode) {
     let port = await this.onListen;
-    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'responder-', this.key, {
+    let link = new HttpClientLink(`http://127.0.0.1:${port}/conn`, 'responder-', {
+      privateKey: this.key,
       isRequester: true,
       rootNode,
       format: 'json'

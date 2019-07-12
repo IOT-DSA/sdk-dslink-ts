@@ -14,3 +14,4 @@ node_modules
 /js/**/spec
 /.nyc_output
 /coverage
+.dslink.key

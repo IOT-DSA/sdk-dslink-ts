@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import {ClientLink, DummyECDH, ECDH} from "../common/interfaces";
 import {Completer} from "../utils/async";
 import {Requester} from "../requester/requester";
@@ -71,8 +73,9 @@ export class HttpClientLink extends ClientLink {
   /// format received from broker
   format: string = 'json';
 
-  constructor(conn: string, dsIdPrefix: string, privateKey: PrivateKey, options: {
+  constructor(conn: string, dsIdPrefix: string, options: {
     rootNode?: LocalNode,
+    privateKey?: PrivateKey,
     isRequester: boolean,
     token?: string,
     linkData?: {[key: string]: any},
@@ -80,7 +83,12 @@ export class HttpClientLink extends ClientLink {
   } = {isRequester: false}) {
     super();
     this._conn = conn;
-    this.privateKey = privateKey;
+    if (options.privateKey) {
+      this.privateKey = options.privateKey;
+    } else {
+      this.privateKey = getKeyFromFile('.dslink.key');
+    }
+
 
     this.linkData = options.linkData;
     if (options.format) {
@@ -91,7 +99,7 @@ export class HttpClientLink extends ClientLink {
       }
     }
 
-    this.dsId = `${Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}`;
+    this.dsId = `${Path.escapeName(dsIdPrefix)}${this.privateKey.publicKey.qHash64}`;
 
     if (options.isRequester) {
       this.requester = new Requester();
@@ -289,7 +297,7 @@ export class HttpClientLink extends ClientLink {
   close() {
     if (this._closed) return;
     this._onReadyCompleter = new Completer();
-    this._closed = true
+    this._closed = true;
     if (this._wsConnection != null) {
       this._wsConnection.close();
       this._wsConnection = null;
@@ -297,17 +305,15 @@ export class HttpClientLink extends ClientLink {
   }
 }
 
-// Promise<PrivateKey> getKeyFromFile(path: string) async {
-//   var file = new File(path);
-//
-//   key: PrivateKey;
-//   if (!file.existsSync()) {
-//     key = await PrivateKey.generate();
-//     file.createSync(recursive: true);
-//     file.writeAsStringSync(key.saveToString());
-//   } else {
-//     key = new PrivateKey.loadFromString(file.readAsStringSync());
-//   }
-//
-//   return key;
-// }
+function getKeyFromFile(path: string): PrivateKey {
+  let key: PrivateKey;
+  if (!fs.existsSync(path)) {
+    key = PrivateKey.generate();
+    fs.writeFileSync(path, key.saveToString());
+  } else {
+    key = PrivateKey.loadFromString(
+      fs.readFileSync(path, {encoding: 'utf8'})
+    );
+  }
+  return key;
+}

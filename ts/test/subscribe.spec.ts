@@ -4,7 +4,7 @@ import {TestRootNode} from "./responder_nodes";
 import {shouldHappen, sleep} from "./test_util";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/http/client_link";
+import {HttpClientLink} from "../src/node/client_link";
 import {Requester} from "../src/requester/requester";
 import {Path} from "../src/common/node";
 

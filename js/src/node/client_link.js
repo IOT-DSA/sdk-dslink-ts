@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __importDefault(require("fs"));
 const interfaces_1 = require("../common/interfaces");
 const async_1 = require("../utils/async");
 const requester_1 = require("../requester/requester");
@@ -24,7 +25,7 @@ exports.ActionNode = ActionNode_1.ActionNode;
 const logger_1 = require("../utils/logger");
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
-    constructor(conn, dsIdPrefix, privateKey, options = { isRequester: false }) {
+    constructor(conn, dsIdPrefix, options = { isRequester: false }) {
         super();
         this._onReadyCompleter = new async_1.Completer();
         this.useStandardWebSocket = true;
@@ -37,7 +38,12 @@ class HttpClientLink extends interfaces_1.ClientLink {
         this.reconnectWSCount = 0;
         this._closed = false;
         this._conn = conn;
-        this.privateKey = privateKey;
+        if (options.privateKey) {
+            this.privateKey = options.privateKey;
+        }
+        else {
+            this.privateKey = getKeyFromFile('.dslink.key');
+        }
         this.linkData = options.linkData;
         if (options.format) {
             if (Array.isArray(options.format)) {
@@ -47,7 +53,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 this.formats = [options.format];
             }
         }
-        this.dsId = `${node_1.Path.escapeName(dsIdPrefix)}${privateKey.publicKey.qHash64}`;
+        this.dsId = `${node_1.Path.escapeName(dsIdPrefix)}${this.privateKey.publicKey.qHash64}`;
         if (options.isRequester) {
             this.requester = new requester_1.Requester();
         }
@@ -222,18 +228,15 @@ class HttpClientLink extends interfaces_1.ClientLink {
     }
 }
 exports.HttpClientLink = HttpClientLink;
-// Promise<PrivateKey> getKeyFromFile(path: string) async {
-//   var file = new File(path);
-//
-//   key: PrivateKey;
-//   if (!file.existsSync()) {
-//     key = await PrivateKey.generate();
-//     file.createSync(recursive: true);
-//     file.writeAsStringSync(key.saveToString());
-//   } else {
-//     key = new PrivateKey.loadFromString(file.readAsStringSync());
-//   }
-//
-//   return key;
-// }
+function getKeyFromFile(path) {
+    let key;
+    if (!fs_1.default.existsSync(path)) {
+        key = pk_1.PrivateKey.generate();
+        fs_1.default.writeFileSync(path, key.saveToString());
+    }
+    else {
+        key = pk_1.PrivateKey.loadFromString(fs_1.default.readFileSync(path, { encoding: 'utf8' }));
+    }
+    return key;
+}
 //# sourceMappingURL=client_link.js.map
