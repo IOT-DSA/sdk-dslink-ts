@@ -9,7 +9,13 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
     constructor(updates, rawColumns, columns, streamStatus, meta, error) {
         super(streamStatus);
         this.updates = updates;
-        this.rawColumns = rawColumns;
+        if (rawColumns) {
+            this.rawColumns = rawColumns;
+            this.columns = table_1.TableColumn.parseColumns(rawColumns);
+        }
+        else {
+            this.columns = columns;
+        }
         this.meta = meta;
         this.error = error;
     }

@@ -68,7 +68,7 @@ export class Table {
     this.meta = meta;
   }
 
-  static parse(columns: any[], rows: any[][], meta: {[key: string]: any}) {
+  static parse(columns: any[], rows: any[][], meta?: {[key: string]: any}) {
     return new Table(TableColumn.parseColumns(columns), rows, meta);
   }
 }

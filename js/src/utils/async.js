@@ -111,4 +111,10 @@ class Completer {
     }
 }
 exports.Completer = Completer;
+function sleep(ms = 0) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+    });
+}
+exports.sleep = sleep;
 //# sourceMappingURL=async.js.map

@@ -1,7 +1,7 @@
 import {MockBroker} from "./mock_broker";
 import {assert} from "chai";
 import {TestRootNode, TestValueNode} from "./responder_nodes";
-import {shouldHappen, sleep} from "./test_util";
+import {shouldHappen} from "./test_util";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
 import {HttpClientLink} from "../src/node/client_link";
@@ -9,6 +9,7 @@ import {Requester} from "../src/requester/requester";
 import {RequesterListUpdate} from "../src/requester/request/list";
 import {RemoteNode} from "../src/requester/node_cache";
 import {Path} from "../src/common/node";
+import {sleep} from "../src/utils/async";
 
 describe('list', function () {
   let broker = new MockBroker();

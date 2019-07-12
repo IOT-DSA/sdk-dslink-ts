@@ -54,3 +54,4 @@ export declare class Completer<T> {
     complete(val: T): void;
     completeError(val: any): void;
 }
+export declare function sleep(ms?: number): Promise<any>;

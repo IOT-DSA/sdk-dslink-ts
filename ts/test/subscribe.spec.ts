@@ -1,12 +1,13 @@
 import {MockBroker} from "./mock_broker";
 import {assert} from "chai";
 import {TestRootNode} from "./responder_nodes";
-import {shouldHappen, sleep} from "./test_util";
+import {shouldHappen} from "./test_util";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
 import {HttpClientLink} from "../src/node/client_link";
 import {Requester} from "../src/requester/requester";
 import {Path} from "../src/common/node";
+import {sleep} from "../src/utils/async";
 
 describe('subscribe', function () {
   let broker = new MockBroker();

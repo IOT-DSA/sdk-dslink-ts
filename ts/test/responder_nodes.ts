@@ -14,7 +14,7 @@ class TestActionNode extends ActionNode {
     this.setConfig('$columns', [{name: 'c1', type: 'number'}, {name: 'c2', type: 'string'}]);
   }
 
-  onInvoke(params: {[key: string]: any}) {
+  onInvoke(params: {[key: string]: any}): any {
     let input = params['value'];
     return {c1: Number(input), c2: String(input)};
   }

@@ -3,7 +3,7 @@ import {Request} from "../request";
 import {Completer, Stream} from "../../utils/async";
 import {Permission} from "../../common/permission";
 import {DSError, StreamStatus} from "../../common/interfaces";
-import {TableColumn} from "../../common/table";
+import {TableColumn, TableColumns} from "../../common/table";
 import {RemoteNode} from "../node_cache";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
@@ -26,7 +26,13 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
               meta: {[key: string]: any}, error?: DSError) {
     super(streamStatus);
     this.updates = updates;
-    this.rawColumns = rawColumns;
+    if (rawColumns) {
+      this.rawColumns = rawColumns;
+      this.columns = TableColumn.parseColumns(rawColumns);
+    } else {
+      this.columns = columns;
+    }
+
     this.meta = meta;
     this.error = error;
   }
