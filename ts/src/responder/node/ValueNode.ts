@@ -30,7 +30,7 @@ export class ValueNode extends BaseLocalNode {
   load(data: {[p: string]: any}) {
     super.load(data);
     if (this._saveValue && data.hasOwnProperty('?value')) {
-      this._value = data;
+      this._value = data['?value'];
     }
   }
 

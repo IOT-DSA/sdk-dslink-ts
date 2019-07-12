@@ -25,7 +25,7 @@ class ValueNode extends base_local_node_1.BaseLocalNode {
     load(data) {
         super.load(data);
         if (this._saveValue && data.hasOwnProperty('?value')) {
-            this._value = data;
+            this._value = data['?value'];
         }
     }
     changeValue(newValue) {
