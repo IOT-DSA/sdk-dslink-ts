@@ -48,6 +48,7 @@ export class LocalNode extends Node<LocalNode> {
     let name: string;
     let node: LocalNode;
     if (nameOrNode instanceof LocalNode) {
+      node = nameOrNode;
       for (let [key, n] of this.children) {
         if (n === node) {
           name = key;
@@ -232,8 +233,13 @@ export class NodeProvider {
 
   save() {
     // save root node with a timer
-    if (this._saveFunction && !this._saveTimer) {
-      this._saveTimer = setTimeout(this.onSaveTimer, this._saveIntervalMs);
+    if (this._saveFunction) {
+      if (this._saveIntervalMs === 0) {
+        this.onSaveTimer();
+      } else if (!this._saveTimer) {
+        this._saveTimer = setTimeout(this.onSaveTimer, this._saveIntervalMs);
+      }
+
     }
   }
 
