@@ -342,9 +342,9 @@ export class Path {
       if (this.parentPath === '') {
         this.parentPath = base;
       } else {
-        this.parentPath = `${base}/${parentPath}`;
+        this.parentPath = `${base}/${this.parentPath}`;
       }
-      this.path = `${parentPath}/${name}`;
+      this.path = `${this.parentPath}/${name}`;
     } else if (force) {
       // apply base path on a absolute path
       if (name === '') {
@@ -352,8 +352,8 @@ export class Path {
         this.path = base;
         this._parse();
       } else {
-        this.parentPath = `${base}/${parentPath}`;
-        this.path = `${parentPath}/${name}`;
+        this.parentPath = `${base}/${this.parentPath}`;
+        this.path = `${this.parentPath}/${name}`;
       }
     }
   }

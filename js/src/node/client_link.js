@@ -113,7 +113,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         }
         let connUrl = `${this._conn}?dsId=${encodeURIComponent(this.dsId)}`;
         if (this.tokenHash != null) {
-            connUrl = `${connUrl}${tokenHash}`;
+            connUrl = `${connUrl}${this.tokenHash}`;
         }
         //    logger.info(formatLogMessage("Connecting to ${_conn}"));
         // TODO: This runZoned is due to a bug in the DartVM
