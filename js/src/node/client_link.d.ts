@@ -32,7 +32,7 @@ export declare class HttpClientLink extends ClientLink {
     constructor(conn: string, dsIdPrefix: string, options?: {
         rootNode?: LocalNode;
         privateKey?: PrivateKey;
-        isRequester: boolean;
+        isRequester?: boolean;
         saveNodes?: boolean | string | ((data: any) => void);
         token?: string;
         linkData?: {

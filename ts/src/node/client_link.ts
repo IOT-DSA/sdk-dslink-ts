@@ -73,12 +73,12 @@ export class HttpClientLink extends ClientLink {
   constructor(conn: string, dsIdPrefix: string, options: {
     rootNode?: LocalNode,
     privateKey?: PrivateKey,
-    isRequester: boolean,
+    isRequester?: boolean,
     saveNodes?: boolean | string | ((data: any) => void),
     token?: string,
     linkData?: {[key: string]: any},
     format?: string[] | string
-  } = {isRequester: false}) {
+  } = {}) {
     super();
     this._conn = conn;
     if (options.privateKey) {
@@ -167,7 +167,7 @@ export class HttpClientLink extends ClientLink {
 
     let connUrl = `${this._conn}?dsId=${encodeURIComponent(this.dsId)}`;
     if (this.tokenHash != null) {
-      connUrl = '$connUrl$tokenHash';
+      connUrl = `${connUrl}${tokenHash}`;
     }
 //    logger.info(formatLogMessage("Connecting to ${_conn}"));
 
@@ -247,7 +247,7 @@ export class HttpClientLink extends ClientLink {
     }
 
     try {
-      let wsUrl = `${this._wsUpdateUri}&auth=${this._nonce.hashSalt(this.salt)}&format=$format`;
+      let wsUrl = `${this._wsUpdateUri}&auth=${this._nonce.hashSalt(this.salt)}&format=${this.format}`;
       if (this.tokenHash != null) {
         wsUrl = `${wsUrl}${this.tokenHash}`;
       }

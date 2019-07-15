@@ -75,19 +75,19 @@ describe('save nodes', function () {
 
     rootNode.provider.save();
     assert.deepEqual(savedData, {
-      '$is': 'node',
+      $is: 'node',
       val: {'$is': 'testvalue', '?value': 123}
     });
 
     let val2 = rootNode.createChild('val2', TestValueNode);
     assert.deepEqual(savedData, {
-      '$is': 'node',
+      $is: 'node',
       val: {'$is': 'testvalue', '?value': 123},
       val2: {'$is': 'testvalue'} // value of TestValue Node is not saved by default
     });
     rootNode.removeChild(val2);
     assert.deepEqual(savedData, {
-      '$is': 'node',
+      $is: 'node',
       val: {'$is': 'testvalue', '?value': 123}
     });
   });

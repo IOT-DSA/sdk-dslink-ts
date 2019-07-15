@@ -19,7 +19,7 @@ const logger_1 = require("../utils/logger");
 const serialize_1 = require("./serialize");
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
-    constructor(conn, dsIdPrefix, options = { isRequester: false }) {
+    constructor(conn, dsIdPrefix, options = {}) {
         super();
         this._onReadyCompleter = new async_1.Completer();
         this.useStandardWebSocket = true;
@@ -113,7 +113,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         }
         let connUrl = `${this._conn}?dsId=${encodeURIComponent(this.dsId)}`;
         if (this.tokenHash != null) {
-            connUrl = '$connUrl$tokenHash';
+            connUrl = `${connUrl}${tokenHash}`;
         }
         //    logger.info(formatLogMessage("Connecting to ${_conn}"));
         // TODO: This runZoned is due to a bug in the DartVM
@@ -177,7 +177,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             return;
         }
         try {
-            let wsUrl = `${this._wsUpdateUri}&auth=${this._nonce.hashSalt(this.salt)}&format=$format`;
+            let wsUrl = `${this._wsUpdateUri}&auth=${this._nonce.hashSalt(this.salt)}&format=${this.format}`;
             if (this.tokenHash != null) {
                 wsUrl = `${wsUrl}${this.tokenHash}`;
             }
