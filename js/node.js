@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_link_1 = require("./src/node/client_link");
+var client_link_1 = require("./src/node/client_link");
+exports.HttpClientLink = client_link_1.HttpClientLink;
+var cli_link_wrapper_1 = require("./src/node/cli_link_wrapper");
+exports.DSLink = cli_link_wrapper_1.DSLink;
 var RootNode_1 = require("./src/responder/node/RootNode");
 exports.RootNode = RootNode_1.RootNode;
 var ValueNode_1 = require("./src/responder/node/ValueNode");
@@ -9,5 +12,4 @@ var ActionNode_1 = require("./src/responder/node/ActionNode");
 exports.ActionNode = ActionNode_1.ActionNode;
 var permission_1 = require("./src/common/permission");
 exports.Permission = permission_1.Permission;
-exports.DSLink = client_link_1.HttpClientLink;
 //# sourceMappingURL=node.js.map

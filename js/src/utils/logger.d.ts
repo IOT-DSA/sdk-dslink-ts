@@ -7,7 +7,7 @@ export declare class Logger {
     static readonly WARN = 8;
     static readonly ERROR = 16;
     _level: number;
-    setLevel(level: number, coverHigherLevel?: boolean): void;
+    setLevel(level: number | string, coverHigherLevel?: boolean): void;
     formatter: (msg: string, level: number, tag?: string) => string;
     printer: (str: string, level: number) => void;
     private _log;

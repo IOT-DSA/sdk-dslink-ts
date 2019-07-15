@@ -31,6 +31,21 @@ function getLevelLabel(level) {
         return '';
     }
 }
+function parserLogLevel(str) {
+    switch (str.toUpperCase()) {
+        case 'ERROR':
+            return ERROR;
+        case 'WARN':
+            return WARN;
+        case 'DEBUG':
+            return DEBUG;
+        case 'TRACE':
+            return TRACE;
+        // case 'INFO':
+        default:
+            return INFO;
+    }
+}
 class Logger {
     constructor() {
         this._level = INFO | WARN | ERROR;
@@ -58,6 +73,9 @@ class Logger {
         };
     }
     setLevel(level, coverHigherLevel = true) {
+        if (typeof level === 'string') {
+            level = parserLogLevel(level);
+        }
         let mergedLevel = level;
         if (coverHigherLevel) {
             while (level < ERROR) {

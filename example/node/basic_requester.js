@@ -3,10 +3,10 @@ const {DSLink, RootNode, ValueNode, ActionNode} = require("../../js/node");
 
 
 async function main() {
-  let link = new DSLink('http://localhost:8080/conn', 'test-', {
-    isRequester: true,
-    format: 'json'
-  });
+  let link = new DSLink('test',
+    {isRequester: true, format: 'json'},
+    ['-b', 'http://localhost:8080/conn'] // overwrite command line options
+  );
   await link.connect();
 
   let {requester} = link;
