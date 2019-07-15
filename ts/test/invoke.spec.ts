@@ -4,7 +4,7 @@ import {TestRootNode, TestValueNode} from "./utils/responder_nodes";
 import {shouldHappen} from "./utils/async_test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/node/client_link";
+import {HttpClientLink} from "../src/nodejs/client_link";
 import {Requester} from "../src/requester/requester";
 import {RequesterListUpdate} from "../src/requester/request/list";
 import {RemoteNode} from "../src/requester/node_cache";
@@ -15,7 +15,7 @@ import {Table} from "../src/common/table";
 
 describe('invoke', function () {
   let broker = new MockBroker();
-  logger.setLevel(Logger.ERROR | Logger.WARN, false);
+  logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
 
   after(() => {

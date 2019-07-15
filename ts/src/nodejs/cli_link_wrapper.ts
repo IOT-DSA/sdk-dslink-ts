@@ -38,8 +38,8 @@ export class DSLink extends HttpClientLink {
         default: 'info',
         describe: 'Log Level [error, warn, info, debug, trace]',
         type: 'string'
-      }
-    });
+      },
+    }).help();
     let argv = args ? parser.parse(args) : parser.parse();
     let brokerUrl = argv.broker;
     if (typeof argv.name === 'string') {

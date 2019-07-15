@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var client_link_1 = require("./src/node/client_link");
+var client_link_1 = require("./src/nodejs/client_link");
 exports.HttpClientLink = client_link_1.HttpClientLink;
-var cli_link_wrapper_1 = require("./src/node/cli_link_wrapper");
+var cli_link_wrapper_1 = require("./src/nodejs/cli_link_wrapper");
 exports.DSLink = cli_link_wrapper_1.DSLink;
 var RootNode_1 = require("./src/responder/node/RootNode");
 exports.RootNode = RootNode_1.RootNode;

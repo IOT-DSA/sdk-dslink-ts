@@ -1,5 +1,5 @@
-export {HttpClientLink} from "./src/node/client_link";
-export {DSLink} from "./src/node/cli_link_wrapper";
+export {HttpClientLink} from "./src/nodejs/client_link";
+export {DSLink} from "./src/nodejs/cli_link_wrapper";
 
 export {RootNode} from "./src/responder/node/RootNode";
 export {ValueNode} from "./src/responder/node/ValueNode";
