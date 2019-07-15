@@ -1,4 +1,4 @@
-// const {DSLink} = require('dslink-js/js/web');
+// const {DSLink} = require('dslink/js/web');
 const {DSLink} = require('../../js/web');
 
 async function main() {
