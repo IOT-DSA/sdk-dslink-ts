@@ -5,11 +5,15 @@ typescript/javascript sdk for DSA protocol
 <a href='https://coveralls.io/github/IOT-DSA/sdk-dslink-ts'><img src='https://coveralls.io/repos/github/IOT-DSA/sdk-dslink-ts/badge.svg?branch=master&service=github&cache=0' title="coveralls"/></a>
 
 
-JavaScript SDK for the DSA protocol.
+JavaScript / Typescript SDK for the DSA protocol. 
+
+Version 2.0 of this sdk is re-written with typescript and is **NOT** backward compatible with the DSA javascript sdk 1.x.
 
 ## Install
 
-`npm install dslink --save` or `yarn add dslink`
+`npm install dslink --save` 
+or
+`yarn add dslink`
 
 ## Example
 
