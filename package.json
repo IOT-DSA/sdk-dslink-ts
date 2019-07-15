@@ -45,7 +45,7 @@
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.ts",
     "test": "mocha ts/**/*.spec.ts",
-    "test-nyc": "nyc --skip-full mocha js/**/*.spec.js && nyc report --reporter=text-lcov | coveralls",
+    "test-nyc": "nyc --skip-full mocha 'js/**/*.spec.js' && nyc report --reporter=text-lcov | coveralls",
     "test-karma": "karma start"
   }
 }
