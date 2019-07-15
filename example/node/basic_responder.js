@@ -37,11 +37,8 @@ class MyRootNode extends RootNode {
 
 async function main() {
   let link = new DSLink('test',
-    {
-      isRequester: true,
-      rootNode: new MyRootNode(),
-    },
-    ['-b', 'http://localhost:8080/conn', '-l', 'trace'] // overwrite command line options
+    {rootNode: new MyRootNode()},
+    // ['-b', 'http://localhost:8080/conn'] /* overwrite command line options */
   );
 
   await link.connect();

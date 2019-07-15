@@ -1,11 +1,10 @@
-// const {DSLink, RootNode, ValueNode, ActionNode} = require("dslink-js");
-const {DSLink, RootNode, ValueNode, ActionNode} = require("../../js/node");
-
+// const {DSLink} = require("dslink-js");
+const {DSLink} = require("../../js/node");
 
 async function main() {
   let link = new DSLink('test',
-    {isRequester: true, format: 'json'},
-    ['-b', 'http://localhost:8080/conn'] // overwrite command line options
+    {isRequester: true},
+    // ['-b', 'http://localhost:8080/conn'] /* overwrite command line options */
   );
   await link.connect();
 
