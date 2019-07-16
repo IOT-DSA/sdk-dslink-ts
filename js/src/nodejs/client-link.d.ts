@@ -1,7 +1,7 @@
 import { ClientLink, ECDH } from "../common/interfaces";
 import { Completer } from "../utils/async";
 import { Requester } from "../requester/requester";
-import { WebSocketConnection } from "./websocket_conn";
+import { WebSocketConnection } from "./websocket-conn";
 import { Responder } from "../responder/responder";
 import { PrivateKey } from "../crypto/pk";
 import { LocalNode, NodeProvider } from "../responder/node_state";

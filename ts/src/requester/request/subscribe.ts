@@ -4,7 +4,7 @@ import {Requester} from "../requester";
 import {ConnectionProcessor, DSError} from "../../common/interfaces";
 import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
 import {RemoteNode} from "../node_cache";
-import {DSA_CONFIG} from "../../common/connection_handler";
+import {DSA_CONFIG} from "../../common/connection-handler";
 import {RequestUpdater} from "../interface";
 
 export class ReqSubscribeListener implements Cancelable {

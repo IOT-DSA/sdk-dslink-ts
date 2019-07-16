@@ -1,4 +1,4 @@
-import { ConnectionHandler } from "../common/connection_handler";
+import { ConnectionHandler } from "../common/connection-handler";
 import { SubscribeResponse } from "./response/subscribe";
 import { NodeProvider } from "./node_state";
 import { Response } from "./response";

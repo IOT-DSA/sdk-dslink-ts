@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const yargs_1 = __importDefault(require("yargs"));
-const client_link_1 = require("./client_link");
+const client_link_1 = require("./client-link");
 const logger_1 = require("../utils/logger");
 class DSLink extends client_link_1.HttpClientLink {
     constructor(name, options, args) {
@@ -47,4 +47,4 @@ class DSLink extends client_link_1.HttpClientLink {
     }
 }
 exports.DSLink = DSLink;
-//# sourceMappingURL=cli_link_wrapper.js.map
+//# sourceMappingURL=cli-link-wrapper.js.map

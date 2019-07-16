@@ -5,7 +5,7 @@ import {Requester} from "../requester/requester";
 
 import {Responder} from "../responder/responder";
 import {PrivateKey} from "../crypto/pk";
-import {WebSocketConnection} from "./browser_ws_conn";
+import {WebSocketConnection} from "./browser-ws-conn";
 import {DsCodec} from "../utils/codec";
 
 export class BrowserUserLink extends ClientLink {

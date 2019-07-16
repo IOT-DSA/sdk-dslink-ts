@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("../utils/async");
 const request_1 = require("./request");
-const connection_handler_1 = require("../common/connection_handler");
+const connection_handler_1 = require("../common/connection-handler");
 const node_cache_1 = require("./node_cache");
 const subscribe_1 = require("./request/subscribe");
 const interfaces_1 = require("../common/interfaces");

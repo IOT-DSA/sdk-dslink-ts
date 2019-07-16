@@ -2,7 +2,7 @@
 const {DSLink} = require("../../../js/node");
 
 async function main() {
-  let link = new DSLink('test',
+  let link = new DSLink('requester',
     {isRequester: true},
   );
   await link.connect();

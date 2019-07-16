@@ -61,4 +61,4 @@ exports.defaultProfileMap = {
         ]
     }
 };
-//# sourceMappingURL=default_defs.js.map
+//# sourceMappingURL=default-defs.js.map

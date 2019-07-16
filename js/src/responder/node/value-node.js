@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const base_local_node_1 = require("../base_local_node");
+const base_local_node_1 = require("../base-local-node");
 const permission_1 = require("../../common/permission");
 /**
  * base class for a serializable value node
@@ -36,4 +36,4 @@ class ValueNode extends base_local_node_1.BaseLocalNode {
     }
 }
 exports.ValueNode = ValueNode;
-//# sourceMappingURL=ValueNode.js.map
+//# sourceMappingURL=value-node.js.map

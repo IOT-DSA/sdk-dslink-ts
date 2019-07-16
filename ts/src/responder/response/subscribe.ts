@@ -5,7 +5,7 @@ import {Response} from "../response";
 import {LocalNode, NodeState} from "../node_state";
 import * as path from "path";
 import {Responder} from "../responder";
-import {DSA_CONFIG} from "../../common/connection_handler";
+import {DSA_CONFIG} from "../../common/connection-handler";
 import Denque = require("denque");
 
 interface ISubscriptionNodeStorage {

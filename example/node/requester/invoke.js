@@ -3,7 +3,7 @@ const {DSLink} = require("../../../js/node");
 const {sleep} = require("../../../js/src/utils/async");
 
 async function main() {
-  let link = new DSLink('test',
+  let link = new DSLink('requester',
     {isRequester: true},
   );
   await link.connect();

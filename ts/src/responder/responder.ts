@@ -1,5 +1,5 @@
 /// a responder for one connection
-import {ConnectionHandler} from "../common/connection_handler";
+import {ConnectionHandler} from "../common/connection-handler";
 import {Permission} from "../common/permission";
 import {SubscribeResponse} from "./response/subscribe";
 import {LocalNode, NodeProvider} from "./node_state";

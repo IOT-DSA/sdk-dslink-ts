@@ -1,4 +1,4 @@
-import { BaseLocalNode } from "../base_local_node";
+import { BaseLocalNode } from "../base-local-node";
 import { NodeProvider } from "../node_state";
 /**
  * base class for a serializable value node

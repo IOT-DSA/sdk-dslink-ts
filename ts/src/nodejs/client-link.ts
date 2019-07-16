@@ -4,7 +4,7 @@ import {ClientLink, DummyECDH, ECDH} from "../common/interfaces";
 import {Completer} from "../utils/async";
 import {Requester} from "../requester/requester";
 import WebSocket from "ws";
-import {WebSocketConnection} from "./websocket_conn";
+import {WebSocketConnection} from "./websocket-conn";
 import {Path} from "../common/node";
 import axios from "axios";
 import {DsCodec, DsJson} from "../utils/codec";

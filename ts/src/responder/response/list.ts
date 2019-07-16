@@ -1,7 +1,7 @@
 import {NodeState} from "../node_state";
 import {Responder} from "../responder";
 import {Response} from "../response";
-import {DSA_CONFIG} from "../../common/connection_handler";
+import {DSA_CONFIG} from "../../common/connection-handler";
 import {StreamStatus} from "../../common/interfaces";
 
 export class ListResponse extends Response {

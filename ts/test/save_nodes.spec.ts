@@ -1,10 +1,10 @@
-import {MockBroker} from "./utils/mock_broker";
+import {MockBroker} from "./utils/mock-broker";
 import {assert} from "chai";
 import {TestRootNode, TestValueNode} from "./utils/responder_nodes";
-import {shouldHappen} from "./utils/async_test";
+import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/nodejs/client_link";
+import {HttpClientLink} from "../src/nodejs/client-link";
 import {Requester} from "../src/requester/requester";
 import {Path} from "../src/common/node";
 import {sleep} from "../src/utils/async";

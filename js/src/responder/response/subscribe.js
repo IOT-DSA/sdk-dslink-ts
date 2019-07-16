@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const value_1 = require("../../common/value");
 const response_1 = require("../response");
-const connection_handler_1 = require("../../common/connection_handler");
+const connection_handler_1 = require("../../common/connection-handler");
 const Denque = require("denque");
 class SubscribeResponse extends response_1.Response {
     constructor(responder, rid) {

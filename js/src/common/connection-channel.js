@@ -44,4 +44,4 @@ class PassiveChannel {
     }
 }
 exports.PassiveChannel = PassiveChannel;
-//# sourceMappingURL=connection_channel.js.map
+//# sourceMappingURL=connection-channel.js.map

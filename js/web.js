@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const browser_user_link_1 = require("./src/browser/browser_user_link");
+const browser_user_link_1 = require("./src/browser/browser-user-link");
 if (Object.isExtensible(window)) {
     window.DSLink = browser_user_link_1.BrowserUserLink;
 }

@@ -1,14 +1,14 @@
-import {MockBroker} from "../../../test/utils/mock_broker";
+import {MockBroker} from "../../../test/utils/mock-broker";
 import {Logger, logger} from "../../utils/logger";
 import {TestRootNode} from "../../../test/utils/responder_nodes";
-import {HttpClientLink} from "../client_link";
+import {HttpClientLink} from "../client-link";
 import {Requester} from "../../requester/requester";
 import {Path} from "../../common/node";
 import {ValueUpdate} from "../../common/value";
-import {shouldHappen} from "../../../test/utils/async_test";
+import {shouldHappen} from "../../../test/utils/async-test";
 import {sleep} from "../../utils/async";
 import {assert} from "chai";
-import {DSLink} from "../cli_link_wrapper";
+import {DSLink} from "../cli-link-wrapper";
 
 describe('cli link wrapper', function () {
   let broker = new MockBroker();

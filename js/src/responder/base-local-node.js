@@ -81,4 +81,4 @@ class BaseLocalNode extends node_state_1.LocalNode {
     }
 }
 exports.BaseLocalNode = BaseLocalNode;
-//# sourceMappingURL=base_local_node.js.map
+//# sourceMappingURL=base-local-node.js.map

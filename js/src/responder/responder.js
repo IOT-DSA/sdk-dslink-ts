@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /// a responder for one connection
-const connection_handler_1 = require("../common/connection_handler");
+const connection_handler_1 = require("../common/connection-handler");
 const permission_1 = require("../common/permission");
 const subscribe_1 = require("./response/subscribe");
 const response_1 = require("./response");

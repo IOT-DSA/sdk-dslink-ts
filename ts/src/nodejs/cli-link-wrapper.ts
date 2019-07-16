@@ -1,5 +1,5 @@
 import yargs from "yargs";
-import {HttpClientLink} from "./client_link";
+import {HttpClientLink} from "./client-link";
 import {LocalNode} from "../responder/node_state";
 import {PrivateKey} from "../crypto/pk";
 import {logger} from "../utils/logger";

@@ -1,9 +1,9 @@
-export {HttpClientLink} from "./src/nodejs/client_link";
-export {DSLink} from "./src/nodejs/cli_link_wrapper";
+export {HttpClientLink} from "./src/nodejs/client-link";
+export {DSLink} from "./src/nodejs/cli-link-wrapper";
 
-export {RootNode} from "./src/responder/node/RootNode";
-export {ValueNode} from "./src/responder/node/ValueNode";
-export {ActionNode} from "./src/responder/node/ActionNode";
+export {RootNode} from "./src/responder/node/root-node";
+export {ValueNode} from "./src/responder/node/value-node";
+export {ActionNode} from "./src/responder/node/action-node";
 export {Permission} from "./src/common/permission";
 
 

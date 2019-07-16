@@ -1,3 +1,4 @@
+import WebSocket from "ws";
 import {
   ClientLink,
   Connection,
@@ -6,9 +7,12 @@ import {
   ConnectionProcessor,
   ProcessorResult
 } from "../common/interfaces";
-import {PassiveChannel} from "../common/connection_channel";
+import {PassiveChannel} from "../common/connection-channel";
 import {Completer} from "../utils/async";
-import {DsCodec} from "../utils/codec";
+import {DsCodec, DsJson} from "../utils/codec";
+import {logger as mainLogger} from "../utils/logger";
+
+let logger = mainLogger.tag('ws');
 
 export class WebSocketConnection extends Connection {
   _responderChannel: PassiveChannel;
@@ -42,7 +46,13 @@ export class WebSocketConnection extends Connection {
 
   onConnect: Function;
 
+
+  _onDoneHandled: boolean = false;
+
   /// clientLink is not needed when websocket works in server link
+  // WebSocketConnection(socket:WebSocket,
+  //     options:{clientLink, boolean enableTimeout: false, boolean enableAck: true, DsCodec useCodec}) {
+  //   this.socket=socket;
   constructor(socket: WebSocket, clientLink: ClientLink,
               onConnect: Function,
               useCodec: DsCodec
@@ -54,7 +64,6 @@ export class WebSocketConnection extends Connection {
     if (useCodec != null) {
       this.codec = useCodec;
     }
-
     socket.binaryType = "arraybuffer";
     this._responderChannel = new PassiveChannel(this);
     this._requesterChannel = new PassiveChannel(this);
@@ -63,6 +72,8 @@ export class WebSocketConnection extends Connection {
     socket.onopen = this._onOpen;
 
     this.pingTimer = setInterval(this.onPingTimer, 20000);
+
+    // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this
   }
 
   pingTimer: any;
@@ -73,8 +84,9 @@ export class WebSocketConnection extends Connection {
   _dataSent: boolean = false;
 
   /// add this count every 20 seconds, set to 0 when receiving data
-  /// when the count is 3, disconnect the link
+  /// when the count is 3, disconnect the link (>=60 seconds)
   _dataReceiveCount: number = 0;
+
 
   onPingTimer = () => {
     if (this._dataReceiveCount >= 3) {
@@ -104,15 +116,15 @@ export class WebSocketConnection extends Connection {
     return this._opened;
   }
 
-  _onOpen = (e: Event) => {
-//    logger.info("Connected");
+  _onOpen = (e: {target: WebSocket}) => {
+    logger.info("Connected");
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
     }
+    this.addConnCommand('init', true); // this is a usless command, just force client to send something to server
     this._responderChannel.updateConnect();
     this._requesterChannel.updateConnect();
-    this.socket.send(this.codec.blankData);
     this.requireSend();
   };
 
@@ -121,7 +133,7 @@ export class WebSocketConnection extends Connection {
   _msgCommand: {[key: string]: any};
 
   /// add server command, will be called only when used as server connection
-  addConnCommand(key: string, value: object) {
+  addConnCommand(key: string, value: any) {
     if (this._msgCommand == null) {
       this._msgCommand = {};
     }
@@ -131,7 +143,8 @@ export class WebSocketConnection extends Connection {
     this.requireSend();
   }
 
-  _onData = (e: MessageEvent) => {
+  _onData = (e: {data: WebSocket.Data; type: string; target: WebSocket}) => {
+
     if (this._onDisconnectedCompleter.isCompleted) {
       return;
     }
@@ -145,7 +158,7 @@ export class WebSocketConnection extends Connection {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
-//        logger.fine("$m");
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
 
         if (typeof m["salt"] === 'string') {
           this.clientLink.updateSalt(m["salt"]);
@@ -179,8 +192,7 @@ export class WebSocketConnection extends Connection {
     } else if (typeof e.data === 'string') {
       try {
         m = this.codec.decodeStringFrame(e.data);
-//        logger.fine("$m");
-
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
         let needAck = false;
         if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
           needAck = true;
@@ -210,6 +222,7 @@ export class WebSocketConnection extends Connection {
     }
   };
 
+  /// when nextMsgId = -1, ack is disabled
   nextMsgId: number = 1;
   _sending: boolean = false;
 
@@ -221,7 +234,6 @@ export class WebSocketConnection extends Connection {
     if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
-//    logger.fine("browser sending");
     let needSend = false;
     let m: {[key: string]: any};
     if (this._msgCommand != null) {
@@ -269,8 +281,7 @@ export class WebSocketConnection extends Connection {
         }
       }
 
-
-//      logger.fine("send: $m");
+      logger.trace(() => 'send' + DsJson.encode(m, true));
       let encoded = this.codec.encodeFrame(m);
 
       try {
@@ -283,16 +294,15 @@ export class WebSocketConnection extends Connection {
     }
   }
 
-  _authError: boolean = false;
 
-  _onDone = (o?: any) => {
-    if (o instanceof CloseEvent) {
-      if (o.code === 1006) {
-        this._authError = true;
-      }
+  _onDone = () => {
+    if (this._onDoneHandled) {
+      return;
     }
+    logger.info('Disconnected');
 
-//    logger.fine("socket disconnected");
+    this._onDoneHandled = true;
+
 
     if (!this._requesterChannel.onReceive.isClosed) {
       this._requesterChannel.onReceive.close();
@@ -311,7 +321,7 @@ export class WebSocketConnection extends Connection {
     }
 
     if (!this._onDisconnectedCompleter.isCompleted) {
-      this._onDisconnectedCompleter.complete(this._authError);
+      this._onDisconnectedCompleter.complete(false);
     }
     if (this.pingTimer != null) {
       clearInterval(this.pingTimer);

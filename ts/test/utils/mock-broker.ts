@@ -3,7 +3,7 @@ import WebSocket from 'ws';
 import {AddressInfo} from "net";
 import {LocalNode} from "../../src/responder/node_state";
 import {PrivateKey} from "../../src/crypto/pk";
-import {HttpClientLink} from "../../src/nodejs/client_link";
+import {HttpClientLink} from "../../src/nodejs/client-link";
 
 
 class Client {

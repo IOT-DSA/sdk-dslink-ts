@@ -96,4 +96,4 @@ class ConnectionHandler {
     }
 }
 exports.ConnectionHandler = ConnectionHandler;
-//# sourceMappingURL=connection_handler.js.map
+//# sourceMappingURL=connection-handler.js.map

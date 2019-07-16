@@ -1,6 +1,6 @@
 import Denque from "denque";
 import { Stream } from "../utils/async";
-import { ConnectionHandler } from "./connection_handler";
+import { ConnectionHandler } from "./connection-handler";
 import { DsCodec } from "../utils/codec";
 import { PrivateKey, PublicKey } from "../crypto/pk";
 import { LocalNode } from "../responder/node_state";

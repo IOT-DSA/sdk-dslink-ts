@@ -7,7 +7,7 @@ const interfaces_1 = require("../common/interfaces");
 const async_1 = require("../utils/async");
 const requester_1 = require("../requester/requester");
 const ws_1 = __importDefault(require("ws"));
-const websocket_conn_1 = require("./websocket_conn");
+const websocket_conn_1 = require("./websocket-conn");
 const node_1 = require("../common/node");
 const axios_1 = __importDefault(require("axios"));
 const codec_1 = require("../utils/codec");
@@ -241,4 +241,4 @@ class HttpClientLink extends interfaces_1.ClientLink {
     }
 }
 exports.HttpClientLink = HttpClientLink;
-//# sourceMappingURL=client_link.js.map
+//# sourceMappingURL=client-link.js.map

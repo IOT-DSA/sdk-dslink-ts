@@ -1,6 +1,6 @@
-import {ActionNode} from "../../src/responder/node/ActionNode";
-import {ValueNode} from "../../src/responder/node/ValueNode";
-import {RootNode} from "../../src/responder/node/RootNode";
+import {ActionNode} from "../../src/responder/node/action-node";
+import {ValueNode} from "../../src/responder/node/value-node";
+import {RootNode} from "../../src/responder/node/root-node";
 import {NodeProvider} from "../../src/responder/node_state";
 import {Permission} from "../../src/common/permission";
 

@@ -1,2 +1,2 @@
-import { BrowserUserLink } from "./src/browser/browser_user_link";
+import { BrowserUserLink } from "./src/browser/browser-user-link";
 export declare const DSLink: typeof BrowserUserLink;

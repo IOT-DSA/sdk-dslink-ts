@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = require("../request");
 const value_1 = require("../../common/value");
-const connection_handler_1 = require("../../common/connection_handler");
+const connection_handler_1 = require("../../common/connection-handler");
 class ReqSubscribeListener {
     /** @ignore */
     constructor(requester, path, callback) {

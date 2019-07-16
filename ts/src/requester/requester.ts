@@ -1,7 +1,7 @@
 import {RequesterUpdate, RequestUpdater} from "./interface";
 import {Listener, Stream, StreamSubscription} from "../utils/async";
 import {Request} from "./request";
-import {ConnectionHandler} from "../common/connection_handler";
+import {ConnectionHandler} from "../common/connection-handler";
 import {RemoteNode, RemoteNodeCache} from "./node_cache";
 import {ReqSubscribeListener, SubscribeRequest} from "./request/subscribe";
 import {DSError, ProcessorResult, StreamStatus} from "../common/interfaces";

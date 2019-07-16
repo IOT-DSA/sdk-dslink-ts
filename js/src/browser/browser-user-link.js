@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../common/interfaces");
 const async_1 = require("../utils/async");
 const requester_1 = require("../requester/requester");
-const browser_ws_conn_1 = require("./browser_ws_conn");
+const browser_ws_conn_1 = require("./browser-ws-conn");
 const codec_1 = require("../utils/codec");
 class BrowserUserLink extends interfaces_1.ClientLink {
     constructor(wsUpdateUri, format = 'msgpack') {
@@ -100,4 +100,4 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 /** @ignore */
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
 exports.BrowserUserLink = BrowserUserLink;
-//# sourceMappingURL=browser_user_link.js.map
+//# sourceMappingURL=browser-user-link.js.map

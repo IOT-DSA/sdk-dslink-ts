@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const response_1 = require("../response");
-const connection_handler_1 = require("../../common/connection_handler");
+const connection_handler_1 = require("../../common/connection-handler");
 const interfaces_1 = require("../../common/interfaces");
 class ListResponse extends response_1.Response {
     constructor(responder, rid, state) {

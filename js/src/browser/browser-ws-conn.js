@@ -1,31 +1,20 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ws_1 = __importDefault(require("ws"));
 const interfaces_1 = require("../common/interfaces");
-const connection_channel_1 = require("../common/connection_channel");
+const connection_channel_1 = require("../common/connection-channel");
 const async_1 = require("../utils/async");
-const codec_1 = require("../utils/codec");
-const logger_1 = require("../utils/logger");
-let logger = logger_1.logger.tag('ws');
 class WebSocketConnection extends interfaces_1.Connection {
     /// clientLink is not needed when websocket works in server link
-    // WebSocketConnection(socket:WebSocket,
-    //     options:{clientLink, boolean enableTimeout: false, boolean enableAck: true, DsCodec useCodec}) {
-    //   this.socket=socket;
     constructor(socket, clientLink, onConnect, useCodec) {
         super();
         this._onRequestReadyCompleter = new async_1.Completer();
         this._onDisconnectedCompleter = new async_1.Completer();
-        this._onDoneHandled = false;
         /// set to true when data is sent, reset the flag every 20 seconds
         /// since the previous ping message will cause the next 20 seoncd to have a message
         /// max interval between 2 ping messages is 40 seconds
         this._dataSent = false;
         /// add this count every 20 seconds, set to 0 when receiving data
-        /// when the count is 3, disconnect the link (>=60 seconds)
+        /// when the count is 3, disconnect the link
         this._dataReceiveCount = 0;
         this.onPingTimer = () => {
             if (this._dataReceiveCount >= 3) {
@@ -41,14 +30,14 @@ class WebSocketConnection extends interfaces_1.Connection {
         };
         this._opened = false;
         this._onOpen = (e) => {
-            logger.info("Connected");
+            //    logger.info("Connected");
             this._opened = true;
             if (this.onConnect != null) {
                 this.onConnect();
             }
-            this.addConnCommand('init', true); // this is a usless command, just force client to send something to server
             this._responderChannel.updateConnect();
             this._requesterChannel.updateConnect();
+            this.socket.send(this.codec.blankData);
             this.requireSend();
         };
         this._onData = (e) => {
@@ -64,7 +53,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
-                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
+                    //        logger.fine("$m");
                     if (typeof m["salt"] === 'string') {
                         this.clientLink.updateSalt(m["salt"]);
                     }
@@ -98,7 +87,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             else if (typeof e.data === 'string') {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
-                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
+                    //        logger.fine("$m");
                     let needAck = false;
                     if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
                         needAck = true;
@@ -127,15 +116,16 @@ class WebSocketConnection extends interfaces_1.Connection {
                 }
             }
         };
-        /// when nextMsgId = -1, ack is disabled
         this.nextMsgId = 1;
         this._sending = false;
-        this._onDone = () => {
-            if (this._onDoneHandled) {
-                return;
+        this._authError = false;
+        this._onDone = (o) => {
+            if (o instanceof CloseEvent) {
+                if (o.code === 1006) {
+                    this._authError = true;
+                }
             }
-            logger.info('Disconnected');
-            this._onDoneHandled = true;
+            //    logger.fine("socket disconnected");
             if (!this._requesterChannel.onReceive.isClosed) {
                 this._requesterChannel.onReceive.close();
             }
@@ -149,7 +139,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 this._responderChannel.onDisconnectController.complete(this._responderChannel);
             }
             if (!this._onDisconnectedCompleter.isCompleted) {
-                this._onDisconnectedCompleter.complete(false);
+                this._onDisconnectedCompleter.complete(this._authError);
             }
             if (this.pingTimer != null) {
                 clearInterval(this.pingTimer);
@@ -170,7 +160,6 @@ class WebSocketConnection extends interfaces_1.Connection {
         socket.onclose = this._onDone;
         socket.onopen = this._onOpen;
         this.pingTimer = setInterval(this.onPingTimer, 20000);
-        // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this
     }
     get responderChannel() {
         return this._responderChannel;
@@ -210,9 +199,10 @@ class WebSocketConnection extends interfaces_1.Connection {
             return;
         }
         this._sending = false;
-        if (this.socket.readyState !== ws_1.default.OPEN) {
+        if (this.socket.readyState !== WebSocket.OPEN) {
             return;
         }
+        //    logger.fine("browser sending");
         let needSend = false;
         let m;
         if (this._msgCommand != null) {
@@ -258,7 +248,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this.nextMsgId = 1;
                 }
             }
-            logger.trace(() => 'send' + codec_1.DsJson.encode(m, true));
+            //      logger.fine("send: $m");
             let encoded = this.codec.encodeFrame(m);
             try {
                 this.socket.send(encoded);
@@ -271,12 +261,12 @@ class WebSocketConnection extends interfaces_1.Connection {
         }
     }
     close() {
-        if (this.socket.readyState === ws_1.default.OPEN ||
-            this.socket.readyState === ws_1.default.CONNECTING) {
+        if (this.socket.readyState === WebSocket.OPEN ||
+            this.socket.readyState === WebSocket.CONNECTING) {
             this.socket.close();
         }
         this._onDone();
     }
 }
 exports.WebSocketConnection = WebSocketConnection;
-//# sourceMappingURL=websocket_conn.js.map
+//# sourceMappingURL=browser-ws-conn.js.map
