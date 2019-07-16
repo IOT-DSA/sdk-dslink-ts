@@ -28,7 +28,7 @@ You can zip a javascript dslink and install it on dglux-server.
 A sample dslink with a basic value node at the path /value
 
 ```javascript
-const { DSLink, RootNode, ValueNode} = require("dslink");
+const {DSLink, RootNode, ValueNode} = require("dslink");
 
 class MyValueNode extends ValueNode {
   constructor(path, provider) {
@@ -37,15 +37,12 @@ class MyValueNode extends ValueNode {
   }
 }
 
-class MyRootNode extends RootNode {
-  initialize() {
-    this.createChild('value', MyValueNode);
-  }
-}
+function main() {
+  let rootNode = new RootNode();
+  rootNode.createChild('value', MyValueNode);
 
-async function main() {
-  let link = new DSLink('mydslink', {rootNode: new MyRootNode()});
-  await link.connect();
+  let link = new DSLink('mydslink', {rootNode});
+  link.connect();
 }
 
 main();
