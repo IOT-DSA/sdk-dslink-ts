@@ -8,7 +8,6 @@ const permission_1 = require("../../common/permission");
 class ValueNode extends base_local_node_1.BaseLocalNode {
     constructor(path, provider, profileName = 'node', type = 'dynamic', writable = permission_1.Permission.NEVER, saveValue = false) {
         super(path, provider, profileName);
-        this._valueReady = true;
         this.setConfig('$type', type);
         this._saveValue = saveValue;
         if (writable < permission_1.Permission.NEVER) {

@@ -7,7 +7,6 @@ import {Permission} from "../../common/permission";
  */
 export class ValueNode extends BaseLocalNode {
 
-  _valueReady = true;
   _saveValue: boolean;
 
   constructor(path: string, provider: NodeProvider, profileName: string = 'node', type = 'dynamic', writable = Permission.NEVER, saveValue = false) {

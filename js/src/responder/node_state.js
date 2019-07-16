@@ -9,7 +9,6 @@ class LocalNode extends node_1.Node {
     constructor(path, provider, profileName = 'node') {
         super(profileName);
         this._value = null;
-        this._valueReady = false;
         this.path = path;
         this.provider = provider;
         this.initialize();
@@ -228,6 +227,10 @@ class NodeState {
         }
     }
     updateValue(value) {
+        if (value === undefined) {
+            // value not ready
+            return;
+        }
         if (this._node._value instanceof value_1.ValueUpdate) {
             this._lastValueUpdate = this._node._value;
         }
@@ -242,9 +245,7 @@ class NodeState {
         this._node = node;
         if (node) {
             node._state = this;
-            if (node._valueReady) {
-                this.updateValue(node._value);
-            }
+            this.updateValue(node._value);
             for (let listener of this.listStream._listeners) {
                 listener(null); // use null to update all
             }

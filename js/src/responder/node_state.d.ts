@@ -22,7 +22,6 @@ export declare class LocalNode extends Node<LocalNode> {
     setAttribute(name: string, value: any, responder?: Responder, response?: Response): void;
     removeAttribute(name: string, responder?: Responder, response?: Response): void;
     _value: any;
-    _valueReady: boolean;
     setValue(value: any, responder?: Responder, response?: Response, maxPermission?: number): void;
     changeValue(newVal: any): boolean;
     save(): {

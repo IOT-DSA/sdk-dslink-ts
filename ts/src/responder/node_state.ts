@@ -142,7 +142,6 @@ export class LocalNode extends Node<LocalNode> {
   }
 
   _value: any = null;
-  _valueReady = false;
 
   /// Called by the link internals to set a value of a node.
   setValue(value: any, responder?: Responder, response?: Response,
@@ -302,6 +301,10 @@ export class NodeState {
   _lastValueUpdate: ValueUpdate;
 
   updateValue(value: any) {
+    if (value === undefined) {
+      // value not ready
+      return;
+    }
     if (this._node._value instanceof ValueUpdate) {
       this._lastValueUpdate = this._node._value;
     } else {
@@ -316,9 +319,7 @@ export class NodeState {
     this._node = node;
     if (node) {
       node._state = this;
-      if (node._valueReady) {
-        this.updateValue(node._value);
-      }
+      this.updateValue(node._value);
       for (let listener of this.listStream._listeners) {
         listener(null); // use null to update all
       }
