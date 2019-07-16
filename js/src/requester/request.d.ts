@@ -15,9 +15,6 @@ export declare class Request {
     });
     streamStatus: string;
     resend(): void;
-    addReqParams(m: {
-        [key: string]: any;
-    }): void;
     _update(m: {
         [key: string]: any;
     }): void;

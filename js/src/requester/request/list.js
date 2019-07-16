@@ -194,7 +194,7 @@ class ListController {
                 }
             }
             if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
-                this.node.listed = true;
+                this.node._listed = true;
             }
             if (this._pendingRemoveDef) {
                 this._checkRemoveDef();
@@ -222,7 +222,7 @@ class ListController {
         if (defName === 'node') {
             return;
         }
-        if ((this.node.profile instanceof node_cache_1.RemoteNode) && !this.node.profile.listed) {
+        if ((this.node.profile instanceof node_cache_1.RemoteNode) && !this.node.profile._listed) {
             this._ready = false;
             this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
         }

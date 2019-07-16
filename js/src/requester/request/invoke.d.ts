@@ -34,6 +34,9 @@ export declare class RequesterInvokeUpdate extends RequesterUpdate {
 }
 export declare class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
     request: Request;
+    addReqParams(m: {
+        [key: string]: any;
+    }): void;
 }
 /** @ignore */
 export declare class InvokeController implements RequestUpdater {

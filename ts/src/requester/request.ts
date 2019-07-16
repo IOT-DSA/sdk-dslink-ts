@@ -29,10 +29,6 @@ export class Request {
     this.requester.addToSendList(this.data);
   }
 
-  addReqParams(m: { [key: string]: any }) {
-    this.requester.addToSendList({'rid': this.rid, 'params': m});
-  }
-
   _update(m: { [key: string]: any }) {
     if (typeof m["stream"] === 'string') {
       this.streamStatus = m["stream"];

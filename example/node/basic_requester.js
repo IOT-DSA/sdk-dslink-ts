@@ -10,13 +10,16 @@ async function main() {
 
   let {requester} = link;
 
+  // subscribe value
   console.log(await requester.subscribeOnce('/sys/dataOutPerSecond'));
 
+  // list node children
   console.log(
     (await requester.listOnce('/sys'))
       .children.size
   );
 
+  // invoke action
   console.log(
     (await requester.invokeOnce('/sys/get_server_log', {lines: 5}))
       .result.log

@@ -6856,7 +6856,7 @@ class ListController {
       }
 
       if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
-        this.node.listed = true;
+        this.node._listed = true;
       }
 
       if (this._pendingRemoveDef) {
@@ -8000,7 +8000,7 @@ DefaultDefNodes.nameMap = function () {
       }
     }
 
-    node.listed = true;
+    node._listed = true;
     rslt[k] = node;
   }
 

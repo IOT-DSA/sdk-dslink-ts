@@ -76,7 +76,7 @@ class RemoteNode extends node_1.Node {
     constructor(remotePath) {
         super();
         /** @ignore */
-        this.listed = false;
+        this._listed = false;
         this.remotePath = remotePath;
         this._getRawName();
     }
@@ -304,7 +304,7 @@ DefaultDefNodes.nameMap = (function () {
                 node.attributes.set(n, v);
             }
         }
-        node.listed = true;
+        node._listed = true;
         rslt[k] = node;
     }
     return rslt;

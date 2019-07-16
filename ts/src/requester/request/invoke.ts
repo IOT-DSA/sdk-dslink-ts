@@ -117,6 +117,10 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
 
 export class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
   request: Request;
+
+  addReqParams(m: {[key: string]: any}) {
+    this.request.requester.addToSendList({'rid': this.request.rid, 'params': m});
+  }
 }
 
 /** @ignore */

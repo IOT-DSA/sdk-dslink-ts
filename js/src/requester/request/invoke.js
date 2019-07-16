@@ -100,6 +100,9 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
 }
 exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 class RequesterInvokeStream extends async_1.Stream {
+    addReqParams(m) {
+        this.request.requester.addToSendList({ 'rid': this.request.rid, 'params': m });
+    }
 }
 exports.RequesterInvokeStream = RequesterInvokeStream;
 /** @ignore */

@@ -153,7 +153,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
         }
       }
       if (this.request.streamStatus !== StreamStatus.initialize) {
-        this.node.listed = true;
+        this.node._listed = true;
       }
       if (this._pendingRemoveDef) {
         this._checkRemoveDef();
@@ -183,7 +183,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     if (defName === 'node') {
       return;
     }
-    if ((this.node.profile instanceof RemoteNode) && !(this.node.profile as RemoteNode).listed) {
+    if ((this.node.profile instanceof RemoteNode) && !(this.node.profile as RemoteNode)._listed) {
       this._ready = false;
       this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }

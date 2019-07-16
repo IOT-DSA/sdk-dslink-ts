@@ -83,7 +83,7 @@ export class RemoteNodeCache {
 export class RemoteNode extends Node {
   readonly remotePath: string;
   /** @ignore */
-  listed: boolean = false;
+  _listed: boolean = false;
   name: string;
   /** @ignore */
   _listController: ListController;
@@ -338,7 +338,7 @@ export class DefaultDefNodes {
           node.attributes.set(n, v);
         }
       }
-      node.listed = true;
+      node._listed = true;
       rslt[k] = node;
     }
     return rslt;

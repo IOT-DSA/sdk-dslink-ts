@@ -17,9 +17,6 @@ class Request {
     resend() {
         this.requester.addToSendList(this.data);
     }
-    addReqParams(m) {
-        this.requester.addToSendList({ 'rid': this.rid, 'params': m });
-    }
     _update(m) {
         if (typeof m["stream"] === 'string') {
             this.streamStatus = m["stream"];

@@ -20,7 +20,7 @@ export declare class RemoteNodeCache {
 export declare class RemoteNode extends Node {
     readonly remotePath: string;
     /** @ignore */
-    listed: boolean;
+    _listed: boolean;
     name: string;
     /** @ignore */
     _listController: ListController;
