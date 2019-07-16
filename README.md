@@ -9,13 +9,19 @@ Version 2.0 of this sdk is re-written with typescript and is **NOT** backward co
 
 ## Install
 
-`npm install dslink --save` 
-or
-`yarn add dslink`
+`npm install dslink --save` <br>
+or <br>
+`yarn add dslink` <br>
 
 ## Use Typescript
 
 To compile with dslink sdk's typescript definition, make sure `esModuleInterop` flag is true in typescript [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html).
+
+## Install DsLink on broker
+
+You can zip a javascript dslink and install it on dglux-server.
+
+[A working example](https://github.com/IOT-DSA/template-dslink-javascript)
 
 ## Javascript Example
 
