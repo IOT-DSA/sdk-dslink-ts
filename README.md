@@ -1,11 +1,9 @@
 # sdk-dslink-ts
-typescript/javascript sdk for DSA protocol
+JavaScript / Typescript SDK for the DSA protocol.
 
 <a href='https://travis-ci.org/IOT-DSA/sdk-dslink-ts'><img src="https://travis-ci.org/IOT-DSA/sdk-dslink-ts.svg?branch=master" title="travis-ci"></a>
 <a href='https://coveralls.io/github/IOT-DSA/sdk-dslink-ts'><img src='https://coveralls.io/repos/github/IOT-DSA/sdk-dslink-ts/badge.svg?branch=master&service=github&cache=0' title="coveralls"/></a>
 
-
-JavaScript / Typescript SDK for the DSA protocol. 
 
 Version 2.0 of this sdk is re-written with typescript and is **NOT** backward compatible with the DSA javascript sdk 1.x.
 
@@ -15,7 +13,11 @@ Version 2.0 of this sdk is re-written with typescript and is **NOT** backward co
 or
 `yarn add dslink`
 
-## Example
+## Use Typescript
+
+To compile with dslink sdk's typescript definition, make sure `esModuleInterop` flag is true in typescript [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html).
+
+## Javascript Example
 
 A sample dslink with a basic value node at the path /value
 
