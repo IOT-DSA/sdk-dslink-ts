@@ -41,7 +41,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         };
         this._opened = false;
         this._onOpen = (e) => {
-            logger.info("Connected");
+            logger.trace("Connected");
             this._opened = true;
             if (this.onConnect != null) {
                 this.onConnect();
@@ -134,7 +134,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             if (this._onDoneHandled) {
                 return;
             }
-            logger.info('Disconnected');
+            logger.trace('Disconnected');
             this._onDoneHandled = true;
             if (!this._requesterChannel.onReceive.isClosed) {
                 this._requesterChannel.onReceive.close();
@@ -168,6 +168,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._requesterChannel = new connection_channel_1.PassiveChannel(this);
         socket.onmessage = this._onData;
         socket.onclose = this._onDone;
+        socket.onerror = this._onDone;
         socket.onopen = this._onOpen;
         this.pingTimer = setInterval(this.onPingTimer, 20000);
         // TODO(rinick): when it's used in client link, wait for the server to send {allowed} before complete this

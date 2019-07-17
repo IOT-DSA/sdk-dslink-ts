@@ -6,6 +6,7 @@ import {PrivateKey, PublicKey} from "../crypto/pk";
 import {LocalNode} from "../responder/node_state";
 import {Responder} from "../responder/responder";
 import {Requester} from "../requester/requester";
+import {logger as mainLogger} from "../utils/logger";
 
 export abstract class ECDH {
   abstract get encodedPublicKey(): string;
@@ -163,6 +164,8 @@ export abstract class ServerLink extends BaseLink {
   abstract close(): void;
 }
 
+let linkLogger = mainLogger.tag('link');
+
 /// Base Class for Client Link implementations.
 export abstract class ClientLink extends BaseLink {
   /** @ignore */
@@ -186,16 +189,20 @@ export abstract class ClientLink extends BaseLink {
 
   abstract _connect(): void;
 
-  onConnect: Stream<boolean> = new Stream();
+  onConnect: Stream<boolean> = new Stream(null, null, null, true);
   _onConnect = () => {
     this.onConnect.add(true);
     this.onDisconnect.reset();
+    linkLogger.info('Connected');
   };
 
-  onDisconnect: Stream<boolean> = new Stream();
+  onDisconnect: Stream<boolean> = new Stream(null, null, null, true);
   _onDisconnect = () => {
     this.onDisconnect.add(true);
-    this.onConnect.reset();
+    if (this.onConnect._value) {
+      linkLogger.info('Disconnected');
+      this.onConnect.reset();
+    }
   };
 
   async connect() {

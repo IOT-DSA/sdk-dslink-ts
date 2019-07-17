@@ -276,7 +276,7 @@ export class HttpClientLink extends ClientLink {
       if (this.requester) {
         this._wsConnection.onRequesterReady.then((channel) => {
           this.requester.connection = channel;
-          this._onReadyCompleter.complete([null, this.responder]);
+          this._onReadyCompleter.complete([this.requester, this.responder]);
 
         });
       }

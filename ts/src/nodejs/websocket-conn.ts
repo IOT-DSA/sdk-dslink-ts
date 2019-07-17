@@ -69,6 +69,7 @@ export class WebSocketConnection extends Connection {
     this._requesterChannel = new PassiveChannel(this);
     socket.onmessage = this._onData;
     socket.onclose = this._onDone;
+    socket.onerror = this._onDone;
     socket.onopen = this._onOpen;
 
     this.pingTimer = setInterval(this.onPingTimer, 20000);
@@ -117,7 +118,7 @@ export class WebSocketConnection extends Connection {
   }
 
   _onOpen = (e: {target: WebSocket}) => {
-    logger.info("Connected");
+    logger.trace("Connected");
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
@@ -299,7 +300,7 @@ export class WebSocketConnection extends Connection {
     if (this._onDoneHandled) {
       return;
     }
-    logger.info('Disconnected');
+    logger.trace('Disconnected');
 
     this._onDoneHandled = true;
 

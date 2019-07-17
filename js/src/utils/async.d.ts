@@ -18,7 +18,7 @@ export declare class Stream<T> {
     _onListen: (listener: Listener<T>) => void;
     /** @ignore */
     _onClose: () => void;
-    constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void);
+    constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void, cached?: boolean);
     listen(listener: Listener<T>): StreamSubscription<T>;
     unlisten(listener: Listener<T>): void;
     add(val: T): boolean;

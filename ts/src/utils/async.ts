@@ -22,10 +22,11 @@ export class Stream<T> {
   /** @ignore */
   _onClose: () => void;
 
-  constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void) {
+  constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void, cached = false) {
     this._onStartListen = onStartListen;
     this._onAllCancel = onAllCancel;
     this._onListen = onListen;
+    this._cached = cached;
   }
 
   listen(listener: Listener<T>): StreamSubscription<T> {

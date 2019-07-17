@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 /** @ignore */
 class Stream {
-    constructor(onStartListen, onAllCancel, onListen) {
+    constructor(onStartListen, onAllCancel, onListen, cached = false) {
         /** @ignore */
         this._listeners = new Set();
         /** @ignore */
@@ -13,6 +13,7 @@ class Stream {
         this._onStartListen = onStartListen;
         this._onAllCancel = onAllCancel;
         this._onListen = onListen;
+        this._cached = cached;
     }
     listen(listener) {
         this._listeners.add(listener);
