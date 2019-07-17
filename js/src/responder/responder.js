@@ -252,7 +252,6 @@ class Responder extends connection_handler_1.ConnectionHandler {
             let permission = permission_1.Permission.parse(m['permit']);
             if (node.getSetPermission() <= permission) {
                 node.setValue(value, this, this.addResponse(new response_1.Response(this, rid, 'set')));
-                this.closeResponse(m['rid']);
             }
             else {
                 this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);

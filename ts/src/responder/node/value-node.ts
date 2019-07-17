@@ -33,8 +33,8 @@ export class ValueNode extends BaseLocalNode {
     }
   }
 
-  changeValue(newValue: any) {
-    let changed = super.changeValue((newValue));
+  onValueChange(newValue: any) {
+    let changed = super.onValueChange((newValue));
     if (changed && this._saveValue) {
       this.provider.save();
     }

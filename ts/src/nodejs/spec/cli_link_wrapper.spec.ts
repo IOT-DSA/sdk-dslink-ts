@@ -1,6 +1,6 @@
 import {MockBroker} from "../../../test/utils/mock-broker";
 import {Logger, logger} from "../../utils/logger";
-import {TestRootNode} from "../../../test/utils/responder_nodes";
+import {TestRootNode} from "../../../test/utils/responder-nodes";
 import {HttpClientLink} from "../client-link";
 import {Requester} from "../../requester/requester";
 import {Path} from "../../common/node";

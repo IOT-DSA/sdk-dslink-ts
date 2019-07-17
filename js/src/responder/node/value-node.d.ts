@@ -12,5 +12,5 @@ export declare class ValueNode extends BaseLocalNode {
     load(data: {
         [p: string]: any;
     }): void;
-    changeValue(newValue: any): boolean;
+    onValueChange(newValue: any): boolean;
 }

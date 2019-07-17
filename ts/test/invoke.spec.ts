@@ -1,6 +1,6 @@
 import {MockBroker} from "./utils/mock-broker";
 import {assert} from "chai";
-import {TestRootNode, TestValueNode} from "./utils/responder_nodes";
+import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
 import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";

@@ -302,7 +302,6 @@ export class Responder extends ConnectionHandler {
 
       if (node.getSetPermission() <= permission) {
         node.setValue(value, this, this.addResponse(new Response(this, rid, 'set')));
-        this.closeResponse(m['rid']);
       } else {
         this.closeResponse(m['rid'], null, DSError.PERMISSION_DENIED);
       }

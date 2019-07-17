@@ -111,16 +111,29 @@ class LocalNode extends node_1.Node {
     }
     /// Called by the link internals to set a value of a node.
     setValue(value, responder, response, maxPermission = permission_1.Permission.CONFIG) {
-        if (this.changeValue(value)) {
-            if (this._state) {
-                this._state.updateValue(value);
+        try {
+            if (this.onValueChange(value)) {
+                if (this._state) {
+                    this._state.updateValue(value);
+                }
+            }
+            if (response) {
+                response.close();
             }
         }
-        if (response) {
-            response.close();
+        catch (e) {
+            if (e instanceof Error) {
+                response.close(new interfaces_1.DSError('failed', { msg: e.message }));
+            }
+            else {
+                response.close(new interfaces_1.DSError('failed'));
+            }
         }
     }
-    changeValue(newVal) {
+    /**
+     * @return true when the change is valid
+     */
+    onValueChange(newVal) {
         if (this._value === newVal) {
             return false;
         }

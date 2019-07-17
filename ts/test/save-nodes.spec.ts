@@ -1,6 +1,6 @@
 import {MockBroker} from "./utils/mock-broker";
 import {assert} from "chai";
-import {TestRootNode, TestValueNode} from "./utils/responder_nodes";
+import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
 import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
@@ -26,7 +26,7 @@ describe('save nodes', function () {
         saveNodes: true
       });
       rootNode.val.setAttribute('@attr1', 'value1');
-      rootNode.val.changeValue(207);
+      rootNode.val.onValueChange(207);
       link.close();
 
       // give the provider enough time to save the nodes

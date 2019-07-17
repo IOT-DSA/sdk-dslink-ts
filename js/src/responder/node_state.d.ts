@@ -23,7 +23,10 @@ export declare class LocalNode extends Node<LocalNode> {
     removeAttribute(name: string, responder?: Responder, response?: Response): void;
     _value: any;
     setValue(value: any, responder?: Responder, response?: Response, maxPermission?: number): void;
-    changeValue(newVal: any): boolean;
+    /**
+     * @return true when the change is valid
+     */
+    onValueChange(newVal: any): boolean;
     save(): {
         [key: string]: any;
     };
