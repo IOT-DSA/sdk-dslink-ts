@@ -68,15 +68,21 @@ export class BrowserUserLink extends ClientLink {
   /** @ignore */
   initWebsocketLater(ms: number) {
     if (this._initSocketTimer) return;
-    this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
+    this._initSocketTimer = setTimeout(this.initWebsocket, ms);
   }
 
   /** @ignore */
-  initWebsocket(reconnect = true) {
+  initWebsocket = (reconnect = true) => {
     this._initSocketTimer = null;
-    let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-    this._wsConnection = new WebSocketConnection(
-      socket, this, this._onConnect, DsCodec.getCodec(this.format));
+
+    try {
+      let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
+      this._wsConnection = new WebSocketConnection(
+        socket, this, this._onConnect, DsCodec.getCodec(this.format));
+    } catch (err) {
+      this.onDisConnect(reconnect);
+      return;
+    }
 
     // if (this.responder != null) {
     //   this.responder.connection = this._wsConnection.responderChannel;
@@ -91,24 +97,27 @@ export class BrowserUserLink extends ClientLink {
       });
     }
     this._wsConnection.onDisconnected.then((connection) => {
-//      logger.info("Disconnected");
-      this._onDisconnect();
-
-      if (this._wsConnection == null) {
-        // connection is closed
-        return;
-      }
-      if (this._wsConnection._opened) {
-        this._wsDelay = 1;
-        this.initWebsocket(false);
-      } else if (reconnect) {
-        this.initWebsocketLater(this._wsDelay * 1000);
-        if (this._wsDelay < 60) this._wsDelay++;
-      } else {
-        this._wsDelay = 5;
-        this.initWebsocketLater(5000);
-      }
+      this.onDisConnect(reconnect);
     });
+  }
+
+  onDisConnect(reconnect: boolean) {
+    this._onDisconnect();
+
+    if (this._wsConnection == null) {
+      // connection is closed
+      return;
+    }
+    if (this._wsConnection._opened) {
+      this._wsDelay = 1;
+      this.initWebsocket(false);
+    } else if (reconnect) {
+      this.initWebsocketLater(this._wsDelay * 1000);
+      if (this._wsDelay < 60) this._wsDelay++;
+    } else {
+      this._wsDelay = 5;
+      this.initWebsocketLater(5000);
+    }
   }
 
   reconnect() {

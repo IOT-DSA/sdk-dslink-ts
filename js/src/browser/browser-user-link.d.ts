@@ -31,7 +31,8 @@ export declare class BrowserUserLink extends ClientLink {
     /** @ignore */
     initWebsocketLater(ms: number): void;
     /** @ignore */
-    initWebsocket(reconnect?: boolean): void;
+    initWebsocket: (reconnect?: boolean) => void;
+    onDisConnect(reconnect: boolean): void;
     reconnect(): void;
     close(): void;
 }

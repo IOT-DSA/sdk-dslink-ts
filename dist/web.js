@@ -616,6 +616,170 @@ Denque.prototype._shrinkArray = function _shrinkArray() {
 };
 
 module.exports = Denque;
+},{}],"bajV":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/** @ignore */
+
+class Stream {
+  constructor(onStartListen, onAllCancel, onListen, cached = false) {
+    /** @ignore */
+    this._listeners = new Set();
+    /** @ignore */
+
+    this._updating = false;
+    /** @ignore */
+
+    this._cached = false;
+    this.isClosed = false;
+    this._onStartListen = onStartListen;
+    this._onAllCancel = onAllCancel;
+    this._onListen = onListen;
+    this._cached = cached;
+  }
+
+  listen(listener) {
+    this._listeners.add(listener);
+
+    if (this._onStartListen && this._listeners.size === 1) {
+      this._onStartListen();
+    }
+
+    if (this._onListen) {
+      this._onListen(listener);
+    }
+
+    if (this._value !== undefined && !this._updating) {
+      // skip extra update if it's already in updating iteration
+      listener(this._value);
+    }
+
+    return new StreamSubscription(this, listener);
+  }
+
+  unlisten(listener) {
+    this._listeners.delete(listener);
+
+    if (this._onAllCancel && this._listeners.size === 0) {
+      this._onAllCancel();
+    }
+  }
+
+  add(val) {
+    if (this.isClosed) {
+      return false;
+    }
+
+    this._value = val;
+
+    this._dispatch();
+
+    return true;
+  }
+  /** @ignore */
+
+
+  _dispatch() {
+    this._updating = true;
+
+    for (let listener of this._listeners) {
+      listener(this._value);
+    }
+
+    this._updating = false;
+
+    if (!this._cached) {
+      this._value = undefined;
+    }
+  }
+
+  hasListener() {
+    return this._listeners.size !== 0;
+  }
+
+  close() {
+    if (!this.isClosed) {
+      this._value = undefined;
+      this.isClosed = true;
+
+      this._listeners.clear();
+
+      if (this._onClose) {
+        this._onClose();
+      }
+    }
+  }
+
+  reset() {
+    this._value = undefined;
+  }
+
+}
+
+exports.Stream = Stream;
+
+class StreamSubscription {
+  /** @ignore */
+  constructor(stream, listener) {
+    this._stream = stream;
+    this._listener = listener;
+  }
+  /**
+   * Close the subscription.
+   */
+
+
+  close() {
+    if (this._stream && this._listener) {
+      this._stream.unlisten(this._listener);
+
+      this._stream = null;
+      this._listener = null;
+    }
+  }
+
+}
+
+exports.StreamSubscription = StreamSubscription;
+/** @ignore */
+
+class Completer {
+  constructor() {
+    this.isCompleted = false;
+    this.future = new Promise((resolve, reject) => {
+      this._resolve = resolve;
+      this._reject = reject;
+    });
+  }
+
+  complete(val) {
+    if (this._resolve) {
+      this._resolve(val);
+    }
+
+    this.isCompleted = true;
+  }
+
+  completeError(val) {
+    if (this._reject) {
+      this._reject(val);
+    }
+  }
+
+}
+
+exports.Completer = Completer;
+
+function sleep(ms = 0) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+exports.sleep = sleep;
 },{}],"yh9p":[function(require,module,exports) {
 'use strict'
 
@@ -5432,7 +5596,178 @@ DsCodec._codecs = {
   "msgpack": DsMsgPackCodecImpl.instance
 };
 DsCodec.defaultCodec = DsJson.instance;
-},{"msgpack-lite":"mwm5","./base64":"ZvoB","buffer":"dskh"}],"N9NG":[function(require,module,exports) {
+},{"msgpack-lite":"mwm5","./base64":"ZvoB","buffer":"dskh"}],"sxdr":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+const TRACE = 1;
+const DEBUG = 2;
+const INFO = 4;
+const WARN = 8;
+const ERROR = 16;
+
+function getTs() {
+  let d = new Date();
+  let offsetISOStr = d.toISOString(); // new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+
+  return `${offsetISOStr.substring(0, 10)} ${offsetISOStr.substring(11)}`;
+}
+
+exports.getTs = getTs;
+
+function getLevelLabel(level) {
+  if (level >= ERROR) {
+    return 'ERROR';
+  } else if (level >= WARN) {
+    return 'WARN';
+  } else if (level >= INFO) {
+    return 'INFO';
+  } else if (level >= DEBUG) {
+    return 'DEBUG';
+  } else if (level >= TRACE) {
+    return 'TRACE';
+  } else {
+    return '';
+  }
+}
+
+function parserLogLevel(str) {
+  switch (str.toUpperCase()) {
+    case 'ERROR':
+      return ERROR;
+
+    case 'WARN':
+      return WARN;
+
+    case 'DEBUG':
+      return DEBUG;
+
+    case 'TRACE':
+      return TRACE;
+    // case 'INFO':
+
+    default:
+      return INFO;
+  }
+}
+
+class Logger {
+  constructor() {
+    this._level = INFO | WARN | ERROR;
+
+    this.formatter = (msg, level, tag) => {
+      if (tag) {
+        return `${getTs()} [${tag}] ${getLevelLabel(level)} ${msg}`;
+      } else {
+        return `${getTs()} ${getLevelLabel(level)} ${msg}`;
+      }
+    };
+
+    this.printer = (str, level) => {
+      if (level >= ERROR) {
+        console.error(str);
+      } else if (level >= WARN) {
+        console.warn(str);
+      } else if (level >= INFO) {
+        console.info(str);
+      } else {
+        console.log(str);
+      }
+    };
+  }
+
+  setLevel(level, coverHigherLevel = true) {
+    if (typeof level === 'string') {
+      level = parserLogLevel(level);
+    }
+
+    let mergedLevel = level;
+
+    if (coverHigherLevel) {
+      while (level < ERROR) {
+        level <<= 1;
+        mergedLevel |= level;
+      }
+    }
+
+    this._level = mergedLevel;
+  }
+
+  _log(level, msg, tag) {
+    if (level & this._level) {
+      if (this.formatter) {
+        let str = typeof msg === 'function' ? msg() : msg;
+        this.printer(this.formatter(str, level, tag), level);
+      }
+    }
+  }
+
+  trace(msg, tag) {
+    this._log(TRACE, msg, tag);
+  }
+
+  debug(msg, tag) {
+    this._log(DEBUG, msg, tag);
+  }
+
+  info(msg, tag) {
+    this._log(INFO, msg, tag);
+  }
+
+  warn(msg, tag) {
+    this._log(WARN, msg, tag);
+  }
+
+  error(msg, tag) {
+    this._log(ERROR, msg, tag);
+  }
+
+  tag(tag) {
+    return new TaggedLogger(this, tag);
+  }
+
+}
+
+Logger.TRACE = TRACE;
+Logger.DEBUG = DEBUG;
+Logger.INFO = INFO;
+Logger.WARN = WARN;
+Logger.ERROR = ERROR;
+exports.Logger = Logger;
+
+class TaggedLogger {
+  constructor(logger, tag) {
+    this.logger = logger;
+    this.tag = tag;
+  }
+
+  trace(msg) {
+    this.logger.trace(msg, this.tag);
+  }
+
+  debug(msg) {
+    this.logger.debug(msg, this.tag);
+  }
+
+  info(msg) {
+    this.logger.info(msg, this.tag);
+  }
+
+  warn(msg) {
+    this.logger.warn(msg, this.tag);
+  }
+
+  error(msg) {
+    this.logger.error(msg, this.tag);
+  }
+
+}
+
+exports.TaggedLogger = TaggedLogger;
+exports.logger = new Logger();
+},{}],"N9NG":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -5447,7 +5782,11 @@ Object.defineProperty(exports, "__esModule", {
 
 const denque_1 = __importDefault(require("denque"));
 
+const async_1 = require("../utils/async");
+
 const codec_1 = require("../utils/codec");
+
+const logger_1 = require("../utils/logger");
 
 class ECDH {
   verifySalt(salt, hash) {
@@ -5548,10 +5887,34 @@ exports.BaseLink = BaseLink; /// Base Class for Server Link implementations.
 
 class ServerLink extends BaseLink {}
 
-exports.ServerLink = ServerLink; /// Base Class for Client Link implementations.
+exports.ServerLink = ServerLink;
+let linkLogger = logger_1.logger.tag('link'); /// Base Class for Client Link implementations.
 
 class ClientLink extends BaseLink {
+  constructor() {
+    super(...arguments);
+    this.onConnect = new async_1.Stream(null, null, null, true);
+
+    this._onConnect = () => {
+      this.onConnect.add(true);
+      this.onDisconnect.reset();
+      linkLogger.info('Connected');
+    };
+
+    this.onDisconnect = new async_1.Stream(null, null, null, true);
+
+    this._onDisconnect = () => {
+      this.onDisconnect.add(true);
+
+      if (this.onConnect._value) {
+        linkLogger.info('Disconnected');
+        this.onConnect.reset();
+      }
+    };
+  }
   /** @ignore */
+
+
   get logName() {
     return null;
   }
@@ -5564,6 +5927,17 @@ class ClientLink extends BaseLink {
     }
 
     return msg;
+  }
+
+  async connect() {
+    this._connect();
+
+    return new Promise(resolve => {
+      let listener = this.onConnect.listen(connected => {
+        resolve(connected);
+        listener.close();
+      });
+    });
   }
 
 }
@@ -5679,157 +6053,7 @@ DSError.DISCONNECTED = new DSError("disconnected", {
 });
 DSError.FAILED = new DSError("failed");
 exports.DSError = DSError;
-},{"denque":"DPC0","../utils/codec":"TRmg"}],"bajV":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/** @ignore */
-
-class Stream {
-  constructor(onStartListen, onAllCancel, onListen) {
-    /** @ignore */
-    this._listeners = new Set();
-    /** @ignore */
-
-    this._updating = false;
-    /** @ignore */
-
-    this._cached = false;
-    this.isClosed = false;
-    this._onStartListen = onStartListen;
-    this._onAllCancel = onAllCancel;
-    this._onListen = onListen;
-  }
-
-  listen(listener) {
-    this._listeners.add(listener);
-
-    if (this._onStartListen && this._listeners.size === 1) {
-      this._onStartListen();
-    }
-
-    if (this._onListen) {
-      this._onListen(listener);
-    }
-
-    if (this._value !== undefined && !this._updating) {
-      // skip extra update if it's already in updating iteration
-      listener(this._value);
-    }
-
-    return new StreamSubscription(this, listener);
-  }
-
-  unlisten(listener) {
-    this._listeners.delete(listener);
-
-    if (this._onAllCancel && this._listeners.size === 0) {
-      this._onAllCancel();
-    }
-  }
-
-  add(val) {
-    if (this.isClosed) {
-      return false;
-    }
-
-    this._value = val;
-
-    this._dispatch();
-
-    return true;
-  }
-  /** @ignore */
-
-
-  _dispatch() {
-    this._updating = true;
-
-    for (let listener of this._listeners) {
-      listener(this._value);
-    }
-
-    this._updating = false;
-
-    if (!this._cached) {
-      this._value = undefined;
-    }
-  }
-
-  hasListener() {
-    return this._listeners.size !== 0;
-  }
-
-  close() {
-    if (!this.isClosed) {
-      this.isClosed = true;
-
-      this._listeners.clear();
-
-      if (this._onClose) {
-        this._onClose();
-      }
-    }
-  }
-
-}
-
-exports.Stream = Stream;
-
-class StreamSubscription {
-  /** @ignore */
-  constructor(stream, listener) {
-    this._stream = stream;
-    this._listener = listener;
-  }
-  /**
-   * Close the subscription.
-   */
-
-
-  close() {
-    if (this._stream && this._listener) {
-      this._stream.unlisten(this._listener);
-
-      this._stream = null;
-      this._listener = null;
-    }
-  }
-
-}
-
-exports.StreamSubscription = StreamSubscription;
-/** @ignore */
-
-class Completer {
-  constructor() {
-    this.isCompleted = false;
-    this.future = new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject = reject;
-    });
-  }
-
-  complete(val) {
-    if (this._resolve) {
-      this._resolve(val);
-    }
-
-    this.isCompleted = true;
-  }
-
-  completeError(val) {
-    if (this._reject) {
-      this._reject(val);
-    }
-  }
-
-}
-
-exports.Completer = Completer;
-},{}],"wg7F":[function(require,module,exports) {
+},{"denque":"DPC0","../utils/async":"bajV","../utils/codec":"TRmg","../utils/logger":"sxdr"}],"wg7F":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5855,13 +6079,6 @@ class Request {
 
   resend() {
     this.requester.addToSendList(this.data);
-  }
-
-  addReqParams(m) {
-    this.requester.addToSendList({
-      'rid': this.rid,
-      'params': m
-    });
   }
 
   _update(m) {
@@ -5917,7 +6134,7 @@ class Request {
 }
 
 exports.Request = Request;
-},{"../common/interfaces":"N9NG"}],"lXIX":[function(require,module,exports) {
+},{"../common/interfaces":"N9NG"}],"T61P":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6101,7 +6318,7 @@ class Node {
       return this.profile.attributes.get(name);
     }
 
-    return null;
+    return undefined;
   } /// Get a Config
 
 
@@ -6114,22 +6331,7 @@ class Node {
       return this.profile.configs.get(name);
     }
 
-    return null;
-  } /// Adds a child to this node.
-
-  /** @ignore */
-
-
-  addChild(name, node) {
-    this.children.set(name, node);
-  } /// Remove a child from this node.
-  /// [input] can be either an instance of [Node] or a [string].
-
-  /** @ignore */
-
-
-  removeChild(input) {
-    this.children.delete(input);
+    return undefined;
   } /// Get a Child Node
 
 
@@ -6142,7 +6344,7 @@ class Node {
       return this.profile.children.get(name);
     }
 
-    return null;
+    return undefined;
   } /// Get a property of this node.
   /// If [name] starts with '$', this will fetch a config.
   /// If [name] starts with a '@', this will fetch an attribute.
@@ -6426,10 +6628,10 @@ class Path {
       if (this.parentPath === '') {
         this.parentPath = base;
       } else {
-        this.parentPath = '$base/$parentPath';
+        this.parentPath = `${base}/${this.parentPath}`;
       }
 
-      this.path = '$parentPath/$name';
+      this.path = `${this.parentPath}/${name}`;
     } else if (force) {
       // apply base path on a absolute path
       if (name === '') {
@@ -6438,8 +6640,8 @@ class Path {
 
         this._parse();
       } else {
-        this.parentPath = '$base$parentPath';
-        this.path = '$parentPath/$name';
+        this.parentPath = `${base}/${this.parentPath}`;
+        this.path = `${this.parentPath}/${name}`;
       }
     }
   }
@@ -6666,6 +6868,11 @@ class ListDefListener {
     this.requester = requester;
     this.listener = requester.list(node.remotePath, update => {
       this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
+
+      if (update.node.configs.has('$disconnectedTs')) {
+        update.node.configs.delete('$disconnectedTs');
+      }
+
       callback(update);
     });
   }
@@ -6891,7 +7098,7 @@ class ListController {
       return;
     }
 
-    if (this.node.profile instanceof node_cache_1.RemoteNode && !this.node.profile.listed) {
+    if (this.node.profile instanceof node_cache_1.RemoteNode && !this.node.profile._listed) {
       this._ready = false;
       this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }
@@ -6948,7 +7155,9 @@ class ListController {
 
 }
 
-ListController._ignoreProfileProps = ['$is', '$permission', '$settings'];
+ListController._ignoreProfileProps = ['$is', // '$permission',
+// '$settings',
+'$disconnectedTs'];
 exports.ListController = ListController;
 },{"../../utils/async":"bajV","../../common/interfaces":"N9NG","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
 "use strict";
@@ -6961,7 +7170,7 @@ const request_1 = require("../request");
 
 const value_1 = require("../../common/value");
 
-const connection_handler_1 = require("../../common/connection_handler");
+const connection_handler_1 = require("../../common/connection-handler");
 
 class ReqSubscribeListener {
   /** @ignore */
@@ -7297,7 +7506,7 @@ class ReqSubscribeController {
 }
 
 exports.ReqSubscribeController = ReqSubscribeController;
-},{"../request":"wg7F","../../common/value":"Re02","../../common/connection_handler":"lXIX"}],"nCNP":[function(require,module,exports) {
+},{"../request":"wg7F","../../common/value":"Re02","../../common/connection-handler":"T61P"}],"nCNP":[function(require,module,exports) {
 "use strict"; // part of dslink.common;
 
 Object.defineProperty(exports, "__esModule", {
@@ -7462,7 +7671,14 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
   constructor(updates, rawColumns, columns, streamStatus, meta, error) {
     super(streamStatus);
     this.updates = updates;
-    this.rawColumns = rawColumns;
+
+    if (rawColumns) {
+      this.rawColumns = rawColumns;
+      this.columns = table_1.TableColumn.parseColumns(rawColumns);
+    } else {
+      this.columns = columns;
+    }
+
     this.meta = meta;
     this.error = error;
   }
@@ -7559,7 +7775,15 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
 
 exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 
-class RequesterInvokeStream extends async_1.Stream {}
+class RequesterInvokeStream extends async_1.Stream {
+  addReqParams(m) {
+    this.request.requester.addToSendList({
+      'rid': this.request.rid,
+      'params': m
+    });
+  }
+
+}
 
 exports.RequesterInvokeStream = RequesterInvokeStream;
 /** @ignore */
@@ -7649,7 +7873,7 @@ class InvokeController {
 }
 
 exports.InvokeController = InvokeController;
-},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/interfaces":"N9NG","../../common/table":"q+mg","../interface":"wq45"}],"UnXq":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/interfaces":"N9NG","../../common/table":"q+mg","../interface":"wq45"}],"4Uld":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7679,7 +7903,7 @@ const permission_1 = require("../common/permission");
 
 const invoke_1 = require("./request/invoke");
 
-const utils_1 = require("../../utils");
+const utils_1 = require("../utils");
 /** @ignore */
 
 
@@ -7770,7 +7994,7 @@ class RemoteNode extends node_1.Node {
     super();
     /** @ignore */
 
-    this.listed = false;
+    this._listed = false;
     this.remotePath = remotePath;
 
     this._getRawName();
@@ -8022,7 +8246,7 @@ DefaultDefNodes.pathMap = function () {
 }();
 
 exports.DefaultDefNodes = DefaultDefNodes;
-},{"../common/node":"QClj","./request/list":"duux","./request/subscribe":"YpSC","../common/permission":"nCNP","./request/invoke":"+yD6","../../utils":"UnXq"}],"wdMm":[function(require,module,exports) {
+},{"../common/node":"QClj","./request/list":"duux","./request/subscribe":"YpSC","../common/permission":"nCNP","./request/invoke":"+yD6","../utils":"4Uld"}],"wdMm":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8124,7 +8348,7 @@ const async_1 = require("../utils/async");
 
 const request_1 = require("./request");
 
-const connection_handler_1 = require("../common/connection_handler");
+const connection_handler_1 = require("../common/connection-handler");
 
 const node_cache_1 = require("./node_cache");
 
@@ -8466,7 +8690,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
 }
 
 exports.Requester = Requester;
-},{"../utils/async":"bajV","./request":"wg7F","../common/connection_handler":"lXIX","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/set":"wdMm","./request/remove":"Eaoe"}],"Hcj+":[function(require,module,exports) {
+},{"../utils/async":"bajV","./request":"wg7F","../common/connection-handler":"T61P","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/set":"wdMm","./request/remove":"Eaoe"}],"BI8/":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8527,7 +8751,7 @@ class PassiveChannel {
 }
 
 exports.PassiveChannel = PassiveChannel;
-},{"../utils/async":"bajV"}],"3FSK":[function(require,module,exports) {
+},{"../utils/async":"bajV"}],"IISz":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8536,16 +8760,21 @@ Object.defineProperty(exports, "__esModule", {
 
 const interfaces_1 = require("../common/interfaces");
 
-const connection_channel_1 = require("../common/connection_channel");
+const connection_channel_1 = require("../common/connection-channel");
 
 const async_1 = require("../utils/async");
+
+const logger_1 = require("../utils/logger");
+
+let logger = logger_1.logger.tag('ws');
 
 class WebSocketConnection extends interfaces_1.Connection {
   /// clientLink is not needed when websocket works in server link
   constructor(socket, clientLink, onConnect, useCodec) {
     super();
     this._onRequestReadyCompleter = new async_1.Completer();
-    this._onDisconnectedCompleter = new async_1.Completer(); /// set to true when data is sent, reset the flag every 20 seconds
+    this._onDisconnectedCompleter = new async_1.Completer();
+    this._onDoneHandled = false; /// set to true when data is sent, reset the flag every 20 seconds
     /// since the previous ping message will cause the next 20 seoncd to have a message
     /// max interval between 2 ping messages is 40 seconds
 
@@ -8573,7 +8802,7 @@ class WebSocketConnection extends interfaces_1.Connection {
     this._opened = false;
 
     this._onOpen = e => {
-      //    logger.info("Connected");
+      logger.trace("Connected");
       this._opened = true;
 
       if (this.onConnect != null) {
@@ -8685,8 +8914,14 @@ class WebSocketConnection extends interfaces_1.Connection {
         if (o.code === 1006) {
           this._authError = true;
         }
-      } //    logger.fine("socket disconnected");
+      }
 
+      if (this._onDoneHandled) {
+        return;
+      }
+
+      logger.trace('Disconnected');
+      this._onDoneHandled = true; //    logger.fine("socket disconnected");
 
       if (!this._requesterChannel.onReceive.isClosed) {
         this._requesterChannel.onReceive.close();
@@ -8729,6 +8964,7 @@ class WebSocketConnection extends interfaces_1.Connection {
     this._requesterChannel = new connection_channel_1.PassiveChannel(this);
     socket.onmessage = this._onData;
     socket.onclose = this._onDone;
+    socket.onerror = this._onDone;
     socket.onopen = this._onOpen;
     this.pingTimer = setInterval(this.onPingTimer, 20000);
   }
@@ -8867,7 +9103,7 @@ class WebSocketConnection extends interfaces_1.Connection {
 }
 
 exports.WebSocketConnection = WebSocketConnection;
-},{"../common/interfaces":"N9NG","../common/connection_channel":"Hcj+","../utils/async":"bajV"}],"0BdU":[function(require,module,exports) {
+},{"../common/interfaces":"N9NG","../common/connection-channel":"BI8/","../utils/async":"bajV","../utils/logger":"sxdr"}],"w9XK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8880,7 +9116,7 @@ const async_1 = require("../utils/async");
 
 const requester_1 = require("../requester/requester");
 
-const browser_ws_conn_1 = require("./browser_ws_conn");
+const browser_ws_conn_1 = require("./browser-ws-conn");
 
 const codec_1 = require("../utils/codec");
 
@@ -8898,6 +9134,36 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     /** @ignore */
 
     this._wsDelay = 1;
+    /** @ignore */
+
+    this.initWebsocket = (reconnect = true) => {
+      this._initSocketTimer = null;
+
+      try {
+        let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
+        this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
+      } catch (err) {
+        this.onDisConnect(reconnect);
+        return;
+      } // if (this.responder != null) {
+      //   this.responder.connection = this._wsConnection.responderChannel;
+      // }
+
+
+      if (this.requester != null) {
+        this._wsConnection.onRequesterReady.then(channel => {
+          this.requester.connection = channel;
+
+          if (!this._onRequesterReadyCompleter.isCompleted) {
+            this._onRequesterReadyCompleter.complete(this.requester);
+          }
+        });
+      }
+
+      this._wsConnection.onDisconnected.then(connection => {
+        this.onDisConnect(reconnect);
+      });
+    };
 
     if (wsUpdateUri.startsWith("http")) {
       wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
@@ -8920,7 +9186,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
   updateSalt(salt) {// do nothing
   }
 
-  connect() {
+  _connect() {
     this.initWebsocket(false);
     return this.onRequesterReady;
   }
@@ -8929,46 +9195,27 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 
   initWebsocketLater(ms) {
     if (this._initSocketTimer) return;
-    this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
+    this._initSocketTimer = setTimeout(this.initWebsocket, ms);
   }
-  /** @ignore */
 
+  onDisConnect(reconnect) {
+    this._onDisconnect();
 
-  initWebsocket(reconnect = true) {
-    this._initSocketTimer = null;
-    let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-    this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, null, codec_1.DsCodec.getCodec(this.format)); // if (this.responder != null) {
-    //   this.responder.connection = this._wsConnection.responderChannel;
-    // }
-
-    if (this.requester != null) {
-      this._wsConnection.onRequesterReady.then(channel => {
-        this.requester.connection = channel;
-
-        if (!this._onRequesterReadyCompleter.isCompleted) {
-          this._onRequesterReadyCompleter.complete(this.requester);
-        }
-      });
+    if (this._wsConnection == null) {
+      // connection is closed
+      return;
     }
 
-    this._wsConnection.onDisconnected.then(connection => {
-      //      logger.info("Disconnected");
-      if (this._wsConnection == null) {
-        // connection is closed
-        return;
-      }
-
-      if (this._wsConnection._opened) {
-        this._wsDelay = 1;
-        this.initWebsocket(false);
-      } else if (reconnect) {
-        this.initWebsocketLater(this._wsDelay * 1000);
-        if (this._wsDelay < 60) this._wsDelay++;
-      } else {
-        this._wsDelay = 5;
-        this.initWebsocketLater(5000);
-      }
-    });
+    if (this._wsConnection._opened) {
+      this._wsDelay = 1;
+      this.initWebsocket(false);
+    } else if (reconnect) {
+      this.initWebsocketLater(this._wsDelay * 1000);
+      if (this._wsDelay < 60) this._wsDelay++;
+    } else {
+      this._wsDelay = 5;
+      this.initWebsocketLater(5000);
+    }
   }
 
   reconnect() {
@@ -8996,19 +9243,19 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
 exports.BrowserUserLink = BrowserUserLink;
-},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser_ws_conn":"3FSK","../utils/codec":"TRmg"}],"txRo":[function(require,module,exports) {
+},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser-ws-conn":"IISz","../utils/codec":"TRmg"}],"txRo":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const browser_user_link_1 = require("./src/browser/browser_user_link");
+const browser_user_link_1 = require("./src/browser/browser-user-link");
 
 if (Object.isExtensible(window)) {
   window.DSLink = browser_user_link_1.BrowserUserLink;
 }
 
 exports.DSLink = browser_user_link_1.BrowserUserLink;
-},{"./src/browser/browser_user_link":"0BdU"}]},{},["txRo"], null)
+},{"./src/browser/browser-user-link":"w9XK"}]},{},["txRo"], null)
 //# sourceMappingURL=/web.js.map

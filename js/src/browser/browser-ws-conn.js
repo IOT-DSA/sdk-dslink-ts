@@ -3,12 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../common/interfaces");
 const connection_channel_1 = require("../common/connection-channel");
 const async_1 = require("../utils/async");
+const logger_1 = require("../utils/logger");
+let logger = logger_1.logger.tag('ws');
 class WebSocketConnection extends interfaces_1.Connection {
     /// clientLink is not needed when websocket works in server link
     constructor(socket, clientLink, onConnect, useCodec) {
         super();
         this._onRequestReadyCompleter = new async_1.Completer();
         this._onDisconnectedCompleter = new async_1.Completer();
+        this._onDoneHandled = false;
         /// set to true when data is sent, reset the flag every 20 seconds
         /// since the previous ping message will cause the next 20 seoncd to have a message
         /// max interval between 2 ping messages is 40 seconds
@@ -30,7 +33,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         };
         this._opened = false;
         this._onOpen = (e) => {
-            //    logger.info("Connected");
+            logger.trace("Connected");
             this._opened = true;
             if (this.onConnect != null) {
                 this.onConnect();
@@ -125,6 +128,11 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this._authError = true;
                 }
             }
+            if (this._onDoneHandled) {
+                return;
+            }
+            logger.trace('Disconnected');
+            this._onDoneHandled = true;
             //    logger.fine("socket disconnected");
             if (!this._requesterChannel.onReceive.isClosed) {
                 this._requesterChannel.onReceive.close();
@@ -158,6 +166,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._requesterChannel = new connection_channel_1.PassiveChannel(this);
         socket.onmessage = this._onData;
         socket.onclose = this._onDone;
+        socket.onerror = this._onDone;
         socket.onopen = this._onOpen;
         this.pingTimer = setInterval(this.onPingTimer, 20000);
     }

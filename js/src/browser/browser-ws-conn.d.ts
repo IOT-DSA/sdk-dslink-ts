@@ -14,6 +14,7 @@ export declare class WebSocketConnection extends Connection {
     readonly clientLink: ClientLink;
     readonly socket: WebSocket;
     onConnect: Function;
+    _onDoneHandled: boolean;
     constructor(socket: WebSocket, clientLink: ClientLink, onConnect: Function, useCodec: DsCodec);
     pingTimer: any;
     _dataSent: boolean;

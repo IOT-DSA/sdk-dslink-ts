@@ -9,6 +9,9 @@ import {
 import {PassiveChannel} from "../common/connection-channel";
 import {Completer} from "../utils/async";
 import {DsCodec} from "../utils/codec";
+import {logger as mainLogger} from "../utils/logger";
+
+let logger = mainLogger.tag('ws');
 
 export class WebSocketConnection extends Connection {
   _responderChannel: PassiveChannel;
@@ -42,6 +45,8 @@ export class WebSocketConnection extends Connection {
 
   onConnect: Function;
 
+  _onDoneHandled = false;
+
   /// clientLink is not needed when websocket works in server link
   constructor(socket: WebSocket, clientLink: ClientLink,
               onConnect: Function,
@@ -60,6 +65,7 @@ export class WebSocketConnection extends Connection {
     this._requesterChannel = new PassiveChannel(this);
     socket.onmessage = this._onData;
     socket.onclose = this._onDone;
+    socket.onerror = this._onDone;
     socket.onopen = this._onOpen;
 
     this.pingTimer = setInterval(this.onPingTimer, 20000);
@@ -105,7 +111,7 @@ export class WebSocketConnection extends Connection {
   }
 
   _onOpen = (e: Event) => {
-//    logger.info("Connected");
+    logger.trace("Connected");
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
@@ -291,6 +297,13 @@ export class WebSocketConnection extends Connection {
         this._authError = true;
       }
     }
+
+    if (this._onDoneHandled) {
+      return;
+    }
+    logger.trace('Disconnected');
+
+    this._onDoneHandled = true;
 
 //    logger.fine("socket disconnected");
 

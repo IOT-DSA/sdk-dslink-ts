@@ -17,6 +17,32 @@ class BrowserUserLink extends interfaces_1.ClientLink {
         this.nonce = new interfaces_1.DummyECDH();
         /** @ignore */
         this._wsDelay = 1;
+        /** @ignore */
+        this.initWebsocket = (reconnect = true) => {
+            this._initSocketTimer = null;
+            try {
+                let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
+                this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
+            }
+            catch (err) {
+                this.onDisConnect(reconnect);
+                return;
+            }
+            // if (this.responder != null) {
+            //   this.responder.connection = this._wsConnection.responderChannel;
+            // }
+            if (this.requester != null) {
+                this._wsConnection.onRequesterReady.then((channel) => {
+                    this.requester.connection = channel;
+                    if (!this._onRequesterReadyCompleter.isCompleted) {
+                        this._onRequesterReadyCompleter.complete(this.requester);
+                    }
+                });
+            }
+            this._wsConnection.onDisconnected.then((connection) => {
+                this.onDisConnect(reconnect);
+            });
+        };
         if (wsUpdateUri.startsWith("http")) {
             wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
         }
@@ -41,45 +67,27 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     initWebsocketLater(ms) {
         if (this._initSocketTimer)
             return;
-        this._initSocketTimer = setTimeout(() => this.initWebsocket, ms);
+        this._initSocketTimer = setTimeout(this.initWebsocket, ms);
     }
-    /** @ignore */
-    initWebsocket(reconnect = true) {
-        this._initSocketTimer = null;
-        let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-        this._wsConnection = new browser_ws_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
-        // if (this.responder != null) {
-        //   this.responder.connection = this._wsConnection.responderChannel;
-        // }
-        if (this.requester != null) {
-            this._wsConnection.onRequesterReady.then((channel) => {
-                this.requester.connection = channel;
-                if (!this._onRequesterReadyCompleter.isCompleted) {
-                    this._onRequesterReadyCompleter.complete(this.requester);
-                }
-            });
+    onDisConnect(reconnect) {
+        this._onDisconnect();
+        if (this._wsConnection == null) {
+            // connection is closed
+            return;
         }
-        this._wsConnection.onDisconnected.then((connection) => {
-            //      logger.info("Disconnected");
-            this._onDisconnect();
-            if (this._wsConnection == null) {
-                // connection is closed
-                return;
-            }
-            if (this._wsConnection._opened) {
-                this._wsDelay = 1;
-                this.initWebsocket(false);
-            }
-            else if (reconnect) {
-                this.initWebsocketLater(this._wsDelay * 1000);
-                if (this._wsDelay < 60)
-                    this._wsDelay++;
-            }
-            else {
-                this._wsDelay = 5;
-                this.initWebsocketLater(5000);
-            }
-        });
+        if (this._wsConnection._opened) {
+            this._wsDelay = 1;
+            this.initWebsocket(false);
+        }
+        else if (reconnect) {
+            this.initWebsocketLater(this._wsDelay * 1000);
+            if (this._wsDelay < 60)
+                this._wsDelay++;
+        }
+        else {
+            this._wsDelay = 5;
+            this.initWebsocketLater(5000);
+        }
     }
     reconnect() {
         if (this._wsConnection != null) {
