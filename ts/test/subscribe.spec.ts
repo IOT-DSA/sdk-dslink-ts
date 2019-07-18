@@ -64,7 +64,8 @@ describe('subscribe', function () {
   });
 
   it('lazy value load', async function () {
-    assert.isUndefined(rootNode.lazy._value);
+    let lazy = rootNode.createChild('lazy', TestLazyValue);
+    assert.isUndefined(lazy._value);
 
     // value exist only after subscription
     assert.equal((await requester.subscribeOnce(resolve('lazy'))).value, 'ready');

@@ -13,6 +13,7 @@ class LazyLoadValue extends ValueNode {
 
   onSubscribe(subscriber) {
     if (subscriber) {
+      // load the value only when there is a subscriber
       this.setValue('ready');
     }
   }
