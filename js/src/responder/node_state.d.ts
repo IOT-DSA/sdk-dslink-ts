@@ -9,7 +9,6 @@ export declare class LocalNode extends Node<LocalNode> {
     readonly path: string;
     _state: NodeState;
     constructor(path: string, provider: NodeProvider);
-    checkProfile(): void;
     initialize(): void;
     addChild(name: string, node: LocalNode): void;
     removeChild(nameOrNode: string | LocalNode): void;

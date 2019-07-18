@@ -11,6 +11,13 @@ class Node {
         /// Node Children
         /// object of Child Name to Child Node
         this.children = new Map();
+        if (!profileName) {
+            // get profile from static property
+            profileName = this.constructor.profileName;
+            if (typeof profileName !== 'string') {
+                profileName = 'node';
+            }
+        }
         this.configs.set('$is', profileName);
     }
     static getDisplayName(nameOrPath) {

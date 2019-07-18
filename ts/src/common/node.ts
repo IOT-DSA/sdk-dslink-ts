@@ -39,6 +39,13 @@ export class Node<ChildType extends Node<any> = Node<any>> {
   configs: Map<string, any> = new Map();
 
   constructor(profileName: string = 'node') {
+    if (!profileName) {
+      // get profile from static property
+      profileName = (this.constructor as any).profileName;
+      if (typeof profileName !== 'string') {
+        profileName = 'node';
+      }
+    }
     this.configs.set('$is', profileName);
   }
 

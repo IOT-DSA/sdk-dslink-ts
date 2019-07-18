@@ -7,17 +7,10 @@ const value_1 = require("../common/value");
 const interfaces_1 = require("../common/interfaces");
 class LocalNode extends node_1.Node {
     constructor(path, provider) {
-        super();
+        super(null);
         this.path = path;
         this.provider = provider;
-        this.checkProfile();
         this.initialize();
-    }
-    checkProfile() {
-        let profileName = this.constructor.profileName;
-        if (typeof profileName === 'string') {
-            this.configs.set('$is', profileName);
-        }
     }
     initialize() {
     }
