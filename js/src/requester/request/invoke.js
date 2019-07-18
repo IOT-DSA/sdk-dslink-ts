@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("../../utils/async");
 const permission_1 = require("../../common/permission");
-const interfaces_1 = require("../../common/interfaces");
 const table_1 = require("../../common/table");
 const interface_1 = require("../interface");
 class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
@@ -109,9 +108,9 @@ exports.RequesterInvokeStream = RequesterInvokeStream;
 class InvokeController {
     constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
         this.mode = 'stream';
-        this.lastStatus = interfaces_1.StreamStatus.initialize;
+        this.lastStatus = "initialize";
         this._onUnsubscribe = (obj) => {
-            if (this._request != null && this._request.streamStatus !== interfaces_1.StreamStatus.closed) {
+            if (this._request != null && this._request.streamStatus !== "closed") {
                 this._request.close();
             }
         };
@@ -162,14 +161,14 @@ class InvokeController {
             this._cachedColumns = InvokeController.getNodeColumns(this.node);
         }
         if (error != null) {
-            streamStatus = interfaces_1.StreamStatus.closed;
+            streamStatus = "closed";
             this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
         }
         else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
             this._stream.add(new RequesterInvokeUpdate(updates, columns, this._cachedColumns, streamStatus, meta));
         }
         this.lastStatus = streamStatus;
-        if (streamStatus === interfaces_1.StreamStatus.closed) {
+        if (streamStatus === "closed") {
             this._stream.close();
         }
     }

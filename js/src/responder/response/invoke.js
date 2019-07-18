@@ -2,7 +2,6 @@
 // part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
 const response_1 = require("../response");
-const interfaces_1 = require("../../common/interfaces");
 const table_1 = require("../../common/table");
 class InvokeResponseUpdate {
     constructor(status, updates, columns, meta) {
@@ -25,7 +24,7 @@ class InvokeResponse extends response_1.Response {
     updateStream(updates, options = {}) {
         let { columns, streamStatus, meta, autoSendColumns } = options;
         if (!streamStatus) {
-            streamStatus = interfaces_1.StreamStatus.closed;
+            streamStatus = "closed";
         }
         if (meta != null && meta['mode'] === 'refresh') {
             this.pendingData.length = 0;
@@ -54,7 +53,7 @@ class InvokeResponse extends response_1.Response {
         this._pendingSending = false;
         if (this._err != null) {
             this.responder.closeResponse(this.rid, this, this._err);
-            if (this._sentStreamStatus === interfaces_1.StreamStatus.closed) {
+            if (this._sentStreamStatus === "closed") {
                 this._close();
             }
             return;
@@ -69,7 +68,7 @@ class InvokeResponse extends response_1.Response {
                 columns: outColumns,
                 meta: update.meta,
             });
-            if (this._sentStreamStatus === interfaces_1.StreamStatus.closed) {
+            if (this._sentStreamStatus === "closed") {
                 this._close();
                 break;
             }
@@ -82,10 +81,10 @@ class InvokeResponse extends response_1.Response {
             this._err = err;
         }
         if (this.pendingData.length) {
-            this.pendingData[this.pendingData.length].status = interfaces_1.StreamStatus.closed;
+            this.pendingData[this.pendingData.length].status = "closed";
         }
         else {
-            this.pendingData.push(new InvokeResponseUpdate(interfaces_1.StreamStatus.closed, null, null, null));
+            this.pendingData.push(new InvokeResponseUpdate("closed", null, null, null));
             this.prepareSending();
         }
     }

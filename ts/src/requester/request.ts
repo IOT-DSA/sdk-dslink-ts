@@ -22,7 +22,7 @@ export class Request {
     this.data = data;
   }
 
-  streamStatus: string = StreamStatus.initialize;
+  streamStatus: StreamStatus = "initialize";
 
   /// resend the data if previous sending failed
   resend() {
@@ -46,7 +46,7 @@ export class Request {
       meta = m["meta"];
     }
     // remove the request from global object
-    if (this.streamStatus === StreamStatus.closed) {
+    if (this.streamStatus === "closed") {
       this.requester._requests.delete(this.rid);
     }
     let error: DsError;
@@ -60,9 +60,9 @@ export class Request {
 
   /// close the request and finish data
   _close(error: DsError) {
-    if (this.streamStatus != StreamStatus.closed) {
-      this.streamStatus = StreamStatus.closed;
-      this.updater.onUpdate(StreamStatus.closed, null, null, null, error);
+    if (this.streamStatus != "closed") {
+      this.streamStatus = "closed";
+      this.updater.onUpdate("closed", null, null, null, error);
     }
   }
 

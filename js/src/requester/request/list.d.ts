@@ -1,7 +1,7 @@
 import { Requester } from "../requester";
 import { Request } from "../request";
 import { Stream, StreamSubscription } from "../../utils/async";
-import { ConnectionProcessor, DsError } from "../../common/interfaces";
+import { ConnectionProcessor, DsError, StreamStatus } from "../../common/interfaces";
 import { RemoteNode } from "../node_cache";
 import { RequesterUpdate, RequestUpdater } from "../interface";
 export declare class RequesterListUpdate extends RequesterUpdate {
@@ -12,7 +12,7 @@ export declare class RequesterListUpdate extends RequesterUpdate {
     changes: string[];
     node: RemoteNode;
     /** @ignore */
-    constructor(node: RemoteNode, changes: string[], streamStatus: string);
+    constructor(node: RemoteNode, changes: string[], streamStatus: StreamStatus);
 }
 /** @ignore */
 export declare class ListDefListener {
@@ -35,7 +35,7 @@ export declare class ListController implements RequestUpdater, ConnectionProcess
     onDisconnect(): void;
     onReconnect(): void;
     changes: Set<string>;
-    onUpdate(streamStatus: string, updates: any[], columns: any[], meta: object, error: DsError): void;
+    onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: object, error: DsError): void;
     _profileLoader: ListDefListener;
     loadProfile(defName: string): void;
     static readonly _ignoreProfileProps: string[];

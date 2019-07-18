@@ -13,12 +13,12 @@ export type OnInvokeSend = (response: InvokeResponse, m: any) => void;
 export type OnReqParams = (resp: InvokeResponse, m: any) => boolean;
 
 class InvokeResponseUpdate {
-  status: string;
+  status: StreamStatus;
   columns: any[];
   updates: any[];
   meta: {[key: string]: any};
 
-  constructor(status: string, updates: any[], columns: any[], meta: {[key: string]: any}) {
+  constructor(status: StreamStatus, updates: any[], columns: any[], meta: {[key: string]: any}) {
     this.status = status;
     this.updates = updates;
     this.columns = columns;
@@ -45,12 +45,12 @@ export class InvokeResponse extends Response {
   /// update data for the responder stream
   updateStream(updates: any[],
                options: {
-                 columns?: any[], streamStatus?: string,
+                 columns?: any[], streamStatus?: StreamStatus,
                  meta?: {[key: string]: any}, autoSendColumns?: boolean
                } = {}) {
     let {columns, streamStatus, meta, autoSendColumns} = options;
     if (!streamStatus) {
-      streamStatus = StreamStatus.closed;
+      streamStatus = "closed";
     }
     if (meta != null && meta['mode'] === 'refresh') {
       this.pendingData.length = 0;
@@ -88,7 +88,7 @@ export class InvokeResponse extends Response {
     this._pendingSending = false;
     if (this._err != null) {
       this.responder.closeResponse(this.rid, this, this._err);
-      if (this._sentStreamStatus === StreamStatus.closed) {
+      if (this._sentStreamStatus === "closed") {
         this._close();
       }
       return;
@@ -115,7 +115,7 @@ export class InvokeResponse extends Response {
         }
       );
 
-      if (this._sentStreamStatus === StreamStatus.closed) {
+      if (this._sentStreamStatus === "closed") {
         this._close();
         break;
       }
@@ -129,10 +129,10 @@ export class InvokeResponse extends Response {
       this._err = err;
     }
     if (this.pendingData.length) {
-      this.pendingData[this.pendingData.length].status = StreamStatus.closed;
+      this.pendingData[this.pendingData.length].status = "closed";
     } else {
       this.pendingData.push(
-        new InvokeResponseUpdate(StreamStatus.closed, null, null, null)
+        new InvokeResponseUpdate("closed", null, null, null)
       );
       this.prepareSending();
     }

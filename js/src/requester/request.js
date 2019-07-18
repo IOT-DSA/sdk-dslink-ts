@@ -4,7 +4,7 @@ const interfaces_1 = require("../common/interfaces");
 class Request {
     constructor(requester, rid, updater, data) {
         this._isClosed = false;
-        this.streamStatus = interfaces_1.StreamStatus.initialize;
+        this.streamStatus = "initialize";
         this.requester = requester;
         this.rid = rid;
         this.updater = updater;
@@ -34,7 +34,7 @@ class Request {
             meta = m["meta"];
         }
         // remove the request from global object
-        if (this.streamStatus === interfaces_1.StreamStatus.closed) {
+        if (this.streamStatus === "closed") {
             this.requester._requests.delete(this.rid);
         }
         let error;
@@ -46,9 +46,9 @@ class Request {
     }
     /// close the request and finish data
     _close(error) {
-        if (this.streamStatus != interfaces_1.StreamStatus.closed) {
-            this.streamStatus = interfaces_1.StreamStatus.closed;
-            this.updater.onUpdate(interfaces_1.StreamStatus.closed, null, null, null, error);
+        if (this.streamStatus != "closed") {
+            this.streamStatus = "closed";
+            this.updater.onUpdate("closed", null, null, null, error);
         }
     }
     /// close the request from the client side

@@ -46,7 +46,7 @@ export class Responder extends ConnectionHandler {
   }
 
   addResponse<T extends Response>(response: T): T {
-    if (response._sentStreamStatus !== StreamStatus.closed) {
+    if (response._sentStreamStatus !== "closed") {
       this._responses.set(response.rid, response);
     }
     return response;
@@ -113,10 +113,10 @@ export class Responder extends ConnectionHandler {
         // this response is no longer valid
         return;
       }
-      response._sentStreamStatus = StreamStatus.closed;
+      response._sentStreamStatus = "closed";
       rid = response.rid;
     }
-    let m: any = {'rid': rid, 'stream': StreamStatus.closed};
+    let m: any = {'rid': rid, 'stream': "closed"};
     if (error != null) {
       m['error'] = error.serialize();
     }
@@ -126,7 +126,7 @@ export class Responder extends ConnectionHandler {
 
   updateResponse(response: Response, updates: any[],
                  options: {
-                   streamStatus?: string,
+                   streamStatus?: StreamStatus,
                    columns?: any[],
                    meta?: object,
                    // handleMap?: (object m)=>void
@@ -156,7 +156,7 @@ export class Responder extends ConnectionHandler {
       // }
 
       this.addToSendList(m);
-      if (response._sentStreamStatus === StreamStatus.closed) {
+      if (response._sentStreamStatus === "closed") {
         this._responses.delete(response.rid);
       }
     }

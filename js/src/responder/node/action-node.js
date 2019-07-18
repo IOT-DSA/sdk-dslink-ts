@@ -46,7 +46,7 @@ class ActionNode extends node_state_1.LocalNode {
                 }
             }
             if (Array.isArray((rslt))) {
-                response.updateStream(rslt, { streamStatus: interfaces_1.StreamStatus.closed });
+                response.updateStream(rslt, { streamStatus: "closed" });
             }
             else if (rslt != null && rslt.__proto__ === Object.prototype) {
                 let columns = [];
@@ -58,10 +58,10 @@ class ActionNode extends node_state_1.LocalNode {
                     });
                     out.push(rslt[x]);
                 }
-                response.updateStream([out], { columns, streamStatus: interfaces_1.StreamStatus.closed });
+                response.updateStream([out], { columns, streamStatus: "closed" });
             }
             else if (rslt instanceof table_1.Table) {
-                response.updateStream(rslt.rows, { columns: rslt.columns, streamStatus: interfaces_1.StreamStatus.closed });
+                response.updateStream(rslt.rows, { columns: rslt.columns, streamStatus: "closed" });
             }
             else if (rslt instanceof interfaces_1.DsError) {
                 response.close(rslt);

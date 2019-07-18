@@ -1,5 +1,5 @@
 import { Requester } from "./requester";
-import { DsError } from "../common/interfaces";
+import { DsError, StreamStatus } from "../common/interfaces";
 import { RequestUpdater } from "./interface";
 export declare class Request {
     readonly requester: Requester;
@@ -13,7 +13,7 @@ export declare class Request {
     constructor(requester: Requester, rid: number, updater: RequestUpdater, data: {
         [key: string]: any;
     });
-    streamStatus: string;
+    streamStatus: StreamStatus;
     resend(): void;
     _update(m: {
         [key: string]: any;

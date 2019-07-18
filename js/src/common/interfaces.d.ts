@@ -96,11 +96,7 @@ export interface ServerLinkManager {
     getResponder(dsId: string, nodeProvider: NodeProvider, sessionId?: string, trusted?: boolean): Responder;
     updateLinkData(dsId: string, m: any): void;
 }
-export declare class StreamStatus {
-    static readonly initialize: string;
-    static readonly open: string;
-    static readonly closed: string;
-}
+export declare type StreamStatus = "initialize" | "open" | "closed";
 export declare class ErrorPhase {
     static readonly request: string;
     static readonly response: string;

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const response_1 = require("../response");
 const connection_handler_1 = require("../../common/connection-handler");
-const interfaces_1 = require("../../common/interfaces");
 class ListResponse extends response_1.Response {
     constructor(responder, rid, state) {
         super(responder, rid, 'list');
@@ -112,7 +111,7 @@ class ListResponse extends response_1.Response {
             updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
         }
         this.changes.clear();
-        this.responder.updateResponse(this, updates, { streamStatus: interfaces_1.StreamStatus.open });
+        this.responder.updateResponse(this, updates, { streamStatus: "open" });
     }
     ackReceived(receiveAckId, startTime, currentTime) {
         if (receiveAckId === this._lastWatingAckId) {

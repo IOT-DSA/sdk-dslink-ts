@@ -1,7 +1,7 @@
-import {DsError} from "../common/interfaces";
+import {DsError, StreamStatus} from "../common/interfaces";
 
 export interface RequestUpdater {
-  onUpdate(status: string, updates: any[], columns: any[], meta: { [key: string]: any }, error: DsError): void;
+  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any}, error: DsError): void;
 
   onDisconnect(): void;
 
@@ -9,9 +9,9 @@ export interface RequestUpdater {
 }
 
 export class RequesterUpdate {
-  readonly streamStatus: string;
+  readonly streamStatus: StreamStatus;
 
-  constructor(streamStatus: string) {
+  constructor(streamStatus: StreamStatus) {
     this.streamStatus = streamStatus;
   }
 }

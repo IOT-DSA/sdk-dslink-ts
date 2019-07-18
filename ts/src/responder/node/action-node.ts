@@ -55,7 +55,7 @@ export class ActionNode extends LocalNode {
       }
 
       if (Array.isArray((rslt))) {
-        response.updateStream(rslt, {streamStatus: StreamStatus.closed});
+        response.updateStream(rslt, {streamStatus: "closed"});
       } else if (rslt != null && rslt.__proto__ === Object.prototype) {
         let columns: any[] = [];
         let out: any[] = [];
@@ -67,10 +67,10 @@ export class ActionNode extends LocalNode {
           out.push(rslt[x]);
         }
 
-        response.updateStream([out], {columns, streamStatus: StreamStatus.closed});
+        response.updateStream([out], {columns, streamStatus: "closed"});
       } else if (rslt instanceof Table) {
         response.updateStream(rslt.rows,
-          {columns: rslt.columns, streamStatus: StreamStatus.closed});
+          {columns: rslt.columns, streamStatus: "closed"});
       } else if (rslt instanceof DsError) {
         response.close(rslt);
       } else if (rslt instanceof Promise) {

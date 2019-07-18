@@ -1,7 +1,7 @@
 import { Requester } from "../requester";
 import { Request } from "../request";
 import { Stream } from "../../utils/async";
-import { DsError } from "../../common/interfaces";
+import { DsError, StreamStatus } from "../../common/interfaces";
 import { TableColumn } from "../../common/table";
 import { RemoteNode } from "../node_cache";
 import { RequesterUpdate, RequestUpdater } from "../interface";
@@ -20,7 +20,7 @@ export declare class RequesterInvokeUpdate extends RequesterUpdate {
     meta: {
         [key: string]: any;
     };
-    constructor(updates: any[], rawColumns: any[], columns: TableColumn[], streamStatus: string, meta: {
+    constructor(updates: any[], rawColumns: any[], columns: TableColumn[], streamStatus: StreamStatus, meta: {
         [key: string]: any;
     }, error?: DsError);
     /** @ignore */
@@ -50,7 +50,7 @@ export declare class InvokeController implements RequestUpdater {
     lastStatus: string;
     constructor(node: RemoteNode, requester: Requester, params: object, maxPermission?: number);
     _onUnsubscribe: (obj?: any) => void;
-    onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {
+    onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: {
         [key: string]: any;
     }, error: DsError): void;
     onDisconnect(): void;

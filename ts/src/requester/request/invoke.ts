@@ -22,7 +22,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
   meta: {[key: string]: any};
 
   constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
-              streamStatus: string,
+              streamStatus: StreamStatus,
               meta: {[key: string]: any}, error?: DsError) {
     super(streamStatus);
     this.updates = updates;
@@ -144,7 +144,7 @@ export class InvokeController implements RequestUpdater {
   _cachedColumns: TableColumn[];
 
   mode: string = 'stream';
-  lastStatus: string = StreamStatus.initialize;
+  lastStatus: string = "initialize";
 
   constructor(node: RemoteNode, requester: Requester, params: object,
               maxPermission = Permission.CONFIG) {
@@ -174,12 +174,12 @@ export class InvokeController implements RequestUpdater {
   }
 
   _onUnsubscribe = (obj?: any) => {
-    if (this._request != null && this._request.streamStatus !== StreamStatus.closed) {
+    if (this._request != null && this._request.streamStatus !== "closed") {
       this._request.close();
     }
   };
 
-  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {[key: string]: any},
+  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: {[key: string]: any},
            error: DsError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];
@@ -196,7 +196,7 @@ export class InvokeController implements RequestUpdater {
     }
 
     if (error != null) {
-      streamStatus = StreamStatus.closed;
+      streamStatus = "closed";
       this._stream.add(
         new RequesterInvokeUpdate(
           null, null, null, streamStatus, meta, error));
@@ -205,7 +205,7 @@ export class InvokeController implements RequestUpdater {
         updates, columns, this._cachedColumns, streamStatus, meta));
     }
     this.lastStatus = streamStatus;
-    if (streamStatus === StreamStatus.closed) {
+    if (streamStatus === "closed") {
       this._stream.close();
     }
   }

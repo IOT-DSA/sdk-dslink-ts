@@ -118,7 +118,7 @@ export class ListResponse extends Response {
 
     this.changes.clear();
 
-    this.responder.updateResponse(this, updates, {streamStatus: StreamStatus.open});
+    this.responder.updateResponse(this, updates, {streamStatus: "open"});
   }
 
   _waitingAckCount: number = 0;

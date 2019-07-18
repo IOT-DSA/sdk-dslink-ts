@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("../common/interfaces");
 class Response {
     constructor(responder, rid, type) {
-        this._sentStreamStatus = interfaces_1.StreamStatus.initialize;
+        this._sentStreamStatus = "initialize";
         this._pendingSending = false;
         this.responder = responder;
         this.rid = rid;
@@ -14,7 +13,7 @@ class Response {
     }
     /// close the request from responder side and also notify the requester
     close(err = null) {
-        this._sentStreamStatus = interfaces_1.StreamStatus.closed;
+        this._sentStreamStatus = "closed";
         this.responder.closeResponse(this.rid, this, err);
     }
     /// close the response now, no need to send more response update

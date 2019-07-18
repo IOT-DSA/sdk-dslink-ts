@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const async_1 = require("../../utils/async");
-const interfaces_1 = require("../../common/interfaces");
 const node_cache_1 = require("../node_cache");
 const value_1 = require("../../common/value");
 const interface_1 = require("../interface");
@@ -21,7 +20,7 @@ class ListDefListener {
         this.node = node;
         this.requester = requester;
         this.listener = requester.list(node.remotePath, (update) => {
-            this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
+            this.ready = update.streamStatus !== "initialize";
             if (update.node.configs.has('$disconnectedTs')) {
                 update.node.configs.delete('$disconnectedTs');
             }
@@ -105,7 +104,7 @@ class ListController {
         this.stream = new async_1.Stream(this.onStartListen, this._onAllCancel, this._onListen);
     }
     get initialized() {
-        return this.request != null && this.request.streamStatus !== interfaces_1.StreamStatus.initialize;
+        return this.request != null && this.request.streamStatus !== "initialize";
     }
     onDisconnect() {
         this.disconnectTs = value_1.ValueUpdate.getTs();
@@ -193,7 +192,7 @@ class ListController {
                     }
                 }
             }
-            if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+            if (this.request.streamStatus !== "initialize") {
                 this.node._listed = true;
             }
             if (this._pendingRemoveDef) {
@@ -229,11 +228,11 @@ class ListController {
     }
     onProfileUpdated() {
         if (this._ready) {
-            if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+            if (this.request.streamStatus !== "initialize") {
                 this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
                 this.changes.clear();
             }
-            if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
+            if (this.request && this.request.streamStatus === "closed") {
                 this.stream.close();
             }
         }

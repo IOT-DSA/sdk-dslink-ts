@@ -128,16 +128,6 @@ class ClientLink extends BaseLink {
     }
 }
 exports.ClientLink = ClientLink;
-/// DSA Stream Status
-class StreamStatus {
-}
-/// Stream should be initialized.
-StreamStatus.initialize = "initialize";
-/// Stream is open.
-StreamStatus.open = "open";
-/// Stream is closed.
-StreamStatus.closed = "closed";
-exports.StreamStatus = StreamStatus;
 class ErrorPhase {
 }
 ErrorPhase.request = "request";

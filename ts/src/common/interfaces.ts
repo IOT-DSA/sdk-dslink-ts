@@ -238,16 +238,7 @@ export interface ServerLinkManager {
 }
 
 /// DSA Stream Status
-export class StreamStatus {
-  /// Stream should be initialized.
-  static readonly initialize: string = "initialize";
-
-  /// Stream is open.
-  static readonly open: string = "open";
-
-  /// Stream is closed.
-  static readonly closed: string = "closed";
-}
+export type StreamStatus = "initialize" | "open" | "closed";
 
 export class ErrorPhase {
   static readonly request: string = "request";

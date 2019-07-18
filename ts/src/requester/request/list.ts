@@ -16,7 +16,7 @@ export class RequesterListUpdate extends RequesterUpdate {
   node: RemoteNode;
 
   /** @ignore */
-  constructor(node: RemoteNode, changes: string[], streamStatus: string) {
+  constructor(node: RemoteNode, changes: string[], streamStatus: StreamStatus) {
     super(streamStatus);
     this.node = node;
     this.changes = changes;
@@ -37,7 +37,7 @@ export class ListDefListener {
     this.node = node;
     this.requester = requester;
     this.listener = requester.list(node.remotePath, (update: RequesterListUpdate) => {
-      this.ready = update.streamStatus !== StreamStatus.initialize;
+      this.ready = update.streamStatus !== "initialize";
       if (update.node.configs.has('$disconnectedTs')) {
         update.node.configs.delete('$disconnectedTs');
       }
@@ -64,7 +64,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   }
 
   get initialized(): boolean {
-    return this.request != null && this.request.streamStatus !== StreamStatus.initialize;
+    return this.request != null && this.request.streamStatus !== "initialize";
   }
 
   disconnectTs: string;
@@ -86,7 +86,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
   changes: Set<string> = new Set<string>();
 
-  onUpdate(streamStatus: string, updates: any[], columns: any[], meta: object,
+  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: object,
            error: DsError) {
     let reseted = false;
     // TODO implement error handling
@@ -152,7 +152,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
           }
         }
       }
-      if (this.request.streamStatus !== StreamStatus.initialize) {
+      if (this.request.streamStatus !== "initialize") {
         this.node._listed = true;
       }
       if (this._pendingRemoveDef) {
@@ -230,12 +230,12 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
   onProfileUpdated() {
     if (this._ready) {
-      if (this.request.streamStatus !== StreamStatus.initialize) {
+      if (this.request.streamStatus !== "initialize") {
         this.stream.add(new RequesterListUpdate(
           this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
-      if (this.request && this.request.streamStatus === StreamStatus.closed) {
+      if (this.request && this.request.streamStatus === "closed") {
         this.stream.close();
       }
     }

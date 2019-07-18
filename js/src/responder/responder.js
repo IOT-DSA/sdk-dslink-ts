@@ -41,7 +41,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
         return this._subscription.subscriptions.size;
     }
     addResponse(response) {
-        if (response._sentStreamStatus !== interfaces_1.StreamStatus.closed) {
+        if (response._sentStreamStatus !== "closed") {
             this._responses.set(response.rid, response);
         }
         return response;
@@ -92,10 +92,10 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 // this response is no longer valid
                 return;
             }
-            response._sentStreamStatus = interfaces_1.StreamStatus.closed;
+            response._sentStreamStatus = "closed";
             rid = response.rid;
         }
-        let m = { 'rid': rid, 'stream': interfaces_1.StreamStatus.closed };
+        let m = { 'rid': rid, 'stream': "closed" };
         if (error != null) {
             m['error'] = error.serialize();
         }
@@ -123,7 +123,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             //   handleMap(m);
             // }
             this.addToSendList(m);
-            if (response._sentStreamStatus === interfaces_1.StreamStatus.closed) {
+            if (response._sentStreamStatus === "closed") {
                 this._responses.delete(response.rid);
             }
         }

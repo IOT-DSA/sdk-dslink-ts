@@ -199,7 +199,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         let stream = node._invoke(params, this, maxPermission);
         return new Promise((resolve, reject) => {
             stream.listen((update) => {
-                if (update.streamStatus !== interfaces_1.StreamStatus.closed) {
+                if (update.streamStatus !== "closed") {
                     stream.close();
                 }
                 if (update.error) {
@@ -227,7 +227,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     /** @ignore */
     closeRequest(request) {
         if (this._requests.has(request.rid)) {
-            if (request.streamStatus !== interfaces_1.StreamStatus.closed) {
+            if (request.streamStatus !== "closed") {
                 this.addToSendList({ 'method': 'close', 'rid': request.rid });
             }
             this._requests.delete(request.rid);

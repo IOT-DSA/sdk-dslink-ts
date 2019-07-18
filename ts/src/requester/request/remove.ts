@@ -1,7 +1,7 @@
 import {Requester} from "../requester";
 import {Request} from "../request";
 import {Completer} from "../../utils/async";
-import {DsError} from "../../common/interfaces";
+import {DsError, StreamStatus} from "../../common/interfaces";
 import {RequesterUpdate, RequestUpdater} from "../interface";
 
 /** @ignore */
@@ -28,7 +28,7 @@ export class RemoveController implements RequestUpdater {
     this._request = requester._sendRequest(reqMap, this);
   }
 
-  onUpdate(status: string, updates: any[], columns: any[], meta: object, error: DsError) {
+  onUpdate(status: StreamStatus, updates: any[], columns: any[], meta: object, error: DsError) {
     // TODO implement error
     this.completer.complete(new RequesterUpdate(status));
   }

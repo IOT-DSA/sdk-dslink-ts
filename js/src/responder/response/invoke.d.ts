@@ -1,18 +1,18 @@
 import { Response } from "../response";
 import { LocalNode } from "../node_state";
 import { Responder } from "../responder";
-import { DsError } from "../../common/interfaces";
+import { DsError, StreamStatus } from "../../common/interfaces";
 export declare type OnInvokeClosed = (response: InvokeResponse) => void;
 export declare type OnInvokeSend = (response: InvokeResponse, m: any) => void;
 export declare type OnReqParams = (resp: InvokeResponse, m: any) => boolean;
 declare class InvokeResponseUpdate {
-    status: string;
+    status: StreamStatus;
     columns: any[];
     updates: any[];
     meta: {
         [key: string]: any;
     };
-    constructor(status: string, updates: any[], columns: any[], meta: {
+    constructor(status: StreamStatus, updates: any[], columns: any[], meta: {
         [key: string]: any;
     });
 }
@@ -25,7 +25,7 @@ export declare class InvokeResponse extends Response {
     _hasSentColumns: boolean;
     updateStream(updates: any[], options?: {
         columns?: any[];
-        streamStatus?: string;
+        streamStatus?: StreamStatus;
         meta?: {
             [key: string]: any;
         };

@@ -5,7 +5,7 @@ export class Response implements ConnectionProcessor {
   readonly responder: Responder;
   readonly rid: number;
   type: string;
-  _sentStreamStatus: string = StreamStatus.initialize;
+  _sentStreamStatus: string = "initialize";
 
   get sentStreamStatus(): string {
     return this._sentStreamStatus;
@@ -19,7 +19,7 @@ export class Response implements ConnectionProcessor {
 
   /// close the request from responder side and also notify the requester
   close(err: DsError = null) {
-    this._sentStreamStatus = StreamStatus.closed;
+    this._sentStreamStatus = "closed";
     this.responder.closeResponse(this.rid, this, err);
   }
 
