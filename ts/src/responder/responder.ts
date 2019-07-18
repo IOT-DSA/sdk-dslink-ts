@@ -250,7 +250,6 @@ export class Responder extends ConnectionHandler {
       if (node.getInvokePermission() <= permission) {
         node.invoke(
           params,
-          this,
           this.addResponse(
             new InvokeResponse(this, rid, parentNode, node, path.name)
           ),

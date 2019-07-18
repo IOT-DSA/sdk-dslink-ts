@@ -17,7 +17,7 @@ export declare class LocalNode extends Node<LocalNode> {
     getSetPermission(): number;
     invoke(params: {
         [key: string]: any;
-    }, responder: Responder, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number): void;
+    }, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number): void;
     setConfig(name: string, value: any): void;
     setAttribute(name: string, value: any, responder?: Responder, response?: Response): void;
     removeAttribute(name: string, responder?: Responder, response?: Response): void;

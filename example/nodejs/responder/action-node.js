@@ -5,7 +5,9 @@ const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../.
 
 class BasicActionNode extends ActionNode {
   constructor(path, provider) {
-    super(path, provider, Permission.READ);
+    super(path, provider,
+      Permission.READ // require read permission to invoke (optional, default is Permission.WRITE)
+    );
   }
 
   initialize() {
@@ -19,13 +21,14 @@ class BasicActionNode extends ActionNode {
     let {input} = params;
     if (input === 3) {
       return [['correct']];
-      // also same result can be
+      // also same result can be returned with
       // return {output: 'correct'};
     }
     return new DsError('invalidInput', {msg: 'value must be 3'});
   }
 }
 
+// action that returns a table
 class TableActionNode extends ActionNode {
   constructor(path, provider) {
     super(path, provider, Permission.READ);
@@ -46,6 +49,7 @@ class TableActionNode extends ActionNode {
   }
 }
 
+// action that doesn't have a known column structure until invoked
 class DynamicTableAction extends ActionNode {
   constructor(path, provider) {
     super(path, provider, Permission.READ);

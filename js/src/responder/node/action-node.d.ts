@@ -1,5 +1,4 @@
 import { LocalNode, NodeProvider } from "../node_state";
-import { Responder } from "../responder";
 import { InvokeResponse } from "../response/invoke";
 export declare class ActionNode extends LocalNode {
     constructor(path: string, provider: NodeProvider, invokable?: number);
@@ -15,5 +14,5 @@ export declare class ActionNode extends LocalNode {
      */
     invoke(params: {
         [key: string]: any;
-    }, responder: Responder, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number): InvokeResponse;
+    }, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number): InvokeResponse;
 }

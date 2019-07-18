@@ -25,7 +25,6 @@ export class ActionNode extends LocalNode {
    */
   invoke(
     params: {[key: string]: any},
-    responder: Responder,
     response: InvokeResponse,
     parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
 

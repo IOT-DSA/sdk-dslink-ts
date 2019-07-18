@@ -209,7 +209,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 params = {};
             }
             if (node.getInvokePermission() <= permission) {
-                node.invoke(params, this, this.addResponse(new invoke_1.InvokeResponse(this, rid, parentNode, node, path.name)), parentNode, permission);
+                node.invoke(params, this.addResponse(new invoke_1.InvokeResponse(this, rid, parentNode, node, path.name)), parentNode, permission);
             }
             else {
                 this.closeResponse(m['rid'], null, interfaces_1.DsError.PERMISSION_DENIED);

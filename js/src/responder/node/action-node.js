@@ -18,7 +18,7 @@ class ActionNode extends node_state_1.LocalNode {
      *  Called by the link internals to invoke this node.
      *  Override this to have a full customized invoke callback
      */
-    invoke(params, responder, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
+    invoke(params, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
         let result;
         try {
             result = this.onInvoke(params, parentNode, maxPermission);

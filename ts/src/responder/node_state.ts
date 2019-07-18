@@ -87,7 +87,6 @@ export class LocalNode extends Node<LocalNode> {
   /// Called by the link internals to invoke this node.
   invoke(
     params: {[key: string]: any},
-    responder: Responder,
     response: InvokeResponse,
     parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
     response.close(DsError.NOT_IMPLEMENTED);

@@ -67,7 +67,7 @@ class LocalNode extends node_1.Node {
         return permission_1.Permission.parse(this.configs.get('$writable'));
     }
     /// Called by the link internals to invoke this node.
-    invoke(params, responder, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
+    invoke(params, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
         response.close(interfaces_1.DsError.NOT_IMPLEMENTED);
     }
     setConfig(name, value) {
