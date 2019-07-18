@@ -1,4 +1,4 @@
-import { ConnectionProcessor, DSError } from "../common/interfaces";
+import { ConnectionProcessor, DsError } from "../common/interfaces";
 import { Responder } from "./responder";
 export declare class Response implements ConnectionProcessor {
     readonly responder: Responder;
@@ -7,7 +7,7 @@ export declare class Response implements ConnectionProcessor {
     _sentStreamStatus: string;
     readonly sentStreamStatus: string;
     constructor(responder: Responder, rid: number, type?: string);
-    close(err?: DSError): void;
+    close(err?: DsError): void;
     _close(): void;
     prepareSending(): void;
     _pendingSending: boolean;

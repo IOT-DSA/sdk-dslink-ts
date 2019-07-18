@@ -2,7 +2,7 @@ import { ConnectionHandler } from "../common/connection-handler";
 import { SubscribeResponse } from "./response/subscribe";
 import { NodeProvider } from "./node_state";
 import { Response } from "./response";
-import { DSError } from "../common/interfaces";
+import { DsError } from "../common/interfaces";
 export declare class Responder extends ConnectionHandler {
     reqId: string;
     maxPermission: number;
@@ -16,7 +16,7 @@ export declare class Responder extends ConnectionHandler {
     disabled: boolean;
     onData: (list: any[]) => void;
     _onReceiveRequest(m: any): void;
-    closeResponse(rid: number, response?: Response, error?: DSError): void;
+    closeResponse(rid: number, response?: Response, error?: DsError): void;
     updateResponse(response: Response, updates: any[], options?: {
         streamStatus?: string;
         columns?: any[];

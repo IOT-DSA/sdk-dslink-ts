@@ -2,7 +2,7 @@ import {Requester} from "../requester";
 import {Request} from "../request";
 import {Completer, Stream, StreamSubscription} from "../../utils/async";
 import {Permission} from "../../common/permission";
-import {ConnectionProcessor, DSError, StreamStatus} from "../../common/interfaces";
+import {ConnectionProcessor, DsError, StreamStatus} from "../../common/interfaces";
 import {RemoteNode} from "../node_cache";
 import {ValueUpdate} from "../../common/value";
 import {RequesterUpdate, RequestUpdater} from "../interface";
@@ -87,7 +87,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   changes: Set<string> = new Set<string>();
 
   onUpdate(streamStatus: string, updates: any[], columns: any[], meta: object,
-           error: DSError) {
+           error: DsError) {
     let reseted = false;
     // TODO implement error handling
     if (updates != null) {

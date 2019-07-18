@@ -254,7 +254,7 @@ export class ErrorPhase {
   static readonly response: string = "response";
 }
 
-export class DSError {
+export class DsError {
   /// type of error
   type: string;
   detail: string;
@@ -276,7 +276,7 @@ export class DSError {
 
 
   static fromMap(m: any) {
-    let error = new DSError('');
+    let error = new DsError('');
     if (typeof m["type"] === 'string') {
       error.type = m["type"];
     }
@@ -326,15 +326,15 @@ export class DSError {
     return rslt;
   }
 
-  static readonly PERMISSION_DENIED = new DSError("permissionDenied");
-  static readonly INVALID_METHOD = new DSError("invalidMethod");
-  static readonly NOT_IMPLEMENTED = new DSError("notImplemented");
-  static readonly INVALID_PATH = new DSError("invalidPath");
-  static readonly INVALID_PATHS = new DSError("invalidPaths");
-  static readonly INVALID_VALUE = new DSError("invalidValue");
-  static readonly INVALID_PARAMETER = new DSError("invalidParameter");
-  static readonly DISCONNECTED = new DSError("disconnected", {phase: ErrorPhase.request});
-  static readonly FAILED = new DSError("failed");
+  static readonly PERMISSION_DENIED = new DsError("permissionDenied");
+  static readonly INVALID_METHOD = new DsError("invalidMethod");
+  static readonly NOT_IMPLEMENTED = new DsError("notImplemented");
+  static readonly INVALID_PATH = new DsError("invalidPath");
+  static readonly INVALID_PATHS = new DsError("invalidPaths");
+  static readonly INVALID_VALUE = new DsError("invalidValue");
+  static readonly INVALID_PARAMETER = new DsError("invalidParameter");
+  static readonly DISCONNECTED = new DsError("disconnected", {phase: ErrorPhase.request});
+  static readonly FAILED = new DsError("failed");
 }
 
 

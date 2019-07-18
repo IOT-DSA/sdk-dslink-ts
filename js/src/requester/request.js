@@ -39,7 +39,7 @@ class Request {
         }
         let error;
         if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-            error = interfaces_1.DSError.fromMap(m["error"]);
+            error = interfaces_1.DsError.fromMap(m["error"]);
             this.requester.onError.add(error);
         }
         this.updater.onUpdate(this.streamStatus, updates, columns, meta, error);

@@ -3,7 +3,7 @@
 import {Response} from "../response";
 import {LocalNode} from "../node_state";
 import {Responder} from "../responder";
-import {DSError, StreamStatus} from "../../common/interfaces";
+import {DsError, StreamStatus} from "../../common/interfaces";
 import {TableColumn} from "../../common/table";
 
 export type OnInvokeClosed = (response: InvokeResponse) => void;
@@ -124,7 +124,7 @@ export class InvokeResponse extends Response {
   }
 
   /// close the request from responder side and also notify the requester
-  close(err: DSError = null) {
+  close(err: DsError = null) {
     if (err != null) {
       this._err = err;
     }
@@ -138,7 +138,7 @@ export class InvokeResponse extends Response {
     }
   }
 
-  _err: DSError;
+  _err: DsError;
 
   onClose: OnInvokeClosed;
   onSendUpdate: OnInvokeSend;

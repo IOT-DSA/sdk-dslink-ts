@@ -4,7 +4,7 @@ import {Permission} from "../common/permission";
 import {SubscribeResponse} from "./response/subscribe";
 import {LocalNode, NodeProvider} from "./node_state";
 import {Response} from "./response";
-import {DSError, StreamStatus} from "../common/interfaces";
+import {DsError, StreamStatus} from "../common/interfaces";
 import {Path} from "../common/node";
 import {ListResponse} from "./response/list";
 import {InvokeResponse} from "./response/invoke";
@@ -103,11 +103,11 @@ export class Responder extends ConnectionHandler {
         }
       }
     }
-    this.closeResponse(m['rid'], null, DSError.INVALID_METHOD);
+    this.closeResponse(m['rid'], null, DsError.INVALID_METHOD);
   }
 
   /// close the response from responder side and notify requester
-  closeResponse(rid: number, response?: Response, error?: DSError) {
+  closeResponse(rid: number, response?: Response, error?: DsError) {
     if (response != null) {
       if (this._responses.get(response.rid) !== response) {
         // this response is no longer valid
@@ -171,7 +171,7 @@ export class Responder extends ConnectionHandler {
       this.addResponse(new ListResponse(this, rid, state));
 
     } else {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
     }
   }
 
@@ -208,7 +208,7 @@ export class Responder extends ConnectionHandler {
         }
       }
     } else {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATHS);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATHS);
     }
   }
 
@@ -222,7 +222,7 @@ export class Responder extends ConnectionHandler {
       }
       this.closeResponse(m['rid']);
     } else {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATHS);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATHS);
     }
   }
 
@@ -235,7 +235,7 @@ export class Responder extends ConnectionHandler {
 
       let node: LocalNode = this.nodeProvider.getNode(path.path);
       if (node == null) {
-        this.closeResponse(m['rid'], null, DSError.NOT_IMPLEMENTED);
+        this.closeResponse(m['rid'], null, DsError.NOT_IMPLEMENTED);
         return;
       }
       let permission = Permission.parse(m['permit']);
@@ -258,11 +258,11 @@ export class Responder extends ConnectionHandler {
           permission
         );
       } else {
-        this.closeResponse(m['rid'], null, DSError.PERMISSION_DENIED);
+        this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       }
 
     } else {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
     }
   }
 
@@ -274,19 +274,19 @@ export class Responder extends ConnectionHandler {
         response.updateReqParams(m['params']);
       }
     } else {
-      this.closeResponse(m['rid'], null, DSError.INVALID_METHOD);
+      this.closeResponse(m['rid'], null, DsError.INVALID_METHOD);
     }
   }
 
   set(m: any) {
     let path: Path = Path.getValidPath(m['path']);
     if (path == null || !path.isAbsolute) {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
       return;
     }
 
     if (!m.hasOwnProperty('value')) {
-      this.closeResponse(m['rid'], null, DSError.INVALID_VALUE);
+      this.closeResponse(m['rid'], null, DsError.INVALID_VALUE);
       return;
     }
 
@@ -295,7 +295,7 @@ export class Responder extends ConnectionHandler {
     if (path.isNode) {
       let node: LocalNode = this.nodeProvider.getNode(path.path);
       if (node == null) {
-        this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+        this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
         return;
       }
       let permission: number = Permission.parse(m['permit']);
@@ -303,17 +303,17 @@ export class Responder extends ConnectionHandler {
       if (node.getSetPermission() <= permission) {
         node.setValue(value, this, this.addResponse(new Response(this, rid, 'set')));
       } else {
-        this.closeResponse(m['rid'], null, DSError.PERMISSION_DENIED);
+        this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       }
     } else if (path.isAttribute) {
       let node: LocalNode = this.nodeProvider.getNode(path.parentPath);
       if (node == null) {
-        this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+        this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
         return;
       }
       let permission: number = Permission.parse(m['permit']);
       if (permission < Permission.WRITE) {
-        this.closeResponse(m['rid'], null, DSError.PERMISSION_DENIED);
+        this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       } else {
         node.setAttribute(
           path.name, value, this, this.addResponse(new Response(this, rid, 'set')));
@@ -327,21 +327,21 @@ export class Responder extends ConnectionHandler {
   remove(m: any) {
     let path: Path = Path.getValidPath(m['path']);
     if (path == null || !path.isAbsolute) {
-      this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+      this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
       return;
     }
     let rid: number = m['rid'];
     if (path.isNode) {
-      this.closeResponse(m['rid'], null, DSError.INVALID_METHOD);
+      this.closeResponse(m['rid'], null, DsError.INVALID_METHOD);
     } else if (path.isAttribute) {
       let node: LocalNode = this.nodeProvider.getNode(path.parentPath);
       if (node == null) {
-        this.closeResponse(m['rid'], null, DSError.INVALID_PATH);
+        this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
         return;
       }
       let permission: number = Permission.parse(m['permit']);
       if (permission < Permission.WRITE) {
-        this.closeResponse(m['rid'], null, DSError.PERMISSION_DENIED);
+        this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       } else {
         node.removeAttribute(
           path.name, this, this.addResponse(new Response(this, rid, 'set')));

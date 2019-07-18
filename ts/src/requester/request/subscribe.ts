@@ -1,7 +1,7 @@
 import {Cancelable} from "../../utils/async";
 import {Request} from "../request";
 import {Requester} from "../requester";
-import {ConnectionProcessor, DSError} from "../../common/interfaces";
+import {ConnectionProcessor, DsError} from "../../common/interfaces";
 import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
 import {RemoteNode} from "../node_cache";
 import {DSA_CONFIG} from "../../common/connection-handler";
@@ -42,7 +42,7 @@ export class SubscribeController implements RequestUpdater {
   }
 
   onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any},
-           error: DSError) {
+           error: DsError) {
     // do nothing
   }
 }
@@ -75,7 +75,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     this.prepareSending();
   }
 
-  _close(error: DSError) {
+  _close(error: DsError) {
     if (this.subscriptions.size > 0) {
       for (let [key, s] of this.subscriptions) {
         this._changedPaths.add(key);

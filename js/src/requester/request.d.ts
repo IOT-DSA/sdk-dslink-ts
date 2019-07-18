@@ -1,5 +1,5 @@
 import { Requester } from "./requester";
-import { DSError } from "../common/interfaces";
+import { DsError } from "../common/interfaces";
 import { RequestUpdater } from "./interface";
 export declare class Request {
     readonly requester: Requester;
@@ -18,6 +18,6 @@ export declare class Request {
     _update(m: {
         [key: string]: any;
     }): void;
-    _close(error: DSError): void;
+    _close(error: DsError): void;
     close(): void;
 }

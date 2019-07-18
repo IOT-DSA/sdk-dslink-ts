@@ -4,7 +4,7 @@ import {Request} from "./request";
 import {ConnectionHandler} from "../common/connection-handler";
 import {RemoteNode, RemoteNodeCache} from "./node_cache";
 import {ReqSubscribeListener, SubscribeRequest} from "./request/subscribe";
-import {DSError, ProcessorResult, StreamStatus} from "../common/interfaces";
+import {DsError, ProcessorResult, StreamStatus} from "../common/interfaces";
 import {ValueUpdate} from "../common/value";
 import {ListController, RequesterListUpdate} from "./request/list";
 import {Permission} from "../common/permission";
@@ -57,7 +57,7 @@ export class Requester extends ConnectionHandler {
   }
 
   /** @ignore */
-  onError: Stream<DSError> = new Stream<DSError>();
+  onError: Stream<DsError> = new Stream<DsError>();
 
   /** @ignore */
   lastRid = 0;
@@ -283,7 +283,7 @@ export class Requester extends ConnectionHandler {
     newRequests.set(0, this._subscription);
     for (let [n, req] of this._requests) {
       if (req.rid <= this.lastRid && !(req.updater instanceof ListController)) {
-        req._close(DSError.DISCONNECTED);
+        req._close(DsError.DISCONNECTED);
       } else {
         newRequests.set(req.rid, req);
         req.updater.onDisconnect();

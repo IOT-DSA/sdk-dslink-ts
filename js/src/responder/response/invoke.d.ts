@@ -1,7 +1,7 @@
 import { Response } from "../response";
 import { LocalNode } from "../node_state";
 import { Responder } from "../responder";
-import { DSError } from "../../common/interfaces";
+import { DsError } from "../../common/interfaces";
 export declare type OnInvokeClosed = (response: InvokeResponse) => void;
 export declare type OnInvokeSend = (response: InvokeResponse, m: any) => void;
 export declare type OnReqParams = (resp: InvokeResponse, m: any) => boolean;
@@ -34,8 +34,8 @@ export declare class InvokeResponse extends Response {
     onReqParams: OnReqParams;
     updateReqParams(m: any): void;
     startSendingData(currentTime: number, waitingAckId: number): void;
-    close(err?: DSError): void;
-    _err: DSError;
+    close(err?: DsError): void;
+    _err: DsError;
     onClose: OnInvokeClosed;
     onSendUpdate: OnInvokeSend;
     _close(): void;

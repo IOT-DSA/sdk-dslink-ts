@@ -1,6 +1,6 @@
 /// request class handles raw response from responder
 import {Requester} from "./requester";
-import {DSError, StreamStatus} from "../common/interfaces";
+import {DsError, StreamStatus} from "../common/interfaces";
 import {RequestUpdater} from "./interface";
 
 export class Request {
@@ -49,9 +49,9 @@ export class Request {
     if (this.streamStatus === StreamStatus.closed) {
       this.requester._requests.delete(this.rid);
     }
-    let error: DSError;
+    let error: DsError;
     if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-      error = DSError.fromMap(m["error"]);
+      error = DsError.fromMap(m["error"]);
       this.requester.onError.add(error);
     }
 
@@ -59,7 +59,7 @@ export class Request {
   }
 
   /// close the request and finish data
-  _close(error: DSError) {
+  _close(error: DsError) {
     if (this.streamStatus != StreamStatus.closed) {
       this.streamStatus = StreamStatus.closed;
       this.updater.onUpdate(StreamStatus.closed, null, null, null, error);

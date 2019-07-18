@@ -2,7 +2,7 @@ import {Requester} from "../requester";
 import {Request} from "../request";
 import {Completer, Stream} from "../../utils/async";
 import {Permission} from "../../common/permission";
-import {DSError, StreamStatus} from "../../common/interfaces";
+import {DsError, StreamStatus} from "../../common/interfaces";
 import {TableColumn, TableColumns} from "../../common/table";
 import {RemoteNode} from "../node_cache";
 import {RequesterUpdate, RequestUpdater} from "../interface";
@@ -18,12 +18,12 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
    * Raw updates received from responder
    */
   updates: any[];
-  error: DSError;
+  error: DsError;
   meta: {[key: string]: any};
 
   constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
               streamStatus: string,
-              meta: {[key: string]: any}, error?: DSError) {
+              meta: {[key: string]: any}, error?: DsError) {
     super(streamStatus);
     this.updates = updates;
     if (rawColumns) {
@@ -180,7 +180,7 @@ export class InvokeController implements RequestUpdater {
   };
 
   onUpdate(streamStatus: string, updates: any[], columns: any[], meta: {[key: string]: any},
-           error: DSError) {
+           error: DsError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];
     }

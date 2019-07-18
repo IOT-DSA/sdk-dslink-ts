@@ -1,4 +1,4 @@
-import {ConnectionProcessor, DSError, StreamStatus} from "../common/interfaces";
+import {ConnectionProcessor, DsError, StreamStatus} from "../common/interfaces";
 import {Responder} from "./responder";
 
 export class Response implements ConnectionProcessor {
@@ -18,7 +18,7 @@ export class Response implements ConnectionProcessor {
   }
 
   /// close the request from responder side and also notify the requester
-  close(err: DSError = null) {
+  close(err: DsError = null) {
     this._sentStreamStatus = StreamStatus.closed;
     this.responder.closeResponse(this.rid, this, err);
   }

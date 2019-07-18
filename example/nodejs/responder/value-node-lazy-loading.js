@@ -23,7 +23,7 @@ class LazyLoadValue extends ValueNode {
 async function main() {
   let rootNode = new RootNode();
   rootNode.createChild('lazy', LazyLoadValue);
-  let link = new DSLink('responder', {rootNode, saveNodes: true});
+  let link = new DSLink('responder', {rootNode});
   await link.connect();
 }
 

@@ -2,7 +2,7 @@ import {LocalNode, NodeProvider} from "../node_state";
 import {Permission} from "../../common/permission";
 import {Responder} from "../responder";
 import {InvokeResponse} from "../response/invoke";
-import {DSError, StreamStatus} from "../../common/interfaces";
+import {DsError, StreamStatus} from "../../common/interfaces";
 import {Table} from "../../common/table";
 
 
@@ -33,7 +33,7 @@ export class ActionNode extends LocalNode {
     try {
       result = this.onInvoke(params, parentNode, maxPermission);
     } catch (err) {
-      let error = new DSError("invokeException", {msg: String(err)});
+      let error = new DsError("invokeException", {msg: String(err)});
       response.close(error);
       return response;
     }
@@ -72,12 +72,12 @@ export class ActionNode extends LocalNode {
       } else if (rslt instanceof Table) {
         response.updateStream(rslt.rows,
           {columns: rslt.columns, streamStatus: StreamStatus.closed});
-      } else if (rslt instanceof DSError) {
+      } else if (rslt instanceof DsError) {
         response.close(rslt);
       } else if (rslt instanceof Promise) {
         rslt.then(sendResult).catch(
           (e) => {
-            response.close(DSError.FAILED);
+            response.close(DsError.FAILED);
           }
         );
       } else {

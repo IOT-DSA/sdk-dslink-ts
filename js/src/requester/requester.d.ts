@@ -4,7 +4,7 @@ import { Request } from "./request";
 import { ConnectionHandler } from "../common/connection-handler";
 import { RemoteNode, RemoteNodeCache } from "./node_cache";
 import { ReqSubscribeListener, SubscribeRequest } from "./request/subscribe";
-import { DSError, ProcessorResult } from "../common/interfaces";
+import { DsError, ProcessorResult } from "../common/interfaces";
 import { ValueUpdate } from "../common/value";
 import { RequesterListUpdate } from "./request/list";
 import { RequesterInvokeStream, RequesterInvokeUpdate } from "./request/invoke";
@@ -23,7 +23,7 @@ export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _onReceiveUpdate(m: any): void;
     /** @ignore */
-    onError: Stream<DSError>;
+    onError: Stream<DsError>;
     /** @ignore */
     lastRid: number;
     /** @ignore */

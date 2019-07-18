@@ -105,7 +105,7 @@ export declare class ErrorPhase {
     static readonly request: string;
     static readonly response: string;
 }
-export declare class DSError {
+export declare class DsError {
     type: string;
     detail: string;
     msg: string;
@@ -117,18 +117,18 @@ export declare class DSError {
         path?: string;
         phase?: string;
     });
-    static fromMap(m: any): DSError;
+    static fromMap(m: any): DsError;
     getMessage(): string;
     serialize(): any;
-    static readonly PERMISSION_DENIED: DSError;
-    static readonly INVALID_METHOD: DSError;
-    static readonly NOT_IMPLEMENTED: DSError;
-    static readonly INVALID_PATH: DSError;
-    static readonly INVALID_PATHS: DSError;
-    static readonly INVALID_VALUE: DSError;
-    static readonly INVALID_PARAMETER: DSError;
-    static readonly DISCONNECTED: DSError;
-    static readonly FAILED: DSError;
+    static readonly PERMISSION_DENIED: DsError;
+    static readonly INVALID_METHOD: DsError;
+    static readonly NOT_IMPLEMENTED: DsError;
+    static readonly INVALID_PATH: DsError;
+    static readonly INVALID_PATHS: DsError;
+    static readonly INVALID_VALUE: DsError;
+    static readonly INVALID_PARAMETER: DsError;
+    static readonly DISCONNECTED: DsError;
+    static readonly FAILED: DsError;
 }
 export interface NodeProvider {
     getNode(path: string): LocalNode;

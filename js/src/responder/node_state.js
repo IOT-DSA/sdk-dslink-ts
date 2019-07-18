@@ -68,7 +68,7 @@ class LocalNode extends node_1.Node {
     }
     /// Called by the link internals to invoke this node.
     invoke(params, responder, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
-        response.close(interfaces_1.DSError.NOT_IMPLEMENTED);
+        response.close(interfaces_1.DsError.NOT_IMPLEMENTED);
     }
     setConfig(name, value) {
         if (!name.startsWith("$")) {
@@ -124,10 +124,10 @@ class LocalNode extends node_1.Node {
         }
         catch (e) {
             if (e instanceof Error) {
-                response.close(new interfaces_1.DSError('failed', { msg: e.message }));
+                response.close(new interfaces_1.DsError('failed', { msg: e.message }));
             }
             else {
-                response.close(new interfaces_1.DSError('failed'));
+                response.close(new interfaces_1.DsError('failed'));
             }
         }
     }

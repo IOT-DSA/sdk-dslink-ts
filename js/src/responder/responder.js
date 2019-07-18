@@ -83,7 +83,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 }
             }
         }
-        this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+        this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);
     }
     /// close the response from responder side and notify requester
     closeResponse(rid, response, error) {
@@ -136,7 +136,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.addResponse(new list_1.ListResponse(this, rid, state));
         }
         else {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
         }
     }
     subscribe(m) {
@@ -174,7 +174,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             }
         }
         else {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATHS);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATHS);
         }
     }
     unsubscribe(m) {
@@ -187,7 +187,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid']);
         }
         else {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATHS);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATHS);
         }
     }
     invoke(m) {
@@ -197,7 +197,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             let parentNode = this.nodeProvider.getNode(path.parentPath);
             let node = this.nodeProvider.getNode(path.path);
             if (node == null) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.NOT_IMPLEMENTED);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.NOT_IMPLEMENTED);
                 return;
             }
             let permission = permission_1.Permission.parse(m['permit']);
@@ -212,11 +212,11 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 node.invoke(params, this, this.addResponse(new invoke_1.InvokeResponse(this, rid, parentNode, node, path.name)), parentNode, permission);
             }
             else {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.PERMISSION_DENIED);
             }
         }
         else {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
         }
     }
     updateInvoke(m) {
@@ -228,17 +228,17 @@ class Responder extends connection_handler_1.ConnectionHandler {
             }
         }
         else {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);
         }
     }
     set(m) {
         let path = node_1.Path.getValidPath(m['path']);
         if (path == null || !path.isAbsolute) {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
             return;
         }
         if (!m.hasOwnProperty('value')) {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_VALUE);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_VALUE);
             return;
         }
         let value = m['value'];
@@ -246,7 +246,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
         if (path.isNode) {
             let node = this.nodeProvider.getNode(path.path);
             if (node == null) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
                 return;
             }
             let permission = permission_1.Permission.parse(m['permit']);
@@ -254,18 +254,18 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 node.setValue(value, this, this.addResponse(new response_1.Response(this, rid, 'set')));
             }
             else {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.PERMISSION_DENIED);
             }
         }
         else if (path.isAttribute) {
             let node = this.nodeProvider.getNode(path.parentPath);
             if (node == null) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
                 return;
             }
             let permission = permission_1.Permission.parse(m['permit']);
             if (permission < permission_1.Permission.WRITE) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.PERMISSION_DENIED);
             }
             else {
                 node.setAttribute(path.name, value, this, this.addResponse(new response_1.Response(this, rid, 'set')));
@@ -279,22 +279,22 @@ class Responder extends connection_handler_1.ConnectionHandler {
     remove(m) {
         let path = node_1.Path.getValidPath(m['path']);
         if (path == null || !path.isAbsolute) {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
             return;
         }
         let rid = m['rid'];
         if (path.isNode) {
-            this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_METHOD);
+            this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);
         }
         else if (path.isAttribute) {
             let node = this.nodeProvider.getNode(path.parentPath);
             if (node == null) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.INVALID_PATH);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
                 return;
             }
             let permission = permission_1.Permission.parse(m['permit']);
             if (permission < permission_1.Permission.WRITE) {
-                this.closeResponse(m['rid'], null, interfaces_1.DSError.PERMISSION_DENIED);
+                this.closeResponse(m['rid'], null, interfaces_1.DsError.PERMISSION_DENIED);
             }
             else {
                 node.removeAttribute(path.name, this, this.addResponse(new response_1.Response(this, rid, 'set')));

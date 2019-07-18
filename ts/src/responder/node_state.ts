@@ -5,7 +5,7 @@ import {InvokeResponse} from "./response/invoke";
 import {Responder} from "./responder";
 import {Response} from "./response";
 import {ValueUpdate, ValueUpdateCallback} from "../common/value";
-import {DSError} from "../common/interfaces";
+import {DsError} from "../common/interfaces";
 
 export class LocalNode extends Node<LocalNode> {
 
@@ -91,7 +91,7 @@ export class LocalNode extends Node<LocalNode> {
     responder: Responder,
     response: InvokeResponse,
     parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
-    response.close(DSError.NOT_IMPLEMENTED);
+    response.close(DsError.NOT_IMPLEMENTED);
   }
 
 
@@ -161,9 +161,9 @@ export class LocalNode extends Node<LocalNode> {
       }
     } catch (e) {
       if (e instanceof Error) {
-        response.close(new DSError('failed', {msg: e.message}));
+        response.close(new DsError('failed', {msg: e.message}));
       } else {
-        response.close(new DSError('failed'));
+        response.close(new DsError('failed'));
       }
     }
   }

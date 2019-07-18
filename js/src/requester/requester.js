@@ -243,7 +243,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         newRequests.set(0, this._subscription);
         for (let [n, req] of this._requests) {
             if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
-                req._close(interfaces_1.DSError.DISCONNECTED);
+                req._close(interfaces_1.DsError.DISCONNECTED);
             }
             else {
                 newRequests.set(req.rid, req);

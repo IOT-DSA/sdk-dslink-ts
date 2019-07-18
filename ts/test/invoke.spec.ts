@@ -9,7 +9,7 @@ import {Requester} from "../src/requester/requester";
 import {RequesterListUpdate} from "../src/requester/request/list";
 import {RemoteNode} from "../src/requester/node_cache";
 import {RequesterInvokeUpdate} from "../src/requester/request/invoke";
-import {DSError} from "../src/common/interfaces";
+import {DsError} from "../src/common/interfaces";
 import {Path} from "../src/common/node";
 import {Table} from "../src/common/table";
 
@@ -59,7 +59,7 @@ describe('invoke', function () {
   });
 
   it('invoke invalid path', async function () {
-    let error: DSError;
+    let error: DsError;
     requester.invoke(resolve('invalidPath'), {}, (update: RequesterInvokeUpdate) => {
       error = update.error;
     });
@@ -68,7 +68,7 @@ describe('invoke', function () {
   });
 
   it('invoke once invalid path', async function () {
-    let error: DSError;
+    let error: DsError;
     try {
       await requester.invokeOnce(resolve('invalidPath'), {});
     } catch (e) {
@@ -104,8 +104,8 @@ describe('invoke', function () {
   });
 
   it('return error', async function () {
-    rootNode.action.onInvoke = () => DSError.INVALID_VALUE;
-    let error: DSError;
+    rootNode.action.onInvoke = () => DsError.INVALID_VALUE;
+    let error: DsError;
     try {
       await requester.invokeOnce(resolve('act'), {});
     } catch (e) {
@@ -118,7 +118,7 @@ describe('invoke', function () {
     rootNode.action.onInvoke = () => new Promise((resolve, reject) => {
       setTimeout(() => reject(), 0);
     });
-    let error: DSError;
+    let error: DsError;
     try {
       await requester.invokeOnce(resolve('act'), {});
     } catch (e) {

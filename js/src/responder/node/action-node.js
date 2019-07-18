@@ -24,7 +24,7 @@ class ActionNode extends node_state_1.LocalNode {
             result = this.onInvoke(params, parentNode, maxPermission);
         }
         catch (err) {
-            let error = new interfaces_1.DSError("invokeException", { msg: String(err) });
+            let error = new interfaces_1.DsError("invokeException", { msg: String(err) });
             response.close(error);
             return response;
         }
@@ -63,12 +63,12 @@ class ActionNode extends node_state_1.LocalNode {
             else if (rslt instanceof table_1.Table) {
                 response.updateStream(rslt.rows, { columns: rslt.columns, streamStatus: interfaces_1.StreamStatus.closed });
             }
-            else if (rslt instanceof interfaces_1.DSError) {
+            else if (rslt instanceof interfaces_1.DsError) {
                 response.close(rslt);
             }
             else if (rslt instanceof Promise) {
                 rslt.then(sendResult).catch((e) => {
-                    response.close(interfaces_1.DSError.FAILED);
+                    response.close(interfaces_1.DsError.FAILED);
                 });
             }
             else {

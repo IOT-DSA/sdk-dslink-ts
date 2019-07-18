@@ -143,7 +143,7 @@ class ErrorPhase {
 ErrorPhase.request = "request";
 ErrorPhase.response = "response";
 exports.ErrorPhase = ErrorPhase;
-class DSError {
+class DsError {
     constructor(type, options = {}) {
         this.type = type;
         this.msg = options.msg;
@@ -157,7 +157,7 @@ class DSError {
         }
     }
     static fromMap(m) {
-        let error = new DSError('');
+        let error = new DsError('');
         if (typeof m["type"] === 'string') {
             error.type = m["type"];
         }
@@ -205,14 +205,14 @@ class DSError {
         return rslt;
     }
 }
-DSError.PERMISSION_DENIED = new DSError("permissionDenied");
-DSError.INVALID_METHOD = new DSError("invalidMethod");
-DSError.NOT_IMPLEMENTED = new DSError("notImplemented");
-DSError.INVALID_PATH = new DSError("invalidPath");
-DSError.INVALID_PATHS = new DSError("invalidPaths");
-DSError.INVALID_VALUE = new DSError("invalidValue");
-DSError.INVALID_PARAMETER = new DSError("invalidParameter");
-DSError.DISCONNECTED = new DSError("disconnected", { phase: ErrorPhase.request });
-DSError.FAILED = new DSError("failed");
-exports.DSError = DSError;
+DsError.PERMISSION_DENIED = new DsError("permissionDenied");
+DsError.INVALID_METHOD = new DsError("invalidMethod");
+DsError.NOT_IMPLEMENTED = new DsError("notImplemented");
+DsError.INVALID_PATH = new DsError("invalidPath");
+DsError.INVALID_PATHS = new DsError("invalidPaths");
+DsError.INVALID_VALUE = new DsError("invalidValue");
+DsError.INVALID_PARAMETER = new DsError("invalidParameter");
+DsError.DISCONNECTED = new DsError("disconnected", { phase: ErrorPhase.request });
+DsError.FAILED = new DsError("failed");
+exports.DsError = DsError;
 //# sourceMappingURL=interfaces.js.map
