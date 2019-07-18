@@ -5,7 +5,7 @@ const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../.
 
 class BasicActionNode extends ActionNode {
   constructor(path, provider) {
-    super(path, provider, 'myaction', Permission.READ);
+    super(path, provider, Permission.READ);
   }
 
   initialize() {
@@ -28,7 +28,7 @@ class BasicActionNode extends ActionNode {
 
 class TableActionNode extends ActionNode {
   constructor(path, provider) {
-    super(path, provider, 'myaction', Permission.READ);
+    super(path, provider, Permission.READ);
   }
 
   initialize() {
@@ -48,7 +48,7 @@ class TableActionNode extends ActionNode {
 
 class DynamicTableAction extends ActionNode {
   constructor(path, provider) {
-    super(path, provider, 'myaction', Permission.READ);
+    super(path, provider, Permission.READ);
   }
 
   initialize() {

@@ -5,8 +5,10 @@ import {NodeProvider, Subscriber} from "../../src/responder/node_state";
 import {Permission} from "../../src/common/permission";
 
 class TestActionNode extends ActionNode {
+  static profileName = 'testaction';
+
   constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'testaction', Permission.READ);
+    super(path, provider, Permission.READ);
   }
 
   initialize() {
@@ -21,8 +23,10 @@ class TestActionNode extends ActionNode {
 }
 
 export class TestValueNode extends ValueNode {
+  static profileName = 'testvalue';
+
   constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'testvalue', 'number', Permission.WRITE);
+    super(path, provider, 'number', Permission.WRITE);
     this._value = 123;
   }
 
@@ -34,7 +38,7 @@ export class TestValueNode extends ValueNode {
 
 export class TestLazyValue extends ValueNode {
   constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'lazyvalue', 'number');
+    super(path, provider, 'number');
   }
 
 

@@ -7,8 +7,8 @@ import {Table} from "../../common/table";
 
 
 export class ActionNode extends LocalNode {
-  constructor(path: string, provider: NodeProvider, profileName: string = 'node', invokable = Permission.WRITE) {
-    super(path, provider, profileName);
+  constructor(path: string, provider: NodeProvider, invokable = Permission.WRITE) {
+    super(path, provider);
     this.setConfig('$invokable', Permission.names[invokable]);
   }
 

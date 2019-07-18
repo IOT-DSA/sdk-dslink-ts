@@ -5,6 +5,7 @@ const node_1 = require("../common/node");
 class BaseLocalNode extends node_state_1.LocalNode {
     createChild(name, cls, ...args) {
         let childPath = node_1.Path.concat(this.path, name);
+        // @ts-ignore
         let childNode = new cls(childPath, this.provider, ...args);
         this.addChild(name, childNode);
         return childNode;

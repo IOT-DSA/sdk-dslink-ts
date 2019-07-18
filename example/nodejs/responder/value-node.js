@@ -3,10 +3,11 @@ const {DSLink, RootNode, ValueNode, Permission} = require("../../../js/node");
 
 
 class NumberValueNode extends ValueNode {
+  static profileName = 'numberValue';    // $is = numberValue
+
   constructor(path, provider) {
     super(path,          // pass path to base class
       provider,          // pass provider to base class
-      'numberValue',     // $is = numberValue
       'number',          // value type
       Permission.WRITE,  // minimal permission required to set the value (optional)
       true               // save the node value during serialization (optional)
@@ -24,10 +25,11 @@ class NumberValueNode extends ValueNode {
 }
 
 class EnumValueNode extends ValueNode {
+  static profileName = 'enumValue';    // $is = numberValue
+
   constructor(path, provider) {
     super(path,          // pass path to base class
       provider,          // pass provider to base class
-      'enumValue',       // $is = enumValue
       'enum[off,on,auto]',// value type
       Permission.WRITE,  // minimal permission required to set the value (optional)
     );

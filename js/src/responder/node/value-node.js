@@ -6,8 +6,8 @@ const permission_1 = require("../../common/permission");
  * base class for a serializable value node
  */
 class ValueNode extends base_local_node_1.BaseLocalNode {
-    constructor(path, provider, profileName = 'node', type = 'dynamic', writable = permission_1.Permission.NEVER, saveValue = false) {
-        super(path, provider, profileName);
+    constructor(path, provider, type = 'dynamic', writable = permission_1.Permission.NEVER, saveValue = false) {
+        super(path, provider);
         this.setConfig('$type', type);
         this._saveValue = saveValue;
         if (writable < permission_1.Permission.NEVER) {

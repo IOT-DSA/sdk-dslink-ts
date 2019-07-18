@@ -5,7 +5,7 @@ import { NodeProvider } from "../node_state";
  */
 export declare class ValueNode extends BaseLocalNode {
     _saveValue: boolean;
-    constructor(path: string, provider: NodeProvider, profileName?: string, type?: string, writable?: number, saveValue?: boolean);
+    constructor(path: string, provider: NodeProvider, type?: string, writable?: number, saveValue?: boolean);
     save(): {
         [p: string]: any;
     };

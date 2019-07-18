@@ -17,11 +17,19 @@ export class LocalNode extends Node<LocalNode> {
 
   _state: NodeState;
 
-  constructor(path: string, provider: NodeProvider, profileName: string = 'node') {
-    super(profileName);
+  constructor(path: string, provider: NodeProvider) {
+    super();
     this.path = path;
     this.provider = provider;
+    this.checkProfile();
     this.initialize();
+  }
+
+  checkProfile() {
+    let profileName = (this.constructor as any).profileName;
+    if (typeof profileName === 'string') {
+      this.configs.set('$is', profileName);
+    }
   }
 
   initialize() {

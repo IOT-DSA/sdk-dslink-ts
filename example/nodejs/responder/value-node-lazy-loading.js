@@ -5,7 +5,6 @@ class LazyLoadValue extends ValueNode {
   constructor(path, provider) {
     super(path,          // pass path to base class
       provider,          // pass provider to base class
-      'lazyLoad',       // $is = lazyLoad
       'string',         // value type
     );
     // do not set value here

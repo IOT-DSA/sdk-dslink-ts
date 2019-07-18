@@ -5,8 +5,8 @@ const permission_1 = require("../../common/permission");
 const interfaces_1 = require("../../common/interfaces");
 const table_1 = require("../../common/table");
 class ActionNode extends node_state_1.LocalNode {
-    constructor(path, provider, profileName = 'node', invokable = permission_1.Permission.WRITE) {
-        super(path, provider, profileName);
+    constructor(path, provider, invokable = permission_1.Permission.WRITE) {
+        super(path, provider);
         this.setConfig('$invokable', permission_1.Permission.names[invokable]);
     }
     /**

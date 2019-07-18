@@ -8,6 +8,7 @@ export class BaseLocalNode extends LocalNode {
 
   createChild(name: string, cls: typeof LocalNode, ...args: any[]): LocalNode {
     let childPath = Path.concat(this.path, name);
+    // @ts-ignore
     let childNode = new cls(childPath, this.provider, ...args);
     this.addChild(name, childNode);
     return childNode;

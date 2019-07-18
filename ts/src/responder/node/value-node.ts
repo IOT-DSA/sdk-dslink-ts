@@ -9,8 +9,8 @@ export class ValueNode extends BaseLocalNode {
 
   _saveValue: boolean;
 
-  constructor(path: string, provider: NodeProvider, profileName: string = 'node', type = 'dynamic', writable = Permission.NEVER, saveValue = false) {
-    super(path, provider, profileName);
+  constructor(path: string, provider: NodeProvider, type = 'dynamic', writable = Permission.NEVER, saveValue = false) {
+    super(path, provider);
     this.setConfig('$type', type);
     this._saveValue = saveValue;
     if (writable < Permission.NEVER) {
