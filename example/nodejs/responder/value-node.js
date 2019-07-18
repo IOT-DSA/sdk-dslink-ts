@@ -2,11 +2,11 @@
 const {DSLink, RootNode, ValueNode, Permission} = require("../../../js/node");
 
 
-class MyValueNode extends ValueNode {
+class NumberValueNode extends ValueNode {
   constructor(path, provider) {
     super(path,          // pass path to base class
       provider,          // pass provider to base class
-      'myvalue',         // $is = myvalue
+      'numberValue',     // $is = numberValue
       'number',          // value type
       Permission.WRITE,  // minimal permission required to set the value (optional)
       true               // save the node value during serialization (optional)
@@ -23,10 +23,22 @@ class MyValueNode extends ValueNode {
   }
 }
 
+class EnumValueNode extends ValueNode {
+  constructor(path, provider) {
+    super(path,          // pass path to base class
+      provider,          // pass provider to base class
+      'enumValue',       // $is = enumValue
+      'enum[off,on,auto]',// value type
+      Permission.WRITE,  // minimal permission required to set the value (optional)
+    );
+    this._value = 'off';
+  }
+}
 
 async function main() {
   let rootNode = new RootNode();
-  rootNode.createChild('value', MyValueNode);
+  rootNode.createChild('numberValue', NumberValueNode);
+  rootNode.createChild('enumValue', EnumValueNode);
   let link = new DSLink('responder', {rootNode, saveNodes: true});
   await link.connect();
 }

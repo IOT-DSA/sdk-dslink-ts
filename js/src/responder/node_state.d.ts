@@ -22,6 +22,7 @@ export declare class LocalNode extends Node<LocalNode> {
     setAttribute(name: string, value: any, responder?: Responder, response?: Response): void;
     removeAttribute(name: string, responder?: Responder, response?: Response): void;
     _value: any;
+    onSubscribe(subscriber: Subscriber): void;
     setValue(value: any, responder?: Responder, response?: Response, maxPermission?: number): void;
     /**
      * @return true when the change is valid
@@ -53,7 +54,7 @@ export declare class NodeProvider {
     onSaveTimer: () => void;
     finishSaveTimer(): void;
 }
-interface Subscriber {
+export interface Subscriber {
     addValue: ValueUpdateCallback;
 }
 export declare class NodeState {

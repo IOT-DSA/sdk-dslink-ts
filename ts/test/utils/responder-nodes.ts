@@ -1,7 +1,7 @@
 import {ActionNode} from "../../src/responder/node/action-node";
 import {ValueNode} from "../../src/responder/node/value-node";
 import {RootNode} from "../../src/responder/node/root-node";
-import {NodeProvider} from "../../src/responder/node_state";
+import {NodeProvider, Subscriber} from "../../src/responder/node_state";
 import {Permission} from "../../src/common/permission";
 
 class TestActionNode extends ActionNode {
@@ -32,12 +32,27 @@ export class TestValueNode extends ValueNode {
   }
 }
 
+export class TestLazyValue extends ValueNode {
+  constructor(path: string, provider: NodeProvider) {
+    super(path, provider, 'lazyvalue', 'number');
+  }
+
+
+  onSubscribe(subscribed: Subscriber) {
+    if (subscribed) {
+      setTimeout(() => this.setValue('ready'), 10);
+    }
+  }
+}
+
 export class TestRootNode extends RootNode {
   val: TestValueNode;
+  lazy: TestLazyValue;
   action: TestActionNode;
 
   initialize() {
     this.val = this.createChild('val', TestValueNode) as TestValueNode;
+    this.lazy = this.createChild('lazy', TestLazyValue) as TestLazyValue;
     this.action = this.createChild('act', TestActionNode) as TestActionNode;
   }
 }

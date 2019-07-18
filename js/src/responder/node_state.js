@@ -8,7 +8,6 @@ const interfaces_1 = require("../common/interfaces");
 class LocalNode extends node_1.Node {
     constructor(path, provider, profileName = 'node') {
         super(profileName);
-        this._value = null;
         this.path = path;
         this.provider = provider;
         this.initialize();
@@ -108,6 +107,8 @@ class LocalNode extends node_1.Node {
         if (response) {
             response.close();
         }
+    }
+    onSubscribe(subscriber) {
     }
     /// Called by the link internals to set a value of a node.
     setValue(value, responder, response, maxPermission = permission_1.Permission.CONFIG) {
@@ -242,6 +243,7 @@ class NodeState {
     updateValue(value) {
         if (value === undefined) {
             // value not ready
+            this._lastValueUpdate = null;
             return;
         }
         if (this._node._value instanceof value_1.ValueUpdate) {
@@ -258,6 +260,7 @@ class NodeState {
         this._node = node;
         if (node) {
             node._state = this;
+            node.onSubscribe(this._subscriber);
             this.updateValue(node._value);
             for (let listener of this.listStream._listeners) {
                 listener(null); // use null to update all
@@ -285,6 +288,9 @@ class NodeState {
         }
         else if (this._lastValueUpdate) {
             s.addValue(this._lastValueUpdate);
+        }
+        if (this._node) {
+            this._node.onSubscribe(s);
         }
     }
     checkDestroy() {

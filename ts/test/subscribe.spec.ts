@@ -1,6 +1,6 @@
 import {MockBroker} from "./utils/mock-broker";
 import {assert} from "chai";
-import {TestRootNode} from "./utils/responder-nodes";
+import {TestLazyValue, TestRootNode} from "./utils/responder-nodes";
 import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
@@ -61,6 +61,19 @@ describe('subscribe', function () {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
     await sleep();
     assert.equal(requester._subscription.subscriptions.size, 0); // everything should be unsubscribed
+  });
+
+  it('lazy value load', async function () {
+    assert.isUndefined(rootNode.lazy._value);
+
+    // value exist only after subscription
+    assert.equal((await requester.subscribeOnce(resolve('lazy'))).value, 'ready');
+
+
+    setTimeout(() => rootNode.createChild('lazy2', TestLazyValue), 10);
+    // subscribe before value node gets created
+    assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, 'ready');
+
   });
 
   it('qos 0', async function () {

@@ -141,7 +141,11 @@ export class LocalNode extends Node<LocalNode> {
     }
   }
 
-  _value: any = null;
+  // undefined value
+  _value: any;
+
+  onSubscribe(subscriber: Subscriber) {
+  }
 
   /// Called by the link internals to set a value of a node.
   setValue(value: any, responder?: Responder, response?: Response,
@@ -271,7 +275,7 @@ export class NodeProvider {
   }
 }
 
-interface Subscriber {
+export interface Subscriber {
   addValue: ValueUpdateCallback;
 }
 
@@ -314,6 +318,7 @@ export class NodeState {
   updateValue(value: any) {
     if (value === undefined) {
       // value not ready
+      this._lastValueUpdate = null;
       return;
     }
     if (this._node._value instanceof ValueUpdate) {
@@ -330,6 +335,7 @@ export class NodeState {
     this._node = node;
     if (node) {
       node._state = this;
+      node.onSubscribe(this._subscriber);
       this.updateValue(node._value);
       for (let listener of this.listStream._listeners) {
         listener(null); // use null to update all
@@ -356,6 +362,9 @@ export class NodeState {
       this.checkDestroy();
     } else if (this._lastValueUpdate) {
       s.addValue(this._lastValueUpdate);
+    }
+    if (this._node) {
+      this._node.onSubscribe(s);
     }
   }
 
