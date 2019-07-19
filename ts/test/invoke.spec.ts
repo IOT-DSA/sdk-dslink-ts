@@ -4,7 +4,6 @@ import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
 import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/nodejs/client-link";
 import {Requester} from "../src/requester/requester";
 import {RequesterListUpdate} from "../src/requester/request/list";
 import {RemoteNode} from "../src/requester/node_cache";
@@ -12,6 +11,42 @@ import {RequesterInvokeUpdate} from "../src/requester/request/invoke";
 import {DsError} from "../src/common/interfaces";
 import {Path} from "../src/common/node";
 import {Table} from "../src/common/table";
+import {ValueNode} from "../src/responder/node/value-node";
+import {LocalNode, NodeProvider, Subscriber} from "../src/responder/node_state";
+import {ActionNode, HttpClientLink, Permission} from "../node";
+import {InvokeResponse} from "../src/responder/response/invoke";
+import {async} from "q";
+
+
+class TestStreamAction extends ActionNode {
+
+  initialize() {
+    // let requester know the result could be a stream
+    this.setConfig('$result', 'stream');
+    // output structure
+    this.setConfig('$columns', [{name: 'output', type: 'string'}]);
+  }
+
+  // override the raw invoke method instead of onInvoke
+  invoke(
+    params: {[key: string]: any},
+    response: InvokeResponse,
+    parentNode: LocalNode, maxPermission?: number) {
+    // the requester won't receive update when status is initialize
+    response.updateStream([[0]], {streamStatus: 'initialize'});
+
+    setTimeout(() => {
+      // requester callback will be called only after it receives the first open status
+      response.updateStream([[1], [2], [3]], {streamStatus: 'open'});
+    }, 10);
+
+    setTimeout(() => {
+      response.updateStream([[4], [5], [6]], {streamStatus: 'closed'});
+    }, 20);
+
+    return response;
+  }
+}
 
 describe('invoke', function () {
   let broker = new MockBroker();
@@ -125,5 +160,11 @@ describe('invoke', function () {
       error = e;
     }
     assert.equal(error.type, 'failed');
+  });
+
+  it('stream response', async function () {
+    rootNode.createChild('stream', TestStreamAction);
+    let response = await requester.invokeOnce(resolve('stream'), {});
+    assert.deepEqual(response.rows, [[0], [1], [2], [3]]);
   });
 });

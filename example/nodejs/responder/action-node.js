@@ -30,9 +30,6 @@ class BasicActionNode extends ActionNode {
 
 // action that returns a table
 class TableActionNode extends ActionNode {
-  constructor(path, provider) {
-    super(path, provider, Permission.READ);
-  }
 
   initialize() {
     // let requester know the result could be more than one row
@@ -51,9 +48,6 @@ class TableActionNode extends ActionNode {
 
 // action that doesn't have a known column structure until invoked
 class DynamicTableAction extends ActionNode {
-  constructor(path, provider) {
-    super(path, provider, Permission.READ);
-  }
 
   initialize() {
     // let requester know the result could be more than one row

@@ -36,19 +36,6 @@ export class TestValueNode extends ValueNode {
   }
 }
 
-export class TestLazyValue extends ValueNode {
-  constructor(path: string, provider: NodeProvider) {
-    super(path, provider, 'number');
-  }
-
-
-  onSubscribe(subscribed: Subscriber) {
-    if (subscribed) {
-      setTimeout(() => this.setValue('ready'), 10);
-    }
-  }
-}
-
 export class TestRootNode extends RootNode {
   val: TestValueNode;
   action: TestActionNode;

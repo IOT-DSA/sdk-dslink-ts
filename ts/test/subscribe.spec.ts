@@ -1,6 +1,6 @@
 import {MockBroker} from "./utils/mock-broker";
 import {assert} from "chai";
-import {TestLazyValue, TestRootNode} from "./utils/responder-nodes";
+import {TestRootNode} from "./utils/responder-nodes";
 import {shouldHappen} from "./utils/async-test";
 import {ValueUpdate} from "../src/common/value";
 import {Logger, logger} from "../src/utils/logger";
@@ -8,6 +8,20 @@ import {HttpClientLink} from "../src/nodejs/client-link";
 import {Requester} from "../src/requester/requester";
 import {Path} from "../src/common/node";
 import {sleep} from "../src/utils/async";
+import {ValueNode} from "../src/responder/node/value-node";
+import {NodeProvider, Subscriber} from "../src/responder/node_state";
+
+class TestLazyValue extends ValueNode {
+  constructor(path: string, provider: NodeProvider) {
+    super(path, provider, 'number');
+  }
+
+  onSubscribe(subscribed: Subscriber) {
+    if (subscribed) {
+      setTimeout(() => this.setValue('ready'), 10);
+    }
+  }
+}
 
 describe('subscribe', function () {
   let broker = new MockBroker();

@@ -231,7 +231,15 @@ export class Requester extends ConnectionHandler {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
     return new Promise((resolve, reject) => {
+      let mergedUpdate: any[] = [];
       stream.listen((update: RequesterInvokeUpdate) => {
+        if (update.streamStatus === 'initialize') {
+          // not ready yet
+          mergedUpdate = mergedUpdate.concat(update.updates);
+          return;
+        } else if (mergedUpdate.length) {
+          update.updates = mergedUpdate.concat(update.updates);
+        }
         if (update.streamStatus !== "closed") {
           stream.close();
         }

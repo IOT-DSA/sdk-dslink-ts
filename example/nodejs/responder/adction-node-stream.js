@@ -4,9 +4,6 @@ const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../.
 
 
 class StreamActionNode extends ActionNode {
-  constructor(path, provider) {
-    super(path, provider);
-  }
 
   initialize() {
     // let requester know the result could be a stream
@@ -21,7 +18,7 @@ class StreamActionNode extends ActionNode {
     response.updateStream([[0]], {streamStatus: 'initialize'});
 
     setTimeout(() => {
-      // requester callback will be called only when it receive the first open status
+      // requester callback will be called only after it receives the first open status
       response.updateStream([[1], [2], [3]], {streamStatus: 'open'});
     }, 1000);
 
@@ -33,6 +30,8 @@ class StreamActionNode extends ActionNode {
       // stream must be closed, otherwise it will cause memory leak on both requester and responder
       response.updateStream([[7], [8], [9]], {streamStatus: 'closed'});
     }, 3000);
+
+    return response;
   }
 }
 
