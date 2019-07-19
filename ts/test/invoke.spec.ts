@@ -166,5 +166,20 @@ describe('invoke', function () {
     rootNode.createChild('stream', TestStreamAction);
     let response = await requester.invokeOnce(resolve('stream'), {});
     assert.deepEqual(response.rows, [[0], [1], [2], [3]]);
+
+    let rows1: any[];
+    let rows2: any[];
+
+    let data: any;
+    requester.invoke(resolve('stream'), {}, (update: RequesterInvokeUpdate) => {
+      if (rows1) {
+        rows2 = update.rows;
+      } else {
+        rows1 = update.rows;
+      }
+    });
+    await shouldHappen(() => rows2);
+    assert.deepEqual(rows1, [[0], [1], [2], [3]]);
+    assert.deepEqual(rows2, [[0], [1], [2], [3], [4], [5], [6]]);
   });
 });

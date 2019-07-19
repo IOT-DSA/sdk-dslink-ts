@@ -218,28 +218,35 @@ export class Requester extends ConnectionHandler {
          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
+
+    let mergedUpdate: any[] = [];
+    let mappedStream: RequesterInvokeStream = new RequesterInvokeStream();
+    mappedStream.request = stream.request;
+    stream.listen((update: RequesterInvokeUpdate) => {
+      if (mergedUpdate) {
+        update.updates = mergedUpdate.concat(update.updates);
+      }
+      mergedUpdate = update.updates;
+      if (update.streamStatus !== 'initialize') {
+        mappedStream.add(update);
+      }
+    });
+
     if (callback) {
-      stream.listen(callback);
+      mappedStream.listen(callback);
     }
-    return stream;
+    return mappedStream;
   }
 
   /**
    * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
    */
   invokeOnce(path: string, params: {[key: string]: any} = {}, maxPermission: number = Permission.CONFIG): Promise<RequesterInvokeUpdate> {
-    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
-    let stream = node._invoke(params, this, maxPermission);
+    let stream = this.invoke(path, params, null, maxPermission);
     return new Promise((resolve, reject) => {
-      let mergedUpdate: any[] = [];
+
       stream.listen((update: RequesterInvokeUpdate) => {
-        if (update.streamStatus === 'initialize') {
-          // not ready yet
-          mergedUpdate = mergedUpdate.concat(update.updates);
-          return;
-        } else if (mergedUpdate.length) {
-          update.updates = mergedUpdate.concat(update.updates);
-        }
+
         if (update.streamStatus !== "closed") {
           stream.close();
         }

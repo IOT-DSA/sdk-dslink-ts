@@ -30,7 +30,7 @@ describe('save nodes', function () {
       link.close();
 
       // give the provider enough time to save the nodes
-      await sleep(10);
+      await sleep(20);
     }
 
     {

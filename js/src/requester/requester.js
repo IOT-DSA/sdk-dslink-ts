@@ -8,6 +8,7 @@ const subscribe_1 = require("./request/subscribe");
 const interfaces_1 = require("../common/interfaces");
 const list_1 = require("./request/list");
 const permission_1 = require("../common/permission");
+const invoke_1 = require("./request/invoke");
 const set_1 = require("./request/set");
 const remove_1 = require("./request/remove");
 class Requester extends connection_handler_1.ConnectionHandler {
@@ -186,28 +187,30 @@ class Requester extends connection_handler_1.ConnectionHandler {
     invoke(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
         let node = this.nodeCache.getRemoteNode(path);
         let stream = node._invoke(params, this, maxPermission);
+        let mergedUpdate = [];
+        let mappedStream = new invoke_1.RequesterInvokeStream();
+        mappedStream.request = stream.request;
+        stream.listen((update) => {
+            if (mergedUpdate) {
+                update.updates = mergedUpdate.concat(update.updates);
+            }
+            mergedUpdate = update.updates;
+            if (update.streamStatus !== 'initialize') {
+                mappedStream.add(update);
+            }
+        });
         if (callback) {
-            stream.listen(callback);
+            mappedStream.listen(callback);
         }
-        return stream;
+        return mappedStream;
     }
     /**
      * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
      */
     invokeOnce(path, params = {}, maxPermission = permission_1.Permission.CONFIG) {
-        let node = this.nodeCache.getRemoteNode(path);
-        let stream = node._invoke(params, this, maxPermission);
+        let stream = this.invoke(path, params, null, maxPermission);
         return new Promise((resolve, reject) => {
-            let mergedUpdate = [];
             stream.listen((update) => {
-                if (update.streamStatus === 'initialize') {
-                    // not ready yet
-                    mergedUpdate = mergedUpdate.concat(update.updates);
-                    return;
-                }
-                else if (mergedUpdate.length) {
-                    update.updates = mergedUpdate.concat(update.updates);
-                }
                 if (update.streamStatus !== "closed") {
                     stream.close();
                 }
