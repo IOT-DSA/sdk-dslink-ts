@@ -260,6 +260,21 @@ export class Requester extends ConnectionHandler {
   }
 
   /**
+   * Invoke a node action, and receive raw update.
+   * Steaming updates won't be merged
+   */
+  invokeStream(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
+         maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
+    let stream = node._invoke(params, this, maxPermission);
+
+    if (callback) {
+      stream.listen(callback);
+    }
+    return stream;
+  }
+
+  /**
    * Set the value of an attribute, the attribute will be created if not exists
    */
   set(path: string, value: any,

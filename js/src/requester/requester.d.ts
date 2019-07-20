@@ -88,6 +88,13 @@ export declare class Requester extends ConnectionHandler {
         [key: string]: any;
     }, maxPermission?: number): Promise<RequesterInvokeUpdate>;
     /**
+     * Invoke a node action, and receive raw update.
+     * Steaming updates won't be merged
+     */
+    invokeStream(path: string, params?: {
+        [key: string]: any;
+    }, callback?: Listener<RequesterInvokeUpdate>, maxPermission?: number): RequesterInvokeStream;
+    /**
      * Set the value of an attribute, the attribute will be created if not exists
      */
     set(path: string, value: any, maxPermission?: number): Promise<RequesterUpdate>;

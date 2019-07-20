@@ -224,6 +224,18 @@ class Requester extends connection_handler_1.ConnectionHandler {
         });
     }
     /**
+     * Invoke a node action, and receive raw update.
+     * Steaming updates won't be merged
+     */
+    invokeStream(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
+        let node = this.nodeCache.getRemoteNode(path);
+        let stream = node._invoke(params, this, maxPermission);
+        if (callback) {
+            stream.listen(callback);
+        }
+        return stream;
+    }
+    /**
      * Set the value of an attribute, the attribute will be created if not exists
      */
     set(path, value, maxPermission = permission_1.Permission.CONFIG) {
