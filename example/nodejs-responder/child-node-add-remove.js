@@ -4,6 +4,7 @@ const {DSLink, BaseLocalNode, RootNode, ActionNode, Permission, Table, DsError} 
 class ChildNode extends BaseLocalNode {
 
   initialize() {
+    // actions to add remove nodes
     this.createChild('add', AddChildAction);
     if (this.path !== '/main') {
       this.createChild('remove', RemoveSelfAction);
@@ -11,6 +12,7 @@ class ChildNode extends BaseLocalNode {
   }
 
   loadChild(name, data) {
+    // create nodes during deserialization
     if (!this.children.has(name)) {
       if (data['$is'] === ChildNode.profileName) {
         let node = this.createChild(name, ChildNode);
@@ -20,7 +22,9 @@ class ChildNode extends BaseLocalNode {
   }
 }
 
+// profile name, need this to make sure the nodes loaded from deserialization is the type we need
 ChildNode.profileName = 'childNode';
+// save nodes whenever there is a change
 ChildNode.saveNodeOnChange = true;
 
 class AddChildAction extends ActionNode {
@@ -42,55 +46,6 @@ class AddChildAction extends ActionNode {
 class RemoveSelfAction extends ActionNode {
   onInvoke(params, parentNode) {
     parentNode.provider.removeNode(parentNode.path);
-  }
-}
-
-// action that returns a table
-class TableActionNode extends ActionNode {
-  constructor(path, provider) {
-    super(path, provider, Permission.READ);
-  }
-
-  initialize() {
-    // let requester know the result could be more than one row
-    this.setConfig('$result', 'table');
-    // input parameters (optional)
-    this.setConfig('$params', [{name: 'input', type: 'number'}]);
-    // output structure
-    this.setConfig('$columns', [{name: 'output', type: 'number'}]);
-  }
-
-  onInvoke(params) {
-    let {input} = params;
-    return [[input], [input * input]];
-  }
-}
-
-// action that doesn't have a known column structure until invoked
-class DynamicTableAction extends ActionNode {
-  constructor(path, provider) {
-    super(path, provider, Permission.READ);
-  }
-
-  initialize() {
-    // let requester know the result could be more than one row
-    this.setConfig('$result', 'table');
-    // input parameters (optional)
-    this.setConfig('$params', [{name: 'name', type: 'string', placeholder: 'name of result column'}]);
-
-    // output structure unknown, don't set $column
-  }
-
-  onInvoke(params) {
-    let {name} = params;
-    // return a table that has dynamic structure
-    return Table.parse(
-      [{name: name, type: 'number'}], // columns with a dynamic column name
-      [  // rows
-        [1],
-        [2]
-      ]
-    );
   }
 }
 

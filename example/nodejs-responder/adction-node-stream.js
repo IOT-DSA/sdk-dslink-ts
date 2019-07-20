@@ -3,6 +3,7 @@
 const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../../js/node");
 
 
+// action with a streaming response
 class StreamActionNode extends ActionNode {
 
   initialize() {

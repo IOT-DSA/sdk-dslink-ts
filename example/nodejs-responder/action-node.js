@@ -2,7 +2,7 @@
 
 const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../../js/node");
 
-
+// basic action
 class BasicActionNode extends ActionNode {
   constructor(path, provider) {
     super(path, provider,

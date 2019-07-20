@@ -12,11 +12,10 @@ class LazyLoadValue extends ValueNode {
 
   onSubscribe(subscriber) {
     if (subscriber) {
-      // load the value only when there is a subscriber
+      // load the value only when there is a subscriber, (use setTimeout to simulate the delay)
       setTimeout(() => {
         // requester wont receive any update until the value is loaded
-        let loadedValue = 'ready'; // value loaded from file / database / remote device
-        this.setValue(loadedValue);
+        this.setValue('ready');
       }, 10);
     }
   }
