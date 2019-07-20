@@ -1,6 +1,6 @@
 // const { DSLink, RootNode, ActionNode, Permission} = require("dslink");
 
-const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../../../js/node");
+const {DSLink, RootNode, ActionNode, Permission, Table, DsError} = require("../../js/node");
 
 
 class BasicActionNode extends ActionNode {

@@ -1,14 +1,27 @@
 // const { DSLink, RootNode, ActionNode, Permission} = require("dslink");
-
-
-const {DSLink, BaseLocalNode, RootNode, ActionNode, Permission, Table, DsError} = require("../../../js/node");
+const {DSLink, BaseLocalNode, RootNode, ActionNode, Permission, Table, DsError} = require("../../js/node");
 
 class ChildNode extends BaseLocalNode {
+
   initialize() {
     this.createChild('add', AddChildAction);
-    this.createChild('remove', RemoveSelfAction);
+    if (this.path !== '/main') {
+      this.createChild('remove', RemoveSelfAction);
+    }
+  }
+
+  loadChild(name, data) {
+    if (!this.children.has(name)) {
+      if (data['$is'] === ChildNode.profileName) {
+        let node = this.createChild(name, ChildNode);
+        node.load(data);
+      }
+    }
   }
 }
+
+ChildNode.profileName = 'childNode';
+ChildNode.saveNodeOnChange = true;
 
 class AddChildAction extends ActionNode {
 
@@ -84,7 +97,7 @@ class DynamicTableAction extends ActionNode {
 async function main() {
   let rootNode = new RootNode();
   rootNode.createChild('main', ChildNode);
-  let link = new DSLink('responder', {rootNode});
+  let link = new DSLink('responder', {rootNode, saveNodes: true});
   await link.connect();
 }
 

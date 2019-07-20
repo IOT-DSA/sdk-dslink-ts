@@ -68,25 +68,24 @@ export class BaseLocalNode extends LocalNode {
         default:
           let childData = data[key];
           if (childData instanceof Object) {
-            let newChild = this.loadChild(key, childData);
-            if (newChild) {
-              this.addChild(key, newChild);
-            }
+            this.loadChild(key, childData);
           }
       }
     }
   }
 
   /**
-   * load child, return the child if a new child node is created
+   * load data into existing child
+   * or create new child
    */
-  loadChild(key: string, data: {[key: string]: any}): LocalNode {
+  loadChild(key: string, data: {[key: string]: any}) {
     let child = this.children.get(key);
     if (child instanceof BaseLocalNode) {
       // load data to existing child
       child.load(data);
     }
-    // default implementation doesn't know how to create a new child, return null
-    return null;
+    // default implementation doesn't know how to create a new child
+
   }
+
 }

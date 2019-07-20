@@ -1,5 +1,5 @@
 // const {DSLink} = require("dslink");
-const {DSLink} = require("../../../js/node");
+const {DSLink} = require("../../js/node");
 
 async function main() {
   let link = new DSLink('requester',

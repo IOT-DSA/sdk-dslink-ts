@@ -1,5 +1,5 @@
 // const { DSLink, RootNode, ValueNode, Permission} = require("dslink");
-const {DSLink, RootNode, ValueNode, Permission} = require("../../../js/node");
+const {DSLink, RootNode, ValueNode, Permission} = require("../../js/node");
 
 class LazyLoadValue extends ValueNode {
   constructor(path, provider) {

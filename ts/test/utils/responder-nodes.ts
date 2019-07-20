@@ -24,6 +24,7 @@ class TestActionNode extends ActionNode {
 
 export class TestValueNode extends ValueNode {
   static profileName = 'testvalue';
+  static saveNodeOnChange = true;
 
   constructor(path: string, provider: NodeProvider) {
     super(path, provider, 'number', Permission.WRITE);

@@ -27,7 +27,9 @@ class LocalNode extends node_1.Node {
             node._connectState();
             this._state.listStream.add(name);
         }
-        this.provider.save();
+        if (this._state && node.constructor.saveNodeOnChange) {
+            this.provider.save();
+        }
     }
     removeChild(nameOrNode) {
         let name;
@@ -51,7 +53,9 @@ class LocalNode extends node_1.Node {
             if (this._state) {
                 this._state.listStream.add(name);
             }
-            this.provider.save();
+            if (this._state && node.constructor.saveNodeOnChange) {
+                this.provider.save();
+            }
         }
     }
     _connectState() {
@@ -75,7 +79,9 @@ class LocalNode extends node_1.Node {
             name = `\$${name}`;
         }
         this.configs.set(name, value);
-        this.provider.save();
+        if (this._state && this.constructor.saveNodeOnChange) {
+            this.provider.save();
+        }
         if (this._state) {
             this._state.listStream.add(name);
         }
@@ -86,7 +92,9 @@ class LocalNode extends node_1.Node {
             name = `@${name}`;
         }
         this.attributes.set(name, value);
-        this.provider.save();
+        if (this._state && this.constructor.saveNodeOnChange) {
+            this.provider.save();
+        }
         if (this._state) {
             this._state.listStream.add(name);
         }
@@ -100,7 +108,9 @@ class LocalNode extends node_1.Node {
             name = `@${name}`;
         }
         this.attributes.delete(name);
-        this.provider.save();
+        if (this._state && this.constructor.saveNodeOnChange) {
+            this.provider.save();
+        }
         if (this._state) {
             this._state.listStream.add(name);
         }

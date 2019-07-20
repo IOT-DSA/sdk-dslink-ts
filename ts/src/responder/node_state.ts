@@ -40,7 +40,9 @@ export class LocalNode extends Node<LocalNode> {
       node._connectState();
       this._state.listStream.add(name);
     }
-    this.provider.save();
+    if (this._state && (node.constructor as any).saveNodeOnChange) {
+      this.provider.save();
+    }
   }
 
   removeChild(nameOrNode: string | LocalNode) {
@@ -64,7 +66,9 @@ export class LocalNode extends Node<LocalNode> {
       if (this._state) {
         this._state.listStream.add(name);
       }
-      this.provider.save();
+      if (this._state && (node.constructor as any).saveNodeOnChange) {
+        this.provider.save();
+      }
     }
   }
 
@@ -99,7 +103,9 @@ export class LocalNode extends Node<LocalNode> {
     }
 
     this.configs.set(name, value);
-    this.provider.save();
+    if (this._state && (this.constructor as any).saveNodeOnChange) {
+      this.provider.save();
+    }
     if (this._state) {
       this._state.listStream.add(name);
     }
@@ -113,7 +119,9 @@ export class LocalNode extends Node<LocalNode> {
     }
 
     this.attributes.set(name, value);
-    this.provider.save();
+    if (this._state && (this.constructor as any).saveNodeOnChange) {
+      this.provider.save();
+    }
     if (this._state) {
       this._state.listStream.add(name);
     }
@@ -130,7 +138,9 @@ export class LocalNode extends Node<LocalNode> {
     }
 
     this.attributes.delete(name);
-    this.provider.save();
+    if (this._state && (this.constructor as any).saveNodeOnChange) {
+      this.provider.save();
+    }
     if (this._state) {
       this._state.listStream.add(name);
     }
