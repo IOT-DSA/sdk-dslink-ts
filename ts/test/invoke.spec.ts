@@ -15,8 +15,6 @@ import {ValueNode} from "../src/responder/node/value-node";
 import {LocalNode, NodeProvider, Subscriber} from "../src/responder/node_state";
 import {ActionNode, HttpClientLink, Permission} from "../node";
 import {InvokeResponse} from "../src/responder/response/invoke";
-import {async} from "q";
-
 
 class TestStreamAction extends ActionNode {
 

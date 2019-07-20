@@ -44,6 +44,7 @@ export declare class NodeProvider {
     _states: Map<string, NodeState>;
     getNode(path: string): LocalNode;
     createState(path: string): NodeState;
+    removeNode(path: string): void;
     _root: LocalNode;
     _saveFunction: (data: any) => void;
     constructor(options?: ProviderOptions);

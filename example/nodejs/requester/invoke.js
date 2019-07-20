@@ -20,6 +20,7 @@ async function main() {
     ).result.log
   );
 
+  // invoke with a callback, get one or more response
   let invoke = requester.invoke(
     '/sys/get_server_log',
     {lines: 1}, // parameters
@@ -29,17 +30,6 @@ async function main() {
       console.log(update.result);  // convert the first row to a js object, use column names as keys
     }
   );
-  await sleep(1);
-
-  // invoke.close() is not necessary here, since it will be closed by responder automatically
-  // but for actions with streaming result, the request must be closed from requester side
-  invoke.close();
-
-  // stream multiple requests on the same invoke stream ( only for special usecases )
-  // most invoke action don't support request streaming
-  // and this is NOT the right way to invoke the same action twice
-  let streamInvoke = requester.invoke('/data/publish', {Path: '/data/v1', Value: Math.random()});
-  streamInvoke.addReqParams({Path: '/data/v2', Value: Math.random()});
 
 }
 

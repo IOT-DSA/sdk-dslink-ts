@@ -193,6 +193,18 @@ class NodeProvider {
         this._states.set(path, state);
         return state;
     }
+    removeNode(path) {
+        let pos = path.lastIndexOf('/');
+        if (pos > 0) {
+            let parentNode = this.getNode(path.substring(0, pos));
+            if (parentNode) {
+                parentNode.removeChild(path.substring(pos + 1));
+            }
+        }
+        else if (pos === 0) {
+            this._root.removeChild(path.substring(1));
+        }
+    }
     setRoot(node) {
         if (!this._root) {
             this._root = node;

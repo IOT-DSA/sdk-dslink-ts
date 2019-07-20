@@ -220,6 +220,18 @@ export class NodeProvider {
     return state;
   }
 
+  removeNode(path: string) {
+    let pos = path.lastIndexOf('/');
+    if (pos > 0) {
+      let parentNode = this.getNode(path.substring(0, pos));
+      if (parentNode) {
+        parentNode.removeChild(path.substring(pos + 1));
+      }
+    } else if (pos === 0) {
+      this._root.removeChild(path.substring(1));
+    }
+  }
+
   _root: LocalNode;
   _saveFunction: (data: any) => void;
 
