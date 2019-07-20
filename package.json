@@ -41,7 +41,7 @@
     "yargs": "^13.2.4"
   },
   "scripts": {
-    "js-example": "parcel example/web/basic.html --out-dir temp --open --no-source-maps ",
+    "js-example": "parcel example/browser/basic.html --out-dir temp --open --no-source-maps ",
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.ts",
     "test": "mocha 'ts/**/*.spec.ts'",

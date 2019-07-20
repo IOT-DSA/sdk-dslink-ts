@@ -23,7 +23,7 @@ You can zip a javascript dslink and install it on dglux-server.
 
 [A working example](https://github.com/IOT-DSA/template-dslink-javascript)
 
-## Javascript Example
+## Nodejs Example (responder)
 
 A sample dslink with a basic value node at the path /value
 
@@ -43,6 +43,25 @@ function main() {
 
   let link = new DSLink('mydslink', {rootNode});
   link.connect();
+}
+
+main();
+
+```
+
+
+## Browser Example (requester only)
+
+```javascript
+const {DSLink} = require('dslink/js/web');
+
+async function main() {
+    let link = new DSLink('ws://localhost:8080/ws', 'json');
+    link.connect();
+
+    let {requester} = link;
+
+    console.log(await requester.subscribeOnce('/sys/dataOutPerSecond'));
 }
 
 main();
