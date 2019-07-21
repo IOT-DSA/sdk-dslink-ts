@@ -5942,17 +5942,7 @@ class ClientLink extends BaseLink {
 
 }
 
-exports.ClientLink = ClientLink; /// DSA Stream Status
-
-class StreamStatus {} /// Stream should be initialized.
-
-
-StreamStatus.initialize = "initialize"; /// Stream is open.
-
-StreamStatus.open = "open"; /// Stream is closed.
-
-StreamStatus.closed = "closed";
-exports.StreamStatus = StreamStatus;
+exports.ClientLink = ClientLink;
 
 class ErrorPhase {}
 
@@ -5960,7 +5950,7 @@ ErrorPhase.request = "request";
 ErrorPhase.response = "response";
 exports.ErrorPhase = ErrorPhase;
 
-class DSError {
+class DsError {
   constructor(type, options = {}) {
     this.type = type;
     this.msg = options.msg;
@@ -5975,7 +5965,7 @@ class DSError {
   }
 
   static fromMap(m) {
-    let error = new DSError('');
+    let error = new DsError('');
 
     if (typeof m["type"] === 'string') {
       error.type = m["type"];
@@ -6041,18 +6031,18 @@ class DSError {
 
 }
 
-DSError.PERMISSION_DENIED = new DSError("permissionDenied");
-DSError.INVALID_METHOD = new DSError("invalidMethod");
-DSError.NOT_IMPLEMENTED = new DSError("notImplemented");
-DSError.INVALID_PATH = new DSError("invalidPath");
-DSError.INVALID_PATHS = new DSError("invalidPaths");
-DSError.INVALID_VALUE = new DSError("invalidValue");
-DSError.INVALID_PARAMETER = new DSError("invalidParameter");
-DSError.DISCONNECTED = new DSError("disconnected", {
+DsError.PERMISSION_DENIED = new DsError("permissionDenied");
+DsError.INVALID_METHOD = new DsError("invalidMethod");
+DsError.NOT_IMPLEMENTED = new DsError("notImplemented");
+DsError.INVALID_PATH = new DsError("invalidPath");
+DsError.INVALID_PATHS = new DsError("invalidPaths");
+DsError.INVALID_VALUE = new DsError("invalidValue");
+DsError.INVALID_PARAMETER = new DsError("invalidParameter");
+DsError.DISCONNECTED = new DsError("disconnected", {
   phase: ErrorPhase.request
 });
-DSError.FAILED = new DSError("failed");
-exports.DSError = DSError;
+DsError.FAILED = new DsError("failed");
+exports.DsError = DsError;
 },{"denque":"DPC0","../utils/async":"bajV","../utils/codec":"TRmg","../utils/logger":"sxdr"}],"wg7F":[function(require,module,exports) {
 "use strict";
 
@@ -6065,7 +6055,7 @@ const interfaces_1 = require("../common/interfaces");
 class Request {
   constructor(requester, rid, updater, data) {
     this._isClosed = false;
-    this.streamStatus = interfaces_1.StreamStatus.initialize;
+    this.streamStatus = "initialize";
     this.requester = requester;
     this.rid = rid;
     this.updater = updater;
@@ -6103,14 +6093,14 @@ class Request {
     } // remove the request from global object
 
 
-    if (this.streamStatus === interfaces_1.StreamStatus.closed) {
+    if (this.streamStatus === "closed") {
       this.requester._requests.delete(this.rid);
     }
 
     let error;
 
     if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-      error = interfaces_1.DSError.fromMap(m["error"]);
+      error = interfaces_1.DsError.fromMap(m["error"]);
       this.requester.onError.add(error);
     }
 
@@ -6119,9 +6109,9 @@ class Request {
 
 
   _close(error) {
-    if (this.streamStatus != interfaces_1.StreamStatus.closed) {
-      this.streamStatus = interfaces_1.StreamStatus.closed;
-      this.updater.onUpdate(interfaces_1.StreamStatus.closed, null, null, null, error);
+    if (this.streamStatus != "closed") {
+      this.streamStatus = "closed";
+      this.updater.onUpdate("closed", null, null, null, error);
     }
   } /// close the request from the client side
 
@@ -6288,6 +6278,16 @@ class Node {
     /// object of Child Name to Child Node
 
     this.children = new Map();
+
+    if (!profileName) {
+      // get profile from static property
+      profileName = this.constructor.profileName;
+
+      if (typeof profileName !== 'string') {
+        profileName = 'node';
+      }
+    }
+
     this.configs.set('$is', profileName);
   }
 
@@ -6840,8 +6840,6 @@ Object.defineProperty(exports, "__esModule", {
 
 const async_1 = require("../../utils/async");
 
-const interfaces_1 = require("../../common/interfaces");
-
 const node_cache_1 = require("../node_cache");
 
 const value_1 = require("../../common/value");
@@ -6867,7 +6865,7 @@ class ListDefListener {
     this.node = node;
     this.requester = requester;
     this.listener = requester.list(node.remotePath, update => {
-      this.ready = update.streamStatus !== interfaces_1.StreamStatus.initialize;
+      this.ready = update.streamStatus !== "initialize";
 
       if (update.node.configs.has('$disconnectedTs')) {
         update.node.configs.delete('$disconnectedTs');
@@ -6973,7 +6971,7 @@ class ListController {
   }
 
   get initialized() {
-    return this.request != null && this.request.streamStatus !== interfaces_1.StreamStatus.initialize;
+    return this.request != null && this.request.streamStatus !== "initialize";
   }
 
   onDisconnect() {
@@ -7062,7 +7060,7 @@ class ListController {
         }
       }
 
-      if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+      if (this.request.streamStatus !== "initialize") {
         this.node._listed = true;
       }
 
@@ -7106,12 +7104,12 @@ class ListController {
 
   onProfileUpdated() {
     if (this._ready) {
-      if (this.request.streamStatus !== interfaces_1.StreamStatus.initialize) {
+      if (this.request.streamStatus !== "initialize") {
         this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
 
-      if (this.request && this.request.streamStatus === interfaces_1.StreamStatus.closed) {
+      if (this.request && this.request.streamStatus === "closed") {
         this.stream.close();
       }
     }
@@ -7159,7 +7157,7 @@ ListController._ignoreProfileProps = ['$is', // '$permission',
 // '$settings',
 '$disconnectedTs'];
 exports.ListController = ListController;
-},{"../../utils/async":"bajV","../../common/interfaces":"N9NG","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7661,8 +7659,6 @@ const async_1 = require("../../utils/async");
 
 const permission_1 = require("../../common/permission");
 
-const interfaces_1 = require("../../common/interfaces");
-
 const table_1 = require("../../common/table");
 
 const interface_1 = require("../interface");
@@ -7791,10 +7787,10 @@ exports.RequesterInvokeStream = RequesterInvokeStream;
 class InvokeController {
   constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
     this.mode = 'stream';
-    this.lastStatus = interfaces_1.StreamStatus.initialize;
+    this.lastStatus = "initialize";
 
     this._onUnsubscribe = obj => {
-      if (this._request != null && this._request.streamStatus !== interfaces_1.StreamStatus.closed) {
+      if (this._request != null && this._request.streamStatus !== "closed") {
         this._request.close();
       }
     };
@@ -7852,7 +7848,7 @@ class InvokeController {
     }
 
     if (error != null) {
-      streamStatus = interfaces_1.StreamStatus.closed;
+      streamStatus = "closed";
 
       this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
     } else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
@@ -7861,7 +7857,7 @@ class InvokeController {
 
     this.lastStatus = streamStatus;
 
-    if (streamStatus === interfaces_1.StreamStatus.closed) {
+    if (streamStatus === "closed") {
       this._stream.close();
     }
   }
@@ -7873,7 +7869,7 @@ class InvokeController {
 }
 
 exports.InvokeController = InvokeController;
-},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/interfaces":"N9NG","../../common/table":"q+mg","../interface":"wq45"}],"4Uld":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/table":"q+mg","../interface":"wq45"}],"4Uld":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8360,6 +8356,8 @@ const list_1 = require("./request/list");
 
 const permission_1 = require("../common/permission");
 
+const invoke_1 = require("./request/invoke");
+
 const set_1 = require("./request/set");
 
 const remove_1 = require("./request/remove");
@@ -8589,11 +8587,26 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
     let stream = node._invoke(params, this, maxPermission);
 
+    let mergedUpdate = [];
+    let mappedStream = new invoke_1.RequesterInvokeStream();
+    mappedStream.request = stream.request;
+    stream.listen(update => {
+      if (mergedUpdate) {
+        update.updates = mergedUpdate.concat(update.updates);
+      }
+
+      mergedUpdate = update.updates;
+
+      if (update.streamStatus !== 'initialize') {
+        mappedStream.add(update);
+      }
+    });
+
     if (callback) {
-      stream.listen(callback);
+      mappedStream.listen(callback);
     }
 
-    return stream;
+    return mappedStream;
   }
   /**
    * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
@@ -8601,13 +8614,10 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
 
   invokeOnce(path, params = {}, maxPermission = permission_1.Permission.CONFIG) {
-    let node = this.nodeCache.getRemoteNode(path);
-
-    let stream = node._invoke(params, this, maxPermission);
-
+    let stream = this.invoke(path, params, null, maxPermission);
     return new Promise((resolve, reject) => {
       stream.listen(update => {
-        if (update.streamStatus !== interfaces_1.StreamStatus.closed) {
+        if (update.streamStatus !== "closed") {
           stream.close();
         }
 
@@ -8618,6 +8628,23 @@ class Requester extends connection_handler_1.ConnectionHandler {
         }
       });
     });
+  }
+  /**
+   * Invoke a node action, and receive raw update.
+   * Steaming updates won't be merged
+   */
+
+
+  invokeStream(path, params = {}, callback, maxPermission = permission_1.Permission.CONFIG) {
+    let node = this.nodeCache.getRemoteNode(path);
+
+    let stream = node._invoke(params, this, maxPermission);
+
+    if (callback) {
+      stream.listen(callback);
+    }
+
+    return stream;
   }
   /**
    * Set the value of an attribute, the attribute will be created if not exists
@@ -8641,7 +8668,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
   closeRequest(request) {
     if (this._requests.has(request.rid)) {
-      if (request.streamStatus !== interfaces_1.StreamStatus.closed) {
+      if (request.streamStatus !== "closed") {
         this.addToSendList({
           'method': 'close',
           'rid': request.rid
@@ -8664,7 +8691,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
     for (let [n, req] of this._requests) {
       if (req.rid <= this.lastRid && !(req.updater instanceof list_1.ListController)) {
-        req._close(interfaces_1.DSError.DISCONNECTED);
+        req._close(interfaces_1.DsError.DISCONNECTED);
       } else {
         newRequests.set(req.rid, req);
         req.updater.onDisconnect();
@@ -8690,7 +8717,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
 }
 
 exports.Requester = Requester;
-},{"../utils/async":"bajV","./request":"wg7F","../common/connection-handler":"T61P","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/set":"wdMm","./request/remove":"Eaoe"}],"BI8/":[function(require,module,exports) {
+},{"../utils/async":"bajV","./request":"wg7F","../common/connection-handler":"T61P","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/invoke":"+yD6","./request/set":"wdMm","./request/remove":"Eaoe"}],"BI8/":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
