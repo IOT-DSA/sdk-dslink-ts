@@ -57,13 +57,21 @@
 					<a href="remotenode.html">RemoteNode</a>
 				</li>
 			</ul>
-			<h1>Class RemoteNode</h1>
+			<h1>Class RemoteNode&lt;ChildType&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>ChildType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -108,6 +116,7 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="remotenode.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="remotenode.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="remotenode.html#getattribute" class="tsd-kind-icon">get<wbr>Attribute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="remotenode.html#getchild" class="tsd-kind-icon">get<wbr>Child</a></li>
@@ -131,7 +140,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Node.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/node_cache.ts#L111">src/requester/node_cache.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/node_cache.ts#L111">src/requester/node_cache.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -154,18 +163,18 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Node.attributes</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L24">src/common/node.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L24">src/common/node.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="children" class="tsd-anchor"></a>
 					<h3>children</h3>
-					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></div>
+					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ChildType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from Node.children</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L59">src/common/node.ts:59</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L66">src/common/node.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,7 +185,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Node.configs</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L39">src/common/node.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L39">src/common/node.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,18 +195,18 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/node_cache.ts#L87">src/requester/node_cache.ts:87</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/node_cache.ts#L87">src/requester/node_cache.ts:87</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="profile" class="tsd-anchor"></a>
 					<h3>profile</h3>
-					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Node</span></div>
+					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from Node.profile</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L21">src/common/node.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L21">src/common/node.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,7 +216,7 @@
 					<div class="tsd-signature tsd-kind-icon">remote<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/node_cache.ts#L84">src/requester/node_cache.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/node_cache.ts#L84">src/requester/node_cache.ts:84</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -224,7 +233,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/node_cache.ts#L97">src/requester/node_cache.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/node_cache.ts#L97">src/requester/node_cache.ts:97</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -241,7 +250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/node_cache.ts#L105">src/requester/node_cache.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/node_cache.ts#L105">src/requester/node_cache.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ValueUpdate</span></h4>
@@ -251,6 +260,24 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="destroy" class="tsd-anchor"></a>
+					<h3>destroy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from Node.destroy</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L176">src/common/node.ts:176</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="get" class="tsd-anchor"></a>
 					<h3>get</h3>
@@ -262,7 +289,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Node.get</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L90">src/common/node.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L84">src/common/node.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -286,7 +313,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Node.getAttribute</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L27">src/common/node.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L27">src/common/node.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -303,14 +330,14 @@
 					<a name="getchild" class="tsd-anchor"></a>
 					<h3>get<wbr>Child</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Child<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Child<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ChildType</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Node.getChild</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L75">src/common/node.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L69">src/common/node.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -319,7 +346,7 @@
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Node</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ChildType</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -327,14 +354,14 @@
 					<a name="getconfig" class="tsd-anchor"></a>
 					<h3>get<wbr>Config</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Config<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Config<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Node.getConfig</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L46">src/common/node.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L53">src/common/node.ts:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -343,7 +370,7 @@
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -358,7 +385,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Node.getDisplayName</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/common/node.ts#L4">src/common/node.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/node.ts#L4">src/common/node.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -388,7 +415,7 @@
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class="current tsd-kind-class tsd-has-type-parameter">
 						<a href="remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
@@ -417,6 +444,9 @@
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="remotenode.html#lastvalueupdate" class="tsd-kind-icon">last<wbr>Value<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="remotenode.html#destroy" class="tsd-kind-icon">destroy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="remotenode.html#get" class="tsd-kind-icon">get</a>
@@ -458,6 +488,9 @@
 					<li class=" tsd-kind-variable">
 						<a href="../globals.html#dslink" class="tsd-kind-icon">DSLink</a>
 					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#sleep" class="tsd-kind-icon">sleep</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -475,6 +508,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -523,7 +557,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

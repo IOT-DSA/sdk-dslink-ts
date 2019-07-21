@@ -90,6 +90,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#requester" class="tsd-kind-icon">requester</a></li>
 							</ul>
 						</section>
@@ -102,8 +104,12 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#_connect" class="tsd-kind-icon">_connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#_onconnect" class="tsd-kind-icon">_on<wbr>Connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#_ondisconnect" class="tsd-kind-icon">_on<wbr>Disconnect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#close" class="tsd-kind-icon">close</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#connect" class="tsd-kind-icon">connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#connect" class="tsd-kind-icon">connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="browseruserlink.html#ondisconnect-1" class="tsd-kind-icon">on<wbr>Dis<wbr>Connect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="browseruserlink.html#reconnect" class="tsd-kind-icon">reconnect</a></li>
 							</ul>
 						</section>
@@ -122,7 +128,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L52">src/browser/browser_user_link.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L39">src/browser/browser-user-link.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,6 +147,28 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="onconnect" class="tsd-anchor"></a>
+					<h3>on<wbr>Connect</h3>
+					<div class="tsd-signature tsd-kind-icon">on<wbr>Connect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Stream</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Stream(null, null, null, true)</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from ClientLink.onConnect</p>
+						<ul>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/interfaces.ts#L192">src/common/interfaces.ts:192</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="ondisconnect" class="tsd-anchor"></a>
+					<h3>on<wbr>Disconnect</h3>
+					<div class="tsd-signature tsd-kind-icon">on<wbr>Disconnect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Stream</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Stream(null, null, null, true)</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from ClientLink.onDisconnect</p>
+						<ul>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/interfaces.ts#L199">src/common/interfaces.ts:199</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 					<a name="requester" class="tsd-anchor"></a>
 					<h3>requester</h3>
@@ -148,7 +176,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides BaseLink.requester</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L34">src/browser/browser_user_link.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L21">src/browser/browser-user-link.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -166,7 +194,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides BaseLink.onRequesterReady</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L28">src/browser/browser_user_link.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L15">src/browser/browser-user-link.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -176,6 +204,60 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="_connect" class="tsd-anchor"></a>
+					<h3>_connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">_connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides ClientLink._connect</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L58">src/browser/browser-user-link.ts:58</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="_onconnect" class="tsd-anchor"></a>
+					<h3>_on<wbr>Connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">_on<wbr>Connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from (Anonymous function)</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/interfaces.ts#L193">src/common/interfaces.ts:193</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="_ondisconnect" class="tsd-anchor"></a>
+					<h3>_on<wbr>Disconnect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">_on<wbr>Disconnect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from (Anonymous function)</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/interfaces.ts#L200">src/common/interfaces.ts:200</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 					<a name="close" class="tsd-anchor"></a>
 					<h3>close</h3>
@@ -187,27 +269,50 @@
 							<aside class="tsd-sources">
 								<p>Overrides BaseLink.close</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L131">src/browser/browser_user_link.ts:131</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L130">src/browser/browser-user-link.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="connect" class="tsd-anchor"></a>
 					<h3>connect</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides ClientLink.connect</p>
+								<p>Inherited from ClientLink.connect</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L71">src/browser/browser_user_link.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/common/interfaces.ts#L208">src/common/interfaces.ts:208</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ondisconnect-1" class="tsd-anchor"></a>
+					<h3>on<wbr>Dis<wbr>Connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Dis<wbr>Connect<span class="tsd-signature-symbol">(</span>reconnect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L104">src/browser/browser-user-link.ts:104</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>reconnect: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -222,7 +327,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/browser/browser_user_link.ts#L124">src/browser/browser_user_link.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/browser/browser-user-link.ts#L123">src/browser/browser-user-link.ts:123</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -249,6 +354,12 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="browseruserlink.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="browseruserlink.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="browseruserlink.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 								<a href="browseruserlink.html#requester" class="tsd-kind-icon">requester</a>
 							</li>
@@ -256,10 +367,22 @@
 								<a href="browseruserlink.html#onrequesterready" class="tsd-kind-icon">on<wbr>Requester<wbr>Ready</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="browseruserlink.html#close" class="tsd-kind-icon">close</a>
+								<a href="browseruserlink.html#_connect" class="tsd-kind-icon">_connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="browseruserlink.html#_onconnect" class="tsd-kind-icon">_on<wbr>Connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="browseruserlink.html#_ondisconnect" class="tsd-kind-icon">_on<wbr>Disconnect</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="browseruserlink.html#close" class="tsd-kind-icon">close</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="browseruserlink.html#connect" class="tsd-kind-icon">connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="browseruserlink.html#ondisconnect-1" class="tsd-kind-icon">on<wbr>Dis<wbr>Connect</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="browseruserlink.html#reconnect" class="tsd-kind-icon">reconnect</a>
@@ -268,7 +391,7 @@
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -292,6 +415,9 @@
 					<li class=" tsd-kind-variable">
 						<a href="../globals.html#dslink" class="tsd-kind-icon">DSLink</a>
 					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#sleep" class="tsd-kind-icon">sleep</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -309,6 +435,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -357,7 +484,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

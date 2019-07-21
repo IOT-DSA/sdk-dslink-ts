@@ -94,12 +94,15 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="requesterinvokestream.html#request" class="tsd-kind-icon">request</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#add" class="tsd-kind-icon">add</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requesterinvokestream.html#addreqparams" class="tsd-kind-icon">add<wbr>Req<wbr>Params</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#haslistener" class="tsd-kind-icon">has<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#listen" class="tsd-kind-icon">listen</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#reset" class="tsd-kind-icon">reset</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="requesterinvokestream.html#unlisten" class="tsd-kind-icon">unlisten</a></li>
 							</ul>
 						</section>
@@ -112,14 +115,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Requester<wbr>Invoke<wbr>Stream<span class="tsd-signature-symbol">(</span>onStartListen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, onAllCancel<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, onListen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Requester<wbr>Invoke<wbr>Stream<span class="tsd-signature-symbol">(</span>onStartListen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, onAllCancel<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, onListen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, cached<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Stream.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L23">src/utils/async.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L23">src/utils/async.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -175,6 +178,9 @@
 										</li>
 									</ul>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> cached: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></h4>
 						</li>
@@ -190,7 +196,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Stream.isClosed</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L74">src/utils/async.ts:74</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L79">src/utils/async.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -200,12 +206,12 @@
 					<div class="tsd-signature tsd-kind-icon">request<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Request</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/requester/request/invoke.ts#L113">src/requester/request/invoke.ts:113</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/request/invoke.ts#L119">src/requester/request/invoke.ts:119</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="add" class="tsd-anchor"></a>
@@ -218,7 +224,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Stream.add</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L53">src/utils/async.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L54">src/utils/async.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -228,6 +234,34 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addreqparams" class="tsd-anchor"></a>
+					<h3>add<wbr>Req<wbr>Params</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Req<wbr>Params<span class="tsd-signature-symbol">(</span>m<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/requester/request/invoke.ts#L121">src/requester/request/invoke.ts:121</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>m: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -242,10 +276,28 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Stream.close</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L76">src/utils/async.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L81">src/utils/async.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="haslistener" class="tsd-anchor"></a>
+					<h3>has<wbr>Listener</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Listener<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from Stream.hasListener</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L75">src/utils/async.ts:75</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -260,7 +312,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Stream.listen</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L31">src/utils/async.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L32">src/utils/async.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -270,6 +322,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="reset" class="tsd-anchor"></a>
+					<h3>reset</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">reset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from Stream.reset</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L92">src/utils/async.ts:92</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -284,7 +354,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Stream.unlisten</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/9a3e991/ts/src/utils/async.ts#L46">src/utils/async.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/8f18074/ts/src/utils/async.ts#L47">src/utils/async.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,7 +382,7 @@
 					<li class=" tsd-kind-class">
 						<a href="browseruserlink.html" class="tsd-kind-icon">Browser<wbr>User<wbr>Link</a>
 					</li>
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -338,11 +408,20 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="requesterinvokestream.html#add" class="tsd-kind-icon">add</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="requesterinvokestream.html#addreqparams" class="tsd-kind-icon">add<wbr>Req<wbr>Params</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="requesterinvokestream.html#close" class="tsd-kind-icon">close</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="requesterinvokestream.html#haslistener" class="tsd-kind-icon">has<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="requesterinvokestream.html#listen" class="tsd-kind-icon">listen</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="requesterinvokestream.html#reset" class="tsd-kind-icon">reset</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="requesterinvokestream.html#unlisten" class="tsd-kind-icon">unlisten</a>
@@ -363,6 +442,9 @@
 					<li class=" tsd-kind-variable">
 						<a href="../globals.html#dslink" class="tsd-kind-icon">DSLink</a>
 					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#sleep" class="tsd-kind-icon">sleep</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -380,6 +462,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -428,7 +511,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
