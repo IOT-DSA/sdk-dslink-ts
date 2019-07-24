@@ -198,8 +198,8 @@ export abstract class ClientLink extends BaseLink {
 
   onDisconnect: Stream<boolean> = new Stream(null, null, null, true);
   _onDisconnect = () => {
-    this.onDisconnect.add(true);
     if (this.onConnect._value) {
+      this.onDisconnect.add(true);
       linkLogger.info('Disconnected');
       this.onConnect.reset();
     }

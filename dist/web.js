@@ -5904,9 +5904,8 @@ class ClientLink extends BaseLink {
     this.onDisconnect = new async_1.Stream(null, null, null, true);
 
     this._onDisconnect = () => {
-      this.onDisconnect.add(true);
-
       if (this.onConnect._value) {
+        this.onDisconnect.add(true);
         linkLogger.info('Disconnected');
         this.onConnect.reset();
       }
