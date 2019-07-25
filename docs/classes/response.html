@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BrowserUserLink | DSLink SDK</title>
+	<title>Response | DSLink SDK</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="browseruserlink.html">BrowserUserLink</a>
+					<a href="response.html">Response</a>
 				</li>
 			</ul>
-			<h1>Class BrowserUserLink</h1>
+			<h1>Class Response</h1>
 		</div>
 	</div>
 </header>
@@ -68,13 +68,19 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">ClientLink</span>
+						<span class="target">Response</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">BrowserUserLink</span>
+								<a href="invokeresponse.html" class="tsd-signature-type">InvokeResponse</a>
 							</li>
 						</ul>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><span class="tsd-signature-type">ConnectionProcessor</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -84,31 +90,33 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="browseruserlink.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="response.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#requester" class="tsd-kind-icon">requester</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="response.html#_pendingsending" class="tsd-kind-icon">_pending<wbr>Sending</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="response.html#_sentstreamstatus" class="tsd-kind-icon">_sent<wbr>Stream<wbr>Status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="response.html#responder" class="tsd-kind-icon">responder</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="response.html#rid" class="tsd-kind-icon">rid</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="response.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#onrequesterready" class="tsd-kind-icon">on<wbr>Requester<wbr>Ready</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="response.html#sentstreamstatus" class="tsd-kind-icon">sent<wbr>Stream<wbr>Status</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#_connect" class="tsd-kind-icon">_connect</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="browseruserlink.html#close" class="tsd-kind-icon">close</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="browseruserlink.html#connect" class="tsd-kind-icon">connect</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="browseruserlink.html#ondisconnect-1" class="tsd-kind-icon">on<wbr>Dis<wbr>Connect</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="browseruserlink.html#reconnect" class="tsd-kind-icon">reconnect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="response.html#_close" class="tsd-kind-icon">_close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="response.html#ackreceived" class="tsd-kind-icon">ack<wbr>Received</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="response.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="response.html#preparesending" class="tsd-kind-icon">prepare<wbr>Sending</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="response.html#startsendingdata" class="tsd-kind-icon">start<wbr>Sending<wbr>Data</a></li>
 							</ul>
 						</section>
 					</div>
@@ -120,159 +128,147 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Browser<wbr>User<wbr>Link<span class="tsd-signature-symbol">(</span>wsUpdateUri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="browseruserlink.html" class="tsd-signature-type">BrowserUserLink</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Response<span class="tsd-signature-symbol">(</span>responder<span class="tsd-signature-symbol">: </span><a href="responder.html" class="tsd-signature-type">Responder</a>, rid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, type<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="response.html" class="tsd-signature-type">Response</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L39">src/browser/browser-user-link.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L12">src/responder/response.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>wsUpdateUri: <span class="tsd-signature-type">string</span></h5>
+									<h5>responder: <a href="responder.html" class="tsd-signature-type">Responder</a></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> format: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;msgpack&quot;</span></h5>
+									<h5>rid: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> type: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="browseruserlink.html" class="tsd-signature-type">BrowserUserLink</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="response.html" class="tsd-signature-type">Response</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="onconnect" class="tsd-anchor"></a>
-					<h3>on<wbr>Connect</h3>
-					<div class="tsd-signature tsd-kind-icon">on<wbr>Connect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Stream</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Stream(null, null, null, true)</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="_pendingsending" class="tsd-anchor"></a>
+					<h3>_pending<wbr>Sending</h3>
+					<div class="tsd-signature tsd-kind-icon">_pending<wbr>Sending<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from ClientLink.onConnect</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/common/interfaces.ts#L193">src/common/interfaces.ts:193</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L37">src/responder/response.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="ondisconnect" class="tsd-anchor"></a>
-					<h3>on<wbr>Disconnect</h3>
-					<div class="tsd-signature tsd-kind-icon">on<wbr>Disconnect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Stream</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Stream(null, null, null, true)</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="_sentstreamstatus" class="tsd-anchor"></a>
+					<h3>_sent<wbr>Stream<wbr>Status</h3>
+					<div class="tsd-signature tsd-kind-icon">_sent<wbr>Stream<wbr>Status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;initialize&quot;</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from ClientLink.onDisconnect</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/common/interfaces.ts#L201">src/common/interfaces.ts:201</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L8">src/responder/response.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-					<a name="requester" class="tsd-anchor"></a>
-					<h3>requester</h3>
-					<div class="tsd-signature tsd-kind-icon">requester<span class="tsd-signature-symbol">:</span> <a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol"> =&nbsp;new Requester()</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="responder" class="tsd-anchor"></a>
+					<h3>responder</h3>
+					<div class="tsd-signature tsd-kind-icon">responder<span class="tsd-signature-symbol">:</span> <a href="responder.html" class="tsd-signature-type">Responder</a></div>
 					<aside class="tsd-sources">
-						<p>Overrides BaseLink.requester</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L21">src/browser/browser-user-link.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L5">src/responder/response.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="rid" class="tsd-anchor"></a>
+					<h3>rid</h3>
+					<div class="tsd-signature tsd-kind-icon">rid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L6">src/responder/response.ts:6</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L7">src/responder/response.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
-					<a name="onrequesterready" class="tsd-anchor"></a>
-					<h3>on<wbr>Requester<wbr>Ready</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> onRequesterReady<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="sentstreamstatus" class="tsd-anchor"></a>
+					<h3>sent<wbr>Stream<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> sentStreamStatus<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides BaseLink.onRequesterReady</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L15">src/browser/browser-user-link.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L10">src/responder/response.ts:10</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<a name="_connect" class="tsd-anchor"></a>
-					<h3>_connect</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">_connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="_close" class="tsd-anchor"></a>
+					<h3>_close</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">_close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides ClientLink._connect</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L58">src/browser/browser-user-link.ts:58</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requester.html" class="tsd-signature-type">Requester</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<a name="close" class="tsd-anchor"></a>
-					<h3>close</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Overrides BaseLink.close</p>
-								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L130">src/browser/browser-user-link.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L27">src/responder/response.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="connect" class="tsd-anchor"></a>
-					<h3>connect</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from ClientLink.connect</p>
-								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/common/interfaces.ts#L211">src/common/interfaces.ts:211</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ondisconnect-1" class="tsd-anchor"></a>
-					<h3>on<wbr>Dis<wbr>Connect</h3>
+					<a name="ackreceived" class="tsd-anchor"></a>
+					<h3>ack<wbr>Received</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Dis<wbr>Connect<span class="tsd-signature-symbol">(</span>reconnect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">ack<wbr>Received<span class="tsd-signature-symbol">(</span>receiveAckId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, startTime<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, currentTime<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L104">src/browser/browser-user-link.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L43">src/responder/response.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>reconnect: <span class="tsd-signature-type">boolean</span></h5>
+									<h5>receiveAckId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>startTime: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>currentTime: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -280,18 +276,67 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="reconnect" class="tsd-anchor"></a>
-					<h3>reconnect</h3>
+					<a name="close" class="tsd-anchor"></a>
+					<h3>close</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">reconnect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">DsError</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/browser/browser-user-link.ts#L123">src/browser/browser-user-link.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L21">src/responder/response.ts:21</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> err: <span class="tsd-signature-type">DsError</span><span class="tsd-signature-symbol"> =&nbsp;null</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="preparesending" class="tsd-anchor"></a>
+					<h3>prepare<wbr>Sending</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">prepare<wbr>Sending<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L30">src/responder/response.ts:30</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="startsendingdata" class="tsd-anchor"></a>
+					<h3>start<wbr>Sending<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>Sending<wbr>Data<span class="tsd-signature-symbol">(</span>currentTime<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, waitingAckId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/response.ts#L39">src/responder/response.ts:39</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>currentTime: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>waitingAckId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -314,45 +359,9 @@
 					<li class=" tsd-kind-class">
 						<a href="baselocalnode.html" class="tsd-kind-icon">Base<wbr>Local<wbr>Node</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="browseruserlink.html" class="tsd-kind-icon">Browser<wbr>User<wbr>Link</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="browseruserlink.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="browseruserlink.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="browseruserlink.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="browseruserlink.html#requester" class="tsd-kind-icon">requester</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
-								<a href="browseruserlink.html#onrequesterready" class="tsd-kind-icon">on<wbr>Requester<wbr>Ready</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="browseruserlink.html#_connect" class="tsd-kind-icon">_connect</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="browseruserlink.html#close" class="tsd-kind-icon">close</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="browseruserlink.html#connect" class="tsd-kind-icon">connect</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="browseruserlink.html#ondisconnect-1" class="tsd-kind-icon">on<wbr>Dis<wbr>Connect</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="browseruserlink.html#reconnect" class="tsd-kind-icon">reconnect</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="dslink.html" class="tsd-kind-icon">DSLink</a>
 					</li>
@@ -395,9 +404,51 @@
 					<li class=" tsd-kind-class">
 						<a href="responder.html" class="tsd-kind-icon">Responder</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="response.html" class="tsd-kind-icon">Response</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="response.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="response.html#_pendingsending" class="tsd-kind-icon">_pending<wbr>Sending</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="response.html#_sentstreamstatus" class="tsd-kind-icon">_sent<wbr>Stream<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="response.html#responder" class="tsd-kind-icon">responder</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="response.html#rid" class="tsd-kind-icon">rid</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="response.html#type" class="tsd-kind-icon">type</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="response.html#sentstreamstatus" class="tsd-kind-icon">sent<wbr>Stream<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="response.html#_close" class="tsd-kind-icon">_close</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="response.html#ackreceived" class="tsd-kind-icon">ack<wbr>Received</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="response.html#close" class="tsd-kind-icon">close</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="response.html#preparesending" class="tsd-kind-icon">prepare<wbr>Sending</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="response.html#startsendingdata" class="tsd-kind-icon">start<wbr>Sending<wbr>Data</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="rootnode.html" class="tsd-kind-icon">Root<wbr>Node</a>
 					</li>

@@ -38,11 +38,14 @@ export class InvokeResponse extends Response {
     this.name = name;
   }
 
+  /** @ignore */
   pendingData: InvokeResponseUpdate[] = [];
-
+  /** @ignore */
   _hasSentColumns: boolean = false;
 
-  /// update data for the responder stream
+  /** @ignore
+   *  update data for the responder stream
+   */
   updateStream(updates: any[],
                options: {
                  columns?: any[], streamStatus?: StreamStatus,
@@ -75,15 +78,19 @@ export class InvokeResponse extends Response {
     this.prepareSending();
   }
 
+  /** @ignore */
   onReqParams: OnReqParams;
 
-  /// new parameter from the requester
+  /** @ignore
+   *  new parameter from the requester
+   */
   updateReqParams(m: any) {
     if (this.onReqParams != null) {
       this.onReqParams(this, m);
     }
   }
 
+  /** @ignore */
   startSendingData(currentTime: number, waitingAckId: number) {
     this._pendingSending = false;
     if (this._err != null) {
@@ -138,11 +145,13 @@ export class InvokeResponse extends Response {
     }
   }
 
+  /** @ignore */
   _err: DsError;
 
   onClose: OnInvokeClosed;
   onSendUpdate: OnInvokeSend;
 
+  /** @ignore */
   _close() {
     if (this.onClose != null) {
       this.onClose(this);

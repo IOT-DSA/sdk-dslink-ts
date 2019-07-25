@@ -14,13 +14,17 @@ class InvokeResponseUpdate {
 class InvokeResponse extends response_1.Response {
     constructor(responder, rid, parentNode, node, name) {
         super(responder, rid, 'invoke');
+        /** @ignore */
         this.pendingData = [];
+        /** @ignore */
         this._hasSentColumns = false;
         this.parentNode = parentNode;
         this.node = node;
         this.name = name;
     }
-    /// update data for the responder stream
+    /** @ignore
+     *  update data for the responder stream
+     */
     updateStream(updates, options = {}) {
         let { columns, streamStatus, meta, autoSendColumns } = options;
         if (!streamStatus) {
@@ -43,12 +47,15 @@ class InvokeResponse extends response_1.Response {
         this.pendingData.push(new InvokeResponseUpdate(streamStatus, updates, columns, meta));
         this.prepareSending();
     }
-    /// new parameter from the requester
+    /** @ignore
+     *  new parameter from the requester
+     */
     updateReqParams(m) {
         if (this.onReqParams != null) {
             this.onReqParams(this, m);
         }
     }
+    /** @ignore */
     startSendingData(currentTime, waitingAckId) {
         this._pendingSending = false;
         if (this._err != null) {
@@ -88,6 +95,7 @@ class InvokeResponse extends response_1.Response {
             this.prepareSending();
         }
     }
+    /** @ignore */
     _close() {
         if (this.onClose != null) {
             this.onClose(this);

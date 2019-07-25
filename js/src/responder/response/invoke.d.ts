@@ -21,8 +21,13 @@ export declare class InvokeResponse extends Response {
     readonly node: LocalNode;
     readonly name: string;
     constructor(responder: Responder, rid: number, parentNode: LocalNode, node: LocalNode, name: string);
+    /** @ignore */
     pendingData: InvokeResponseUpdate[];
+    /** @ignore */
     _hasSentColumns: boolean;
+    /** @ignore
+     *  update data for the responder stream
+     */
     updateStream(updates: any[], options?: {
         columns?: any[];
         streamStatus?: StreamStatus;
@@ -31,13 +36,20 @@ export declare class InvokeResponse extends Response {
         };
         autoSendColumns?: boolean;
     }): void;
+    /** @ignore */
     onReqParams: OnReqParams;
+    /** @ignore
+     *  new parameter from the requester
+     */
     updateReqParams(m: any): void;
+    /** @ignore */
     startSendingData(currentTime: number, waitingAckId: number): void;
     close(err?: DsError): void;
+    /** @ignore */
     _err: DsError;
     onClose: OnInvokeClosed;
     onSendUpdate: OnInvokeSend;
+    /** @ignore */
     _close(): void;
 }
 export {};

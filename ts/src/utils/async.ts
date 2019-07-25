@@ -147,6 +147,7 @@ export class Completer<T> {
   }
 }
 
+/** @ignore */
 export function sleep(ms: number = 0): Promise<any> {
   return new Promise<any>((resolve, reject) => {
     setTimeout(resolve, ms);

@@ -58,6 +58,7 @@ class LocalNode extends node_1.Node {
             }
         }
     }
+    /** @ignore */
     _connectState() {
         this.provider.createState(this.path).setNode(this);
         for (let [name, child] of this.children) {
@@ -169,9 +170,13 @@ class LocalNode extends node_1.Node {
 exports.LocalNode = LocalNode;
 class NodeProvider {
     constructor(options) {
+        /** @ignore */
         this._states = new Map();
+        /** @ignore */
         this._saveTimer = null;
+        /** @ignore */
         this._saveIntervalMs = 5000;
+        /** @ignore */
         this.onSaveTimer = () => {
             this._saveTimer = null;
             if (this._saveFunction) {
@@ -215,6 +220,7 @@ class NodeProvider {
             this._root.removeChild(path.substring(1));
         }
     }
+    /** @ignore */
     setRoot(node) {
         if (!this._root) {
             this._root = node;
@@ -242,7 +248,9 @@ class NodeProvider {
 exports.NodeProvider = NodeProvider;
 class NodeState {
     constructor(path, provider) {
+        /** @ignore */
         this._disconnectedTs = value_1.ValueUpdate.getTs();
+        /** @ignore */
         this.onList = (listener) => {
             if (this._node) {
                 listener(null);
@@ -251,17 +259,20 @@ class NodeState {
                 listener('$disconnectedTs');
             }
         };
+        /** @ignore */
         this.listStream = new async_1.Stream(null, () => this.checkDestroy(), // onAllCancel
         this.onList // onListen
         );
         this.path = path;
         this.provider = provider;
     }
+    /** @ignore */
     initListUpdate() {
         for (let listener of this.listStream._listeners) {
             listener(null); // use null to update all
         }
     }
+    /** @ignore */
     updateValue(value) {
         if (value === undefined) {
             // value not ready
@@ -278,6 +289,7 @@ class NodeState {
             this._subscriber.addValue(this._lastValueUpdate);
         }
     }
+    /** @ignore */
     setNode(node) {
         this._node = node;
         if (node) {
@@ -300,6 +312,7 @@ class NodeState {
             this.checkDestroy();
         }
     }
+    /** @ignore */
     setSubscriber(s) {
         if (s === this._subscriber) {
             return;
@@ -315,11 +328,13 @@ class NodeState {
             this._node.onSubscribe(s);
         }
     }
+    /** @ignore */
     checkDestroy() {
         if (!(this._node || this.listStream.hasListener() || this._subscriber)) {
             this.destroy();
         }
     }
+    /** @ignore */
     destroy() {
         this.provider._states.delete(this.path);
     }

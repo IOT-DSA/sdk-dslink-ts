@@ -79,10 +79,13 @@ export declare abstract class ClientLink extends BaseLink {
     readonly logName: string;
     /** @ignore */
     formatLogMessage(msg: string): string;
+    /** @ignore */
     abstract _connect(): void;
     onConnect: Stream<boolean>;
+    /** @ignore */
     _onConnect: () => void;
     onDisconnect: Stream<boolean>;
+    /** @ignore */
     _onDisconnect: () => void;
     connect(): Promise<any>;
 }

@@ -10,19 +10,23 @@ import {ListResponse} from "./response/list";
 import {InvokeResponse} from "./response/invoke";
 
 export class Responder extends ConnectionHandler {
-  /// reqId can be a dsId or a user name
+  /** @ignore
+   * reqId can be a dsId or a user name
+   */
   reqId: string;
 
   // maxCacheLength:number = ConnectionProcessor.defaultCacheSize;
 
   // storage: ISubscriptionResponderStorage;
 
-  /// max permisison of the remote requester, this requester won't be able to do anything with higher
-  /// permission even when other permission setting allows it to.
-  /// This feature allows reverse proxy to override the permission for each connection with url parameter 
+  /** @ignore
+   *  max permisison of the remote requester, this requester won't be able to do anything with higher
+   *  permission even when other permission setting allows it to.
+   *  This feature allows reverse proxy to override the permission for each connection with url parameter
+   */
   maxPermission: number = Permission.CONFIG;
 
-
+  /** @ignore */
   readonly _responses: Map<number, Response> = new Map<number, Response>();
 
   get openResponseCount(): number {
@@ -33,9 +37,9 @@ export class Responder extends ConnectionHandler {
     return this._subscription.subscriptions.size;
   }
 
+  /** @ignore */
   _subscription: SubscribeResponse;
 
-  /// caching of nodes
   readonly nodeProvider: NodeProvider;
 
   constructor(nodeProvider: NodeProvider) {
@@ -45,6 +49,7 @@ export class Responder extends ConnectionHandler {
     this._responses.set(0, this._subscription);
   }
 
+  /** @ignore */
   addResponse<T extends Response>(response: T): T {
     if (response._sentStreamStatus !== "closed") {
       this._responses.set(response.rid, response);
@@ -52,9 +57,9 @@ export class Responder extends ConnectionHandler {
     return response;
   }
 
-
+  /** @ignore */
   disabled: boolean = false;
-
+  /** @ignore */
   onData = (list: any[]) => {
     if (this.disabled) {
       return;
@@ -66,6 +71,7 @@ export class Responder extends ConnectionHandler {
     }
   };
 
+  /** @ignore */
   _onReceiveRequest(m: any) {
     let method = m['method'];
     if (typeof m['rid'] === 'number') {
@@ -106,7 +112,9 @@ export class Responder extends ConnectionHandler {
     this.closeResponse(m['rid'], null, DsError.INVALID_METHOD);
   }
 
-  /// close the response from responder side and notify requester
+  /** @ignore
+   * close the response from responder side and notify requester
+   */
   closeResponse(rid: number, response?: Response, error?: DsError) {
     if (response != null) {
       if (this._responses.get(response.rid) !== response) {
@@ -124,6 +132,7 @@ export class Responder extends ConnectionHandler {
     this.addToSendList(m);
   }
 
+  /** @ignore */
   updateResponse(response: Response, updates: any[],
                  options: {
                    streamStatus?: StreamStatus,
@@ -162,6 +171,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   list(m: any) {
     let path: Path = Path.getValidNodePath(m['path']);
     if (path != null && path.isAbsolute) {
@@ -175,6 +185,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   subscribe(m: any) {
     if (Array.isArray(m['paths'])) {
       for (let p of m['paths']) {
@@ -212,7 +223,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
-
+  /** @ignore */
   unsubscribe(m: any) {
     if (Array.isArray(m['sids'])) {
       for (let sid of m['sids']) {
@@ -226,6 +237,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   invoke(m: any) {
     let path: Path = Path.getValidNodePath(m['path']);
     if (path != null && path.isAbsolute) {
@@ -265,6 +277,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   updateInvoke(m: any) {
     let rid: number = m['rid'];
     let response = this._responses.get(rid);
@@ -277,6 +290,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   set(m: any) {
     let path: Path = Path.getValidPath(m['path']);
     if (path == null || !path.isAbsolute) {
@@ -323,6 +337,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   remove(m: any) {
     let path: Path = Path.getValidPath(m['path']);
     if (path == null || !path.isAbsolute) {
@@ -353,6 +368,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   close(m: any) {
     if (typeof m['rid'] === 'number') {
       let rid: number = m['rid'];
@@ -362,6 +378,7 @@ export class Responder extends ConnectionHandler {
     }
   }
 
+  /** @ignore */
   onDisconnected() {
     this.clearProcessors();
     for (let [id, resp] of this._responses) {
@@ -371,6 +388,7 @@ export class Responder extends ConnectionHandler {
     this._responses.set(0, this._subscription);
   }
 
+  /** @ignore */
   onReconnected() {
     super.onReconnected();
   }

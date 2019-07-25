@@ -14,12 +14,17 @@ class Responder extends connection_handler_1.ConnectionHandler {
         super();
         // maxCacheLength:number = ConnectionProcessor.defaultCacheSize;
         // storage: ISubscriptionResponderStorage;
-        /// max permisison of the remote requester, this requester won't be able to do anything with higher
-        /// permission even when other permission setting allows it to.
-        /// This feature allows reverse proxy to override the permission for each connection with url parameter 
+        /** @ignore
+         *  max permisison of the remote requester, this requester won't be able to do anything with higher
+         *  permission even when other permission setting allows it to.
+         *  This feature allows reverse proxy to override the permission for each connection with url parameter
+         */
         this.maxPermission = permission_1.Permission.CONFIG;
+        /** @ignore */
         this._responses = new Map();
+        /** @ignore */
         this.disabled = false;
+        /** @ignore */
         this.onData = (list) => {
             if (this.disabled) {
                 return;
@@ -40,12 +45,14 @@ class Responder extends connection_handler_1.ConnectionHandler {
     get subscriptionCount() {
         return this._subscription.subscriptions.size;
     }
+    /** @ignore */
     addResponse(response) {
         if (response._sentStreamStatus !== "closed") {
             this._responses.set(response.rid, response);
         }
         return response;
     }
+    /** @ignore */
     _onReceiveRequest(m) {
         let method = m['method'];
         if (typeof m['rid'] === 'number') {
@@ -85,7 +92,9 @@ class Responder extends connection_handler_1.ConnectionHandler {
         }
         this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);
     }
-    /// close the response from responder side and notify requester
+    /** @ignore
+     * close the response from responder side and notify requester
+     */
     closeResponse(rid, response, error) {
         if (response != null) {
             if (this._responses.get(response.rid) !== response) {
@@ -102,6 +111,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
         this._responses.delete(rid);
         this.addToSendList(m);
     }
+    /** @ignore */
     updateResponse(response, updates, options = {}) {
         let { streamStatus, columns, meta } = options;
         if (this._responses.get(response.rid) === response) {
@@ -128,6 +138,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             }
         }
     }
+    /** @ignore */
     list(m) {
         let path = node_1.Path.getValidNodePath(m['path']);
         if (path != null && path.isAbsolute) {
@@ -139,6 +150,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
         }
     }
+    /** @ignore */
     subscribe(m) {
         if (Array.isArray(m['paths'])) {
             for (let p of m['paths']) {
@@ -177,6 +189,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATHS);
         }
     }
+    /** @ignore */
     unsubscribe(m) {
         if (Array.isArray(m['sids'])) {
             for (let sid of m['sids']) {
@@ -190,6 +203,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATHS);
         }
     }
+    /** @ignore */
     invoke(m) {
         let path = node_1.Path.getValidNodePath(m['path']);
         if (path != null && path.isAbsolute) {
@@ -219,6 +233,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_PATH);
         }
     }
+    /** @ignore */
     updateInvoke(m) {
         let rid = m['rid'];
         let response = this._responses.get(rid);
@@ -231,6 +246,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);
         }
     }
+    /** @ignore */
     set(m) {
         let path = node_1.Path.getValidPath(m['path']);
         if (path == null || !path.isAbsolute) {
@@ -276,6 +292,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             throw new Error('unexpected case');
         }
     }
+    /** @ignore */
     remove(m) {
         let path = node_1.Path.getValidPath(m['path']);
         if (path == null || !path.isAbsolute) {
@@ -305,6 +322,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             throw new Error('unexpected case');
         }
     }
+    /** @ignore */
     close(m) {
         if (typeof m['rid'] === 'number') {
             let rid = m['rid'];
@@ -313,6 +331,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             }
         }
     }
+    /** @ignore */
     onDisconnected() {
         this.clearProcessors();
         for (let [id, resp] of this._responses) {
@@ -321,6 +340,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
         this._responses.clear();
         this._responses.set(0, this._subscription);
     }
+    /** @ignore */
     onReconnected() {
         super.onReconnected();
     }

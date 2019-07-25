@@ -92,12 +92,14 @@ class ClientLink extends BaseLink {
     constructor() {
         super(...arguments);
         this.onConnect = new async_1.Stream(null, null, null, true);
+        /** @ignore */
         this._onConnect = () => {
             this.onConnect.add(true);
             this.onDisconnect.reset();
             linkLogger.info('Connected');
         };
         this.onDisconnect = new async_1.Stream(null, null, null, true);
+        /** @ignore */
         this._onDisconnect = () => {
             if (this.onConnect._value) {
                 this.onDisconnect.add(true);

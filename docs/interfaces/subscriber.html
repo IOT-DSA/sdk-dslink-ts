@@ -3,17 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DSLink SDK</title>
+	<title>Subscriber | DSLink SDK</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
 <header>
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">DSLink SDK</a>
+					<a href="../index.html" class="title">DSLink SDK</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -51,133 +51,153 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="globals.html">Globals</a>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="subscriber.html">Subscriber</a>
 				</li>
 			</ul>
-			<h1> DSLink SDK</h1>
+			<h1>Interface Subscriber</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<h2 id="get-started">Get Started</h2>
-				<h4 id="install">Install</h4>
-				<p><code>npm install dslink --save</code> <br>
-					or <br>
-				<code>yarn add dslink</code> <br></p>
-				<h4 id="examples">Examples</h4>
-				<p><a href="https://github.com/IOT-DSA/sdk-dslink-ts/tree/master/example">https://github.com/IOT-DSA/sdk-dslink-ts/tree/master/example</a></p>
-				<h2 id="class-reference">Class Reference</h2>
-				<h4 id="nodejs">NodeJS</h4>
-				<ul>
-					<li><a href="classes/dslink.html">DSLink</a> is a wrapper class of <a href="classes/httpclientlink.html">HttpClientLink</a><ul>
-							<li>it supports both <a href="classes/requester.html">Requester</a> and <a href="classes/responder.html">Responder</a></li>
-						</ul>
-					</li>
-					<li>When DSLink is used as responder, it requires a <a href="classes/rootnode.html">RootNode</a><ul>
-							<li>define your own node structure by extending <a href="classes/valuenode.html">ValueNode</a> <a href="classes/actionnode.html">ActionNode</a> or <a href="classes/baselocalnode.html">BaseLocalNode</a></li>
-						</ul>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Subscriber</span>
 					</li>
 				</ul>
-				<h4 id="in-browser">In Browser</h4>
-				<ul>
-					<li><strong>DSLink</strong> is an alias of <a href="classes/browseruserlink.html">BrowserUserLink</a></li>
-					<li>it only supports <a href="classes/requester.html">Requester</a></li>
-				</ul>
-			</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="subscriber.html#addvalue" class="tsd-kind-icon">add<wbr>Value</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="addvalue" class="tsd-anchor"></a>
+					<h3>add<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">add<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ValueUpdateCallback</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/responder/node_state.ts#L308">src/responder/node_state.ts:308</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
+						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/actionnode.html" class="tsd-kind-icon">Action<wbr>Node</a>
+						<a href="../classes/actionnode.html" class="tsd-kind-icon">Action<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/baselocalnode.html" class="tsd-kind-icon">Base<wbr>Local<wbr>Node</a>
+						<a href="../classes/baselocalnode.html" class="tsd-kind-icon">Base<wbr>Local<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/browseruserlink.html" class="tsd-kind-icon">Browser<wbr>User<wbr>Link</a>
+						<a href="../classes/browseruserlink.html" class="tsd-kind-icon">Browser<wbr>User<wbr>Link</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/dslink.html" class="tsd-kind-icon">DSLink</a>
+						<a href="../classes/dslink.html" class="tsd-kind-icon">DSLink</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/httpclientlink.html" class="tsd-kind-icon">Http<wbr>Client<wbr>Link</a>
+						<a href="../classes/httpclientlink.html" class="tsd-kind-icon">Http<wbr>Client<wbr>Link</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/invokeresponse.html" class="tsd-kind-icon">Invoke<wbr>Response</a>
+						<a href="../classes/invokeresponse.html" class="tsd-kind-icon">Invoke<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-class tsd-is-not-exported">
-						<a href="classes/invokeresponseupdate.html" class="tsd-kind-icon">Invoke<wbr>Response<wbr>Update</a>
+						<a href="../classes/invokeresponseupdate.html" class="tsd-kind-icon">Invoke<wbr>Response<wbr>Update</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/localnode.html" class="tsd-kind-icon">Local<wbr>Node</a>
+						<a href="../classes/localnode.html" class="tsd-kind-icon">Local<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/nodeprovider.html" class="tsd-kind-icon">Node<wbr>Provider</a>
+						<a href="../classes/nodeprovider.html" class="tsd-kind-icon">Node<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/nodestate.html" class="tsd-kind-icon">Node<wbr>State</a>
+						<a href="../classes/nodestate.html" class="tsd-kind-icon">Node<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
+						<a href="../classes/remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reqsubscribelistener.html" class="tsd-kind-icon">Req<wbr>Subscribe<wbr>Listener</a>
+						<a href="../classes/reqsubscribelistener.html" class="tsd-kind-icon">Req<wbr>Subscribe<wbr>Listener</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/requester.html" class="tsd-kind-icon">Requester</a>
+						<a href="../classes/requester.html" class="tsd-kind-icon">Requester</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/requesterinvokestream.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Stream</a>
+						<a href="../classes/requesterinvokestream.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Stream</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/requesterinvokeupdate.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Update</a>
+						<a href="../classes/requesterinvokeupdate.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Update</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/requesterlistupdate.html" class="tsd-kind-icon">Requester<wbr>List<wbr>Update</a>
+						<a href="../classes/requesterlistupdate.html" class="tsd-kind-icon">Requester<wbr>List<wbr>Update</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/responder.html" class="tsd-kind-icon">Responder</a>
+						<a href="../classes/responder.html" class="tsd-kind-icon">Responder</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/response.html" class="tsd-kind-icon">Response</a>
+						<a href="../classes/response.html" class="tsd-kind-icon">Response</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/rootnode.html" class="tsd-kind-icon">Root<wbr>Node</a>
+						<a href="../classes/rootnode.html" class="tsd-kind-icon">Root<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/streamsubscription.html" class="tsd-kind-icon">Stream<wbr>Subscription</a>
+						<a href="../classes/streamsubscription.html" class="tsd-kind-icon">Stream<wbr>Subscription</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/valuenode.html" class="tsd-kind-icon">Value<wbr>Node</a>
+						<a href="../classes/valuenode.html" class="tsd-kind-icon">Value<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-is-not-exported">
-						<a href="interfaces/dslinkoption.html" class="tsd-kind-icon">DSLink<wbr>Option</a>
+						<a href="dslinkoption.html" class="tsd-kind-icon">DSLink<wbr>Option</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-is-not-exported">
-						<a href="interfaces/provideroptions.html" class="tsd-kind-icon">Provider<wbr>Options</a>
+						<a href="provideroptions.html" class="tsd-kind-icon">Provider<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/subscriber.html" class="tsd-kind-icon">Subscriber</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="subscriber.html" class="tsd-kind-icon">Subscriber</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="subscriber.html#addvalue" class="tsd-kind-icon">add<wbr>Value</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias">
+						<a href="../globals.html#oninvokeclosed" class="tsd-kind-icon">On<wbr>Invoke<wbr>Closed</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#oninvokeclosed" class="tsd-kind-icon">On<wbr>Invoke<wbr>Closed</a>
+						<a href="../globals.html#oninvokesend" class="tsd-kind-icon">On<wbr>Invoke<wbr>Send</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#oninvokesend" class="tsd-kind-icon">On<wbr>Invoke<wbr>Send</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#onreqparams" class="tsd-kind-icon">On<wbr>Req<wbr>Params</a>
+						<a href="../globals.html#onreqparams" class="tsd-kind-icon">On<wbr>Req<wbr>Params</a>
 					</li>
 				</ul>
 			</nav>
@@ -248,7 +268,7 @@
 	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

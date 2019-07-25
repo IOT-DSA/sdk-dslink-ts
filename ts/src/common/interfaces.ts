@@ -187,9 +187,11 @@ export abstract class ClientLink extends BaseLink {
     return msg;
   }
 
+  /** @ignore */
   abstract _connect(): void;
 
   onConnect: Stream<boolean> = new Stream(null, null, null, true);
+  /** @ignore */
   _onConnect = () => {
     this.onConnect.add(true);
     this.onDisconnect.reset();
@@ -197,6 +199,7 @@ export abstract class ClientLink extends BaseLink {
   };
 
   onDisconnect: Stream<boolean> = new Stream(null, null, null, true);
+  /** @ignore */
   _onDisconnect = () => {
     if (this.onConnect._value) {
       this.onDisconnect.add(true);

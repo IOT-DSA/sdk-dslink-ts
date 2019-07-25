@@ -9,12 +9,11 @@ import {DsError} from "../common/interfaces";
 
 export class LocalNode extends Node<LocalNode> {
 
-  /// Node Provider
   provider: NodeProvider;
 
-  /// Node Path
   readonly path: string;
 
+  /** @ignore */
   _state: NodeState;
 
   constructor(path: string, provider: NodeProvider) {
@@ -72,6 +71,7 @@ export class LocalNode extends Node<LocalNode> {
     }
   }
 
+  /** @ignore */
   _connectState() {
     this.provider.createState(this.path).setNode(this);
     for (let [name, child] of this.children) {
@@ -149,7 +149,9 @@ export class LocalNode extends Node<LocalNode> {
     }
   }
 
-  // undefined value
+  /** @ignore
+   *  initial value must be undefined
+   */
   _value: any;
 
   onSubscribe(subscriber: Subscriber) {
@@ -212,6 +214,7 @@ interface ProviderOptions {
 }
 
 export class NodeProvider {
+  /** @ignore */
   _states: Map<string, NodeState> = new Map<string, NodeState>();
 
   getNode(path: string): LocalNode {
@@ -242,7 +245,9 @@ export class NodeProvider {
     }
   }
 
+  /** @ignore */
   _root: LocalNode;
+  /** @ignore */
   _saveFunction: (data: any) => void;
 
   constructor(options?: ProviderOptions) {
@@ -255,6 +260,7 @@ export class NodeProvider {
     }
   }
 
+  /** @ignore */
   setRoot(node: LocalNode) {
     if (!this._root) {
       this._root = node;
@@ -262,7 +268,9 @@ export class NodeProvider {
     }
   }
 
+  /** @ignore */
   _saveTimer: any = null;
+  /** @ignore */
   _saveIntervalMs = 5000;
 
   save() {
@@ -277,6 +285,7 @@ export class NodeProvider {
     }
   }
 
+  /** @ignore */
   onSaveTimer = () => {
     this._saveTimer = null;
     if (this._saveFunction) {
@@ -300,12 +309,13 @@ export interface Subscriber {
 }
 
 export class NodeState {
-
+  /** @ignore */
   _node: LocalNode;
+  /** @ignore */
   _subscriber: Subscriber;
   readonly provider: NodeProvider;
   readonly path: string;
-
+  /** @ignore */
   _disconnectedTs: string = ValueUpdate.getTs();
 
   constructor(path: string, provider: NodeProvider) {
@@ -313,6 +323,7 @@ export class NodeState {
     this.provider = provider;
   }
 
+  /** @ignore */
   onList = (listener: Listener<string>) => {
     if (this._node) {
       listener(null);
@@ -320,21 +331,24 @@ export class NodeState {
       listener('$disconnectedTs');
     }
   };
-
+  /** @ignore */
   listStream = new Stream<string>(
     null,
     () => this.checkDestroy(), // onAllCancel
     this.onList // onListen
   );
 
+  /** @ignore */
   initListUpdate() {
     for (let listener of this.listStream._listeners) {
       listener(null); // use null to update all
     }
   }
 
+  /** @ignore */
   _lastValueUpdate: ValueUpdate;
 
+  /** @ignore */
   updateValue(value: any) {
     if (value === undefined) {
       // value not ready
@@ -351,6 +365,7 @@ export class NodeState {
     }
   }
 
+  /** @ignore */
   setNode(node: LocalNode) {
     this._node = node;
     if (node) {
@@ -373,6 +388,7 @@ export class NodeState {
     }
   }
 
+  /** @ignore */
   setSubscriber(s: Subscriber) {
     if (s === this._subscriber) {
       return;
@@ -388,12 +404,14 @@ export class NodeState {
     }
   }
 
+  /** @ignore */
   checkDestroy() {
     if (!(this._node || this.listStream.hasListener() || this._subscriber)) {
       this.destroy();
     }
   }
 
+  /** @ignore */
   destroy() {
     this.provider._states.delete(this.path);
   }

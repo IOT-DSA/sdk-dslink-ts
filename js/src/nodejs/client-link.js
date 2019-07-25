@@ -17,19 +17,28 @@ const pk_1 = require("../crypto/pk");
 const utils_1 = require("../utils");
 const logger_1 = require("../utils/logger");
 const serialize_1 = require("./serialize");
+/** @ignore */
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
     constructor(conn, dsIdPrefix, options = {}) {
         super();
+        /** @ignore */
         this._onReadyCompleter = new async_1.Completer();
-        this.useStandardWebSocket = true;
-        /// formats sent to broker
+        /** @ignore
+         * formats sent to broker
+         */
         this.formats = ['msgpack', 'json'];
-        /// format received from broker
+        /** @ignore
+         * format received from broker
+         */
         this.format = 'json';
+        /** @ignore */
         this._connDelay = 0;
+        /** @ignore */
         this._wsDelay = 0;
-        this.reconnectWSCount = 0;
+        /** @ignore */
+        this._reconnectWSCount = 0;
+        /** @ignore */
         this._closed = false;
         this._conn = conn;
         if (options.privateKey) {
@@ -80,14 +89,17 @@ class HttpClientLink extends interfaces_1.ClientLink {
     get onReady() {
         return this._onReadyCompleter.future;
     }
+    /** @ignore */
     get nonce() {
         return this._nonce;
     }
+    /** @ignore */
     updateSalt(salt) {
         this.salt = salt;
     }
+    /** @ignore */
     connDelay() {
-        this.reconnectWSCount = 0;
+        this._reconnectWSCount = 0;
         let delay = this._connDelay * 500;
         if (!delay)
             delay = 20;
@@ -100,6 +112,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         if (this._connDelay < 30)
             this._connDelay++;
     }
+    /** @ignore */
     async _connect() {
         if (this._connDelayTimer) {
             clearTimeout(this._connDelayTimer);
@@ -163,6 +176,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             this.connDelay();
         }
     }
+    /** @ignore */
     async initWebsocket(reconnect = true) {
         if (this._wsDelayTimer) {
             clearTimeout(this._wsDelayTimer);
@@ -170,8 +184,8 @@ class HttpClientLink extends interfaces_1.ClientLink {
         }
         if (this._closed)
             return;
-        this.reconnectWSCount++;
-        if (this.reconnectWSCount > 10) {
+        this._reconnectWSCount++;
+        if (this._reconnectWSCount > 10) {
             // if reconnected ws for more than 10 times, do a clean reconnct
             this.connDelay();
             return;

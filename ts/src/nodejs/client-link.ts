@@ -17,9 +17,11 @@ import {LocalNode, NodeProvider} from "../responder/node_state";
 import {logger as mainLogger} from "../utils/logger";
 import {getKeyFromFile, NodeSerializer} from "./serialize";
 
+/** @ignore */
 let logger = mainLogger.tag('link');
 
 export class HttpClientLink extends ClientLink {
+  /** @ignore */
   _onReadyCompleter: Completer<[Requester, Responder]> = new Completer<[Requester, Responder]>();
 
   get onReady(): Promise<[Requester, Responder]> {
@@ -30,6 +32,8 @@ export class HttpClientLink extends ClientLink {
   remotePath: string;
 
   readonly dsId: string;
+
+  /** @ignore */
   readonly privateKey: PrivateKey;
 
   readonly nodeProvider: NodeProvider;
@@ -37,37 +41,44 @@ export class HttpClientLink extends ClientLink {
   readonly requester: Requester;
   readonly responder: Responder;
 
+  /** @ignore */
   tokenHash: string;
 
-  useStandardWebSocket: boolean = true;
-  readonly strictTls: boolean;
 
-
+  /** @ignore */
   _nonce: ECDH;
-
+  /** @ignore */
   get nonce(): ECDH {
     return this._nonce;
   }
 
+  /** @ignore */
   _wsConnection: WebSocketConnection;
 
-
+  /** @ignore */
   salt: string;
 
+  /** @ignore */
   updateSalt(salt: string) {
     this.salt = salt;
   }
 
+  /** @ignore */
   _wsUpdateUri: string;
-
+  /** @ignore */
   _conn: string;
 
+  /** @ignore */
   linkData: {[key: string]: any};
 
-  /// formats sent to broker
+  /** @ignore
+   * formats sent to broker
+   */
   formats = ['msgpack', 'json'];
 
-  /// format received from broker
+  /** @ignore
+   * format received from broker
+   */
   format: string = 'json';
 
   constructor(conn: string, dsIdPrefix: string, options: {
@@ -133,12 +144,14 @@ export class HttpClientLink extends ClientLink {
     }
   }
 
+  /** @ignore */
   _connDelay: number = 0;
-
+  /** @ignore */
   _connDelayTimer: any;
 
+  /** @ignore */
   connDelay() {
-    this.reconnectWSCount = 0;
+    this._reconnectWSCount = 0;
     let delay = this._connDelay * 500;
     if (!delay) delay = 20;
     if (!this._connDelayTimer) {
@@ -151,7 +164,7 @@ export class HttpClientLink extends ClientLink {
     if (this._connDelay < 30) this._connDelay++;
   }
 
-
+  /** @ignore */
   async _connect() {
     if (this._connDelayTimer) {
       clearTimeout(this._connDelayTimer);
@@ -227,11 +240,14 @@ export class HttpClientLink extends ClientLink {
     }
   }
 
+  /** @ignore */
   _wsDelay: number = 0;
+  /** @ignore */
   _wsDelayTimer: any;
+  /** @ignore */
+  _reconnectWSCount: number = 0;
 
-  reconnectWSCount: number = 0;
-
+  /** @ignore */
   async initWebsocket(reconnect: boolean = true) {
     if (this._wsDelayTimer) {
       clearTimeout(this._wsDelayTimer);
@@ -239,8 +255,8 @@ export class HttpClientLink extends ClientLink {
     }
     if (this._closed) return;
 
-    this.reconnectWSCount++;
-    if (this.reconnectWSCount > 10) {
+    this._reconnectWSCount++;
+    if (this._reconnectWSCount > 10) {
       // if reconnected ws for more than 10 times, do a clean reconnct
       this.connDelay();
       return;
@@ -306,6 +322,7 @@ export class HttpClientLink extends ClientLink {
     }
   }
 
+  /** @ignore */
   _closed: boolean = false;
 
   close() {
