@@ -1,7 +1,5 @@
 // const {DSLink} = require("dslink");
 const {DSLink} = require("../../js/node");
-const {sleep} = require("../../js/src/utils/async");
-
 
 async function main() {
   let link = new DSLink('test',
@@ -25,7 +23,7 @@ async function main() {
     // close the dslink
     // when dslink is disconnected because of server or network error, it will reconnect automaticly
     // but when dslink is closed from client side with close(), it will stop reconnecting
-    
+
     link.close();
 
   }, 15000)
