@@ -89,8 +89,10 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: object,
            error: DsError) {
     let reseted = false;
-    // TODO implement error handling
-    if (updates != null) {
+    if (error && !updates) {
+      updates = [['$disconnectedTs', ValueUpdate.getTs()]];
+    }
+    if (updates) {
       for (let update of updates) {
         let name: string;
         let value: any;

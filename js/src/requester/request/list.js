@@ -120,8 +120,10 @@ class ListController {
     }
     onUpdate(streamStatus, updates, columns, meta, error) {
         let reseted = false;
-        // TODO implement error handling
-        if (updates != null) {
+        if (error && !updates) {
+            updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+        }
+        if (updates) {
             for (let update of updates) {
                 let name;
                 let value;
