@@ -46,7 +46,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             if (this.onConnect != null) {
                 this.onConnect();
             }
-            this.addConnCommand('init', true); // this is a usless command, just force client to send something to server
+            this.addConnCommand(null, null); // force client to send something to server
             this._responderChannel.updateConnect();
             this._requesterChannel.updateConnect();
             this.requireSend();
