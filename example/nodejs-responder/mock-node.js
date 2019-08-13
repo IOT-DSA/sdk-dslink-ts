@@ -46,6 +46,9 @@ const mockData = {
 };
 
 async function main() {
+  // change MockNode's value update interval
+  MockNode.interval = 2000;
+
   let rootNode = new RootNode();
   rootNode.createChild('main', MockNode).load(mockData);
   let link = new DSLink('responder', {rootNode});
