@@ -16,3 +16,8 @@ export declare class MockNode extends BaseLocalNode {
     }): void;
     destroy(): void;
 }
+export declare class RootMockNode extends MockNode {
+    constructor(data?: {
+        [key: string]: any;
+    });
+}

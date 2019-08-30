@@ -1,5 +1,5 @@
 const {DSLink, BaseLocalNode, RootNode, ActionNode, Permission, Table, DsError} = require("../../js/node");
-const {MockNode} = require("../../js/src/mock/MockNode");
+const {MockNode, RootMockNode} = require("../../js/src/mock/MockNode");
 
 const mockData = {
   writableValue: {
@@ -49,8 +49,7 @@ async function main() {
   // change MockNode's value update interval
   MockNode.interval = 2000;
 
-  let rootNode = new RootNode();
-  rootNode.createChild('main', MockNode).load(mockData);
+  let rootNode = new RootMockNode(mockData);
   let link = new DSLink('responder', {rootNode});
   await link.connect();
 }

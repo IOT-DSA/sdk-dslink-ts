@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const base_local_node_1 = require("../responder/base-local-node");
 const action_node_1 = require("../responder/node/action-node");
 const MockAction_1 = require("./MockAction");
+const node_state_1 = require("../responder/node_state");
 class MockNode extends base_local_node_1.BaseLocalNode {
     constructor() {
         super(...arguments);
@@ -67,6 +68,16 @@ class MockNode extends base_local_node_1.BaseLocalNode {
 MockNode.profileName = 'mock';
 MockNode.interval = 1000;
 exports.MockNode = MockNode;
+class RootMockNode extends MockNode {
+    constructor(data) {
+        super('/', new node_state_1.NodeProvider());
+        this.provider.setRoot(this);
+        if (data) {
+            this.load(data);
+        }
+    }
+}
+exports.RootMockNode = RootMockNode;
 class AddChildAction extends action_node_1.ActionNode {
     onInvoke(params, parentNode) {
         parentNode.addRepeatNode();

@@ -19,4 +19,7 @@ var permission_1 = require("./src/common/permission");
 exports.Permission = permission_1.Permission;
 var interfaces_1 = require("./src/common/interfaces");
 exports.DsError = interfaces_1.DsError;
+var logger_1 = require("./src/utils/logger");
+exports.Logger = logger_1.Logger;
+exports.logger = logger_1.logger;
 //# sourceMappingURL=node.js.map

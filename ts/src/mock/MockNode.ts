@@ -1,6 +1,7 @@
 import {BaseLocalNode} from "../responder/base-local-node";
 import {ActionNode} from "../responder/node/action-node";
 import {MockActionNode} from "./MockAction";
+import {NodeProvider} from "../responder/node_state";
 
 export class MockNode extends BaseLocalNode {
 
@@ -69,6 +70,16 @@ export class MockNode extends BaseLocalNode {
       clearInterval(this.setValueTimer);
     }
     super.destroy();
+  }
+}
+
+export class RootMockNode extends MockNode {
+  constructor(data?: {[key: string]: any}) {
+    super('/', new NodeProvider());
+    this.provider.setRoot(this);
+    if (data) {
+      this.load(data);
+    }
   }
 }
 
