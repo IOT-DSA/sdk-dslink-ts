@@ -91,7 +91,7 @@ export class WebSocketConnection extends Connection {
 
   onPingTimer = () => {
     if (this._dataReceiveCount >= 3) {
-      close();
+      this.close();
       return;
     }
     this._dataReceiveCount++;

@@ -772,6 +772,7 @@ class Completer {
 }
 
 exports.Completer = Completer;
+/** @ignore */
 
 function sleep(ms = 0) {
   return new Promise((resolve, reject) => {
@@ -5894,6 +5895,7 @@ class ClientLink extends BaseLink {
   constructor() {
     super(...arguments);
     this.onConnect = new async_1.Stream(null, null, null, true);
+    /** @ignore */
 
     this._onConnect = () => {
       this.onConnect.add(true);
@@ -5902,6 +5904,7 @@ class ClientLink extends BaseLink {
     };
 
     this.onDisconnect = new async_1.Stream(null, null, null, true);
+    /** @ignore */
 
     this._onDisconnect = () => {
       if (this.onConnect._value) {
@@ -6988,9 +6991,13 @@ class ListController {
   }
 
   onUpdate(streamStatus, updates, columns, meta, error) {
-    let reseted = false; // TODO implement error handling
+    let reseted = false;
 
-    if (updates != null) {
+    if (error && !updates) {
+      updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+    }
+
+    if (updates) {
       for (let update of updates) {
         let name;
         let value;

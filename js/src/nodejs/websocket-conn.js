@@ -29,7 +29,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._dataReceiveCount = 0;
         this.onPingTimer = () => {
             if (this._dataReceiveCount >= 3) {
-                close();
+                this.close();
                 return;
             }
             this._dataReceiveCount++;
