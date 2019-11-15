@@ -12,15 +12,14 @@ class RemoteNodeCache {
     constructor() {
         this._nodes = new Map();
     }
-    RemoteNodeCache() {
-    }
+    RemoteNodeCache() { }
     getRemoteNode(path) {
         let node = this._nodes.get(path);
         if (node == null) {
-            if ((this._nodes.size % 1000) === 0) {
+            if (this._nodes.size % 1000 === 0) {
                 //        logger.fine("Node Cache hit ${this._nodes.length} nodes in size.");
             }
-            if (path.startsWith("defs")) {
+            if (path.startsWith('defs')) {
                 node = new RemoteDefNode(path);
                 this._nodes.set(path, node);
             }
@@ -104,8 +103,7 @@ class RemoteNode extends node_1.Node {
             this.name = '/';
         }
         else {
-            this.name = this.remotePath
-                .split('/').pop();
+            this.name = this.remotePath.split('/').pop();
         }
     }
     /// node data is not ready until all profile and mixins are updated
@@ -171,7 +169,7 @@ class RemoteNode extends node_1.Node {
             else if (key.startsWith('@')) {
                 this.attributes.set(key, value);
             }
-            else if ((value != null && value instanceof Object)) {
+            else if (value != null && value instanceof Object) {
                 let node = cache.getRemoteNode(`${childPathPre}/${key}`);
                 this.children.set(key, node);
                 if (node instanceof RemoteNode) {
@@ -199,11 +197,9 @@ class RemoteNode extends node_1.Node {
         for (let [key, node] of this.children) {
             map[key] = node instanceof RemoteNode ? node.save() : node.getSimpleMap();
         }
-        if (includeValue &&
-            this._subscribeController != null &&
-            this._subscribeController._lastUpdate != null) {
-            map["?value"] = this._subscribeController._lastUpdate.value;
-            map["?value_timestamp"] = this._subscribeController._lastUpdate.ts;
+        if (includeValue && this._subscribeController != null && this._subscribeController._lastUpdate != null) {
+            map['?value'] = this._subscribeController._lastUpdate.value;
+            map['?value_timestamp'] = this._subscribeController._lastUpdate.ts;
         }
         return map;
     }
@@ -220,71 +216,61 @@ exports.RemoteDefNode = RemoteDefNode;
 class DefaultDefNodes {
 }
 DefaultDefNodes._defaultDefs = {
-    "node": {},
-    "static": {},
-    "getHistory": {
-        "$invokable": "read",
-        "$result": "table",
-        "$params": [
+    node: {},
+    static: {},
+    getHistory: {
+        $invokable: 'read',
+        $result: 'table',
+        $params: [
             {
-                "name": "Timerange",
-                "type": "string",
-                "edito": "daterange"
+                name: 'Timerange',
+                type: 'string',
+                edito: 'daterange'
             },
             {
-                "name": "Interval",
-                "type": "enum",
-                "default": "none",
-                "edito": utils_1.buildEnumType([
-                    "default",
-                    "none",
-                    "1Y",
-                    "3N",
-                    "1N",
-                    "1W",
-                    "1D",
-                    "12H",
-                    "6H",
-                    "4H",
-                    "3H",
-                    "2H",
-                    "1H",
-                    "30M",
-                    "15M",
-                    "10M",
-                    "5M",
-                    "1M",
-                    "30S",
-                    "15S",
-                    "10S",
-                    "5S",
-                    "1S"
+                name: 'Interval',
+                type: 'enum',
+                default: 'none',
+                edito: utils_1.buildEnumType([
+                    'default',
+                    'none',
+                    '1Y',
+                    '3N',
+                    '1N',
+                    '1W',
+                    '1D',
+                    '12H',
+                    '6H',
+                    '4H',
+                    '3H',
+                    '2H',
+                    '1H',
+                    '30M',
+                    '15M',
+                    '10M',
+                    '5M',
+                    '1M',
+                    '30S',
+                    '15S',
+                    '10S',
+                    '5S',
+                    '1S'
                 ])
             },
             {
-                "name": "Rollup",
-                "default": "none",
-                "type": utils_1.buildEnumType([
-                    "none",
-                    "avg",
-                    "min",
-                    "max",
-                    "sum",
-                    "first",
-                    "last",
-                    "count",
-                    "delta"
-                ])
+                name: 'Rollup',
+                default: 'none',
+                type: utils_1.buildEnumType(['none', 'avg', 'min', 'max', 'sum', 'first', 'last', 'count', 'delta'])
             }
         ],
-        "$columns": [
+        $columns: [
             {
-                "name": "timestamp",
-                "type": "time"
+                name: 'timestamp',
+                type: 'time'
             },
             {
-                "name": "value",
-                "type": "dynamic"
+                name: 'value',
+                type: 'dynamic'
             }
         ]
     }

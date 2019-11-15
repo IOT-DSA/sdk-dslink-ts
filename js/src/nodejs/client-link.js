@@ -134,12 +134,12 @@ class HttpClientLink extends interfaces_1.ClientLink {
         // When it is fixed, we should go back to a regular try-catch
         try {
             let requestJson = {
-                'publicKey': this.privateKey.publicKey.qBase64,
-                'isRequester': this.requester != null,
-                'isResponder': this.responder != null,
-                'formats': this.formats,
-                'version': utils_1.DSA_VERSION,
-                'enableWebSocketCompression': true
+                publicKey: this.privateKey.publicKey.qBase64,
+                isRequester: this.requester != null,
+                isResponder: this.responder != null,
+                formats: this.formats,
+                version: utils_1.DSA_VERSION,
+                enableWebSocketCompression: true
             };
             if (this.linkData != null) {
                 requestJson['linkData'] = this.linkData;
@@ -159,8 +159,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             }
             this.remotePath = serverConfig['path'];
             if (typeof serverConfig['wsUri'] === 'string') {
-                this._wsUpdateUri = `${url_1.default.resolve(connUrl, serverConfig['wsUri'])}?dsId=${encodeURIComponent(this.dsId)}`
-                    .replace('http', 'ws');
+                this._wsUpdateUri = `${url_1.default.resolve(connUrl, serverConfig['wsUri'])}?dsId=${encodeURIComponent(this.dsId)}`.replace('http', 'ws');
             }
             if (typeof serverConfig['format'] === 'string') {
                 this.format = serverConfig['format'];
@@ -219,8 +218,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             });
         }
         catch (error) {
-            if (error.message.contains('not upgraded to websocket')
-                || error.message.contains('(401)')) {
+            if (error.message.contains('not upgraded to websocket') || error.message.contains('(401)')) {
                 logger.warn(error.message);
                 this.connDelay();
             }

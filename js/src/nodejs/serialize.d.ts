@@ -1,4 +1,4 @@
-import { PrivateKey } from "../crypto/pk";
+import { PrivateKey } from '../crypto/pk';
 export declare function getKeyFromFile(path: string): PrivateKey;
 export declare class NodeSerializer {
     lastSavedStr: string;

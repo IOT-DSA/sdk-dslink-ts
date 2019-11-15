@@ -1,11 +1,11 @@
-import {Requester} from "../requester";
-import {Request} from "../request";
-import {Completer, Stream} from "../../utils/async";
-import {Permission} from "../../common/permission";
-import {DsError, StreamStatus} from "../../common/interfaces";
-import {TableColumn, TableColumns} from "../../common/table";
-import {RemoteNode} from "../node_cache";
-import {RequesterUpdate, RequestUpdater} from "../interface";
+import {Requester} from '../requester';
+import {Request} from '../request';
+import {Completer, Stream} from '../../utils/async';
+import {Permission} from '../../common/permission';
+import {DsError, StreamStatus} from '../../common/interfaces';
+import {TableColumn, TableColumns} from '../../common/table';
+import {RemoteNode} from '../node_cache';
+import {RequesterUpdate, RequestUpdater} from '../interface';
 
 export class RequesterInvokeUpdate extends RequesterUpdate {
   /**
@@ -21,9 +21,14 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
   error: DsError;
   meta: {[key: string]: any};
 
-  constructor(updates: any[], rawColumns: any[], columns: TableColumn[],
-              streamStatus: StreamStatus,
-              meta: {[key: string]: any}, error?: DsError) {
+  constructor(
+    updates: any[],
+    rawColumns: any[],
+    columns: TableColumn[],
+    streamStatus: StreamStatus,
+    meta: {[key: string]: any},
+    error?: DsError
+  ) {
     super(streamStatus);
     this.updates = updates;
     if (rawColumns) {
@@ -68,11 +73,11 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
           } else {
             row = obj;
           }
-        } else if ((obj != null && obj instanceof Object)) {
+        } else if (obj != null && obj instanceof Object) {
           row = [];
           if (this.columns == null) {
             let keys: string[] = obj.keys;
-            this.columns = keys.map((x) => new TableColumn(x, "dynamic"));
+            this.columns = keys.map((x) => new TableColumn(x, 'dynamic'));
           }
 
           if (this.columns != null) {
@@ -119,7 +124,7 @@ export class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
   request: Request;
 
   addReqParams(m: {[key: string]: any}) {
-    this.request.requester.addToSendList({'rid': this.request.rid, 'params': m});
+    this.request.requester.addToSendList({rid: this.request.rid, params: m});
   }
 }
 
@@ -144,43 +149,41 @@ export class InvokeController implements RequestUpdater {
   _cachedColumns: TableColumn[];
 
   mode: string = 'stream';
-  lastStatus: string = "initialize";
+  lastStatus: string = 'initialize';
 
-  constructor(node: RemoteNode, requester: Requester, params: object,
-              maxPermission = Permission.CONFIG) {
+  constructor(node: RemoteNode, requester: Requester, params: object, maxPermission = Permission.CONFIG) {
     this.node = node;
     this.requester = requester;
     this._stream = new RequesterInvokeStream();
 
     this._stream._onClose = this._onUnsubscribe;
     let reqMap: any = {
-      'method': 'invoke',
-      'path': node.remotePath,
-      'params': params
+      method: 'invoke',
+      path: node.remotePath,
+      params: params
     };
 
     if (maxPermission !== Permission.CONFIG) {
       reqMap['permit'] = Permission.names[maxPermission];
     }
-// TODO: update node before invoke to load columns
-//    if(!node.isUpdated()) {
-//      node._list().listen( this._onNodeUpdate)
-//    } else {
+    // TODO: update node before invoke to load columns
+    //    if(!node.isUpdated()) {
+    //      node._list().listen( this._onNodeUpdate)
+    //    } else {
 
     this._request = requester._sendRequest(reqMap, this);
     this._stream.request = this._request;
 
-//    }
+    //    }
   }
 
   _onUnsubscribe = (obj?: any) => {
-    if (this._request != null && this._request.streamStatus !== "closed") {
+    if (this._request != null && this._request.streamStatus !== 'closed') {
       this._request.close();
     }
   };
 
-  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: {[key: string]: any},
-           error: DsError) {
+  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: {[key: string]: any}, error: DsError) {
     if (meta != null && typeof meta['mode'] === 'string') {
       this.mode = meta['mode'];
     }
@@ -196,23 +199,18 @@ export class InvokeController implements RequestUpdater {
     }
 
     if (error != null) {
-      streamStatus = "closed";
-      this._stream.add(
-        new RequesterInvokeUpdate(
-          null, null, null, streamStatus, meta, error));
+      streamStatus = 'closed';
+      this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
     } else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
-      this._stream.add(new RequesterInvokeUpdate(
-        updates, columns, this._cachedColumns, streamStatus, meta));
+      this._stream.add(new RequesterInvokeUpdate(updates, columns, this._cachedColumns, streamStatus, meta));
     }
     this.lastStatus = streamStatus;
-    if (streamStatus === "closed") {
+    if (streamStatus === 'closed') {
       this._stream.close();
     }
   }
 
-  onDisconnect() {
-  }
+  onDisconnect() {}
 
-  onReconnect() {
-  }
+  onReconnect() {}
 }

@@ -146,8 +146,7 @@ class Node {
         }
         return rslt;
     }
-    destroy() {
-    }
+    destroy() { }
 }
 exports.Node = Node;
 /// Utility class for node and config/attribute paths.
@@ -220,9 +219,9 @@ class Path {
     }
     /** Get a child of this path. */
     child(name) {
-        return new Path((this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) +
-            "/" +
-            (name.startsWith("/") ? name.substring(1) : name));
+        return new Path((this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path) +
+            '/' +
+            (name.startsWith('/') ? name.substring(1) : name));
     }
     /** @ignore */
     _parse() {

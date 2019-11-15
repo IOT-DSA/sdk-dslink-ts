@@ -7,7 +7,7 @@ class MockActionNode extends base_local_node_1.BaseLocalNode {
     invoke(params, response, parentNode, maxPermission = permission_1.Permission.CONFIG) {
         if (this.onInvoke) {
             let rslt = this.onInvoke(params);
-            if (Array.isArray((rslt))) {
+            if (Array.isArray(rslt)) {
                 response.updateStream(rslt);
             }
             else if (rslt != null && rslt.__proto__ === Object.prototype) {
@@ -15,8 +15,8 @@ class MockActionNode extends base_local_node_1.BaseLocalNode {
                 let out = [];
                 for (let x in rslt) {
                     columns.push({
-                        "name": x,
-                        "type": "dynamic"
+                        name: x,
+                        type: 'dynamic'
                     });
                     out.push(rslt[x]);
                 }

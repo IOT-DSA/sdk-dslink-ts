@@ -5,10 +5,10 @@ let _lastTZ;
 function timeZone(date) {
     let timeZoneOffset = date.getTimezoneOffset();
     if (timeZoneOffset !== _lastTZ) {
-        let s = "+";
+        let s = '+';
         if (timeZoneOffset < 0) {
             timeZoneOffset = -timeZoneOffset;
-            s = "-";
+            s = '-';
         }
         let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
         let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
@@ -50,7 +50,7 @@ class ValueUpdate {
             return this._lastTsStr;
         }
         ValueUpdate._lastTs = d.getTime();
-        let offsetISOStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+        let offsetISOStr = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
         ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${timeZone(d)}`;
         return this._lastTsStr;
     }
@@ -91,7 +91,7 @@ class ValueUpdate {
                 return false;
             }
         }
-        else if ((this.value != null && this.value instanceof Object)) {
+        else if (this.value != null && this.value instanceof Object) {
             // assume object is same if it's generated at same timestamp
             if (!(other.value instanceof Object)) {
                 return false;
@@ -104,9 +104,9 @@ class ValueUpdate {
     }
     /// Generates a map representation of this value update.
     toMap() {
-        let m = { "ts": this.ts, "value": this.value };
+        let m = { ts: this.ts, value: this.value };
         if (this.count !== 1) {
-            m["count"] = this.count;
+            m['count'] = this.count;
         }
         return m;
     }

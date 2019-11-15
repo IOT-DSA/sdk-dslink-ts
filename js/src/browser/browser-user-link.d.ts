@@ -1,8 +1,8 @@
-import { ClientLink, ECDH } from "../common/interfaces";
-import { Completer } from "../utils/async";
-import { Requester } from "../requester/requester";
-import { PrivateKey } from "../crypto/pk";
-import { WebSocketConnection } from "./browser-ws-conn";
+import { ClientLink, ECDH } from '../common/interfaces';
+import { Completer } from '../utils/async';
+import { Requester } from '../requester/requester';
+import { PrivateKey } from '../crypto/pk';
+import { WebSocketConnection } from './browser-ws-conn';
 export declare class BrowserUserLink extends ClientLink {
     /** @ignore */
     _onRequesterReadyCompleter: Completer<Requester>;

@@ -66,7 +66,7 @@ class DsJsonCodecImpl extends DsCodec {
         return this.decodeStringFrame(toBuffer(bytes).toString());
     }
     static reviver(key, value) {
-        if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
+        if (typeof value === 'string' && value.startsWith('\u001Bbytes:')) {
             try {
                 return base64_1.default.decode(value.substring(7));
             }
@@ -110,8 +110,8 @@ class DsMsgPackCodecImpl extends DsCodec {
 DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
 DsCodec._codecs = {
-    "json": DsJson.instance,
-    "msgpack": DsMsgPackCodecImpl.instance
+    json: DsJson.instance,
+    msgpack: DsMsgPackCodecImpl.instance
 };
 DsCodec.defaultCodec = DsJson.instance;
 //# sourceMappingURL=codec.js.map

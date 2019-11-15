@@ -1,4 +1,4 @@
-import { BaseLocalNode } from "../responder/base-local-node";
+import { BaseLocalNode } from '../responder/base-local-node';
 export declare class MockNode extends BaseLocalNode {
     static profileName: string;
     static interval: number;

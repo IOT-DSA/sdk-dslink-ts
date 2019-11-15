@@ -47,15 +47,15 @@ class BaseLocalNode extends node_state_1.LocalNode {
             if (key === '')
                 continue;
             switch (key.charCodeAt(0)) {
-                case 64: /* @ */
+                case 64 /* @ */:
                     this.attributes.set(key, data[key]);
                     continue;
-                case 36: /* $ */
+                case 36 /* $ */:
                     if (this.shouldSaveConfig(key)) {
                         this.configs.set(key, data[key]);
                     }
                     continue;
-                case 63: /* ? */
+                case 63 /* ? */:
                     continue;
                 default:
                     let childData = data[key];

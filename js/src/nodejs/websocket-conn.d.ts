@@ -1,8 +1,8 @@
-import WebSocket from "ws";
-import { ClientLink, Connection, ConnectionChannel } from "../common/interfaces";
-import { PassiveChannel } from "../common/connection-channel";
-import { Completer } from "../utils/async";
-import { DsCodec } from "../utils/codec";
+import WebSocket from 'ws';
+import { ClientLink, Connection, ConnectionChannel } from '../common/interfaces';
+import { PassiveChannel } from '../common/connection-channel';
+import { Completer } from '../utils/async';
+import { DsCodec } from '../utils/codec';
 export declare class WebSocketConnection extends Connection {
     _responderChannel: PassiveChannel;
     readonly responderChannel: ConnectionChannel;

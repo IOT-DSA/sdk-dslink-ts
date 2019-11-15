@@ -1,8 +1,8 @@
-import {Requester} from "../requester";
-import {Request} from "../request";
-import {Completer} from "../../utils/async";
-import {DsError, StreamStatus} from "../../common/interfaces";
-import {RequesterUpdate, RequestUpdater} from "../interface";
+import {Requester} from '../requester';
+import {Request} from '../request';
+import {Completer} from '../../utils/async';
+import {DsError, StreamStatus} from '../../common/interfaces';
+import {RequesterUpdate, RequestUpdater} from '../interface';
 
 /** @ignore */
 export class RemoveController implements RequestUpdater {
@@ -21,8 +21,8 @@ export class RemoveController implements RequestUpdater {
     this.path = path;
 
     let reqMap = {
-      'method': 'remove',
-      'path': path
+      method: 'remove',
+      path: path
     };
 
     this._request = requester._sendRequest(reqMap, this);
@@ -33,9 +33,7 @@ export class RemoveController implements RequestUpdater {
     this.completer.complete(new RequesterUpdate(status));
   }
 
-  onDisconnect() {
-  }
+  onDisconnect() {}
 
-  onReconnect() {
-  }
+  onReconnect() {}
 }

@@ -1,10 +1,9 @@
-import {BaseLocalNode} from "../responder/base-local-node";
-import {ActionNode} from "../responder/node/action-node";
-import {MockActionNode} from "./MockAction";
-import {NodeProvider} from "../responder/node_state";
+import {BaseLocalNode} from '../responder/base-local-node';
+import {ActionNode} from '../responder/node/action-node';
+import {MockActionNode} from './MockAction';
+import {NodeProvider} from '../responder/node_state';
 
 export class MockNode extends BaseLocalNode {
-
   static profileName = 'mock';
   static interval: number = 1000;
 

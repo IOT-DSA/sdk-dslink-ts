@@ -1,5 +1,5 @@
-import MsgPack from "msgpack-lite";
-import Base64 from "./base64";
+import MsgPack from 'msgpack-lite';
+import Base64 from './base64';
 
 export function toBuffer(val: Uint8Array): Buffer {
   if (val instanceof Buffer) {
@@ -10,7 +10,7 @@ export function toBuffer(val: Uint8Array): Buffer {
 }
 
 export abstract class DsCodec {
-  static _codecs: { [key: string]: DsCodec };
+  static _codecs: {[key: string]: DsCodec};
 
   static defaultCodec: DsCodec;
 
@@ -82,13 +82,12 @@ export class DsJsonCodecImpl extends DsCodec implements DsJson {
     return JSON.stringify(val, DsJsonCodecImpl._safeEncoder, pretty ? 1 : undefined);
   }
 
-
   decodeBinaryFrame(bytes: Uint8Array): any {
     return this.decodeStringFrame(toBuffer(bytes).toString());
   }
 
   static reviver(key: string, value: any): any {
-    if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
+    if (typeof value === 'string' && value.startsWith('\u001Bbytes:')) {
       try {
         return Base64.decode(value.substring(7));
       } catch (err) {
@@ -138,8 +137,8 @@ export class DsMsgPackCodecImpl extends DsCodec {
 }
 
 DsCodec._codecs = {
-  "json": DsJson.instance,
-  "msgpack": DsMsgPackCodecImpl.instance
+  json: DsJson.instance,
+  msgpack: DsMsgPackCodecImpl.instance
 };
 
 DsCodec.defaultCodec = DsJson.instance;

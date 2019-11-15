@@ -1,11 +1,11 @@
-import Denque from "denque";
-import { Stream } from "../utils/async";
-import { ConnectionHandler } from "./connection-handler";
-import { DsCodec } from "../utils/codec";
-import { PrivateKey, PublicKey } from "../crypto/pk";
-import { LocalNode } from "../responder/node_state";
-import { Responder } from "../responder/responder";
-import { Requester } from "../requester/requester";
+import Denque from 'denque';
+import { Stream } from '../utils/async';
+import { ConnectionHandler } from './connection-handler';
+import { DsCodec } from '../utils/codec';
+import { PrivateKey, PublicKey } from '../crypto/pk';
+import { LocalNode } from '../responder/node_state';
+import { Responder } from '../responder/responder';
+import { Requester } from '../requester/requester';
 export declare abstract class ECDH {
     abstract readonly encodedPublicKey: string;
     abstract hashSalt(salt: string): string;
@@ -99,7 +99,7 @@ export interface ServerLinkManager {
     getResponder(dsId: string, nodeProvider: NodeProvider, sessionId?: string, trusted?: boolean): Responder;
     updateLinkData(dsId: string, m: any): void;
 }
-export declare type StreamStatus = "initialize" | "open" | "closed";
+export declare type StreamStatus = 'initialize' | 'open' | 'closed';
 export declare class ErrorPhase {
     static readonly request: string;
     static readonly response: string;

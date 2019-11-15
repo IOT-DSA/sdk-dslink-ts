@@ -46,8 +46,7 @@ class NodeSerializer {
                     return data;
                 }
             }
-            catch (err) {
-            }
+            catch (err) { }
             logger.info(`can't find a valid ${this.path}, skip loading nodes`);
             return null;
         };

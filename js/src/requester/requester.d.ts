@@ -1,13 +1,13 @@
-import { RequesterUpdate, RequestUpdater } from "./interface";
-import { Listener, Stream, StreamSubscription } from "../utils/async";
-import { Request } from "./request";
-import { ConnectionHandler } from "../common/connection-handler";
-import { RemoteNode, RemoteNodeCache } from "./node_cache";
-import { ReqSubscribeListener, SubscribeRequest } from "./request/subscribe";
-import { DsError, ProcessorResult } from "../common/interfaces";
-import { ValueUpdate } from "../common/value";
-import { RequesterListUpdate } from "./request/list";
-import { RequesterInvokeStream, RequesterInvokeUpdate } from "./request/invoke";
+import { RequesterUpdate, RequestUpdater } from './interface';
+import { Listener, Stream, StreamSubscription } from '../utils/async';
+import { Request } from './request';
+import { ConnectionHandler } from '../common/connection-handler';
+import { RemoteNode, RemoteNodeCache } from './node_cache';
+import { ReqSubscribeListener, SubscribeRequest } from './request/subscribe';
+import { DsError, ProcessorResult } from '../common/interfaces';
+import { ValueUpdate } from '../common/value';
+import { RequesterListUpdate } from './request/list';
+import { RequesterInvokeStream, RequesterInvokeUpdate } from './request/invoke';
 export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _requests: Map<number, Request>;

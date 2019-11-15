@@ -1,11 +1,11 @@
-import {Cancelable} from "../../utils/async";
-import {Request} from "../request";
-import {Requester} from "../requester";
-import {ConnectionProcessor, DsError} from "../../common/interfaces";
-import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
-import {RemoteNode} from "../node_cache";
-import {DSA_CONFIG} from "../../common/connection-handler";
-import {RequestUpdater} from "../interface";
+import {Cancelable} from '../../utils/async';
+import {Request} from '../request';
+import {Requester} from '../requester';
+import {ConnectionProcessor, DsError} from '../../common/interfaces';
+import {ValueUpdate, ValueUpdateCallback} from '../../common/value';
+import {RemoteNode} from '../node_cache';
+import {DSA_CONFIG} from '../../common/connection-handler';
+import {RequestUpdater} from '../interface';
 
 export class ReqSubscribeListener implements Cancelable {
   callback: ValueUpdateCallback;
@@ -41,8 +41,7 @@ export class SubscribeController implements RequestUpdater {
     // TODO: implement onReconnect
   }
 
-  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any},
-           error: DsError) {
+  onUpdate(status: string, updates: any[], columns: any[], meta: {[key: string]: any}, error: DsError) {
     // do nothing
   }
 }
@@ -53,7 +52,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
 
   getNextSid(): number {
     do {
-      if (this.lastSid < 0x7FFFFFFF) {
+      if (this.lastSid < 0x7fffffff) {
         ++this.lastSid;
       } else {
         this.lastSid = 1;
@@ -159,7 +158,6 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     }
   }
 
-
   startSendingData(currentTime: number, waitingAckId: number) {
     this._pendingSending = false;
 
@@ -178,7 +176,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     for (let path of processingPaths) {
       if (this.subscriptions.has(path)) {
         let sub: ReqSubscribeController = this.subscriptions.get(path);
-        let m: any = {'path': path, 'sid': sub.sid};
+        let m: any = {path: path, sid: sub.sid};
         if (sub.currentQos > 0) {
           m['qos'] = sub.currentQos;
         }
@@ -186,7 +184,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
       }
     }
     if (toAdd.length > 0) {
-      this.requester._sendRequest({'method': 'subscribe', 'paths': toAdd}, null);
+      this.requester._sendRequest({method: 'subscribe', paths: toAdd}, null);
     }
     if (this.toRemove.size > 0) {
       let removeSids: any[] = [];
@@ -198,8 +196,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
           sub._destroy();
         }
       }
-      this.requester._sendRequest(
-        {'method': 'unsubscribe', 'sids': removeSids}, null);
+      this.requester._sendRequest({method: 'unsubscribe', sids: removeSids}, null);
       this.toRemove.clear();
     }
   }
@@ -296,7 +293,7 @@ export class ReqSubscribeController {
     let maxQos = 0;
 
     for (let qos of this.callbacks.values()) {
-      maxQos = (qos > maxQos ? qos : maxQos);
+      maxQos = qos > maxQos ? qos : maxQos;
     }
 
     if (maxQos !== this.currentQos) {

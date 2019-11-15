@@ -5,11 +5,11 @@ import {
   ConnectionChannel,
   ConnectionProcessor,
   ProcessorResult
-} from "../common/interfaces";
-import {PassiveChannel} from "../common/connection-channel";
-import {Completer} from "../utils/async";
-import {DsCodec} from "../utils/codec";
-import {logger as mainLogger} from "../utils/logger";
+} from '../common/interfaces';
+import {PassiveChannel} from '../common/connection-channel';
+import {Completer} from '../utils/async';
+import {DsCodec} from '../utils/codec';
+import {logger as mainLogger} from '../utils/logger';
 
 let logger = mainLogger.tag('ws');
 
@@ -26,8 +26,7 @@ export class WebSocketConnection extends Connection {
     return this._requesterChannel;
   }
 
-  _onRequestReadyCompleter: Completer<ConnectionChannel> =
-    new Completer<ConnectionChannel>();
+  _onRequestReadyCompleter: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
 
   get onRequesterReady(): Promise<ConnectionChannel> {
     return this._onRequestReadyCompleter.future;
@@ -48,10 +47,7 @@ export class WebSocketConnection extends Connection {
   _onDoneHandled = false;
 
   /// clientLink is not needed when websocket works in server link
-  constructor(socket: WebSocket, clientLink: ClientLink,
-              onConnect: Function,
-              useCodec: DsCodec
-  ) {
+  constructor(socket: WebSocket, clientLink: ClientLink, onConnect: Function, useCodec: DsCodec) {
     super();
     this.socket = socket;
     this.clientLink = clientLink;
@@ -60,7 +56,7 @@ export class WebSocketConnection extends Connection {
       this.codec = useCodec;
     }
 
-    socket.binaryType = "arraybuffer";
+    socket.binaryType = 'arraybuffer';
     this._responderChannel = new PassiveChannel(this);
     this._requesterChannel = new PassiveChannel(this);
     socket.onmessage = this._onData;
@@ -111,7 +107,7 @@ export class WebSocketConnection extends Connection {
   }
 
   _onOpen = (e: Event) => {
-    logger.trace("Connected");
+    logger.trace('Connected');
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
@@ -151,61 +147,61 @@ export class WebSocketConnection extends Connection {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
-//        logger.fine("$m");
+        //        logger.fine("$m");
 
-        if (typeof m["salt"] === 'string') {
-          this.clientLink.updateSalt(m["salt"]);
+        if (typeof m['salt'] === 'string') {
+          this.clientLink.updateSalt(m['salt']);
         }
         let needAck = false;
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+        if (Array.isArray(m['responses']) && m['responses'].length > 0) {
           needAck = true;
           // send responses to requester channel
-          this._requesterChannel.onReceive.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m['responses']);
         }
 
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+        if (Array.isArray(m['requests']) && m['requests'].length > 0) {
           needAck = true;
           // send requests to responder channel
-          this._responderChannel.onReceive.add(m["requests"]);
+          this._responderChannel.onReceive.add(m['requests']);
         }
-        if (typeof m["ack"] === 'number') {
-          this.ack(m["ack"]);
+        if (typeof m['ack'] === 'number') {
+          this.ack(m['ack']);
         }
         if (needAck) {
-          let msgId: object = m["msg"];
+          let msgId: object = m['msg'];
           if (msgId != null) {
-            this.addConnCommand("ack", msgId);
+            this.addConnCommand('ack', msgId);
           }
         }
       } catch (err) {
-        console.error("error in onData", err);
+        console.error('error in onData', err);
         this.close();
         return;
       }
     } else if (typeof e.data === 'string') {
       try {
         m = this.codec.decodeStringFrame(e.data);
-//        logger.fine("$m");
+        //        logger.fine("$m");
 
         let needAck = false;
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+        if (Array.isArray(m['responses']) && m['responses'].length > 0) {
           needAck = true;
           // send responses to requester channel
-          this._requesterChannel.onReceive.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m['responses']);
         }
 
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+        if (Array.isArray(m['requests']) && m['requests'].length > 0) {
           needAck = true;
           // send requests to responder channel
-          this._responderChannel.onReceive.add(m["requests"]);
+          this._responderChannel.onReceive.add(m['requests']);
         }
-        if (typeof m["ack"] === "number") {
-          this.ack(m["ack"]);
+        if (typeof m['ack'] === 'number') {
+          this.ack(m['ack']);
         }
         if (needAck) {
-          let msgId: object = m["msg"];
+          let msgId: object = m['msg'];
           if (msgId != null) {
-            this.addConnCommand("ack", msgId);
+            this.addConnCommand('ack', msgId);
           }
         }
       } catch (err) {
@@ -227,7 +223,7 @@ export class WebSocketConnection extends Connection {
     if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
-//    logger.fine("browser sending");
+    //    logger.fine("browser sending");
     let needSend = false;
     let m: {[key: string]: any};
     if (this._msgCommand != null) {
@@ -240,11 +236,11 @@ export class WebSocketConnection extends Connection {
 
     let pendingAck: ConnectionProcessor[] = [];
 
-    let ts: number = (new Date()).getTime();
+    let ts: number = new Date().getTime();
     let rslt: ProcessorResult = this._responderChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["responses"] = rslt.messages;
+        m['responses'] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
@@ -254,7 +250,7 @@ export class WebSocketConnection extends Connection {
     rslt = this._requesterChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["requests"] = rslt.messages;
+        m['requests'] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
@@ -267,16 +263,15 @@ export class WebSocketConnection extends Connection {
         if (pendingAck.length > 0) {
           this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
-        m["msg"] = this.nextMsgId;
-        if (this.nextMsgId < 0x7FFFFFFF) {
+        m['msg'] = this.nextMsgId;
+        if (this.nextMsgId < 0x7fffffff) {
           ++this.nextMsgId;
         } else {
           this.nextMsgId = 1;
         }
       }
 
-
-//      logger.fine("send: $m");
+      //      logger.fine("send: $m");
       let encoded = this.codec.encodeFrame(m);
 
       try {
@@ -305,7 +300,7 @@ export class WebSocketConnection extends Connection {
 
     this._onDoneHandled = true;
 
-//    logger.fine("socket disconnected");
+    //    logger.fine("socket disconnected");
 
     if (!this._requesterChannel.onReceive.isClosed) {
       this._requesterChannel.onReceive.close();
@@ -334,8 +329,7 @@ export class WebSocketConnection extends Connection {
   };
 
   close() {
-    if (this.socket.readyState === WebSocket.OPEN ||
-      this.socket.readyState === WebSocket.CONNECTING) {
+    if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
       this.socket.close();
     }
     this._onDone();

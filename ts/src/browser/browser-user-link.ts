@@ -1,12 +1,12 @@
 /// a client link for both http and ws
-import {ClientLink, DummyECDH, ECDH, NodeProvider} from "../common/interfaces";
-import {Completer} from "../utils/async";
-import {Requester} from "../requester/requester";
+import {ClientLink, DummyECDH, ECDH, NodeProvider} from '../common/interfaces';
+import {Completer} from '../utils/async';
+import {Requester} from '../requester/requester';
 
-import {Responder} from "../responder/responder";
-import {PrivateKey} from "../crypto/pk";
-import {WebSocketConnection} from "./browser-ws-conn";
-import {DsCodec} from "../utils/codec";
+import {Responder} from '../responder/responder';
+import {PrivateKey} from '../crypto/pk';
+import {WebSocketConnection} from './browser-ws-conn';
+import {DsCodec} from '../utils/codec';
 
 export class BrowserUserLink extends ClientLink {
   /** @ignore */
@@ -17,9 +17,11 @@ export class BrowserUserLink extends ClientLink {
   }
 
   /** @ignore */
-  static session: string = Math.random().toString(16).substr(2, 8);
+  static session: string = Math.random()
+    .toString(16)
+    .substr(2, 8);
   readonly requester: Requester = new Requester();
-//  readonly responder: Responder;
+  //  readonly responder: Responder;
 
   /** @ignore */
   readonly nonce: ECDH = new DummyECDH();
@@ -38,22 +40,19 @@ export class BrowserUserLink extends ClientLink {
   /** @ignore */
   format: string;
 
-
-  constructor(wsUpdateUri: string,
-              format = 'msgpack') {
+  constructor(wsUpdateUri: string, format = 'msgpack') {
     super();
-    if (wsUpdateUri.startsWith("http")) {
+    if (wsUpdateUri.startsWith('http')) {
       wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
     }
 
     this.wsUpdateUri = wsUpdateUri;
     this.format = format;
 
-    if (window.location.hash.includes("dsa_json")) {
-      this.format = "json";
+    if (window.location.hash.includes('dsa_json')) {
+      this.format = 'json';
     }
   }
-
 
   _connect() {
     this.initWebsocket(false);
@@ -77,8 +76,7 @@ export class BrowserUserLink extends ClientLink {
 
     try {
       let socket = new WebSocket(`${this.wsUpdateUri}?session=${BrowserUserLink.session}&format=${this.format}`);
-      this._wsConnection = new WebSocketConnection(
-        socket, this, this._onConnect, DsCodec.getCodec(this.format));
+      this._wsConnection = new WebSocketConnection(socket, this, this._onConnect, DsCodec.getCodec(this.format));
     } catch (err) {
       this.onDisConnect(reconnect);
       return;
@@ -99,7 +97,7 @@ export class BrowserUserLink extends ClientLink {
     this._wsConnection.onDisconnected.then((connection) => {
       this.onDisConnect(reconnect);
     });
-  }
+  };
 
   onDisConnect(reconnect: boolean) {
     this._onDisconnect();
@@ -121,7 +119,6 @@ export class BrowserUserLink extends ClientLink {
   }
 
   reconnect() {
-
     if (this._wsConnection != null) {
       this._wsConnection.socket.close();
     }

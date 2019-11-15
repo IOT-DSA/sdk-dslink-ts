@@ -1,6 +1,5 @@
-import {BaseLocalNode} from "../base-local-node";
-import {NodeProvider} from "../node_state";
-
+import {BaseLocalNode} from '../base-local-node';
+import {NodeProvider} from '../node_state';
 
 export class RootNode extends BaseLocalNode {
   constructor(data?: {[key: string]: any}) {

@@ -8,11 +8,11 @@ class TableColumn {
     }
     getData() {
         let rslt = {
-            "type": this.type,
-            "name": this.name
+            type: this.type,
+            name: this.name
         };
         if (this.defaultValue != null) {
-            rslt["default"] = this.defaultValue;
+            rslt['default'] = this.defaultValue;
         }
         return rslt;
     }
@@ -35,12 +35,12 @@ class TableColumn {
     static parseColumns(list) {
         let rslt = [];
         for (let m of list) {
-            if ((m != null && m instanceof Object) && typeof m["name"] === 'string') {
-                let type = "string";
-                if (typeof m["type"] === 'string') {
-                    type = m["type"];
+            if (m != null && m instanceof Object && typeof m['name'] === 'string') {
+                let type = 'string';
+                if (typeof m['type'] === 'string') {
+                    type = m['type'];
                 }
-                rslt.push(new TableColumn(m["name"], type, m["default"]));
+                rslt.push(new TableColumn(m['name'], type, m['default']));
             }
             else if (m instanceof TableColumn) {
                 rslt.push(m);

@@ -1,30 +1,29 @@
 /// manage cached nodes for requester
-import {Node} from "../common/node";
-import {ListController, RequesterListUpdate} from "./request/list";
-import {ReqSubscribeController} from "./request/subscribe";
-import {ValueUpdate} from "../common/value";
-import {Requester} from "./requester";
-import {Stream} from "../utils/async";
-import {Permission} from "../common/permission";
-import {InvokeController, RequesterInvokeStream, RequesterInvokeUpdate} from "./request/invoke";
-import {buildEnumType} from "../utils";
+import {Node} from '../common/node';
+import {ListController, RequesterListUpdate} from './request/list';
+import {ReqSubscribeController} from './request/subscribe';
+import {ValueUpdate} from '../common/value';
+import {Requester} from './requester';
+import {Stream} from '../utils/async';
+import {Permission} from '../common/permission';
+import {InvokeController, RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
+import {buildEnumType} from '../utils';
 
 /** @ignore */
 export class RemoteNodeCache {
   _nodes: Map<string, RemoteNode> = new Map();
 
-  RemoteNodeCache() {
-  }
+  RemoteNodeCache() {}
 
   getRemoteNode(path: string): RemoteNode {
     let node = this._nodes.get(path);
 
     if (node == null) {
-      if ((this._nodes.size % 1000) === 0) {
-//        logger.fine("Node Cache hit ${this._nodes.length} nodes in size.");
+      if (this._nodes.size % 1000 === 0) {
+        //        logger.fine("Node Cache hit ${this._nodes.length} nodes in size.");
       }
 
-      if (path.startsWith("defs")) {
+      if (path.startsWith('defs')) {
         node = new RemoteDefNode(path);
         this._nodes.set(path, node);
       } else {
@@ -121,8 +120,7 @@ export class RemoteNode extends Node {
     if (this.remotePath === '/') {
       this.name = '/';
     } else {
-      this.name = this.remotePath
-        .split('/').pop();
+      this.name = this.remotePath.split('/').pop();
     }
   }
 
@@ -175,14 +173,8 @@ export class RemoteNode extends Node {
   }
 
   /** @ignore */
-  _invoke(params: object, requester: Requester,
-          maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
-    return new InvokeController(
-      this,
-      requester,
-      params,
-      maxPermission
-    )._stream;
+  _invoke(params: object, requester: Requester, maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+    return new InvokeController(this, requester, params, maxPermission)._stream;
   }
 
   /** @ignore */
@@ -200,7 +192,7 @@ export class RemoteNode extends Node {
         this.configs.set(key, value);
       } else if (key.startsWith('@')) {
         this.attributes.set(key, value);
-      } else if ((value != null && value instanceof Object)) {
+      } else if (value != null && value instanceof Object) {
         let node: Node = cache.getRemoteNode(`${childPathPre}/${key}`);
         this.children.set(key, node);
         if (node instanceof RemoteNode) {
@@ -219,8 +211,8 @@ export class RemoteNode extends Node {
   }
 
   /** @ignore */
-  save(includeValue = true): { [key: string]: any } {
-    let map: { [key: string]: any } = {};
+  save(includeValue = true): {[key: string]: any} {
+    let map: {[key: string]: any} = {};
     for (let [key, value] of this.configs) {
       map[key] = value;
     }
@@ -231,11 +223,9 @@ export class RemoteNode extends Node {
       map[key] = node instanceof RemoteNode ? node.save() : node.getSimpleMap();
     }
 
-    if (includeValue &&
-      this._subscribeController != null &&
-      this._subscribeController._lastUpdate != null) {
-      map["?value"] = this._subscribeController._lastUpdate.value;
-      map["?value_timestamp"] = this._subscribeController._lastUpdate.ts;
+    if (includeValue && this._subscribeController != null && this._subscribeController._lastUpdate != null) {
+      map['?value'] = this._subscribeController._lastUpdate.value;
+      map['?value_timestamp'] = this._subscribeController._lastUpdate.ts;
     }
 
     return map;
@@ -251,79 +241,69 @@ export class RemoteDefNode extends RemoteNode {
 
 /** @ignore */
 export class DefaultDefNodes {
-  static readonly _defaultDefs: { [key: string]: any } = {
-    "node": {},
-    "static": {},
-    "getHistory": {
-      "$invokable": "read",
-      "$result": "table",
-      "$params": [
+  static readonly _defaultDefs: {[key: string]: any} = {
+    node: {},
+    static: {},
+    getHistory: {
+      $invokable: 'read',
+      $result: 'table',
+      $params: [
         {
-          "name": "Timerange",
-          "type": "string",
-          "edito": "daterange"
+          name: 'Timerange',
+          type: 'string',
+          edito: 'daterange'
         },
         {
-          "name": "Interval",
-          "type": "enum",
-          "default": "none",
-          "edito": buildEnumType([
-            "default",
-            "none",
-            "1Y",
-            "3N",
-            "1N",
-            "1W",
-            "1D",
-            "12H",
-            "6H",
-            "4H",
-            "3H",
-            "2H",
-            "1H",
-            "30M",
-            "15M",
-            "10M",
-            "5M",
-            "1M",
-            "30S",
-            "15S",
-            "10S",
-            "5S",
-            "1S"
+          name: 'Interval',
+          type: 'enum',
+          default: 'none',
+          edito: buildEnumType([
+            'default',
+            'none',
+            '1Y',
+            '3N',
+            '1N',
+            '1W',
+            '1D',
+            '12H',
+            '6H',
+            '4H',
+            '3H',
+            '2H',
+            '1H',
+            '30M',
+            '15M',
+            '10M',
+            '5M',
+            '1M',
+            '30S',
+            '15S',
+            '10S',
+            '5S',
+            '1S'
           ])
         },
         {
-          "name": "Rollup",
-          "default": "none",
-          "type": buildEnumType([
-            "none",
-            "avg",
-            "min",
-            "max",
-            "sum",
-            "first",
-            "last",
-            "count",
-            "delta"
-          ])
+          name: 'Rollup',
+          default: 'none',
+          type: buildEnumType(['none', 'avg', 'min', 'max', 'sum', 'first', 'last', 'count', 'delta'])
         }
       ],
-      "$columns": [
+      $columns: [
         {
-          "name": "timestamp",
-          "type": "time"
+          name: 'timestamp',
+          type: 'time'
         },
         {
-          "name": "value",
-          "type": "dynamic"
+          name: 'value',
+          type: 'dynamic'
         }
       ]
     }
   };
 
-  static readonly nameMap: { [key: string]: Node } = (function () {
-    let rslt: { [key: string]: Node } = {};
+  static readonly nameMap: {[key: string]: Node} = (function() {
+    let rslt: {[key: string]: Node} = {};
     for (let k in DefaultDefNodes._defaultDefs) {
       let m = DefaultDefNodes._defaultDefs[k];
       let path = `/defs/profile/${k}`;
@@ -344,8 +324,8 @@ export class DefaultDefNodes {
     return rslt;
   })();
 
-  static readonly pathMap: { [key: string]: Node } = (function () {
-    let rslt: { [key: string]: Node } = {};
+  static readonly pathMap: {[key: string]: Node} = (function() {
+    let rslt: {[key: string]: Node} = {};
     for (let k in DefaultDefNodes.nameMap) {
       let node = DefaultDefNodes.nameMap[k];
       if (node instanceof RemoteNode) {

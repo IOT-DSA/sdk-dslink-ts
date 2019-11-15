@@ -1,7 +1,6 @@
-import {Completer, Stream} from "../utils/async";
-import {Connection, ConnectionChannel, ProcessorResult} from "./interfaces";
-import {ConnectionHandler} from "./connection-handler";
-
+import {Completer, Stream} from '../utils/async';
+import {Connection, ConnectionChannel, ProcessorResult} from './interfaces';
+import {ConnectionHandler} from './connection-handler';
 
 export class PassiveChannel implements ConnectionChannel {
   onReceive: Stream<any[]> = new Stream<any[]>();
@@ -42,15 +41,13 @@ export class PassiveChannel implements ConnectionChannel {
 
   connected: boolean = true;
 
-  readonly onDisconnectController: Completer<ConnectionChannel> =
-    new Completer<ConnectionChannel>();
+  readonly onDisconnectController: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
 
   get onDisconnected() {
     return this.onDisconnectController.future;
   }
 
-  readonly onConnectController: Completer<ConnectionChannel> =
-    new Completer<ConnectionChannel>();
+  readonly onConnectController: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
 
   get onConnected() {
     return this.onConnectController.future;

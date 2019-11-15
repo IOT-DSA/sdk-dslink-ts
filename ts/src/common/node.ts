@@ -91,7 +91,6 @@ export class Node<ChildType extends Node<any> = Node<any>> {
     return this.getChild(name);
   }
 
-
   /// Iterates over all the children of this node and passes them to the specified [callback].
   /** @ignore */
   forEachChild(callback: (name: string, node: ChildType) => void) {
@@ -99,7 +98,7 @@ export class Node<ChildType extends Node<any> = Node<any>> {
       callback(name, node);
     }
     if (this.profile != null) {
-      for (let [name, node] of  this.profile.children) {
+      for (let [name, node] of this.profile.children) {
         if (!this.children.has(name)) {
           callback(name, node);
         }
@@ -113,7 +112,7 @@ export class Node<ChildType extends Node<any> = Node<any>> {
       callback(name, val);
     }
     if (this.profile != null) {
-      for (let [name, val] of  this.profile.configs) {
+      for (let [name, val] of this.profile.configs) {
         if (!this.children.has(name)) {
           callback(name, val);
         }
@@ -127,7 +126,7 @@ export class Node<ChildType extends Node<any> = Node<any>> {
       callback(name, val);
     }
     if (this.profile != null) {
-      for (let [name, val] of  this.profile.attributes) {
+      for (let [name, val] of this.profile.attributes) {
         if (!this.children.has(name)) {
           callback(name, val);
         }
@@ -173,8 +172,7 @@ export class Node<ChildType extends Node<any> = Node<any>> {
     return rslt;
   }
 
-  destroy() {
-  }
+  destroy() {}
 }
 
 /// Utility class for node and config/attribute paths.
@@ -263,11 +261,11 @@ export class Path {
   /** Get a child of this path. */
   child(name: string) {
     return new Path(
-      (this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) +
-      "/" +
-      (name.startsWith("/") ? name.substring(1) : name));
+      (this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path) +
+        '/' +
+        (name.startsWith('/') ? name.substring(1) : name)
+    );
   }
-
 
   /// The name of this path.
   /// This is the last component of the path.

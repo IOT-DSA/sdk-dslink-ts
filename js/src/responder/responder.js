@@ -47,7 +47,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
     }
     /** @ignore */
     addResponse(response) {
-        if (response._sentStreamStatus !== "closed") {
+        if (response._sentStreamStatus !== 'closed') {
             this._responses.set(response.rid, response);
         }
         return response;
@@ -101,10 +101,10 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 // this response is no longer valid
                 return;
             }
-            response._sentStreamStatus = "closed";
+            response._sentStreamStatus = 'closed';
             rid = response.rid;
         }
-        let m = { 'rid': rid, 'stream': "closed" };
+        let m = { rid: rid, stream: 'closed' };
         if (error != null) {
             m['error'] = error.serialize();
         }
@@ -115,7 +115,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
     updateResponse(response, updates, options = {}) {
         let { streamStatus, columns, meta } = options;
         if (this._responses.get(response.rid) === response) {
-            let m = { 'rid': response.rid };
+            let m = { rid: response.rid };
             if (streamStatus != null && streamStatus !== response._sentStreamStatus) {
                 response._sentStreamStatus = streamStatus;
                 m['stream'] = streamStatus;
@@ -133,7 +133,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             //   handleMap(m);
             // }
             this.addToSendList(m);
-            if (response._sentStreamStatus === "closed") {
+            if (response._sentStreamStatus === 'closed') {
                 this._responses.delete(response.rid);
             }
         }
@@ -216,8 +216,8 @@ class Responder extends connection_handler_1.ConnectionHandler {
             }
             let permission = permission_1.Permission.parse(m['permit']);
             let params;
-            if (m["params"] instanceof Object) {
-                params = m["params"];
+            if (m['params'] instanceof Object) {
+                params = m['params'];
             }
             else {
                 params = {};

@@ -20,7 +20,7 @@ class ListDefListener {
         this.node = node;
         this.requester = requester;
         this.listener = requester.list(node.remotePath, (update) => {
-            this.ready = update.streamStatus !== "initialize";
+            this.ready = update.streamStatus !== 'initialize';
             if (update.node.configs.has('$disconnectedTs')) {
                 update.node.configs.delete('$disconnectedTs');
             }
@@ -104,7 +104,7 @@ class ListController {
         this.stream = new async_1.Stream(this.onStartListen, this._onAllCancel, this._onListen);
     }
     get initialized() {
-        return this.request != null && this.request.streamStatus !== "initialize";
+        return this.request != null && this.request.streamStatus !== 'initialize';
     }
     onDisconnect() {
         this.disconnectTs = value_1.ValueUpdate.getTs();
@@ -158,8 +158,7 @@ class ListController {
                 }
                 if (name.startsWith('$')) {
                     if (!reseted &&
-                        (name === '$is' || name === '$base' ||
-                            (name === '$disconnectedTs' && typeof value === 'string'))) {
+                        (name === '$is' || name === '$base' || (name === '$disconnectedTs' && typeof value === 'string'))) {
                         reseted = true;
                         this.node.resetNodeCache();
                     }
@@ -194,7 +193,7 @@ class ListController {
                     }
                 }
             }
-            if (this.request.streamStatus !== "initialize") {
+            if (this.request.streamStatus !== 'initialize') {
                 this.node._listed = true;
             }
             if (this._pendingRemoveDef) {
@@ -215,26 +214,25 @@ class ListController {
                 defPath = `/defs/profile/${defPath}`;
             }
         }
-        if (this.node.profile instanceof node_cache_1.RemoteNode &&
-            this.node.profile.remotePath === defPath) {
+        if (this.node.profile instanceof node_cache_1.RemoteNode && this.node.profile.remotePath === defPath) {
             return;
         }
         this.node.profile = this.requester.nodeCache.getDefNode(defPath, defName);
         if (defName === 'node') {
             return;
         }
-        if ((this.node.profile instanceof node_cache_1.RemoteNode) && !this.node.profile._listed) {
+        if (this.node.profile instanceof node_cache_1.RemoteNode && !this.node.profile._listed) {
             this._ready = false;
             this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
         }
     }
     onProfileUpdated() {
         if (this._ready) {
-            if (this.request.streamStatus !== "initialize") {
+            if (this.request.streamStatus !== 'initialize') {
                 this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
                 this.changes.clear();
             }
-            if (this.request && this.request.streamStatus === "closed") {
+            if (this.request && this.request.streamStatus === 'closed') {
                 this.stream.close();
             }
         }
@@ -246,11 +244,10 @@ class ListController {
         if (!this.waitToSend) {
             return;
         }
-        this.request = this.requester._sendRequest({ 'method': 'list', 'path': this.node.remotePath }, this);
+        this.request = this.requester._sendRequest({ method: 'list', path: this.node.remotePath }, this);
         this.waitToSend = false;
     }
-    ackReceived(receiveAckId, startTime, currentTime) {
-    }
+    ackReceived(receiveAckId, startTime, currentTime) { }
     _destroy() {
         this.waitToSend = false;
         if (this._profileLoader != null) {
@@ -269,7 +266,7 @@ ListController._ignoreProfileProps = [
     '$is',
     // '$permission',
     // '$settings',
-    '$disconnectedTs',
+    '$disconnectedTs'
 ];
 exports.ListController = ListController;
 //# sourceMappingURL=list.js.map

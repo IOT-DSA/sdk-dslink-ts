@@ -33,7 +33,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         };
         this._opened = false;
         this._onOpen = (e) => {
-            logger.trace("Connected");
+            logger.trace('Connected');
             this._opened = true;
             if (this.onConnect != null) {
                 this.onConnect();
@@ -57,32 +57,32 @@ class WebSocketConnection extends interfaces_1.Connection {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
                     //        logger.fine("$m");
-                    if (typeof m["salt"] === 'string') {
-                        this.clientLink.updateSalt(m["salt"]);
+                    if (typeof m['salt'] === 'string') {
+                        this.clientLink.updateSalt(m['salt']);
                     }
                     let needAck = false;
-                    if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+                    if (Array.isArray(m['responses']) && m['responses'].length > 0) {
                         needAck = true;
                         // send responses to requester channel
-                        this._requesterChannel.onReceive.add(m["responses"]);
+                        this._requesterChannel.onReceive.add(m['responses']);
                     }
-                    if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+                    if (Array.isArray(m['requests']) && m['requests'].length > 0) {
                         needAck = true;
                         // send requests to responder channel
-                        this._responderChannel.onReceive.add(m["requests"]);
+                        this._responderChannel.onReceive.add(m['requests']);
                     }
-                    if (typeof m["ack"] === 'number') {
-                        this.ack(m["ack"]);
+                    if (typeof m['ack'] === 'number') {
+                        this.ack(m['ack']);
                     }
                     if (needAck) {
-                        let msgId = m["msg"];
+                        let msgId = m['msg'];
                         if (msgId != null) {
-                            this.addConnCommand("ack", msgId);
+                            this.addConnCommand('ack', msgId);
                         }
                     }
                 }
                 catch (err) {
-                    console.error("error in onData", err);
+                    console.error('error in onData', err);
                     this.close();
                     return;
                 }
@@ -92,23 +92,23 @@ class WebSocketConnection extends interfaces_1.Connection {
                     m = this.codec.decodeStringFrame(e.data);
                     //        logger.fine("$m");
                     let needAck = false;
-                    if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+                    if (Array.isArray(m['responses']) && m['responses'].length > 0) {
                         needAck = true;
                         // send responses to requester channel
-                        this._requesterChannel.onReceive.add(m["responses"]);
+                        this._requesterChannel.onReceive.add(m['responses']);
                     }
-                    if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+                    if (Array.isArray(m['requests']) && m['requests'].length > 0) {
                         needAck = true;
                         // send requests to responder channel
-                        this._responderChannel.onReceive.add(m["requests"]);
+                        this._responderChannel.onReceive.add(m['requests']);
                     }
-                    if (typeof m["ack"] === "number") {
-                        this.ack(m["ack"]);
+                    if (typeof m['ack'] === 'number') {
+                        this.ack(m['ack']);
                     }
                     if (needAck) {
-                        let msgId = m["msg"];
+                        let msgId = m['msg'];
                         if (msgId != null) {
-                            this.addConnCommand("ack", msgId);
+                            this.addConnCommand('ack', msgId);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         if (useCodec != null) {
             this.codec = useCodec;
         }
-        socket.binaryType = "arraybuffer";
+        socket.binaryType = 'arraybuffer';
         this._responderChannel = new connection_channel_1.PassiveChannel(this);
         this._requesterChannel = new connection_channel_1.PassiveChannel(this);
         socket.onmessage = this._onData;
@@ -223,11 +223,11 @@ class WebSocketConnection extends interfaces_1.Connection {
             m = {};
         }
         let pendingAck = [];
-        let ts = (new Date()).getTime();
+        let ts = new Date().getTime();
         let rslt = this._responderChannel.getSendingData(ts, this.nextMsgId);
         if (rslt != null) {
             if (rslt.messages.length > 0) {
-                m["responses"] = rslt.messages;
+                m['responses'] = rslt.messages;
                 needSend = true;
             }
             if (rslt.processors.length > 0) {
@@ -237,7 +237,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         rslt = this._requesterChannel.getSendingData(ts, this.nextMsgId);
         if (rslt != null) {
             if (rslt.messages.length > 0) {
-                m["requests"] = rslt.messages;
+                m['requests'] = rslt.messages;
                 needSend = true;
             }
             if (rslt.processors.length > 0) {
@@ -249,8 +249,8 @@ class WebSocketConnection extends interfaces_1.Connection {
                 if (pendingAck.length > 0) {
                     this.pendingAcks.push(new interfaces_1.ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
                 }
-                m["msg"] = this.nextMsgId;
-                if (this.nextMsgId < 0x7FFFFFFF) {
+                m['msg'] = this.nextMsgId;
+                if (this.nextMsgId < 0x7fffffff) {
                     ++this.nextMsgId;
                 }
                 else {
@@ -270,8 +270,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         }
     }
     close() {
-        if (this.socket.readyState === WebSocket.OPEN ||
-            this.socket.readyState === WebSocket.CONNECTING) {
+        if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
             this.socket.close();
         }
         this._onDone();

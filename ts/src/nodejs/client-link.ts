@@ -1,21 +1,21 @@
 import fs from 'fs';
 
-import {ClientLink, DummyECDH, ECDH} from "../common/interfaces";
-import {Completer} from "../utils/async";
-import {Requester} from "../requester/requester";
-import WebSocket from "ws";
-import {WebSocketConnection} from "./websocket-conn";
-import {Path} from "../common/node";
-import axios from "axios";
-import {DsCodec, DsJson} from "../utils/codec";
-import url from "url";
-import {Responder} from "../responder/responder";
-import {PrivateKey, sha256} from "../crypto/pk";
-import {DSA_VERSION} from "../utils";
-import {LocalNode, NodeProvider} from "../responder/node_state";
+import {ClientLink, DummyECDH, ECDH} from '../common/interfaces';
+import {Completer} from '../utils/async';
+import {Requester} from '../requester/requester';
+import WebSocket from 'ws';
+import {WebSocketConnection} from './websocket-conn';
+import {Path} from '../common/node';
+import axios from 'axios';
+import {DsCodec, DsJson} from '../utils/codec';
+import url from 'url';
+import {Responder} from '../responder/responder';
+import {PrivateKey, sha256} from '../crypto/pk';
+import {DSA_VERSION} from '../utils';
+import {LocalNode, NodeProvider} from '../responder/node_state';
 
-import {logger as mainLogger} from "../utils/logger";
-import {getKeyFromFile, NodeSerializer} from "./serialize";
+import {logger as mainLogger} from '../utils/logger';
+import {getKeyFromFile, NodeSerializer} from './serialize';
 
 /** @ignore */
 let logger = mainLogger.tag('link');
@@ -27,7 +27,6 @@ export class HttpClientLink extends ClientLink {
   get onReady(): Promise<[Requester, Responder]> {
     return this._onReadyCompleter.future;
   }
-
 
   remotePath: string;
 
@@ -43,7 +42,6 @@ export class HttpClientLink extends ClientLink {
 
   /** @ignore */
   tokenHash: string;
-
 
   /** @ignore */
   _nonce: ECDH;
@@ -81,15 +79,19 @@ export class HttpClientLink extends ClientLink {
    */
   format: string = 'json';
 
-  constructor(conn: string, dsIdPrefix: string, options: {
-    rootNode?: LocalNode,
-    privateKey?: PrivateKey,
-    isRequester?: boolean,
-    saveNodes?: boolean | string | ((data: any) => void),
-    token?: string,
-    linkData?: {[key: string]: any},
-    format?: string[] | string
-  } = {}) {
+  constructor(
+    conn: string,
+    dsIdPrefix: string,
+    options: {
+      rootNode?: LocalNode;
+      privateKey?: PrivateKey;
+      isRequester?: boolean;
+      saveNodes?: boolean | string | ((data: any) => void);
+      token?: string;
+      linkData?: {[key: string]: any};
+      format?: string[] | string;
+    } = {}
+  ) {
     super();
     this._conn = conn;
     if (options.privateKey) {
@@ -97,7 +99,6 @@ export class HttpClientLink extends ClientLink {
     } else {
       this.privateKey = getKeyFromFile('.dslink.key');
     }
-
 
     this.linkData = options.linkData;
     if (options.format) {
@@ -113,7 +114,6 @@ export class HttpClientLink extends ClientLink {
     if (options.isRequester) {
       this.requester = new Requester();
     }
-
 
     if (options.rootNode) {
       this.nodeProvider = options.rootNode.provider;
@@ -134,7 +134,6 @@ export class HttpClientLink extends ClientLink {
         this.nodeProvider._saveFunction = serializer.saveNodesToFile;
       }
     }
-
 
     if (options.token != null && options.token.length > 16) {
       // pre-generate tokenHash
@@ -182,7 +181,7 @@ export class HttpClientLink extends ClientLink {
     if (this.tokenHash != null) {
       connUrl = `${connUrl}${this.tokenHash}`;
     }
-//    logger.info(formatLogMessage("Connecting to ${_conn}"));
+    //    logger.info(formatLogMessage("Connecting to ${_conn}"));
 
     // TODO: This runZoned is due to a bug in the DartVM
     // https://github.com/dart-lang/sdk/issues/31275
@@ -190,12 +189,12 @@ export class HttpClientLink extends ClientLink {
 
     try {
       let requestJson: any = {
-        'publicKey': this.privateKey.publicKey.qBase64,
-        'isRequester': this.requester != null,
-        'isResponder': this.responder != null,
-        'formats': this.formats,
-        'version': DSA_VERSION,
-        'enableWebSocketCompression': true
+        publicKey: this.privateKey.publicKey.qBase64,
+        isRequester: this.requester != null,
+        isResponder: this.responder != null,
+        formats: this.formats,
+        version: DSA_VERSION,
+        enableWebSocketCompression: true
       };
       if (this.linkData != null) {
         requestJson['linkData'] = this.linkData;
@@ -203,10 +202,9 @@ export class HttpClientLink extends ClientLink {
 
       let connResponse = await axios.post(connUrl, requestJson, {timeout: 60000});
 
-
       let serverConfig: {[key: string]: any} = connResponse.data;
 
-//      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
+      //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
 
       // read salt
       this.salt = serverConfig['salt'];
@@ -221,8 +219,9 @@ export class HttpClientLink extends ClientLink {
       this.remotePath = serverConfig['path'];
 
       if (typeof serverConfig['wsUri'] === 'string') {
-        this._wsUpdateUri = `${url.resolve(connUrl, serverConfig['wsUri'])}?dsId=${encodeURIComponent(this.dsId)}`
-          .replace('http', 'ws');
+        this._wsUpdateUri = `${url.resolve(connUrl, serverConfig['wsUri'])}?dsId=${encodeURIComponent(
+          this.dsId
+        )}`.replace('http', 'ws');
       }
 
       if (typeof serverConfig['format'] === 'string') {
@@ -231,11 +230,11 @@ export class HttpClientLink extends ClientLink {
 
       await this.initWebsocket(false);
     } catch (e) {
-//      if (logger.level <= Level.FINER ) {
-//        logger.warning("Client socket crashed: $e $s");
-//      } else {
-//        logger.warning("Client socket crashed: $e");
-//      }
+      //      if (logger.level <= Level.FINER ) {
+      //        logger.warning("Client socket crashed: $e $s");
+      //      } else {
+      //        logger.warning("Client socket crashed: $e");
+      //      }
       this.connDelay();
     }
   }
@@ -270,13 +269,9 @@ export class HttpClientLink extends ClientLink {
 
       let socket = new WebSocket(wsUrl);
 
-      this._wsConnection = new WebSocketConnection(
-        socket,
-        this, this._onConnect,
-        DsCodec.getCodec(this.format)
-      );
+      this._wsConnection = new WebSocketConnection(socket, this, this._onConnect, DsCodec.getCodec(this.format));
 
-//      logger.info(formatLogMessage("Connected"));
+      //      logger.info(formatLogMessage("Connected"));
 
       // delays: Reset, we've successfully connected.
       this._connDelay = 0;
@@ -293,7 +288,6 @@ export class HttpClientLink extends ClientLink {
         this._wsConnection.onRequesterReady.then((channel) => {
           this.requester.connection = channel;
           this._onReadyCompleter.complete([this.requester, this.responder]);
-
         });
       }
 
@@ -302,9 +296,7 @@ export class HttpClientLink extends ClientLink {
         this.initWebsocket();
       });
     } catch (error) {
-      if (error.message.contains('not upgraded to websocket')
-        || error.message.contains('(401)')
-      ) {
+      if (error.message.contains('not upgraded to websocket') || error.message.contains('(401)')) {
         logger.warn(error.message);
         this.connDelay();
       } else if (reconnect) {

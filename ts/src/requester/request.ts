@@ -1,12 +1,12 @@
 /// request class handles raw response from responder
-import {Requester} from "./requester";
-import {DsError, StreamStatus} from "../common/interfaces";
-import {RequestUpdater} from "./interface";
+import {Requester} from './requester';
+import {DsError, StreamStatus} from '../common/interfaces';
+import {RequestUpdater} from './interface';
 
 export class Request {
   readonly requester: Requester;
   readonly rid: number;
-  readonly data: { [key: string]: any };
+  readonly data: {[key: string]: any};
 
   /// raw request callback
   readonly updater: RequestUpdater;
@@ -15,43 +15,43 @@ export class Request {
     return this._isClosed;
   }
 
-  constructor(requester: Requester, rid: number, updater: RequestUpdater, data: { [key: string]: any }) {
+  constructor(requester: Requester, rid: number, updater: RequestUpdater, data: {[key: string]: any}) {
     this.requester = requester;
     this.rid = rid;
     this.updater = updater;
     this.data = data;
   }
 
-  streamStatus: StreamStatus = "initialize";
+  streamStatus: StreamStatus = 'initialize';
 
   /// resend the data if previous sending failed
   resend() {
     this.requester.addToSendList(this.data);
   }
 
-  _update(m: { [key: string]: any }) {
-    if (typeof m["stream"] === 'string') {
-      this.streamStatus = m["stream"];
+  _update(m: {[key: string]: any}) {
+    if (typeof m['stream'] === 'string') {
+      this.streamStatus = m['stream'];
     }
     let updates: any[];
     let columns: any[];
     let meta: object;
-    if (Array.isArray(m["updates"])) {
-      updates = m["updates"];
+    if (Array.isArray(m['updates'])) {
+      updates = m['updates'];
     }
-    if (Array.isArray(m["columns"])) {
-      columns = m["columns"];
+    if (Array.isArray(m['columns'])) {
+      columns = m['columns'];
     }
-    if (m["meta"] instanceof Object) {
-      meta = m["meta"];
+    if (m['meta'] instanceof Object) {
+      meta = m['meta'];
     }
     // remove the request from global object
-    if (this.streamStatus === "closed") {
+    if (this.streamStatus === 'closed') {
       this.requester._requests.delete(this.rid);
     }
     let error: DsError;
-    if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-      error = DsError.fromMap(m["error"]);
+    if (m.hasOwnProperty('error') && m['error'] instanceof Object) {
+      error = DsError.fromMap(m['error']);
       this.requester.onError.add(error);
     }
 
@@ -60,9 +60,9 @@ export class Request {
 
   /// close the request and finish data
   _close(error: DsError) {
-    if (this.streamStatus != "closed") {
-      this.streamStatus = "closed";
-      this.updater.onUpdate("closed", null, null, null, error);
+    if (this.streamStatus != 'closed') {
+      this.streamStatus = 'closed';
+      this.updater.onUpdate('closed', null, null, null, error);
     }
   }
 

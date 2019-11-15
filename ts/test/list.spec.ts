@@ -1,17 +1,17 @@
-import {MockBroker} from "./utils/mock-broker";
-import {assert} from "chai";
-import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
-import {shouldHappen} from "./utils/async-test";
-import {ValueUpdate} from "../src/common/value";
-import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/nodejs/client-link";
-import {Requester} from "../src/requester/requester";
-import {RequesterListUpdate} from "../src/requester/request/list";
-import {RemoteNode} from "../src/requester/node_cache";
-import {Path} from "../src/common/node";
-import {sleep} from "../src/utils/async";
+import {MockBroker} from './utils/mock-broker';
+import {assert} from 'chai';
+import {TestRootNode, TestValueNode} from './utils/responder-nodes';
+import {shouldHappen} from './utils/async-test';
+import {ValueUpdate} from '../src/common/value';
+import {Logger, logger} from '../src/utils/logger';
+import {HttpClientLink} from '../src/nodejs/client-link';
+import {Requester} from '../src/requester/requester';
+import {RequesterListUpdate} from '../src/requester/request/list';
+import {RemoteNode} from '../src/requester/node_cache';
+import {Path} from '../src/common/node';
+import {sleep} from '../src/utils/async';
 
-describe('list', function () {
+describe('list', function() {
   let broker = new MockBroker();
   logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
@@ -42,7 +42,7 @@ describe('list', function () {
     responderClient.close();
   });
 
-  it('list', async function () {
+  it('list', async function() {
     let node: RemoteNode;
     let subscription = requester.list(resolve(''), (update: RequesterListUpdate) => {
       node = update.node;
@@ -52,7 +52,7 @@ describe('list', function () {
     assert.equal(node.getChild('act').getConfig('$is'), 'testaction');
   });
 
-  it('list attributes and configs', async function () {
+  it('list attributes and configs', async function() {
     let node: RemoteNode;
     let subscription = requester.list(resolve('val'), (update: RequesterListUpdate) => {
       node = update.node;
@@ -72,7 +72,7 @@ describe('list', function () {
     assert.isTrue(node.getConfig('$config3') == null);
   });
 
-  it('listOnce', async function () {
+  it('listOnce', async function() {
     let node = await requester.listOnce(resolve(''));
     assert.equal(node.getChild('val').getConfig('$is'), 'testvalue');
     assert.equal(node.getChild('act').getConfig('$is'), 'testaction');
@@ -82,7 +82,7 @@ describe('list', function () {
     assert.isTrue(invalidNode.getConfig('$disconnectedTs') != null);
   });
 
-  it('list parent and add/remove child', async function () {
+  it('list parent and add/remove child', async function() {
     let node: RemoteNode;
     let subscription = requester.list(resolve(''), (update: RequesterListUpdate) => {
       node = update.node;
@@ -99,7 +99,7 @@ describe('list', function () {
     await shouldHappen(() => node && !node.children.has('val'));
   });
 
-  it('list and add/remove child', async function () {
+  it('list and add/remove child', async function() {
     let node: RemoteNode;
     let subscription = requester.list(resolve('newChild'), (update: RequesterListUpdate) => {
       node = update.node;
@@ -113,7 +113,7 @@ describe('list', function () {
     await shouldHappen(() => node.getConfig('$disconnectedTs'));
   });
 
-  it('list child and add/remove parent', async function () {
+  it('list child and add/remove parent', async function() {
     let node: RemoteNode;
     let subscription = requester.list(resolve('newChild/valAct'), (update: RequesterListUpdate) => {
       node = update.node;
@@ -125,6 +125,5 @@ describe('list', function () {
 
     rootNode.removeChild('newChild');
     await shouldHappen(() => node.getConfig('$disconnectedTs'));
-
   });
 });

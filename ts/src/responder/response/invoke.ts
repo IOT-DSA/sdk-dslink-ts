@@ -1,10 +1,10 @@
 // part of dslink.responder;
 
-import {Response} from "../response";
-import {LocalNode} from "../node_state";
-import {Responder} from "../responder";
-import {DsError, StreamStatus} from "../../common/interfaces";
-import {TableColumn} from "../../common/table";
+import {Response} from '../response';
+import {LocalNode} from '../node_state';
+import {Responder} from '../responder';
+import {DsError, StreamStatus} from '../../common/interfaces';
+import {TableColumn} from '../../common/table';
 
 export type OnInvokeClosed = (response: InvokeResponse) => void;
 export type OnInvokeSend = (response: InvokeResponse, m: any) => void;
@@ -46,25 +46,31 @@ export class InvokeResponse extends Response {
   /** @ignore
    *  update data for the responder stream
    */
-  updateStream(updates: any[],
-               options: {
-                 columns?: any[], streamStatus?: StreamStatus,
-                 meta?: {[key: string]: any}, autoSendColumns?: boolean
-               } = {}) {
+  updateStream(
+    updates: any[],
+    options: {
+      columns?: any[];
+      streamStatus?: StreamStatus;
+      meta?: {[key: string]: any};
+      autoSendColumns?: boolean;
+    } = {}
+  ) {
     let {columns, streamStatus, meta, autoSendColumns} = options;
     if (!streamStatus) {
-      streamStatus = "closed";
+      streamStatus = 'closed';
     }
     if (meta != null && meta['mode'] === 'refresh') {
       this.pendingData.length = 0;
     }
 
     if (!this._hasSentColumns) {
-      if (columns == null &&
+      if (
+        columns == null &&
         autoSendColumns !== false &&
         this.node != null &&
-        Array.isArray(this.node.configs.get("$columns"))) {
-        columns = this.node.configs.get("$columns");
+        Array.isArray(this.node.configs.get('$columns'))
+      ) {
+        columns = this.node.configs.get('$columns');
       }
     }
 
@@ -72,9 +78,7 @@ export class InvokeResponse extends Response {
       this._hasSentColumns = true;
     }
 
-    this.pendingData.push(
-      new InvokeResponseUpdate(streamStatus, updates, columns, meta)
-    );
+    this.pendingData.push(new InvokeResponseUpdate(streamStatus, updates, columns, meta));
     this.prepareSending();
   }
 
@@ -95,7 +99,7 @@ export class InvokeResponse extends Response {
     this._pendingSending = false;
     if (this._err != null) {
       this.responder.closeResponse(this.rid, this, this._err);
-      if (this._sentStreamStatus === "closed") {
+      if (this._sentStreamStatus === 'closed') {
         this._close();
       }
       return;
@@ -107,22 +111,18 @@ export class InvokeResponse extends Response {
         outColumns = TableColumn.serializeColumns(update.columns);
       }
 
-      this.responder.updateResponse(
-        this,
-        update.updates,
-        {
-          streamStatus: update.status,
-          columns: outColumns,
-          meta: update.meta,
-          // handleMap: (m) {
-          //   if (onSendUpdate != null) {
-          //     onSendUpdate(this, m);
-          //   }
-          // }
-        }
-      );
+      this.responder.updateResponse(this, update.updates, {
+        streamStatus: update.status,
+        columns: outColumns,
+        meta: update.meta
+        // handleMap: (m) {
+        //   if (onSendUpdate != null) {
+        //     onSendUpdate(this, m);
+        //   }
+        // }
+      });
 
-      if (this._sentStreamStatus === "closed") {
+      if (this._sentStreamStatus === 'closed') {
         this._close();
         break;
       }
@@ -136,11 +136,9 @@ export class InvokeResponse extends Response {
       this._err = err;
     }
     if (this.pendingData.length) {
-      this.pendingData[this.pendingData.length].status = "closed";
+      this.pendingData[this.pendingData.length].status = 'closed';
     } else {
-      this.pendingData.push(
-        new InvokeResponseUpdate("closed", null, null, null)
-      );
+      this.pendingData.push(new InvokeResponseUpdate('closed', null, null, null));
       this.prepareSending();
     }
   }

@@ -20,7 +20,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         this.onData = (list) => {
             if (Array.isArray(list)) {
                 for (let resp of list) {
-                    if ((resp != null && resp instanceof Object)) {
+                    if (resp != null && resp instanceof Object) {
                         this._onReceiveUpdate(resp);
                     }
                 }
@@ -51,7 +51,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     /** @ignore */
     getNextRid() {
         do {
-            if (this.lastRid < 0x7FFFFFFF) {
+            if (this.lastRid < 0x7fffffff) {
                 ++this.lastRid;
             }
             else {
@@ -211,7 +211,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
         let stream = this.invoke(path, params, null, maxPermission);
         return new Promise((resolve, reject) => {
             stream.listen((update) => {
-                if (update.streamStatus !== "closed") {
+                if (update.streamStatus !== 'closed') {
                     stream.close();
                 }
                 if (update.error) {
@@ -251,8 +251,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
     /** @ignore */
     closeRequest(request) {
         if (this._requests.has(request.rid)) {
-            if (request.streamStatus !== "closed") {
-                this.addToSendList({ 'method': 'close', 'rid': request.rid });
+            if (request.streamStatus !== 'closed') {
+                this.addToSendList({ method: 'close', rid: request.rid });
             }
             this._requests.delete(request.rid);
             request.close();

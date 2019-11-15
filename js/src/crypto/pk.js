@@ -22,7 +22,7 @@ class PublicKey {
         return `${prefix}${this.qHash64}`;
     }
     verifyDsId(dsId) {
-        return (dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64);
+        return dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64;
     }
 }
 exports.PublicKey = PublicKey;

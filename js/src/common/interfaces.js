@@ -16,7 +16,7 @@ exports.ECDH = ECDH;
 /** @ignore */
 class DummyECDH {
     constructor() {
-        this.encodedPublicKey = "";
+        this.encodedPublicKey = '';
     }
     hashSalt(salt) {
         return '';
@@ -132,8 +132,8 @@ class ClientLink extends BaseLink {
 exports.ClientLink = ClientLink;
 class ErrorPhase {
 }
-ErrorPhase.request = "request";
-ErrorPhase.response = "response";
+ErrorPhase.request = 'request';
+ErrorPhase.response = 'response';
 exports.ErrorPhase = ErrorPhase;
 class DsError {
     constructor(type, options = {}) {
@@ -150,20 +150,20 @@ class DsError {
     }
     static fromMap(m) {
         let error = new DsError('');
-        if (typeof m["type"] === 'string') {
-            error.type = m["type"];
+        if (typeof m['type'] === 'string') {
+            error.type = m['type'];
         }
-        if (typeof m["msg"] === 'string') {
-            error.msg = m["msg"];
+        if (typeof m['msg'] === 'string') {
+            error.msg = m['msg'];
         }
-        if (typeof m["path"] === 'string') {
-            error.path = m["path"];
+        if (typeof m['path'] === 'string') {
+            error.path = m['path'];
         }
-        if (typeof m["phase"] === 'string') {
-            error.phase = m["phase"];
+        if (typeof m['phase'] === 'string') {
+            error.phase = m['phase'];
         }
-        if (typeof m["detail"] === 'string') {
-            error.detail = m["detail"];
+        if (typeof m['detail'] === 'string') {
+            error.detail = m['detail'];
         }
         return error;
     }
@@ -175,36 +175,36 @@ class DsError {
             // TODO, return normal case instead of camel case
             return this.type;
         }
-        return "Error";
+        return 'Error';
     }
     serialize() {
         let rslt = {};
         if (this.msg != null) {
-            rslt["msg"] = this.msg;
+            rslt['msg'] = this.msg;
         }
         if (this.type != null) {
-            rslt["type"] = this.type;
+            rslt['type'] = this.type;
         }
         if (this.path != null) {
-            rslt["path"] = this.path;
+            rslt['path'] = this.path;
         }
         if (this.phase === ErrorPhase.request) {
-            rslt["phase"] = ErrorPhase.request;
+            rslt['phase'] = ErrorPhase.request;
         }
         if (this.detail != null) {
-            rslt["detail"] = this.detail;
+            rslt['detail'] = this.detail;
         }
         return rslt;
     }
 }
-DsError.PERMISSION_DENIED = new DsError("permissionDenied");
-DsError.INVALID_METHOD = new DsError("invalidMethod");
-DsError.NOT_IMPLEMENTED = new DsError("notImplemented");
-DsError.INVALID_PATH = new DsError("invalidPath");
-DsError.INVALID_PATHS = new DsError("invalidPaths");
-DsError.INVALID_VALUE = new DsError("invalidValue");
-DsError.INVALID_PARAMETER = new DsError("invalidParameter");
-DsError.DISCONNECTED = new DsError("disconnected", { phase: ErrorPhase.request });
-DsError.FAILED = new DsError("failed");
+DsError.PERMISSION_DENIED = new DsError('permissionDenied');
+DsError.INVALID_METHOD = new DsError('invalidMethod');
+DsError.NOT_IMPLEMENTED = new DsError('notImplemented');
+DsError.INVALID_PATH = new DsError('invalidPath');
+DsError.INVALID_PATHS = new DsError('invalidPaths');
+DsError.INVALID_VALUE = new DsError('invalidValue');
+DsError.INVALID_PARAMETER = new DsError('invalidParameter');
+DsError.DISCONNECTED = new DsError('disconnected', { phase: ErrorPhase.request });
+DsError.FAILED = new DsError('failed');
 exports.DsError = DsError;
 //# sourceMappingURL=interfaces.js.map

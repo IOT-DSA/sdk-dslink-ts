@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Response {
     constructor(responder, rid, type) {
-        this._sentStreamStatus = "initialize";
+        this._sentStreamStatus = 'initialize';
         this._pendingSending = false;
         this.responder = responder;
         this.rid = rid;
@@ -13,12 +13,11 @@ class Response {
     }
     /// close the request from responder side and also notify the requester
     close(err = null) {
-        this._sentStreamStatus = "closed";
+        this._sentStreamStatus = 'closed';
         this.responder.closeResponse(this.rid, this, err);
     }
     /// close the response now, no need to send more response update
-    _close() {
-    }
+    _close() { }
     prepareSending() {
         if (!this._pendingSending) {
             this._pendingSending = true;

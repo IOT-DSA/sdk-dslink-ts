@@ -1,6 +1,6 @@
-import { Completer, Stream } from "../utils/async";
-import { Connection, ConnectionChannel, ProcessorResult } from "./interfaces";
-import { ConnectionHandler } from "./connection-handler";
+import { Completer, Stream } from '../utils/async';
+import { Connection, ConnectionChannel, ProcessorResult } from './interfaces';
+import { ConnectionHandler } from './connection-handler';
 export declare class PassiveChannel implements ConnectionChannel {
     onReceive: Stream<any[]>;
     _processors: Function[];

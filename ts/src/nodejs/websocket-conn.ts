@@ -1,4 +1,4 @@
-import WebSocket from "ws";
+import WebSocket from 'ws';
 import {
   ClientLink,
   Connection,
@@ -6,11 +6,11 @@ import {
   ConnectionChannel,
   ConnectionProcessor,
   ProcessorResult
-} from "../common/interfaces";
-import {PassiveChannel} from "../common/connection-channel";
-import {Completer} from "../utils/async";
-import {DsCodec, DsJson} from "../utils/codec";
-import {logger as mainLogger} from "../utils/logger";
+} from '../common/interfaces';
+import {PassiveChannel} from '../common/connection-channel';
+import {Completer} from '../utils/async';
+import {DsCodec, DsJson} from '../utils/codec';
+import {logger as mainLogger} from '../utils/logger';
 
 let logger = mainLogger.tag('ws');
 
@@ -27,8 +27,7 @@ export class WebSocketConnection extends Connection {
     return this._requesterChannel;
   }
 
-  _onRequestReadyCompleter: Completer<ConnectionChannel> =
-    new Completer<ConnectionChannel>();
+  _onRequestReadyCompleter: Completer<ConnectionChannel> = new Completer<ConnectionChannel>();
 
   get onRequesterReady(): Promise<ConnectionChannel> {
     return this._onRequestReadyCompleter.future;
@@ -46,17 +45,13 @@ export class WebSocketConnection extends Connection {
 
   onConnect: Function;
 
-
   _onDoneHandled: boolean = false;
 
   /// clientLink is not needed when websocket works in server link
   // WebSocketConnection(socket:WebSocket,
   //     options:{clientLink, boolean enableTimeout: false, boolean enableAck: true, DsCodec useCodec}) {
   //   this.socket=socket;
-  constructor(socket: WebSocket, clientLink: ClientLink,
-              onConnect: Function,
-              useCodec: DsCodec
-  ) {
+  constructor(socket: WebSocket, clientLink: ClientLink, onConnect: Function, useCodec: DsCodec) {
     super();
     this.socket = socket;
     this.clientLink = clientLink;
@@ -64,7 +59,7 @@ export class WebSocketConnection extends Connection {
     if (useCodec != null) {
       this.codec = useCodec;
     }
-    socket.binaryType = "arraybuffer";
+    socket.binaryType = 'arraybuffer';
     this._responderChannel = new PassiveChannel(this);
     this._requesterChannel = new PassiveChannel(this);
     socket.onmessage = this._onData;
@@ -87,7 +82,6 @@ export class WebSocketConnection extends Connection {
   /// add this count every 20 seconds, set to 0 when receiving data
   /// when the count is 3, disconnect the link (>=60 seconds)
   _dataReceiveCount: number = 0;
-
 
   onPingTimer = () => {
     if (this._dataReceiveCount >= 3) {
@@ -118,7 +112,7 @@ export class WebSocketConnection extends Connection {
   }
 
   _onOpen = (e: {target: WebSocket}) => {
-    logger.trace("Connected");
+    logger.trace('Connected');
     this._opened = true;
     if (this.onConnect != null) {
       this.onConnect();
@@ -145,7 +139,6 @@ export class WebSocketConnection extends Connection {
   }
 
   _onData = (e: {data: WebSocket.Data; type: string; target: WebSocket}) => {
-
     if (this._onDisconnectedCompleter.isCompleted) {
       return;
     }
@@ -161,32 +154,32 @@ export class WebSocketConnection extends Connection {
         m = this.codec.decodeBinaryFrame(bytes);
         logger.trace(() => 'receive' + DsJson.encode(m, true));
 
-        if (typeof m["salt"] === 'string') {
-          this.clientLink.updateSalt(m["salt"]);
+        if (typeof m['salt'] === 'string') {
+          this.clientLink.updateSalt(m['salt']);
         }
         let needAck = false;
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+        if (Array.isArray(m['responses']) && m['responses'].length > 0) {
           needAck = true;
           // send responses to requester channel
-          this._requesterChannel.onReceive.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m['responses']);
         }
 
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+        if (Array.isArray(m['requests']) && m['requests'].length > 0) {
           needAck = true;
           // send requests to responder channel
-          this._responderChannel.onReceive.add(m["requests"]);
+          this._responderChannel.onReceive.add(m['requests']);
         }
-        if (typeof m["ack"] === 'number') {
-          this.ack(m["ack"]);
+        if (typeof m['ack'] === 'number') {
+          this.ack(m['ack']);
         }
         if (needAck) {
-          let msgId: object = m["msg"];
+          let msgId: object = m['msg'];
           if (msgId != null) {
-            this.addConnCommand("ack", msgId);
+            this.addConnCommand('ack', msgId);
           }
         }
       } catch (err) {
-        console.error("error in onData", err);
+        console.error('error in onData', err);
         this.close();
         return;
       }
@@ -195,24 +188,24 @@ export class WebSocketConnection extends Connection {
         m = this.codec.decodeStringFrame(e.data);
         logger.trace(() => 'receive' + DsJson.encode(m, true));
         let needAck = false;
-        if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+        if (Array.isArray(m['responses']) && m['responses'].length > 0) {
           needAck = true;
           // send responses to requester channel
-          this._requesterChannel.onReceive.add(m["responses"]);
+          this._requesterChannel.onReceive.add(m['responses']);
         }
 
-        if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+        if (Array.isArray(m['requests']) && m['requests'].length > 0) {
           needAck = true;
           // send requests to responder channel
-          this._responderChannel.onReceive.add(m["requests"]);
+          this._responderChannel.onReceive.add(m['requests']);
         }
-        if (typeof m["ack"] === "number") {
-          this.ack(m["ack"]);
+        if (typeof m['ack'] === 'number') {
+          this.ack(m['ack']);
         }
         if (needAck) {
-          let msgId: object = m["msg"];
+          let msgId: object = m['msg'];
           if (msgId != null) {
-            this.addConnCommand("ack", msgId);
+            this.addConnCommand('ack', msgId);
           }
         }
       } catch (err) {
@@ -247,11 +240,11 @@ export class WebSocketConnection extends Connection {
 
     let pendingAck: ConnectionProcessor[] = [];
 
-    let ts: number = (new Date()).getTime();
+    let ts: number = new Date().getTime();
     let rslt: ProcessorResult = this._responderChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["responses"] = rslt.messages;
+        m['responses'] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
@@ -261,7 +254,7 @@ export class WebSocketConnection extends Connection {
     rslt = this._requesterChannel.getSendingData(ts, this.nextMsgId);
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["requests"] = rslt.messages;
+        m['requests'] = rslt.messages;
         needSend = true;
       }
       if (rslt.processors.length > 0) {
@@ -274,8 +267,8 @@ export class WebSocketConnection extends Connection {
         if (pendingAck.length > 0) {
           this.pendingAcks.push(new ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
-        m["msg"] = this.nextMsgId;
-        if (this.nextMsgId < 0x7FFFFFFF) {
+        m['msg'] = this.nextMsgId;
+        if (this.nextMsgId < 0x7fffffff) {
           ++this.nextMsgId;
         } else {
           this.nextMsgId = 1;
@@ -295,7 +288,6 @@ export class WebSocketConnection extends Connection {
     }
   }
 
-
   _onDone = () => {
     if (this._onDoneHandled) {
       return;
@@ -303,7 +295,6 @@ export class WebSocketConnection extends Connection {
     logger.trace('Disconnected');
 
     this._onDoneHandled = true;
-
 
     if (!this._requesterChannel.onReceive.isClosed) {
       this._requesterChannel.onReceive.close();
@@ -332,8 +323,7 @@ export class WebSocketConnection extends Connection {
   };
 
   close() {
-    if (this.socket.readyState === WebSocket.OPEN ||
-      this.socket.readyState === WebSocket.CONNECTING) {
+    if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
       this.socket.close();
     }
     this._onDone();

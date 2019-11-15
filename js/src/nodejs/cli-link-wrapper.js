@@ -8,7 +8,8 @@ const client_link_1 = require("./client-link");
 const logger_1 = require("../utils/logger");
 class DSLink extends client_link_1.HttpClientLink {
     constructor(name, options, args) {
-        let parser = yargs_1.default.options({
+        let parser = yargs_1.default
+            .options({
             broker: {
                 alias: 'b',
                 default: 'http://127.0.0.1:8080/conn',
@@ -29,8 +30,9 @@ class DSLink extends client_link_1.HttpClientLink {
                 default: 'info',
                 describe: 'Log Level [error, warn, info, debug, trace]',
                 type: 'string'
-            },
-        }).help();
+            }
+        })
+            .help();
         let argv = args ? parser.parse(args) : parser.parse();
         let brokerUrl = argv.broker;
         if (typeof argv.name === 'string') {

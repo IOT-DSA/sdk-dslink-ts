@@ -1,9 +1,9 @@
-import { Requester } from "../requester";
-import { Request } from "../request";
-import { Stream, StreamSubscription } from "../../utils/async";
-import { ConnectionProcessor, DsError, StreamStatus } from "../../common/interfaces";
-import { RemoteNode } from "../node_cache";
-import { RequesterUpdate, RequestUpdater } from "../interface";
+import { Requester } from '../requester';
+import { Request } from '../request';
+import { Stream, StreamSubscription } from '../../utils/async';
+import { ConnectionProcessor, DsError, StreamStatus } from '../../common/interfaces';
+import { RemoteNode } from '../node_cache';
+import { RequesterUpdate, RequestUpdater } from '../interface';
 export declare class RequesterListUpdate extends RequesterUpdate {
     /**
      * This is only a list of changed fields.

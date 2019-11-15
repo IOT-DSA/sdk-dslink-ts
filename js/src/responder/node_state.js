@@ -12,8 +12,7 @@ class LocalNode extends node_1.Node {
         this.provider = provider;
         this.initialize();
     }
-    initialize() {
-    }
+    initialize() { }
     addChild(name, node) {
         if (node.provider !== this.provider) {
             // TODO log warning
@@ -76,7 +75,7 @@ class LocalNode extends node_1.Node {
         response.close(interfaces_1.DsError.NOT_IMPLEMENTED);
     }
     setConfig(name, value) {
-        if (!name.startsWith("$")) {
+        if (!name.startsWith('$')) {
             name = `\$${name}`;
         }
         this.configs.set(name, value);
@@ -89,7 +88,7 @@ class LocalNode extends node_1.Node {
     }
     /// Called by the link internals to set an attribute on this node.
     setAttribute(name, value, responder, response) {
-        if (!name.startsWith("@")) {
+        if (!name.startsWith('@')) {
             name = `@${name}`;
         }
         this.attributes.set(name, value);
@@ -105,7 +104,7 @@ class LocalNode extends node_1.Node {
     }
     /// Called by the link internals to remove an attribute from this node.
     removeAttribute(name, responder, response) {
-        if (!name.startsWith("@")) {
+        if (!name.startsWith('@')) {
             name = `@${name}`;
         }
         this.attributes.delete(name);
@@ -119,8 +118,7 @@ class LocalNode extends node_1.Node {
             response.close();
         }
     }
-    onSubscribe(subscriber) {
-    }
+    onSubscribe(subscriber) { }
     /// Called by the link internals to set a value of a node.
     setValue(value, responder, response, maxPermission = permission_1.Permission.CONFIG) {
         try {
@@ -155,8 +153,7 @@ class LocalNode extends node_1.Node {
     save() {
         return null;
     }
-    load(data) {
-    }
+    load(data) { }
     destroy() {
         if (this._state) {
             this._state.setNode(null);

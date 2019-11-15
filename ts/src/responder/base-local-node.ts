@@ -1,11 +1,10 @@
-import {LocalNode} from "./node_state";
-import {Responder} from "./responder";
-import {Response} from "./response";
-import {Permission} from "../common/permission";
-import {Path} from "../common/node";
+import {LocalNode} from './node_state';
+import {Responder} from './responder';
+import {Response} from './response';
+import {Permission} from '../common/permission';
+import {Path} from '../common/node';
 
 export class BaseLocalNode extends LocalNode {
-
   createChild(name: string, cls: typeof LocalNode, ...args: any[]): LocalNode {
     let childPath = Path.concat(this.path, name);
     // @ts-ignore
@@ -55,15 +54,15 @@ export class BaseLocalNode extends LocalNode {
     for (let key in data) {
       if (key === '') continue;
       switch (key.charCodeAt(0)) {
-        case 64 : /* @ */
+        case 64 /* @ */:
           this.attributes.set(key, data[key]);
           continue;
-        case 36 : /* $ */
+        case 36 /* $ */:
           if (this.shouldSaveConfig(key)) {
             this.configs.set(key, data[key]);
           }
           continue;
-        case 63 : /* ? */
+        case 63 /* ? */:
           continue;
         default:
           let childData = data[key];
@@ -85,7 +84,5 @@ export class BaseLocalNode extends LocalNode {
       child.load(data);
     }
     // default implementation doesn't know how to create a new child
-
   }
-
 }

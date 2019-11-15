@@ -11,9 +11,9 @@ class SetController {
         this.path = path;
         this.value = value;
         let reqMap = {
-            'method': 'set',
-            'path': path,
-            'value': value
+            method: 'set',
+            path: path,
+            value: value
         };
         if (maxPermission !== permission_1.Permission.CONFIG) {
             reqMap['permit'] = permission_1.Permission.names[maxPermission];
@@ -27,10 +27,8 @@ class SetController {
         // TODO implement error
         this.completer.complete(new interface_1.RequesterUpdate(status));
     }
-    onDisconnect() {
-    }
-    onReconnect() {
-    }
+    onDisconnect() { }
+    onReconnect() { }
 }
 exports.SetController = SetController;
 //# sourceMappingURL=set.js.map

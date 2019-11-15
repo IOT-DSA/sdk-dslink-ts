@@ -1,17 +1,17 @@
-import {ConnectionProcessor, DsError, StreamStatus} from "../common/interfaces";
-import {Responder} from "./responder";
+import {ConnectionProcessor, DsError, StreamStatus} from '../common/interfaces';
+import {Responder} from './responder';
 
 export class Response implements ConnectionProcessor {
   readonly responder: Responder;
   readonly rid: number;
   type: string;
-  _sentStreamStatus: string = "initialize";
+  _sentStreamStatus: string = 'initialize';
 
   get sentStreamStatus(): string {
     return this._sentStreamStatus;
   }
 
-  constructor(responder: Responder, rid: number, type ?: string) {
+  constructor(responder: Responder, rid: number, type?: string) {
     this.responder = responder;
     this.rid = rid;
     this.type = type;
@@ -19,13 +19,12 @@ export class Response implements ConnectionProcessor {
 
   /// close the request from responder side and also notify the requester
   close(err: DsError = null) {
-    this._sentStreamStatus = "closed";
+    this._sentStreamStatus = 'closed';
     this.responder.closeResponse(this.rid, this, err);
   }
 
   /// close the response now, no need to send more response update
-  _close() {
-  }
+  _close() {}
 
   prepareSending() {
     if (!this._pendingSending) {

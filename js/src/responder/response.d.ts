@@ -1,5 +1,5 @@
-import { ConnectionProcessor, DsError } from "../common/interfaces";
-import { Responder } from "./responder";
+import { ConnectionProcessor, DsError } from '../common/interfaces';
+import { Responder } from './responder';
 export declare class Response implements ConnectionProcessor {
     readonly responder: Responder;
     readonly rid: number;

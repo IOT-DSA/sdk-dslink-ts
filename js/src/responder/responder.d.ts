@@ -1,8 +1,8 @@
-import { ConnectionHandler } from "../common/connection-handler";
-import { SubscribeResponse } from "./response/subscribe";
-import { NodeProvider } from "./node_state";
-import { Response } from "./response";
-import { DsError, StreamStatus } from "../common/interfaces";
+import { ConnectionHandler } from '../common/connection-handler';
+import { SubscribeResponse } from './response/subscribe';
+import { NodeProvider } from './node_state';
+import { Response } from './response';
+import { DsError, StreamStatus } from '../common/interfaces';
 export declare class Responder extends ConnectionHandler {
     /** @ignore
      * reqId can be a dsId or a user name

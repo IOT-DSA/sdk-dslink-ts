@@ -1,10 +1,10 @@
-import { Node } from "../common/node";
-import { ListController, RequesterListUpdate } from "./request/list";
-import { ReqSubscribeController } from "./request/subscribe";
-import { ValueUpdate } from "../common/value";
-import { Requester } from "./requester";
-import { Stream } from "../utils/async";
-import { RequesterInvokeStream } from "./request/invoke";
+import { Node } from '../common/node';
+import { ListController, RequesterListUpdate } from './request/list';
+import { ReqSubscribeController } from './request/subscribe';
+import { ValueUpdate } from '../common/value';
+import { Requester } from './requester';
+import { Stream } from '../utils/async';
+import { RequesterInvokeStream } from './request/invoke';
 /** @ignore */
 export declare class RemoteNodeCache {
     _nodes: Map<string, RemoteNode>;

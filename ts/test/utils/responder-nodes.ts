@@ -1,8 +1,8 @@
-import {ActionNode} from "../../src/responder/node/action-node";
-import {ValueNode} from "../../src/responder/node/value-node";
-import {RootNode} from "../../src/responder/node/root-node";
-import {NodeProvider, Subscriber} from "../../src/responder/node_state";
-import {Permission} from "../../src/common/permission";
+import {ActionNode} from '../../src/responder/node/action-node';
+import {ValueNode} from '../../src/responder/node/value-node';
+import {RootNode} from '../../src/responder/node/root-node';
+import {NodeProvider, Subscriber} from '../../src/responder/node_state';
+import {Permission} from '../../src/common/permission';
 
 class TestActionNode extends ActionNode {
   static profileName = 'testaction';
@@ -13,7 +13,10 @@ class TestActionNode extends ActionNode {
 
   initialize() {
     this.setConfig('$params', [{name: 'value', type: 'number'}]);
-    this.setConfig('$columns', [{name: 'c1', type: 'number'}, {name: 'c2', type: 'string'}]);
+    this.setConfig('$columns', [
+      {name: 'c1', type: 'number'},
+      {name: 'c2', type: 'string'}
+    ]);
   }
 
   onInvoke(params: {[key: string]: any}): any {

@@ -1,14 +1,13 @@
-import {Listener, Stream} from "../utils/async";
-import {Node} from "../common/node";
-import {Permission} from "../common/permission";
-import {InvokeResponse} from "./response/invoke";
-import {Responder} from "./responder";
-import {Response} from "./response";
-import {ValueUpdate, ValueUpdateCallback} from "../common/value";
-import {DsError} from "../common/interfaces";
+import {Listener, Stream} from '../utils/async';
+import {Node} from '../common/node';
+import {Permission} from '../common/permission';
+import {InvokeResponse} from './response/invoke';
+import {Responder} from './responder';
+import {Response} from './response';
+import {ValueUpdate, ValueUpdateCallback} from '../common/value';
+import {DsError} from '../common/interfaces';
 
 export class LocalNode extends Node<LocalNode> {
-
   provider: NodeProvider;
 
   readonly path: string;
@@ -23,8 +22,7 @@ export class LocalNode extends Node<LocalNode> {
     this.initialize();
   }
 
-  initialize() {
-  }
+  initialize() {}
 
   addChild(name: string, node: LocalNode) {
     if (node.provider !== this.provider) {
@@ -87,18 +85,18 @@ export class LocalNode extends Node<LocalNode> {
     return Permission.parse(this.configs.get('$writable'));
   }
 
-
   /// Called by the link internals to invoke this node.
   invoke(
     params: {[key: string]: any},
     response: InvokeResponse,
-    parentNode: LocalNode, maxPermission: number = Permission.CONFIG) {
+    parentNode: LocalNode,
+    maxPermission: number = Permission.CONFIG
+  ) {
     response.close(DsError.NOT_IMPLEMENTED);
   }
 
-
   setConfig(name: string, value: any) {
-    if (!name.startsWith("$")) {
+    if (!name.startsWith('$')) {
       name = `\$${name}`;
     }
 
@@ -112,9 +110,8 @@ export class LocalNode extends Node<LocalNode> {
   }
 
   /// Called by the link internals to set an attribute on this node.
-  setAttribute(
-    name: string, value: any, responder?: Responder, response?: Response) {
-    if (!name.startsWith("@")) {
+  setAttribute(name: string, value: any, responder?: Responder, response?: Response) {
+    if (!name.startsWith('@')) {
       name = `@${name}`;
     }
 
@@ -130,10 +127,9 @@ export class LocalNode extends Node<LocalNode> {
     }
   }
 
-/// Called by the link internals to remove an attribute from this node.
-  removeAttribute(
-    name: string, responder?: Responder, response?: Response) {
-    if (!name.startsWith("@")) {
+  /// Called by the link internals to remove an attribute from this node.
+  removeAttribute(name: string, responder?: Responder, response?: Response) {
+    if (!name.startsWith('@')) {
       name = `@${name}`;
     }
 
@@ -154,12 +150,10 @@ export class LocalNode extends Node<LocalNode> {
    */
   _value: any;
 
-  onSubscribe(subscriber: Subscriber) {
-  }
+  onSubscribe(subscriber: Subscriber) {}
 
   /// Called by the link internals to set a value of a node.
-  setValue(value: any, responder?: Responder, response?: Response,
-           maxPermission: number = Permission.CONFIG) {
+  setValue(value: any, responder?: Responder, response?: Response, maxPermission: number = Permission.CONFIG) {
     try {
       if (this.onValueChange(value)) {
         if (this._state) {
@@ -193,9 +187,7 @@ export class LocalNode extends Node<LocalNode> {
     return null;
   }
 
-  load(data: {[key: string]: any}) {
-
-  }
+  load(data: {[key: string]: any}) {}
 
   destroy() {
     if (this._state) {
@@ -281,7 +273,6 @@ export class NodeProvider {
       } else if (!this._saveTimer) {
         this._saveTimer = setTimeout(this.onSaveTimer, this._saveIntervalMs);
       }
-
     }
   }
 

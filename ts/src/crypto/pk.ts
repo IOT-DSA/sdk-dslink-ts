@@ -1,6 +1,6 @@
-import crypto, {ECDH as ECCurve} from "crypto";
-import Base64 from "../utils/base64";
-import {ECDH as ECDHBase} from "../common/interfaces";
+import crypto, {ECDH as ECCurve} from 'crypto';
+import Base64 from '../utils/base64';
+import {ECDH as ECDHBase} from '../common/interfaces';
 
 export function sha256(str: string | Buffer): string {
   const hash = crypto.createHash('sha256');
@@ -8,9 +8,7 @@ export function sha256(str: string | Buffer): string {
   return Base64.encode(hash.digest());
 }
 
-
 export class PublicKey {
-
   ecPublicKey: Buffer;
   qBase64: string;
   qHash64: string;
@@ -26,7 +24,7 @@ export class PublicKey {
   }
 
   verifyDsId(dsId: string) {
-    return (dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64);
+    return dsId.length >= 43 && dsId.substring(dsId.length - 43) === this.qHash64;
   }
 }
 
@@ -80,7 +78,6 @@ export class PrivateKey {
     return new ECDH(this, sharedSecret);
   }
 }
-
 
 export class ECDH extends ECDHBase {
   get encodedPublicKey(): string {

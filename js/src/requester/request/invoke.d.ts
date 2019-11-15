@@ -1,10 +1,10 @@
-import { Requester } from "../requester";
-import { Request } from "../request";
-import { Stream } from "../../utils/async";
-import { DsError, StreamStatus } from "../../common/interfaces";
-import { TableColumn } from "../../common/table";
-import { RemoteNode } from "../node_cache";
-import { RequesterUpdate, RequestUpdater } from "../interface";
+import { Requester } from '../requester';
+import { Request } from '../request';
+import { Stream } from '../../utils/async';
+import { DsError, StreamStatus } from '../../common/interfaces';
+import { TableColumn } from '../../common/table';
+import { RemoteNode } from '../node_cache';
+import { RequesterUpdate, RequestUpdater } from '../interface';
 export declare class RequesterInvokeUpdate extends RequesterUpdate {
     /**
      * Columns received from responder

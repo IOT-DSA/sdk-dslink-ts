@@ -7,13 +7,12 @@ export function randomBytes(len: number) {
 export class DSRandom {
   static instance = new DSRandom();
 
-
   nextUint16(): number {
     if (!this._cache || this._pos < 254) {
       this._cache = randomBytes(256);
       this._pos = 0;
     }
-    return this._cache[this._pos++] << 8 | this._cache[this._pos++];
+    return (this._cache[this._pos++] << 8) | this._cache[this._pos++];
   }
 
   get needsEntropy(): boolean {

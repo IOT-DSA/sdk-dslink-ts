@@ -11,12 +11,12 @@ export class TableColumn {
 
   getData(): {[key: string]: any} {
     let rslt: any = {
-      "type": this.type,
-      "name": this.name
+      type: this.type,
+      name: this.name
     };
 
     if (this.defaultValue != null) {
-      rslt["default"] = this.defaultValue;
+      rslt['default'] = this.defaultValue;
     }
     return rslt;
   }
@@ -40,12 +40,12 @@ export class TableColumn {
   static parseColumns(list: any[]): TableColumn[] {
     let rslt: TableColumn[] = [];
     for (let m of list) {
-      if ((m != null && m instanceof Object) && typeof m["name"] === 'string') {
-        let type = "string";
-        if (typeof m["type"] === 'string') {
-          type = m["type"];
+      if (m != null && m instanceof Object && typeof m['name'] === 'string') {
+        let type = 'string';
+        if (typeof m['type'] === 'string') {
+          type = m['type'];
         }
-        rslt.push(new TableColumn(m["name"], type, m["default"]));
+        rslt.push(new TableColumn(m['name'], type, m['default']));
       } else if (m instanceof TableColumn) {
         rslt.push(m);
       } else {

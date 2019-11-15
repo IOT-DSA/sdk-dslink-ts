@@ -7,10 +7,10 @@ let _lastTZ: number;
 export function timeZone(date: Date) {
   let timeZoneOffset = date.getTimezoneOffset();
   if (timeZoneOffset !== _lastTZ) {
-    let s = "+";
+    let s = '+';
     if (timeZoneOffset < 0) {
       timeZoneOffset = -timeZoneOffset;
-      s = "-";
+      s = '-';
     }
     let hhstr = `${(timeZoneOffset / 60) | 0}`.padStart(2, '0');
     let mmstr = `${timeZoneOffset % 60}`.padStart(2, '0');
@@ -20,7 +20,6 @@ export function timeZone(date: Date) {
   }
   return _lastTZStr;
 }
-
 
 /// Represents an update to a value subscription.
 export class ValueUpdate {
@@ -35,7 +34,7 @@ export class ValueUpdate {
       return this._lastTsStr;
     }
     ValueUpdate._lastTs = d.getTime();
-    let offsetISOStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+    let offsetISOStr = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
     ValueUpdate._lastTsStr = `${offsetISOStr.slice(0, -1)}${timeZone(d)}`;
     return this._lastTsStr;
   }
@@ -65,11 +64,10 @@ export class ValueUpdate {
   /// How many updates have happened since the last response.
   count: number = 1;
 
-
   /// The timestamp for when this value update was created.
   created: Date;
 
-  constructor(value: any, ts?: string, options?: {status?: string, count?: number}) {
+  constructor(value: any, ts?: string, options?: {status?: string; count?: number}) {
     this.value = value;
     if (ts) {
       this.ts = ts;
@@ -121,7 +119,7 @@ export class ValueUpdate {
       if (!Array.isArray(other.value)) {
         return false;
       }
-    } else if ((this.value != null && this.value instanceof Object)) {
+    } else if (this.value != null && this.value instanceof Object) {
       // assume object is same if it's generated at same timestamp
       if (!(other.value instanceof Object)) {
         return false;
@@ -134,9 +132,9 @@ export class ValueUpdate {
 
   /// Generates a map representation of this value update.
   toMap(): {[key: string]: any} {
-    let m: any = {"ts": this.ts, "value": this.value};
+    let m: any = {ts: this.ts, value: this.value};
     if (this.count !== 1) {
-      m["count"] = this.count;
+      m['count'] = this.count;
     }
     return m;
   }
@@ -152,12 +150,9 @@ export class ValueUpdate {
       return this;
     }
 
-    return new ValueUpdate(
-      this.value, this.ts,
-      {
-        status: this.status,
-        count: this.count
-      }
-    );
+    return new ValueUpdate(this.value, this.ts, {
+      status: this.status,
+      count: this.count
+    });
   }
 }

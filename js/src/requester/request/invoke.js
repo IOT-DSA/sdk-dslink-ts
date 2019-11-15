@@ -50,11 +50,11 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
                         row = obj;
                     }
                 }
-                else if ((obj != null && obj instanceof Object)) {
+                else if (obj != null && obj instanceof Object) {
                     row = [];
                     if (this.columns == null) {
                         let keys = obj.keys;
-                        this.columns = keys.map((x) => new table_1.TableColumn(x, "dynamic"));
+                        this.columns = keys.map((x) => new table_1.TableColumn(x, 'dynamic'));
                     }
                     if (this.columns != null) {
                         for (let column of this.columns) {
@@ -100,7 +100,7 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
 exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 class RequesterInvokeStream extends async_1.Stream {
     addReqParams(m) {
-        this.request.requester.addToSendList({ 'rid': this.request.rid, 'params': m });
+        this.request.requester.addToSendList({ rid: this.request.rid, params: m });
     }
 }
 exports.RequesterInvokeStream = RequesterInvokeStream;
@@ -108,9 +108,9 @@ exports.RequesterInvokeStream = RequesterInvokeStream;
 class InvokeController {
     constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
         this.mode = 'stream';
-        this.lastStatus = "initialize";
+        this.lastStatus = 'initialize';
         this._onUnsubscribe = (obj) => {
-            if (this._request != null && this._request.streamStatus !== "closed") {
+            if (this._request != null && this._request.streamStatus !== 'closed') {
                 this._request.close();
             }
         };
@@ -119,9 +119,9 @@ class InvokeController {
         this._stream = new RequesterInvokeStream();
         this._stream._onClose = this._onUnsubscribe;
         let reqMap = {
-            'method': 'invoke',
-            'path': node.remotePath,
-            'params': params
+            method: 'invoke',
+            path: node.remotePath,
+            params: params
         };
         if (maxPermission !== permission_1.Permission.CONFIG) {
             reqMap['permit'] = permission_1.Permission.names[maxPermission];
@@ -161,21 +161,19 @@ class InvokeController {
             this._cachedColumns = InvokeController.getNodeColumns(this.node);
         }
         if (error != null) {
-            streamStatus = "closed";
+            streamStatus = 'closed';
             this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
         }
         else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
             this._stream.add(new RequesterInvokeUpdate(updates, columns, this._cachedColumns, streamStatus, meta));
         }
         this.lastStatus = streamStatus;
-        if (streamStatus === "closed") {
+        if (streamStatus === 'closed') {
             this._stream.close();
         }
     }
-    onDisconnect() {
-    }
-    onReconnect() {
-    }
+    onDisconnect() { }
+    onReconnect() { }
 }
 exports.InvokeController = InvokeController;
 //# sourceMappingURL=invoke.js.map

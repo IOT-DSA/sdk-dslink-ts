@@ -1,4 +1,4 @@
-import {RequesterListUpdate} from "../requester/request/list";
+import {RequesterListUpdate} from '../requester/request/list';
 
 /** @ignore */
 export type Listener<T> = (value: T) => void;
@@ -22,7 +22,12 @@ export class Stream<T> {
   /** @ignore */
   _onClose: () => void;
 
-  constructor(onStartListen?: () => void, onAllCancel?: () => void, onListen?: (listener: Listener<T>) => void, cached = false) {
+  constructor(
+    onStartListen?: () => void,
+    onAllCancel?: () => void,
+    onListen?: (listener: Listener<T>) => void,
+    cached = false
+  ) {
     this._onStartListen = onStartListen;
     this._onAllCancel = onAllCancel;
     this._onListen = onListen;

@@ -13,7 +13,11 @@ class Base64 {
     }
     static encode(bytes) {
         // url safe encode
-        return base64_js_1.default.fromByteArray(bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        return base64_js_1.default
+            .fromByteArray(bytes)
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
     }
     static decode(input) {
         if (input.length % 4 !== 0) {

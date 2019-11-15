@@ -1,13 +1,13 @@
 /// a responder for one connection
-import {ConnectionHandler} from "../common/connection-handler";
-import {Permission} from "../common/permission";
-import {SubscribeResponse} from "./response/subscribe";
-import {LocalNode, NodeProvider} from "./node_state";
-import {Response} from "./response";
-import {DsError, StreamStatus} from "../common/interfaces";
-import {Path} from "../common/node";
-import {ListResponse} from "./response/list";
-import {InvokeResponse} from "./response/invoke";
+import {ConnectionHandler} from '../common/connection-handler';
+import {Permission} from '../common/permission';
+import {SubscribeResponse} from './response/subscribe';
+import {LocalNode, NodeProvider} from './node_state';
+import {Response} from './response';
+import {DsError, StreamStatus} from '../common/interfaces';
+import {Path} from '../common/node';
+import {ListResponse} from './response/list';
+import {InvokeResponse} from './response/invoke';
 
 export class Responder extends ConnectionHandler {
   /** @ignore
@@ -51,7 +51,7 @@ export class Responder extends ConnectionHandler {
 
   /** @ignore */
   addResponse<T extends Response>(response: T): T {
-    if (response._sentStreamStatus !== "closed") {
+    if (response._sentStreamStatus !== 'closed') {
       this._responses.set(response.rid, response);
     }
     return response;
@@ -121,10 +121,10 @@ export class Responder extends ConnectionHandler {
         // this response is no longer valid
         return;
       }
-      response._sentStreamStatus = "closed";
+      response._sentStreamStatus = 'closed';
       rid = response.rid;
     }
-    let m: any = {'rid': rid, 'stream': "closed"};
+    let m: any = {rid: rid, stream: 'closed'};
     if (error != null) {
       m['error'] = error.serialize();
     }
@@ -133,16 +133,19 @@ export class Responder extends ConnectionHandler {
   }
 
   /** @ignore */
-  updateResponse(response: Response, updates: any[],
-                 options: {
-                   streamStatus?: StreamStatus,
-                   columns?: any[],
-                   meta?: object,
-                   // handleMap?: (object m)=>void
-                 } = {}) {
+  updateResponse(
+    response: Response,
+    updates: any[],
+    options: {
+      streamStatus?: StreamStatus;
+      columns?: any[];
+      meta?: object;
+      // handleMap?: (object m)=>void
+    } = {}
+  ) {
     let {streamStatus, columns, meta} = options;
     if (this._responses.get(response.rid) === response) {
-      let m: any = {'rid': response.rid};
+      let m: any = {rid: response.rid};
       if (streamStatus != null && streamStatus !== response._sentStreamStatus) {
         response._sentStreamStatus = streamStatus;
         m['stream'] = streamStatus;
@@ -165,7 +168,7 @@ export class Responder extends ConnectionHandler {
       // }
 
       this.addToSendList(m);
-      if (response._sentStreamStatus === "closed") {
+      if (response._sentStreamStatus === 'closed') {
         this._responses.delete(response.rid);
       }
     }
@@ -179,7 +182,6 @@ export class Responder extends ConnectionHandler {
       let state = this.nodeProvider.createState(path.path);
 
       this.addResponse(new ListResponse(this, rid, state));
-
     } else {
       this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
     }
@@ -213,7 +215,6 @@ export class Responder extends ConnectionHandler {
           let state = this.nodeProvider.createState(path.path);
           this._subscription.add(path.path, state, sid, qos);
           this.closeResponse(m['rid']);
-
         } else {
           this.closeResponse(m['rid']);
         }
@@ -244,7 +245,6 @@ export class Responder extends ConnectionHandler {
       let rid: number = m['rid'];
       let parentNode = this.nodeProvider.getNode(path.parentPath);
 
-
       let node: LocalNode = this.nodeProvider.getNode(path.path);
       if (node == null) {
         this.closeResponse(m['rid'], null, DsError.NOT_IMPLEMENTED);
@@ -253,8 +253,8 @@ export class Responder extends ConnectionHandler {
       let permission = Permission.parse(m['permit']);
 
       let params: {[key: string]: any};
-      if (m["params"] instanceof Object) {
-        params = m["params"];
+      if (m['params'] instanceof Object) {
+        params = m['params'];
       } else {
         params = {};
       }
@@ -262,16 +262,13 @@ export class Responder extends ConnectionHandler {
       if (node.getInvokePermission() <= permission) {
         node.invoke(
           params,
-          this.addResponse(
-            new InvokeResponse(this, rid, parentNode, node, path.name)
-          ),
+          this.addResponse(new InvokeResponse(this, rid, parentNode, node, path.name)),
           parentNode,
           permission
         );
       } else {
         this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       }
-
     } else {
       this.closeResponse(m['rid'], null, DsError.INVALID_PATH);
     }
@@ -328,8 +325,7 @@ export class Responder extends ConnectionHandler {
       if (permission < Permission.WRITE) {
         this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       } else {
-        node.setAttribute(
-          path.name, value, this, this.addResponse(new Response(this, rid, 'set')));
+        node.setAttribute(path.name, value, this, this.addResponse(new Response(this, rid, 'set')));
       }
     } else {
       // shouldn't be possible to reach here
@@ -357,11 +353,8 @@ export class Responder extends ConnectionHandler {
       if (permission < Permission.WRITE) {
         this.closeResponse(m['rid'], null, DsError.PERMISSION_DENIED);
       } else {
-        node.removeAttribute(
-          path.name, this, this.addResponse(new Response(this, rid, 'set')));
+        node.removeAttribute(path.name, this, this.addResponse(new Response(this, rid, 'set')));
       }
-
-
     } else {
       // shouldn't be possible to reach here
       throw new Error('unexpected case');

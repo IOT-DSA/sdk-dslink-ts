@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("./interfaces");
 exports.DSA_CONFIG = {
     ackWaitCount: 16,
-    defaultCacheSize: 256,
+    defaultCacheSize: 256
 };
 class ConnectionHandler {
     constructor() {

@@ -1,8 +1,8 @@
-import {NodeState} from "../node_state";
-import {Responder} from "../responder";
-import {Response} from "../response";
-import {DSA_CONFIG} from "../../common/connection-handler";
-import {StreamStatus} from "../../common/interfaces";
+import {NodeState} from '../node_state';
+import {Responder} from '../responder';
+import {Response} from '../response';
+import {DSA_CONFIG} from '../../common/connection-handler';
+import {StreamStatus} from '../../common/interfaces';
 
 export class ListResponse extends Response {
   state: NodeState;
@@ -40,7 +40,6 @@ export class ListResponse extends Response {
       this._lastWatingAckId = waitingAckId;
     }
 
-
     let updates: any[] = [];
 
     if (!node) {
@@ -53,7 +52,6 @@ export class ListResponse extends Response {
       let updateChildren: any[] = [];
 
       if (this.initialResponse || this.changes.has('$is')) {
-
         this.initialResponse = false;
 
         for (let [name, value] of node.configs) {
@@ -84,14 +82,14 @@ export class ListResponse extends Response {
             if (node.configs.has(change)) {
               update = [change, node.configs.get(change)];
             } else {
-              update = {'name': change, 'change': 'remove'};
+              update = {name: change, change: 'remove'};
             }
             updateConfigs.push(update);
           } else if (change.startsWith('@')) {
             if (node.attributes.has(change)) {
               update = [change, node.attributes.get(change)];
             } else {
-              update = {'name': change, 'change': 'remove'};
+              update = {name: change, change: 'remove'};
             }
             updateAttributes.push(update);
           } else {
@@ -99,7 +97,7 @@ export class ListResponse extends Response {
               let simpleMap: object = node.children.get(change).getSimpleMap();
               update = [change, simpleMap];
             } else {
-              update = {'name': change, 'change': 'remove'};
+              update = {name: change, change: 'remove'};
             }
             updateChildren.push(update);
           }
@@ -113,12 +111,15 @@ export class ListResponse extends Response {
       if (updateIs != null) {
         updates.push(updateIs);
       }
-      updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
+      updates = updates
+        .concat(updateConfigs)
+        .concat(updateAttributes)
+        .concat(updateChildren);
     }
 
     this.changes.clear();
 
-    this.responder.updateResponse(this, updates, {streamStatus: "open"});
+    this.responder.updateResponse(this, updates, {streamStatus: 'open'});
   }
 
   _waitingAckCount: number = 0;

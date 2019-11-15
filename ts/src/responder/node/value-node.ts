@@ -1,12 +1,11 @@
-import {BaseLocalNode} from "../base-local-node";
-import {NodeProvider} from "../node_state";
-import {Permission} from "../../common/permission";
+import {BaseLocalNode} from '../base-local-node';
+import {NodeProvider} from '../node_state';
+import {Permission} from '../../common/permission';
 
 /**
  * base class for a serializable value node
  */
 export class ValueNode extends BaseLocalNode {
-
   _saveValue: boolean;
 
   constructor(path: string, provider: NodeProvider, type = 'dynamic', writable = Permission.NEVER, saveValue = false) {
@@ -34,7 +33,7 @@ export class ValueNode extends BaseLocalNode {
   }
 
   onValueChange(newValue: any) {
-    let changed = super.onValueChange((newValue));
+    let changed = super.onValueChange(newValue);
     if (changed && this._saveValue) {
       this.provider.save();
     }

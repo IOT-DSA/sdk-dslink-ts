@@ -1,11 +1,11 @@
-import {Requester} from "../requester";
-import {Request} from "../request";
-import {Completer, Stream, StreamSubscription} from "../../utils/async";
-import {Permission} from "../../common/permission";
-import {ConnectionProcessor, DsError, StreamStatus} from "../../common/interfaces";
-import {RemoteNode} from "../node_cache";
-import {ValueUpdate} from "../../common/value";
-import {RequesterUpdate, RequestUpdater} from "../interface";
+import {Requester} from '../requester';
+import {Request} from '../request';
+import {Completer, Stream, StreamSubscription} from '../../utils/async';
+import {Permission} from '../../common/permission';
+import {ConnectionProcessor, DsError, StreamStatus} from '../../common/interfaces';
+import {RemoteNode} from '../node_cache';
+import {ValueUpdate} from '../../common/value';
+import {RequesterUpdate, RequestUpdater} from '../interface';
 
 export class RequesterListUpdate extends RequesterUpdate {
   /**
@@ -32,12 +32,11 @@ export class ListDefListener {
 
   ready: boolean = false;
 
-  constructor(node: RemoteNode, requester: Requester,
-              callback: (update: RequesterListUpdate) => void) {
+  constructor(node: RemoteNode, requester: Requester, callback: (update: RequesterListUpdate) => void) {
     this.node = node;
     this.requester = requester;
     this.listener = requester.list(node.remotePath, (update: RequesterListUpdate) => {
-      this.ready = update.streamStatus !== "initialize";
+      this.ready = update.streamStatus !== 'initialize';
       if (update.node.configs.has('$disconnectedTs')) {
         update.node.configs.delete('$disconnectedTs');
       }
@@ -64,7 +63,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   }
 
   get initialized(): boolean {
-    return this.request != null && this.request.streamStatus !== "initialize";
+    return this.request != null && this.request.streamStatus !== 'initialize';
   }
 
   disconnectTs: string;
@@ -72,8 +71,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   onDisconnect() {
     this.disconnectTs = ValueUpdate.getTs();
     this.node.configs.set('$disconnectedTs', this.disconnectTs);
-    this.stream.add(new RequesterListUpdate(
-      this.node, ['$disconnectedTs'], this.request.streamStatus));
+    this.stream.add(new RequesterListUpdate(this.node, ['$disconnectedTs'], this.request.streamStatus));
   }
 
   onReconnect() {
@@ -86,8 +84,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
   changes: Set<string> = new Set<string>();
 
-  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: object,
-           error: DsError) {
+  onUpdate(streamStatus: StreamStatus, updates: any[], columns: any[], meta: object, error: DsError) {
     let reseted = false;
     if (error && !updates) {
       updates = [['$disconnectedTs', ValueUpdate.getTs()]];
@@ -121,9 +118,10 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
           continue; // invalid response
         }
         if (name.startsWith('$')) {
-          if (!reseted &&
-            (name === '$is' || name === '$base' ||
-              (name === '$disconnectedTs' && typeof value === 'string'))) {
+          if (
+            !reseted &&
+            (name === '$is' || name === '$base' || (name === '$disconnectedTs' && typeof value === 'string'))
+          ) {
             reseted = true;
             this.node.resetNodeCache();
           }
@@ -149,12 +147,11 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
             this.node.children.delete(name);
           } else if (value != null && value instanceof Object) {
             // TODO, also wait for children $is
-            this.node.children.set(name,
-              this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
+            this.node.children.set(name, this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
           }
         }
       }
-      if (this.request.streamStatus !== "initialize") {
+      if (this.request.streamStatus !== 'initialize') {
         this.node._listed = true;
       }
       if (this._pendingRemoveDef) {
@@ -177,15 +174,14 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
         defPath = `/defs/profile/${defPath}`;
       }
     }
-    if (this.node.profile instanceof RemoteNode &&
-      (this.node.profile as RemoteNode).remotePath === defPath) {
+    if (this.node.profile instanceof RemoteNode && (this.node.profile as RemoteNode).remotePath === defPath) {
       return;
     }
     this.node.profile = this.requester.nodeCache.getDefNode(defPath, defName);
     if (defName === 'node') {
       return;
     }
-    if ((this.node.profile instanceof RemoteNode) && !(this.node.profile as RemoteNode)._listed) {
+    if (this.node.profile instanceof RemoteNode && !(this.node.profile as RemoteNode)._listed) {
       this._ready = false;
       this._profileLoader = new ListDefListener(this.node.profile, this.requester, this._onProfileUpdate);
     }
@@ -195,12 +191,12 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     '$is',
     // '$permission',
     // '$settings',
-    '$disconnectedTs',
+    '$disconnectedTs'
   ];
 
   _onProfileUpdate = (update: RequesterListUpdate) => {
     if (this._profileLoader == null) {
-//      logger.finest('warning, unexpected state of profile loading');
+      //      logger.finest('warning, unexpected state of profile loading');
       return;
     }
     this._profileLoader.close();
@@ -232,12 +228,11 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
 
   onProfileUpdated() {
     if (this._ready) {
-      if (this.request.streamStatus !== "initialize") {
-        this.stream.add(new RequesterListUpdate(
-          this.node, Array.from(this.changes), this.request.streamStatus));
+      if (this.request.streamStatus !== 'initialize') {
+        this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
-      if (this.request && this.request.streamStatus === "closed") {
+      if (this.request && this.request.streamStatus === 'closed') {
         this.stream.close();
       }
     }
@@ -261,13 +256,11 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     if (!this.waitToSend) {
       return;
     }
-    this.request = this.requester._sendRequest(
-      {'method': 'list', 'path': this.node.remotePath}, this);
+    this.request = this.requester._sendRequest({method: 'list', path: this.node.remotePath}, this);
     this.waitToSend = false;
   }
 
-  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
-  }
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {}
 
   _onListen = (callback: (update: RequesterListUpdate) => void) => {
     if (this._ready && this.request != null) {
@@ -286,11 +279,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
         for (let [key, v] of this.node.children) {
           changes.push(key);
         }
-        let update: RequesterListUpdate = new RequesterListUpdate(
-          this.node,
-          changes,
-          this.request.streamStatus
-        );
+        let update: RequesterListUpdate = new RequesterListUpdate(this.node, changes, this.request.streamStatus);
         callback(update);
       }, 0);
     }

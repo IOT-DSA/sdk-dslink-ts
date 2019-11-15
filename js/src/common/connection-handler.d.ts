@@ -1,5 +1,5 @@
-import { ConnectionChannel, ConnectionProcessor, ProcessorResult } from "./interfaces";
-import { StreamSubscription } from "../utils/async";
+import { ConnectionChannel, ConnectionProcessor, ProcessorResult } from './interfaces';
+import { StreamSubscription } from '../utils/async';
 export declare const DSA_CONFIG: {
     ackWaitCount: number;
     defaultCacheSize: number;

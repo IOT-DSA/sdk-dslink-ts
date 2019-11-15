@@ -1,23 +1,22 @@
-import {MockBroker} from "./utils/mock-broker";
-import {assert} from "chai";
-import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
-import {shouldHappen} from "./utils/async-test";
-import {ValueUpdate} from "../src/common/value";
-import {Logger, logger} from "../src/utils/logger";
-import {Requester} from "../src/requester/requester";
-import {RequesterListUpdate} from "../src/requester/request/list";
-import {RemoteNode} from "../src/requester/node_cache";
-import {RequesterInvokeUpdate} from "../src/requester/request/invoke";
-import {DsError} from "../src/common/interfaces";
-import {Path} from "../src/common/node";
-import {Table} from "../src/common/table";
-import {ValueNode} from "../src/responder/node/value-node";
-import {LocalNode, NodeProvider, Subscriber} from "../src/responder/node_state";
-import {ActionNode, HttpClientLink, Permission} from "../node";
-import {InvokeResponse} from "../src/responder/response/invoke";
+import {MockBroker} from './utils/mock-broker';
+import {assert} from 'chai';
+import {TestRootNode, TestValueNode} from './utils/responder-nodes';
+import {shouldHappen} from './utils/async-test';
+import {ValueUpdate} from '../src/common/value';
+import {Logger, logger} from '../src/utils/logger';
+import {Requester} from '../src/requester/requester';
+import {RequesterListUpdate} from '../src/requester/request/list';
+import {RemoteNode} from '../src/requester/node_cache';
+import {RequesterInvokeUpdate} from '../src/requester/request/invoke';
+import {DsError} from '../src/common/interfaces';
+import {Path} from '../src/common/node';
+import {Table} from '../src/common/table';
+import {ValueNode} from '../src/responder/node/value-node';
+import {LocalNode, NodeProvider, Subscriber} from '../src/responder/node_state';
+import {ActionNode, HttpClientLink, Permission} from '../node';
+import {InvokeResponse} from '../src/responder/response/invoke';
 
 class TestStreamAction extends ActionNode {
-
   initialize() {
     // let requester know the result could be a stream
     this.setConfig('$result', 'stream');
@@ -26,10 +25,7 @@ class TestStreamAction extends ActionNode {
   }
 
   // override the raw invoke method instead of onInvoke
-  invoke(
-    params: {[key: string]: any},
-    response: InvokeResponse,
-    parentNode: LocalNode, maxPermission?: number) {
+  invoke(params: {[key: string]: any}, response: InvokeResponse, parentNode: LocalNode, maxPermission?: number) {
     // the requester won't receive update when status is initialize
     response.updateStream([[0]], {streamStatus: 'initialize'});
 
@@ -46,7 +42,7 @@ class TestStreamAction extends ActionNode {
   }
 }
 
-describe('invoke', function () {
+describe('invoke', function() {
   let broker = new MockBroker();
   logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
@@ -77,7 +73,7 @@ describe('invoke', function () {
     responderClient.close();
   });
 
-  it('simple invoke', async function () {
+  it('simple invoke', async function() {
     let data: any;
     requester.invoke(resolve('act'), {value: 2}, (update: RequesterInvokeUpdate) => {
       data = update.result;
@@ -86,12 +82,12 @@ describe('invoke', function () {
     assert.deepEqual(data, {c1: 2, c2: '2'});
   });
 
-  it('invoke once', async function () {
+  it('invoke once', async function() {
     let data = await requester.invokeOnce(resolve('act'), {value: 2});
     assert.deepEqual(data.result, {c1: 2, c2: '2'});
   });
 
-  it('invoke invalid path', async function () {
+  it('invoke invalid path', async function() {
     let error: DsError;
     requester.invoke(resolve('invalidPath'), {}, (update: RequesterInvokeUpdate) => {
       error = update.error;
@@ -100,7 +96,7 @@ describe('invoke', function () {
     assert.equal(error.type, 'notImplemented');
   });
 
-  it('invoke once invalid path', async function () {
+  it('invoke once invalid path', async function() {
     let error: DsError;
     try {
       await requester.invokeOnce(resolve('invalidPath'), {});
@@ -110,14 +106,14 @@ describe('invoke', function () {
     assert.equal(error.type, 'notImplemented');
   });
 
-  it('return array of array', async function () {
+  it('return array of array', async function() {
     // overwrite onInvoke
     rootNode.action.onInvoke = () => [['3', 3]];
     let data = await requester.invokeOnce(resolve('act'), {value: 2});
     assert.deepEqual(data.result, {c1: '3', c2: 3});
   });
 
-  it('return table', async function () {
+  it('return table', async function() {
     let column0 = {name: 'str', type: 'string'};
     let rows = [['a'], ['b']];
     // overwrite onInvoke
@@ -127,16 +123,17 @@ describe('invoke', function () {
     assert.deepEqual(data.rows, rows);
   });
 
-  it('return async value', async function () {
+  it('return async value', async function() {
     // overwrite onInvoke
-    rootNode.action.onInvoke = () => new Promise((resolve) => {
-      setTimeout(() => resolve([['5', 5]]), 0);
-    });
+    rootNode.action.onInvoke = () =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve([['5', 5]]), 0);
+      });
     let data = await requester.invokeOnce(resolve('act'), {value: 2});
     assert.deepEqual(data.result, {c1: '5', c2: 5});
   });
 
-  it('return error', async function () {
+  it('return error', async function() {
     rootNode.action.onInvoke = () => DsError.INVALID_VALUE;
     let error: DsError;
     try {
@@ -147,10 +144,11 @@ describe('invoke', function () {
     assert.equal(error.type, 'invalidValue');
   });
 
-  it('return async error', async function () {
-    rootNode.action.onInvoke = () => new Promise((resolve, reject) => {
-      setTimeout(() => reject(), 0);
-    });
+  it('return async error', async function() {
+    rootNode.action.onInvoke = () =>
+      new Promise((resolve, reject) => {
+        setTimeout(() => reject(), 0);
+      });
     let error: DsError;
     try {
       await requester.invokeOnce(resolve('act'), {});
@@ -160,7 +158,7 @@ describe('invoke', function () {
     assert.equal(error.type, 'failed');
   });
 
-  it('stream response', async function () {
+  it('stream response', async function() {
     rootNode.createChild('stream', TestStreamAction);
 
     let response = await requester.invokeOnce(resolve('stream'), {});
@@ -182,7 +180,7 @@ describe('invoke', function () {
     assert.deepEqual(rows2, [[0], [1], [2], [3], [4], [5], [6]]);
   });
 
-  it('invokeStream', async function () {
+  it('invokeStream', async function() {
     rootNode.createChild('stream', TestStreamAction);
 
     let rows1: any[];

@@ -1,10 +1,9 @@
 import http from 'http';
 import WebSocket from 'ws';
-import {AddressInfo} from "net";
-import {LocalNode} from "../../src/responder/node_state";
-import {PrivateKey} from "../../src/crypto/pk";
-import {HttpClientLink} from "../../src/nodejs/client-link";
-
+import {AddressInfo} from 'net';
+import {LocalNode} from '../../src/responder/node_state';
+import {PrivateKey} from '../../src/crypto/pk';
+import {HttpClientLink} from '../../src/nodejs/client-link';
 
 class Client {
   server: MockBroker;
@@ -61,12 +60,12 @@ class Client {
 }
 
 const connResponse = {
-  "dsId": "broker-dsa-FEuG-dsvoy3Mfh-DY4ZLqxWdcjA9mky2MyCd0DmqTMw",
-  "publicKey": "BG4OYopcM2q09amKRKsc8N99ns5dybnBYG4Fi8bQVf6fKjyT_KRlPMJCs-3zvnSbBCXzS5fZfi88JuiLYwJY0gc",
-  "wsUri": "/ws",
-  "path": "/",
-  "version": "1.1.2",
-  "format": "json"
+  dsId: 'broker-dsa-FEuG-dsvoy3Mfh-DY4ZLqxWdcjA9mky2MyCd0DmqTMw',
+  publicKey: 'BG4OYopcM2q09amKRKsc8N99ns5dybnBYG4Fi8bQVf6fKjyT_KRlPMJCs-3zvnSbBCXzS5fZfi88JuiLYwJY0gc',
+  wsUri: '/ws',
+  path: '/',
+  version: '1.1.2',
+  format: 'json'
 };
 
 export class MockBroker {
@@ -113,7 +112,6 @@ export class MockBroker {
       });
     });
   }
-
 
   key = PrivateKey.loadFromString('M6S41GAL0gH0I97Hhy7A2-icf8dHnxXPmYIRwem03HE');
 

@@ -1,6 +1,6 @@
-import { BaseLocalNode } from "../responder/base-local-node";
-import { InvokeResponse } from "../responder/response/invoke";
-import { LocalNode } from "../responder/node_state";
+import { BaseLocalNode } from '../responder/base-local-node';
+import { InvokeResponse } from '../responder/response/invoke';
+import { LocalNode } from '../responder/node_state';
 export declare class MockActionNode extends BaseLocalNode {
     onInvoke: (params: {
         [key: string]: any;

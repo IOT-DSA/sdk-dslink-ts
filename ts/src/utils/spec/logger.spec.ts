@@ -1,8 +1,8 @@
-import {Logger} from "../logger";
-import {assert} from "chai";
+import {Logger} from '../logger';
+import {assert} from 'chai';
 
-describe('logger', function () {
-  it('levels', function () {
+describe('logger', function() {
+  it('levels', function() {
     let logger = new Logger();
     let tagged = logger.tag('a');
     let loggedLevel: number;
@@ -23,7 +23,7 @@ describe('logger', function () {
     assert.equal(loggedLevel, Logger.ERROR, 'should not be logged');
   });
 
-  it('tag', function () {
+  it('tag', function() {
     let logger = new Logger();
     let tagged = logger.tag('a');
     let loggedMsg: string;

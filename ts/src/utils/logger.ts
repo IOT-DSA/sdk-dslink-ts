@@ -91,9 +91,7 @@ export class Logger {
     if (level & this._level) {
       if (this.formatter) {
         let str = typeof msg === 'function' ? msg() : msg;
-        this.printer(
-          this.formatter(str, level, tag), level
-        );
+        this.printer(this.formatter(str, level, tag), level);
       }
     }
   }
@@ -132,7 +130,6 @@ export class TaggedLogger {
     this.tag = tag;
   }
 
-
   trace(msg: MsgType) {
     this.logger.trace(msg, this.tag);
   }
@@ -153,6 +150,5 @@ export class TaggedLogger {
     this.logger.error(msg, this.tag);
   }
 }
-
 
 export const logger = new Logger();

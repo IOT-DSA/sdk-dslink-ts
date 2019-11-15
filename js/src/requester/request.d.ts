@@ -1,6 +1,6 @@
-import { Requester } from "./requester";
-import { DsError, StreamStatus } from "../common/interfaces";
-import { RequestUpdater } from "./interface";
+import { Requester } from './requester';
+import { DsError, StreamStatus } from '../common/interfaces';
+import { RequestUpdater } from './interface';
 export declare class Request {
     readonly requester: Requester;
     readonly rid: number;

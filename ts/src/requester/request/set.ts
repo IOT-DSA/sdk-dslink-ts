@@ -1,9 +1,9 @@
-import {Requester} from "../requester";
-import {Request} from "../request";
-import {Completer} from "../../utils/async";
-import {Permission} from "../../common/permission";
-import {DsError, StreamStatus} from "../../common/interfaces";
-import {RequesterUpdate, RequestUpdater} from "../interface";
+import {Requester} from '../requester';
+import {Request} from '../request';
+import {Completer} from '../../utils/async';
+import {Permission} from '../../common/permission';
+import {DsError, StreamStatus} from '../../common/interfaces';
+import {RequesterUpdate, RequestUpdater} from '../interface';
 
 /** @ignore */
 export class SetController implements RequestUpdater {
@@ -24,9 +24,9 @@ export class SetController implements RequestUpdater {
     this.value = value;
 
     let reqMap: any = {
-      'method': 'set',
-      'path': path,
-      'value': value
+      method: 'set',
+      path: path,
+      value: value
     };
 
     if (maxPermission !== Permission.CONFIG) {
@@ -41,9 +41,7 @@ export class SetController implements RequestUpdater {
     this.completer.complete(new RequesterUpdate(status));
   }
 
-  onDisconnect() {
-  }
+  onDisconnect() {}
 
-  onReconnect() {
-  }
+  onReconnect() {}
 }

@@ -1,4 +1,4 @@
-import { LocalNode } from "./node_state";
+import { LocalNode } from './node_state';
 export declare class BaseLocalNode extends LocalNode {
     createChild(name: string, cls: typeof LocalNode, ...args: any[]): LocalNode;
     save(): {

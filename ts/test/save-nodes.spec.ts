@@ -1,21 +1,20 @@
-import {MockBroker} from "./utils/mock-broker";
-import {assert} from "chai";
-import {TestRootNode, TestValueNode} from "./utils/responder-nodes";
-import {shouldHappen} from "./utils/async-test";
-import {ValueUpdate} from "../src/common/value";
-import {Logger, logger} from "../src/utils/logger";
-import {HttpClientLink} from "../src/nodejs/client-link";
-import {Requester} from "../src/requester/requester";
-import {Path} from "../src/common/node";
-import {sleep} from "../src/utils/async";
-import * as fs from "fs";
+import {MockBroker} from './utils/mock-broker';
+import {assert} from 'chai';
+import {TestRootNode, TestValueNode} from './utils/responder-nodes';
+import {shouldHappen} from './utils/async-test';
+import {ValueUpdate} from '../src/common/value';
+import {Logger, logger} from '../src/utils/logger';
+import {HttpClientLink} from '../src/nodejs/client-link';
+import {Requester} from '../src/requester/requester';
+import {Path} from '../src/common/node';
+import {sleep} from '../src/utils/async';
+import * as fs from 'fs';
 
-describe('save nodes', function () {
+describe('save nodes', function() {
   logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
 
-
-  it('save to json', async function () {
+  it('save to json', async function() {
     {
       let rootNode = new TestRootNode();
       rootNode.val._saveValue = true;
@@ -57,12 +56,10 @@ describe('save nodes', function () {
       await sleep(10);
       // default serializer should not save if there is no change
       assert.isFalse(fs.existsSync('nodes.json'));
-
     }
-
   });
 
-  it('save function', async function () {
+  it('save function', async function() {
     let rootNode = new TestRootNode();
     rootNode.val._saveValue = true;
 
@@ -83,7 +80,7 @@ describe('save nodes', function () {
     assert.deepEqual(savedData, {
       $is: 'node',
       val: {'$is': 'testvalue', '?value': 123},
-      val2: {'$is': 'testvalue'} // value of TestValue Node is not saved by default
+      val2: {$is: 'testvalue'} // value of TestValue Node is not saved by default
     });
     rootNode.removeChild(val2);
     assert.deepEqual(savedData, {
@@ -91,5 +88,4 @@ describe('save nodes', function () {
       val: {'$is': 'testvalue', '?value': 123}
     });
   });
-
 });

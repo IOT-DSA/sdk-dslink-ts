@@ -43,13 +43,13 @@ class BrowserUserLink extends interfaces_1.ClientLink {
                 this.onDisConnect(reconnect);
             });
         };
-        if (wsUpdateUri.startsWith("http")) {
+        if (wsUpdateUri.startsWith('http')) {
             wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
         }
         this.wsUpdateUri = wsUpdateUri;
         this.format = format;
-        if (window.location.hash.includes("dsa_json")) {
-            this.format = "json";
+        if (window.location.hash.includes('dsa_json')) {
+            this.format = 'json';
         }
     }
     get onRequesterReady() {
@@ -106,6 +106,8 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     }
 }
 /** @ignore */
-BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
+BrowserUserLink.session = Math.random()
+    .toString(16)
+    .substr(2, 8);
 exports.BrowserUserLink = BrowserUserLink;
 //# sourceMappingURL=browser-user-link.js.map

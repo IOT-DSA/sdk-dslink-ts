@@ -1,9 +1,9 @@
-import { Listener, Stream } from "../utils/async";
-import { Node } from "../common/node";
-import { InvokeResponse } from "./response/invoke";
-import { Responder } from "./responder";
-import { Response } from "./response";
-import { ValueUpdate, ValueUpdateCallback } from "../common/value";
+import { Listener, Stream } from '../utils/async';
+import { Node } from '../common/node';
+import { InvokeResponse } from './response/invoke';
+import { Responder } from './responder';
+import { Response } from './response';
+import { ValueUpdate, ValueUpdateCallback } from '../common/value';
 export declare class LocalNode extends Node<LocalNode> {
     provider: NodeProvider;
     readonly path: string;

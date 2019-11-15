@@ -1,17 +1,16 @@
-import {RequesterUpdate, RequestUpdater} from "./interface";
-import {Listener, Stream, StreamSubscription} from "../utils/async";
-import {Request} from "./request";
-import {ConnectionHandler} from "../common/connection-handler";
-import {RemoteNode, RemoteNodeCache} from "./node_cache";
-import {ReqSubscribeListener, SubscribeRequest} from "./request/subscribe";
-import {DsError, ProcessorResult, StreamStatus} from "../common/interfaces";
-import {ValueUpdate} from "../common/value";
-import {ListController, RequesterListUpdate} from "./request/list";
-import {Permission} from "../common/permission";
-import {RequesterInvokeStream, RequesterInvokeUpdate} from "./request/invoke";
-import {SetController} from "./request/set";
-import {RemoveController} from "./request/remove";
-
+import {RequesterUpdate, RequestUpdater} from './interface';
+import {Listener, Stream, StreamSubscription} from '../utils/async';
+import {Request} from './request';
+import {ConnectionHandler} from '../common/connection-handler';
+import {RemoteNode, RemoteNodeCache} from './node_cache';
+import {ReqSubscribeListener, SubscribeRequest} from './request/subscribe';
+import {DsError, ProcessorResult, StreamStatus} from '../common/interfaces';
+import {ValueUpdate} from '../common/value';
+import {ListController, RequesterListUpdate} from './request/list';
+import {Permission} from '../common/permission';
+import {RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
+import {SetController} from './request/set';
+import {RemoveController} from './request/remove';
 
 export class Requester extends ConnectionHandler {
   /** @ignore */
@@ -42,7 +41,7 @@ export class Requester extends ConnectionHandler {
   onData = (list: any[]) => {
     if (Array.isArray(list)) {
       for (let resp of list) {
-        if ((resp != null && resp instanceof Object)) {
+        if (resp != null && resp instanceof Object) {
           this._onReceiveUpdate(resp);
         }
       }
@@ -65,7 +64,7 @@ export class Requester extends ConnectionHandler {
   /** @ignore */
   getNextRid(): number {
     do {
-      if (this.lastRid < 0x7FFFFFFF) {
+      if (this.lastRid < 0x7fffffff) {
         ++this.lastRid;
       } else {
         this.lastRid = 1;
@@ -115,8 +114,7 @@ export class Requester extends ConnectionHandler {
    *   - 0: allow value skipping as long as the last update is received
    *   - 1: no value skipping
    */
-  subscribe(path: string, callback: (update: ValueUpdate) => void,
-            qos: number = 0): ReqSubscribeListener {
+  subscribe(path: string, callback: (update: ValueUpdate) => void, qos: number = 0): ReqSubscribeListener {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     node._subscribe(this, callback, qos);
     return new ReqSubscribeListener(this, path, callback);
@@ -134,19 +132,25 @@ export class Requester extends ConnectionHandler {
   onValueChange(path: string, qos: number = 0): Stream<ValueUpdate> {
     let listener: ReqSubscribeListener;
     let stream: Stream<ValueUpdate>;
-    stream = new Stream<ValueUpdate>(() => {
-
-      if (listener == null) {
-        listener = this.subscribe(path, (update: ValueUpdate) => {
-          stream.add(update);
-        }, qos);
+    stream = new Stream<ValueUpdate>(
+      () => {
+        if (listener == null) {
+          listener = this.subscribe(
+            path,
+            (update: ValueUpdate) => {
+              stream.add(update);
+            },
+            qos
+          );
+        }
+      },
+      () => {
+        if (listener) {
+          listener.close();
+          listener = null;
+        }
       }
-    }, () => {
-      if (listener) {
-        listener.close();
-        listener = null;
-      }
-    });
+    );
     return stream;
   }
 
@@ -194,7 +198,6 @@ export class Requester extends ConnectionHandler {
         }
       });
     });
-
   }
 
   /**
@@ -214,8 +217,12 @@ export class Requester extends ConnectionHandler {
    * Usually an action stream will be closed on server side,
    * but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]
    */
-  invoke(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
-         maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+  invoke(
+    path: string,
+    params: {[key: string]: any} = {},
+    callback?: Listener<RequesterInvokeUpdate>,
+    maxPermission: number = Permission.CONFIG
+  ): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
 
@@ -241,13 +248,15 @@ export class Requester extends ConnectionHandler {
   /**
    * Invoke a node action, and receive update only once, stream will be closed automatically if necessary
    */
-  invokeOnce(path: string, params: {[key: string]: any} = {}, maxPermission: number = Permission.CONFIG): Promise<RequesterInvokeUpdate> {
+  invokeOnce(
+    path: string,
+    params: {[key: string]: any} = {},
+    maxPermission: number = Permission.CONFIG
+  ): Promise<RequesterInvokeUpdate> {
     let stream = this.invoke(path, params, null, maxPermission);
     return new Promise((resolve, reject) => {
-
       stream.listen((update: RequesterInvokeUpdate) => {
-
-        if (update.streamStatus !== "closed") {
+        if (update.streamStatus !== 'closed') {
           stream.close();
         }
         if (update.error) {
@@ -263,8 +272,12 @@ export class Requester extends ConnectionHandler {
    * Invoke a node action, and receive raw update.
    * Steaming updates won't be merged
    */
-  invokeStream(path: string, params: {[key: string]: any} = {}, callback?: Listener<RequesterInvokeUpdate>,
-         maxPermission: number = Permission.CONFIG): RequesterInvokeStream {
+  invokeStream(
+    path: string,
+    params: {[key: string]: any} = {},
+    callback?: Listener<RequesterInvokeUpdate>,
+    maxPermission: number = Permission.CONFIG
+  ): RequesterInvokeStream {
     let node: RemoteNode = this.nodeCache.getRemoteNode(path);
     let stream = node._invoke(params, this, maxPermission);
 
@@ -277,8 +290,7 @@ export class Requester extends ConnectionHandler {
   /**
    * Set the value of an attribute, the attribute will be created if not exists
    */
-  set(path: string, value: any,
-      maxPermission: number = Permission.CONFIG): Promise<RequesterUpdate> {
+  set(path: string, value: any, maxPermission: number = Permission.CONFIG): Promise<RequesterUpdate> {
     return new SetController(this, path, value, maxPermission).future;
   }
 
@@ -293,8 +305,8 @@ export class Requester extends ConnectionHandler {
   /** @ignore */
   closeRequest(request: Request) {
     if (this._requests.has(request.rid)) {
-      if (request.streamStatus !== "closed") {
-        this.addToSendList({'method': 'close', 'rid': request.rid});
+      if (request.streamStatus !== 'closed') {
+        this.addToSendList({method: 'close', rid: request.rid});
       }
       this._requests.delete(request.rid);
       request.close();

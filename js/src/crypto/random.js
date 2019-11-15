@@ -17,7 +17,7 @@ class DSRandom {
             this._cache = randomBytes(256);
             this._pos = 0;
         }
-        return this._cache[this._pos++] << 8 | this._cache[this._pos++];
+        return (this._cache[this._pos++] << 8) | this._cache[this._pos++];
     }
     get needsEntropy() {
         return false;

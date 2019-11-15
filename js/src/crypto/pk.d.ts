@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import { ECDH as ECCurve } from "crypto";
-import { ECDH as ECDHBase } from "../common/interfaces";
+import { ECDH as ECCurve } from 'crypto';
+import { ECDH as ECDHBase } from '../common/interfaces';
 export declare function sha256(str: string | Buffer): string;
 export declare class PublicKey {
     ecPublicKey: Buffer;

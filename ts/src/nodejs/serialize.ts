@@ -1,7 +1,7 @@
-import {PrivateKey} from "../crypto/pk";
-import fs from "fs";
-import {DsJson} from "../utils/codec";
-import {logger as mainLogger} from "../utils/logger";
+import {PrivateKey} from '../crypto/pk';
+import fs from 'fs';
+import {DsJson} from '../utils/codec';
+import {logger as mainLogger} from '../utils/logger';
 
 let logger = mainLogger.tag('link');
 
@@ -11,15 +11,12 @@ export function getKeyFromFile(path: string): PrivateKey {
     key = PrivateKey.generate();
     fs.writeFileSync(path, key.saveToString());
   } else {
-    key = PrivateKey.loadFromString(
-      fs.readFileSync(path, {encoding: 'utf8'})
-    );
+    key = PrivateKey.loadFromString(fs.readFileSync(path, {encoding: 'utf8'}));
   }
   return key;
 }
 
 export class NodeSerializer {
-
   lastSavedStr: string;
   path: string;
 
@@ -27,7 +24,7 @@ export class NodeSerializer {
     this.path = path;
   }
 
-// default implementation of save nodes
+  // default implementation of save nodes
   saveNodesToFile = (data: any) => {
     let str = DsJson.encode(data, true);
     if (this.lastSavedStr === str) {
@@ -42,7 +39,7 @@ export class NodeSerializer {
     });
   };
 
-// default implementation of load nodes
+  // default implementation of load nodes
   loadNodesFromFile = () => {
     try {
       let str = fs.readFileSync(this.path, 'utf8');
@@ -51,10 +48,8 @@ export class NodeSerializer {
         this.lastSavedStr = str;
         return data;
       }
-    } catch (err) {
-    }
+    } catch (err) {}
     logger.info(`can't find a valid ${this.path}, skip loading nodes`);
     return null;
   };
 }
-

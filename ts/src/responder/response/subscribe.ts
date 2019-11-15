@@ -1,16 +1,14 @@
 // part of dslink.responder;
 
-import {ValueUpdate, ValueUpdateCallback} from "../../common/value";
-import {Response} from "../response";
-import {LocalNode, NodeState} from "../node_state";
-import * as path from "path";
-import {Responder} from "../responder";
-import {DSA_CONFIG} from "../../common/connection-handler";
-import Denque = require("denque");
+import {ValueUpdate, ValueUpdateCallback} from '../../common/value';
+import {Response} from '../response';
+import {LocalNode, NodeState} from '../node_state';
+import * as path from 'path';
+import {Responder} from '../responder';
+import {DSA_CONFIG} from '../../common/connection-handler';
+import Denque = require('denque');
 
-interface ISubscriptionNodeStorage {
-
-}
+interface ISubscriptionNodeStorage {}
 
 export class SubscribeResponse extends Response {
   constructor(responder: Responder, rid: number) {
@@ -41,7 +39,6 @@ export class SubscribeResponse extends Response {
         this.subscriptionChanged(subscriber);
       }
     } else {
-
       subscriber = new ValueSubscriber(this, node, sid, qos);
       this.subscriptions.set(path, subscriber);
 
@@ -173,9 +170,9 @@ export class ValueSubscriber {
     if (this.waitingValues == null && this._qosLevel > 0) {
       this.waitingValues = new Denque<ValueUpdate>();
     }
-    this.caching = (v > 0);
-    this.cachingQueue = (v > 1);
-    this.persist = (v > 2);
+    this.caching = v > 0;
+    this.cachingQueue = v > 1;
+    this.persist = v > 2;
   }
 
   _caching: boolean = false;
@@ -218,7 +215,7 @@ export class ValueSubscriber {
     val = val.cloneForAckQueue();
     if (this._caching && this._isCacheValid) {
       this.lastValues.push(val);
-      let needClearQueue: boolean = (this.lastValues.length > DSA_CONFIG.defaultCacheSize);
+      let needClearQueue: boolean = this.lastValues.length > DSA_CONFIG.defaultCacheSize;
       if (!needClearQueue && !this.cachingQueue && this.response._sendingAfterAck && this.lastValues.length > 1) {
         needClearQueue = true;
       }
