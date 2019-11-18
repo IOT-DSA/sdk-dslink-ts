@@ -1,5 +1,5 @@
-import { BaseLocalNode } from "../base-local-node";
-import { NodeProvider } from "../node_state";
+import { BaseLocalNode } from '../base-local-node';
+import { NodeProvider } from '../node_state';
 /**
  * base class for a serializable value node
  */

@@ -77,7 +77,7 @@ class ListResponse extends response_1.Response {
                             update = [change, node.configs.get(change)];
                         }
                         else {
-                            update = { 'name': change, 'change': 'remove' };
+                            update = { name: change, change: 'remove' };
                         }
                         updateConfigs.push(update);
                     }
@@ -86,7 +86,7 @@ class ListResponse extends response_1.Response {
                             update = [change, node.attributes.get(change)];
                         }
                         else {
-                            update = { 'name': change, 'change': 'remove' };
+                            update = { name: change, change: 'remove' };
                         }
                         updateAttributes.push(update);
                     }
@@ -96,7 +96,7 @@ class ListResponse extends response_1.Response {
                             update = [change, simpleMap];
                         }
                         else {
-                            update = { 'name': change, 'change': 'remove' };
+                            update = { name: change, change: 'remove' };
                         }
                         updateChildren.push(update);
                     }
@@ -108,10 +108,13 @@ class ListResponse extends response_1.Response {
             if (updateIs != null) {
                 updates.push(updateIs);
             }
-            updates = updates.concat(updateConfigs).concat(updateAttributes).concat(updateChildren);
+            updates = updates
+                .concat(updateConfigs)
+                .concat(updateAttributes)
+                .concat(updateChildren);
         }
         this.changes.clear();
-        this.responder.updateResponse(this, updates, { streamStatus: "open" });
+        this.responder.updateResponse(this, updates, { streamStatus: 'open' });
     }
     ackReceived(receiveAckId, startTime, currentTime) {
         if (receiveAckId === this._lastWatingAckId) {

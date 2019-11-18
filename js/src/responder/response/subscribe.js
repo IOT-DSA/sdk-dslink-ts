@@ -152,9 +152,9 @@ class ValueSubscriber {
         if (this.waitingValues == null && this._qosLevel > 0) {
             this.waitingValues = new Denque();
         }
-        this.caching = (v > 0);
-        this.cachingQueue = (v > 1);
-        this.persist = (v > 2);
+        this.caching = v > 0;
+        this.cachingQueue = v > 1;
+        this.persist = v > 2;
     }
     set caching(val) {
         if (val === this._caching)
@@ -181,7 +181,7 @@ class ValueSubscriber {
         val = val.cloneForAckQueue();
         if (this._caching && this._isCacheValid) {
             this.lastValues.push(val);
-            let needClearQueue = (this.lastValues.length > connection_handler_1.DSA_CONFIG.defaultCacheSize);
+            let needClearQueue = this.lastValues.length > connection_handler_1.DSA_CONFIG.defaultCacheSize;
             if (!needClearQueue && !this.cachingQueue && this.response._sendingAfterAck && this.lastValues.length > 1) {
                 needClearQueue = true;
             }

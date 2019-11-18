@@ -100,11 +100,11 @@ export class Stream<T> {
 }
 
 /** @ignore */
-export interface Cancelable {
+export interface Closable {
   close(): void;
 }
 
-export class StreamSubscription<T> implements Cancelable {
+export class StreamSubscription<T> implements Closable {
   /** @ignore */
   _stream: Stream<T>;
   /** @ignore */

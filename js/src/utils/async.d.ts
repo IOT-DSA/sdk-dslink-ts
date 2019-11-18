@@ -30,10 +30,10 @@ export declare class Stream<T> {
     reset(): void;
 }
 /** @ignore */
-export interface Cancelable {
+export interface Closable {
     close(): void;
 }
-export declare class StreamSubscription<T> implements Cancelable {
+export declare class StreamSubscription<T> implements Closable {
     /** @ignore */
     _stream: Stream<T>;
     /** @ignore */

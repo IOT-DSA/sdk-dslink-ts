@@ -28,7 +28,7 @@ class InvokeResponse extends response_1.Response {
     updateStream(updates, options = {}) {
         let { columns, streamStatus, meta, autoSendColumns } = options;
         if (!streamStatus) {
-            streamStatus = "closed";
+            streamStatus = 'closed';
         }
         if (meta != null && meta['mode'] === 'refresh') {
             this.pendingData.length = 0;
@@ -37,8 +37,8 @@ class InvokeResponse extends response_1.Response {
             if (columns == null &&
                 autoSendColumns !== false &&
                 this.node != null &&
-                Array.isArray(this.node.configs.get("$columns"))) {
-                columns = this.node.configs.get("$columns");
+                Array.isArray(this.node.configs.get('$columns'))) {
+                columns = this.node.configs.get('$columns');
             }
         }
         if (columns != null) {
@@ -60,7 +60,7 @@ class InvokeResponse extends response_1.Response {
         this._pendingSending = false;
         if (this._err != null) {
             this.responder.closeResponse(this.rid, this, this._err);
-            if (this._sentStreamStatus === "closed") {
+            if (this._sentStreamStatus === 'closed') {
                 this._close();
             }
             return;
@@ -73,9 +73,14 @@ class InvokeResponse extends response_1.Response {
             this.responder.updateResponse(this, update.updates, {
                 streamStatus: update.status,
                 columns: outColumns,
-                meta: update.meta,
+                meta: update.meta
+                // handleMap: (m) {
+                //   if (onSendUpdate != null) {
+                //     onSendUpdate(this, m);
+                //   }
+                // }
             });
-            if (this._sentStreamStatus === "closed") {
+            if (this._sentStreamStatus === 'closed') {
                 this._close();
                 break;
             }
@@ -88,10 +93,10 @@ class InvokeResponse extends response_1.Response {
             this._err = err;
         }
         if (this.pendingData.length) {
-            this.pendingData[this.pendingData.length].status = "closed";
+            this.pendingData[this.pendingData.length].status = 'closed';
         }
         else {
-            this.pendingData.push(new InvokeResponseUpdate("closed", null, null, null));
+            this.pendingData.push(new InvokeResponseUpdate('closed', null, null, null));
             this.prepareSending();
         }
     }

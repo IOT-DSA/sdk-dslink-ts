@@ -28,7 +28,7 @@ class ValueNode extends base_local_node_1.BaseLocalNode {
         }
     }
     onValueChange(newValue) {
-        let changed = super.onValueChange((newValue));
+        let changed = super.onValueChange(newValue);
         if (changed && this._saveValue) {
             this.provider.save();
         }

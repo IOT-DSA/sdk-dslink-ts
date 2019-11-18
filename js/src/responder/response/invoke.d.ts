@@ -1,7 +1,7 @@
-import { Response } from "../response";
-import { LocalNode } from "../node_state";
-import { Responder } from "../responder";
-import { DsError, StreamStatus } from "../../common/interfaces";
+import { Response } from '../response';
+import { LocalNode } from '../node_state';
+import { Responder } from '../responder';
+import { DsError, StreamStatus } from '../../common/interfaces';
 export declare type OnInvokeClosed = (response: InvokeResponse) => void;
 export declare type OnInvokeSend = (response: InvokeResponse, m: any) => void;
 export declare type OnReqParams = (resp: InvokeResponse, m: any) => boolean;

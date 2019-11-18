@@ -1,11 +1,11 @@
-import { Cancelable } from "../../utils/async";
-import { Request } from "../request";
-import { Requester } from "../requester";
-import { ConnectionProcessor, DsError } from "../../common/interfaces";
-import { ValueUpdate, ValueUpdateCallback } from "../../common/value";
-import { RemoteNode } from "../node_cache";
-import { RequestUpdater } from "../interface";
-export declare class ReqSubscribeListener implements Cancelable {
+import { Closable } from '../../utils/async';
+import { Request } from '../request';
+import { Requester } from '../requester';
+import { ConnectionProcessor, DsError } from '../../common/interfaces';
+import { ValueUpdate, ValueUpdateCallback } from '../../common/value';
+import { RemoteNode } from '../node_cache';
+import { RequestUpdater } from '../interface';
+export declare class ReqSubscribeListener implements Closable {
     callback: ValueUpdateCallback;
     requester: Requester;
     path: string;

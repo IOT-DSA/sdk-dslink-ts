@@ -50,7 +50,7 @@ class SubscribeRequest extends request_1.Request {
     }
     getNextSid() {
         do {
-            if (this.lastSid < 0x7FFFFFFF) {
+            if (this.lastSid < 0x7fffffff) {
                 ++this.lastSid;
             }
             else {
@@ -160,7 +160,7 @@ class SubscribeRequest extends request_1.Request {
         for (let path of processingPaths) {
             if (this.subscriptions.has(path)) {
                 let sub = this.subscriptions.get(path);
-                let m = { 'path': path, 'sid': sub.sid };
+                let m = { path: path, sid: sub.sid };
                 if (sub.currentQos > 0) {
                     m['qos'] = sub.currentQos;
                 }
@@ -168,7 +168,7 @@ class SubscribeRequest extends request_1.Request {
             }
         }
         if (toAdd.length > 0) {
-            this.requester._sendRequest({ 'method': 'subscribe', 'paths': toAdd }, null);
+            this.requester._sendRequest({ method: 'subscribe', paths: toAdd }, null);
         }
         if (this.toRemove.size > 0) {
             let removeSids = [];
@@ -180,7 +180,7 @@ class SubscribeRequest extends request_1.Request {
                     sub._destroy();
                 }
             }
-            this.requester._sendRequest({ 'method': 'unsubscribe', 'sids': removeSids }, null);
+            this.requester._sendRequest({ method: 'unsubscribe', sids: removeSids }, null);
             this.toRemove.clear();
         }
     }
@@ -258,7 +258,7 @@ class ReqSubscribeController {
     updateQos() {
         let maxQos = 0;
         for (let qos of this.callbacks.values()) {
-            maxQos = (qos > maxQos ? qos : maxQos);
+            maxQos = qos > maxQos ? qos : maxQos;
         }
         if (maxQos !== this.currentQos) {
             this.currentQos = maxQos;

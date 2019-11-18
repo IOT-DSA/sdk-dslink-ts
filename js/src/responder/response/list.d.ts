@@ -1,6 +1,6 @@
-import { NodeState } from "../node_state";
-import { Responder } from "../responder";
-import { Response } from "../response";
+import { NodeState } from '../node_state';
+import { Responder } from '../responder';
+import { Response } from '../response';
 export declare class ListResponse extends Response {
     state: NodeState;
     constructor(responder: Responder, rid: number, state: NodeState);

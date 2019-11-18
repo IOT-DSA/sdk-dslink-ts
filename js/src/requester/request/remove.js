@@ -9,8 +9,8 @@ class RemoveController {
         this.requester = requester;
         this.path = path;
         let reqMap = {
-            'method': 'remove',
-            'path': path
+            method: 'remove',
+            path: path
         };
         this._request = requester._sendRequest(reqMap, this);
     }
@@ -21,10 +21,8 @@ class RemoveController {
         // TODO implement error
         this.completer.complete(new interface_1.RequesterUpdate(status));
     }
-    onDisconnect() {
-    }
-    onReconnect() {
-    }
+    onDisconnect() { }
+    onReconnect() { }
 }
 exports.RemoveController = RemoveController;
 //# sourceMappingURL=remove.js.map

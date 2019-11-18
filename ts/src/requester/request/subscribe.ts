@@ -1,4 +1,4 @@
-import {Cancelable} from '../../utils/async';
+import {Closable} from '../../utils/async';
 import {Request} from '../request';
 import {Requester} from '../requester';
 import {ConnectionProcessor, DsError} from '../../common/interfaces';
@@ -7,7 +7,7 @@ import {RemoteNode} from '../node_cache';
 import {DSA_CONFIG} from '../../common/connection-handler';
 import {RequestUpdater} from '../interface';
 
-export class ReqSubscribeListener implements Cancelable {
+export class ReqSubscribeListener implements Closable {
   callback: ValueUpdateCallback;
   requester: Requester;
   path: string;

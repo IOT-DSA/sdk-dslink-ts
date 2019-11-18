@@ -12,8 +12,7 @@ class ActionNode extends node_state_1.LocalNode {
     /**
      *  Override this to have simple customized invoke callback
      */
-    onInvoke(params, parentNode, maxPermission = permission_1.Permission.CONFIG) {
-    }
+    onInvoke(params, parentNode, maxPermission = permission_1.Permission.CONFIG) { }
     /**
      *  Called by the link internals to invoke this node.
      *  Override this to have a full customized invoke callback
@@ -24,44 +23,44 @@ class ActionNode extends node_state_1.LocalNode {
             result = this.onInvoke(params, parentNode, maxPermission);
         }
         catch (err) {
-            let error = new interfaces_1.DsError("invokeException", { msg: String(err) });
+            let error = new interfaces_1.DsError('invokeException', { msg: String(err) });
             response.close(error);
             return response;
         }
-        let rtype = "values";
-        if (this.configs.has("$result")) {
-            rtype = this.configs.get("$result");
+        let rtype = 'values';
+        if (this.configs.has('$result')) {
+            rtype = this.configs.get('$result');
         }
         function sendResult(rslt) {
             if (rslt == null) {
                 // Create a default result based on the result type
-                if (rtype === "values") {
+                if (rtype === 'values') {
                     rslt = {};
                 }
-                else if (rtype === "table") {
+                else if (rtype === 'table') {
                     rslt = [];
                 }
-                else if (rtype === "stream") {
+                else if (rtype === 'stream') {
                     rslt = [];
                 }
             }
-            if (Array.isArray((rslt))) {
-                response.updateStream(rslt, { streamStatus: "closed" });
+            if (Array.isArray(rslt)) {
+                response.updateStream(rslt, { streamStatus: 'closed' });
             }
             else if (rslt != null && rslt.__proto__ === Object.prototype) {
                 let columns = [];
                 let out = [];
                 for (let x in rslt) {
                     columns.push({
-                        "name": x,
-                        "type": "dynamic"
+                        name: x,
+                        type: 'dynamic'
                     });
                     out.push(rslt[x]);
                 }
-                response.updateStream([out], { columns, streamStatus: "closed" });
+                response.updateStream([out], { columns, streamStatus: 'closed' });
             }
             else if (rslt instanceof table_1.Table) {
-                response.updateStream(rslt.rows, { columns: rslt.columns, streamStatus: "closed" });
+                response.updateStream(rslt.rows, { columns: rslt.columns, streamStatus: 'closed' });
             }
             else if (rslt instanceof interfaces_1.DsError) {
                 response.close(rslt);

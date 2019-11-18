@@ -1,8 +1,8 @@
-import { Requester } from "../requester";
-import { Request } from "../request";
-import { Completer } from "../../utils/async";
-import { DsError, StreamStatus } from "../../common/interfaces";
-import { RequesterUpdate, RequestUpdater } from "../interface";
+import { Requester } from '../requester';
+import { Request } from '../request';
+import { Completer } from '../../utils/async';
+import { DsError, StreamStatus } from '../../common/interfaces';
+import { RequesterUpdate, RequestUpdater } from '../interface';
 /** @ignore */
 export declare class RemoveController implements RequestUpdater {
     readonly completer: Completer<RequesterUpdate>;
