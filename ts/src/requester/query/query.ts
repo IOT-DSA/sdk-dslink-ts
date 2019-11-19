@@ -291,7 +291,7 @@ export class Query extends Stream<NodeQueryResult> {
         }
       }
       for (let [key, child] of update.node.children) {
-        if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+        if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
           this.dynamicChildren.set(key, new Query(this, `${this.path}/${key}`, this.dynamicQuery));
           this.scheduleOutput();
         }

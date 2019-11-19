@@ -68,7 +68,7 @@ class Query extends async_1.Stream {
                     }
                 }
                 for (let [key, child] of update.node.children) {
-                    if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+                    if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
                         this.dynamicChildren.set(key, new Query(this, `${this.path}/${key}`, this.dynamicQuery));
                         this.scheduleOutput();
                     }
