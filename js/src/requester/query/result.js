@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_1 = require("../../common/node");
-class NodeResult extends node_1.Node {
+class NodeQueryResult extends node_1.Node {
     constructor(stream, value, configs, attributes, children) {
         super();
         this.stream = stream;
@@ -41,6 +41,22 @@ class NodeResult extends node_1.Node {
         }
         return true;
     }
+    toObject() {
+        let result = {};
+        for (let [key, value] of this.configs) {
+            result[key] = value;
+        }
+        for (let [key, value] of this.attributes) {
+            result[key] = value;
+        }
+        for (let [key, value] of this.children) {
+            result[key] = value.toObject();
+        }
+        if (this.value !== undefined) {
+            result.$value = this.value;
+        }
+        return result;
+    }
 }
-exports.NodeResult = NodeResult;
+exports.NodeQueryResult = NodeQueryResult;
 //# sourceMappingURL=result.js.map

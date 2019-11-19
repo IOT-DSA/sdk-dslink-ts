@@ -5,7 +5,7 @@ import {ValueUpdate} from '../../common/value';
 import {RequesterListUpdate} from '../request/list';
 import {Requester} from '../requester';
 import {RemoteNode} from '../node_cache';
-import {NodeResult} from './result';
+import {NodeQueryResult} from './result';
 
 function copyMapWithFilter(m: Map<string, any>, filter: string[]) {
   if (!filter) {
@@ -29,7 +29,7 @@ interface AbstractQuery {
   onAllCancel?: () => void;
 }
 
-export class Query extends Stream<NodeResult> {
+export class Query extends Stream<NodeQueryResult> {
   parent: AbstractQuery;
   requester: Requester;
   path: string;
@@ -123,7 +123,7 @@ export class Query extends Stream<NodeResult> {
     if (this.isNodeReady()) {
       let configs: Map<string, any> = copyMapWithFilter(this.listResult.configs, this.configFilter);
       let attributes: Map<string, any> = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
-      let children: Map<string, NodeResult> = new Map<string, NodeResult>();
+      let children: Map<string, NodeQueryResult> = new Map<string, NodeQueryResult>();
       for (let [key, query] of this.fixedChildren) {
         if (query._filterMatched && query._value) {
           children.set(key, query._value);
@@ -136,7 +136,7 @@ export class Query extends Stream<NodeResult> {
           }
         }
       }
-      let newNode = new NodeResult(this, this.subscribeResult, configs, attributes, children);
+      let newNode = new NodeQueryResult(this, this.subscribeResult, configs, attributes, children);
       if (this._value) {
         if (this._value.isSame(newNode)) {
           return;

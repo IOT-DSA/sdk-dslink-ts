@@ -162,7 +162,7 @@ class Query extends async_1.Stream {
                     }
                 }
             }
-            let newNode = new result_1.NodeResult(this, this.subscribeResult, configs, attributes, children);
+            let newNode = new result_1.NodeQueryResult(this, this.subscribeResult, configs, attributes, children);
             if (this._value) {
                 if (this._value.isSame(newNode)) {
                     return;

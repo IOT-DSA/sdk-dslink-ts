@@ -12,7 +12,7 @@ import {RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
 import {SetController} from './request/set';
 import {RemoveController} from './request/remove';
 import {NodeQueryStructure} from './query/query-structure';
-import {NodeResult} from './query/result';
+import {NodeQueryResult} from './query/result';
 import {Query} from './query/query';
 
 export class Requester extends ConnectionHandler {
@@ -307,8 +307,8 @@ export class Requester extends ConnectionHandler {
   query(
     path: string,
     queryStruct: NodeQueryStructure,
-    callback?: Listener<NodeResult>
-  ): StreamSubscription<NodeResult> {
+    callback?: Listener<NodeQueryResult>
+  ): StreamSubscription<NodeQueryResult> {
     queryStruct = {...queryStruct};
     delete queryStruct.$filter; // make sure root node has no filter;
     let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct);

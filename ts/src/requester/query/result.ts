@@ -1,23 +1,23 @@
 import {Node} from '../../common/node';
 import {Listener, Stream, StreamSubscription} from '../../utils/async';
 
-export class NodeResult extends Node<NodeResult> {
-  stream: Stream<NodeResult>;
+export class NodeQueryResult extends Node<NodeQueryResult> {
+  stream: Stream<NodeQueryResult>;
   value: any;
 
   constructor(
-    stream: Stream<NodeResult>,
+    stream: Stream<NodeQueryResult>,
     value: any,
     configs: Map<string, any>,
     attributes: Map<string, any>,
-    children: Map<string, NodeResult>
+    children: Map<string, NodeQueryResult>
   ) {
     super();
     this.stream = stream;
     this.updateNode({value, configs, attributes, children});
   }
 
-  listen(listener: Listener<NodeResult>): StreamSubscription<NodeResult> {
+  listen(listener: Listener<NodeQueryResult>): StreamSubscription<NodeQueryResult> {
     return this.stream.listen(listener);
   }
 
@@ -25,7 +25,7 @@ export class NodeResult extends Node<NodeResult> {
     value: any;
     configs: Map<string, any>;
     attributes: Map<string, any>;
-    children: Map<string, NodeResult>;
+    children: Map<string, NodeQueryResult>;
   }) {
     this.value = node.value;
     this.configs = node.configs;
@@ -37,7 +37,7 @@ export class NodeResult extends Node<NodeResult> {
     value: any;
     configs: Map<string, any>;
     attributes: Map<string, any>;
-    children: Map<string, NodeResult>;
+    children: Map<string, NodeQueryResult>;
   }) {
     const {value, configs, attributes, children} = node;
     if (
@@ -64,5 +64,22 @@ export class NodeResult extends Node<NodeResult> {
       }
     }
     return true;
+  }
+
+  toObject() {
+    let result: any = {};
+    for (let [key, value] of this.configs) {
+      result[key] = value;
+    }
+    for (let [key, value] of this.attributes) {
+      result[key] = value;
+    }
+    for (let [key, value] of this.children) {
+      result[key] = value.toObject();
+    }
+    if (this.value !== undefined) {
+      result.$value = this.value;
+    }
+    return result;
   }
 }

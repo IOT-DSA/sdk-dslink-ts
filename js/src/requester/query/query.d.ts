@@ -5,13 +5,13 @@ import { ValueUpdate } from '../../common/value';
 import { RequesterListUpdate } from '../request/list';
 import { Requester } from '../requester';
 import { RemoteNode } from '../node_cache';
-import { NodeResult } from './result';
+import { NodeQueryResult } from './result';
 interface AbstractQuery {
     requester: Requester;
     scheduleOutput: () => void;
     onAllCancel?: () => void;
 }
-export declare class Query extends Stream<NodeResult> {
+export declare class Query extends Stream<NodeQueryResult> {
     parent: AbstractQuery;
     requester: Requester;
     path: string;

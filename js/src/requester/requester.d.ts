@@ -9,7 +9,7 @@ import { ValueUpdate } from '../common/value';
 import { RequesterListUpdate } from './request/list';
 import { RequesterInvokeStream, RequesterInvokeUpdate } from './request/invoke';
 import { NodeQueryStructure } from './query/query-structure';
-import { NodeResult } from './query/result';
+import { NodeQueryResult } from './query/result';
 export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _requests: Map<number, Request>;
@@ -104,7 +104,7 @@ export declare class Requester extends ConnectionHandler {
      * Remove an attribute
      */
     remove(path: string): Promise<RequesterUpdate>;
-    query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeResult>): StreamSubscription<NodeResult>;
+    query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeQueryResult>): StreamSubscription<NodeQueryResult>;
     /** @ignore */
     closeRequest(request: Request): void;
     /** @ignore */
