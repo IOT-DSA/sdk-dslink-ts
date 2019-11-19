@@ -4,13 +4,13 @@ import {ValueUpdate} from '../../common/value';
 import {Closable} from '../../utils/async';
 import {RequesterListUpdate} from '../request/list';
 
-type Operation = 'and' | 'or' | '=' | '!=' | '>' | '<' | '>=' | '<=';
+type Operation = 'all' | 'any' | '=' | '!=' | '>' | '<' | '>=' | '<=';
 const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = {
   '=': (filter: ValueFilterStructure) => new EqualsFilter(filter)
 };
 
 export abstract class QueryFilter {
-  static create(path: string, onChange: () => void, filter: FilterStructure): QueryFilter {
+  static create(requester: Requester, path: string, onChange: () => void, filter: FilterStructure): QueryFilter {
     let result: QueryFilter;
     for (let op in operationMap) {
       if (op in filter) {
@@ -19,9 +19,9 @@ export abstract class QueryFilter {
       }
     }
     if (result) {
+      result.requester = requester;
       result.path = path;
       result.onChange = onChange;
-      result.start();
     }
     return result;
   }
@@ -30,9 +30,11 @@ export abstract class QueryFilter {
   onChange: () => void;
 
   abstract start(): void;
-  abstract match(): boolean;
 
-  abstract ready(): boolean;
+  /**
+   * @returns [matched, ready]
+   */
+  abstract check(): [boolean, boolean];
 
   abstract destroy(): void;
 }
@@ -42,32 +44,38 @@ abstract class ValueFilter extends QueryFilter {
   field: string;
   value: any;
   target: any;
-  live: true;
+  live: boolean;
   _ready = false;
+  _invalid = false;
 
   protected constructor(filter: ValueFilterStructure) {
     super();
     this.field = filter.field;
+    this.live = filter.mode === 'live';
   }
   start() {
     if (!this.field) {
+      this._invalid = true;
       this._ready = true;
       return;
     }
-    if (this.field === '$value') {
-      this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
-    } else {
-      this.listener = this.requester.list(this.path, this.listCallback);
+    if (!this.listener) {
+      if (this.field === '$value') {
+        this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
+      } else {
+        this.listener = this.requester.list(this.path, this.listCallback);
+      }
     }
   }
-  ready() {
-    return this._ready;
-  }
-  match() {
+
+  check(): [boolean, boolean] {
     if (!this._ready) {
-      return false;
+      return [false, false];
     }
-    return this.compare();
+    if (this._invalid) {
+      return [false, true];
+    }
+    return [this.compare(), true];
   }
 
   abstract compare(): boolean;
