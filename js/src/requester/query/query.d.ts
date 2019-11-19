@@ -1,1 +1,54 @@
+import { NodeQueryStructure } from './query-structure';
+import { QueryFilter } from './filter';
+import { Closable, Stream } from '../../utils/async';
+import { ValueUpdate } from '../../common/value';
+import { RequesterListUpdate } from '../request/list';
+import { Requester } from '../requester';
+import { RemoteNode } from '../node_cache';
+import { NodeResult } from './result';
+interface AbstractQuery {
+    requester: Requester;
+    scheduleOutput: () => void;
+    onAllCancel?: () => void;
+}
+export declare class Query extends Stream<NodeResult> {
+    parent: AbstractQuery;
+    requester: Requester;
+    path: string;
+    filter: QueryFilter;
+    valueMode?: 'live' | 'snapshot';
+    childrenMode?: 'live' | 'snapshot';
+    fixedChildren: Map<string, Query>;
+    dynamicQuery: NodeQueryStructure;
+    dynamicChildren: Map<string, Query>;
+    configFilter: string[];
+    attributeFilter: string[];
+    constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure);
+    isNodeReady(): boolean;
+    _scheduleOutputTimeout: any;
+    scheduleOutput(): void;
+    checkGenerateOutput(): void;
+    _started: boolean;
+    start(): void;
+    pause(): void;
+    checkFilterTimer: any;
+    onFilterUpdate: () => void;
+    _filterReady: boolean;
+    setFilterReady(val: boolean): void;
+    checkFilter: () => void;
+    _filterMatched: boolean;
+    setFilterMatched(val: boolean): void;
+    startSubscription(): void;
+    _subscribeReady: boolean;
+    setSubscribeReady(val: boolean): void;
+    subscribeListener: Closable;
+    subscribeResult: any;
+    subscribeCallback: (update: ValueUpdate) => void;
+    _listReady: boolean;
+    setListReady(val: boolean): void;
+    listListener: Closable;
+    listResult: RemoteNode;
+    listCallback: (update: RequesterListUpdate) => void;
+    destroy(): void;
+}
 export {};

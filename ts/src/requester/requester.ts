@@ -11,6 +11,9 @@ import {Permission} from '../common/permission';
 import {RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
 import {SetController} from './request/set';
 import {RemoveController} from './request/remove';
+import {NodeQueryStructure} from './query/query-structure';
+import {NodeResult} from './query/result';
+import {Query} from './query/query';
 
 export class Requester extends ConnectionHandler {
   /** @ignore */
@@ -299,6 +302,17 @@ export class Requester extends ConnectionHandler {
    */
   remove(path: string): Promise<RequesterUpdate> {
     return new RemoveController(this, path).future;
+  }
+
+  query(
+    path: string,
+    queryStruct: NodeQueryStructure,
+    callback?: Listener<NodeResult>
+  ): StreamSubscription<NodeResult> {
+    queryStruct = {...queryStruct};
+    delete queryStruct.$filter; // make sure root node has no filter;
+    let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct);
+    return query.listen(callback);
   }
 
   /// close the request from requester side and notify responder

@@ -19,8 +19,8 @@ function copyMapWithFilter(m, filter) {
     return result;
 }
 class Query extends async_1.Stream {
-    constructor(parent, path, query, onChildReady) {
-        super(null, null, null, true);
+    constructor(parent, path, query) {
+        super(null, parent.onAllCancel, null, true);
         // fixed children will stay in memory even when parent node is filtered out
         // once fixed children is started, they will keep running until parent is destroyed
         this.fixedChildren = new Map();
@@ -59,12 +59,26 @@ class Query extends async_1.Stream {
                 this.listListener = null;
             }
             this.listResult = update.node;
+            if (this.dynamicChildren) {
+                for (let [key, child] of this.dynamicChildren) {
+                    if (!update.node.children.has(key)) {
+                        child.destroy();
+                        this.dynamicChildren.delete(key);
+                        this.scheduleOutput();
+                    }
+                }
+                for (let [key, child] of update.node.children) {
+                    if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+                        this.dynamicChildren.set(key, new Query(this, `${this.path}/${key}`, this.dynamicQuery));
+                        this.scheduleOutput();
+                    }
+                }
+            }
             this.setListReady(true);
         };
         this.parent = parent;
         this.requester = parent.requester;
         this.path = path;
-        this.onChildReady = onChildReady;
         this.valueMode = query.$value;
         this.childrenMode = query.$children;
         if (Array.isArray(query.$configs)) {
@@ -86,7 +100,7 @@ class Query extends async_1.Stream {
                     this.dynamicChildren = new Map();
                 }
                 else {
-                    this.fixedChildren.set(key, new Query(this, `${this.path}/${key}`, query[key], this.onChildReady));
+                    this.fixedChildren.set(key, new Query(this, `${this.path}/${key}`, query[key]));
                 }
             }
         }
@@ -270,4 +284,5 @@ class Query extends async_1.Stream {
         }
     }
 }
+exports.Query = Query;
 //# sourceMappingURL=query.js.map

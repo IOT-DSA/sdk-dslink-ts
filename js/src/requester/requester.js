@@ -11,6 +11,7 @@ const permission_1 = require("../common/permission");
 const invoke_1 = require("./request/invoke");
 const set_1 = require("./request/set");
 const remove_1 = require("./request/remove");
+const query_1 = require("./query/query");
 class Requester extends connection_handler_1.ConnectionHandler {
     constructor(cache) {
         super();
@@ -246,6 +247,12 @@ class Requester extends connection_handler_1.ConnectionHandler {
      */
     remove(path) {
         return new remove_1.RemoveController(this, path).future;
+    }
+    query(path, queryStruct, callback) {
+        queryStruct = Object.assign({}, queryStruct);
+        delete queryStruct.$filter; // make sure root node has no filter;
+        let query = new query_1.Query({ requester: this, scheduleOutput: () => { } }, path, queryStruct);
+        return query.listen(callback);
     }
     /// close the request from requester side and notify responder
     /** @ignore */
