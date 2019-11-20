@@ -1,7 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const operationMap = {
-    '=': (filter) => new EqualsFilter(filter)
+    '=': (filter) => new EqualsFilter(filter),
+    '!=': (filter) => new NotEqualsFilter(filter),
+    '>': (filter) => new GreaterFilter(filter),
+    '<': (filter) => new LessFilter(filter),
+    '>=': (filter) => new GreaterEqualFilter(filter),
+    '<=': (filter) => new LessEqualFilter(filter)
 };
 class QueryFilter {
     static create(requester, path, onChange, filter) {
@@ -88,6 +93,51 @@ class EqualsFilter extends ValueFilter {
     }
     compare() {
         return this.value === this.target;
+    }
+}
+class NotEqualsFilter extends ValueFilter {
+    constructor(filter) {
+        super(filter);
+        this.target = filter['!='];
+    }
+    compare() {
+        return this.value !== this.target;
+    }
+}
+class GreaterFilter extends ValueFilter {
+    constructor(filter) {
+        super(filter);
+        this.target = filter['>'];
+    }
+    compare() {
+        return this.value > this.target;
+    }
+}
+class LessFilter extends ValueFilter {
+    constructor(filter) {
+        super(filter);
+        this.target = filter['<'];
+    }
+    compare() {
+        return this.value < this.target;
+    }
+}
+class GreaterEqualFilter extends ValueFilter {
+    constructor(filter) {
+        super(filter);
+        this.target = filter['>='];
+    }
+    compare() {
+        return this.value >= this.target;
+    }
+}
+class LessEqualFilter extends ValueFilter {
+    constructor(filter) {
+        super(filter);
+        this.target = filter['<='];
+    }
+    compare() {
+        return this.value <= this.target;
     }
 }
 //# sourceMappingURL=filter.js.map

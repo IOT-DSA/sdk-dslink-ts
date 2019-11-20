@@ -68,6 +68,7 @@ class Query extends async_1.Stream {
             }
             else {
                 if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
+                    this._listeners.clear(); // ignore all previous listeners when node is filterd out
                     this.add(null);
                     this.parent.scheduleOutput();
                 }
@@ -87,7 +88,7 @@ class Query extends async_1.Stream {
             this.checkFilterTimer = null;
             if (this.filter) {
                 let [matched, ready] = this.filter.check();
-                this.setFilterMatched(matched);
+                this.setFilterMatched(matched && this._started);
                 this.setFilterReady(ready);
             }
         };
@@ -203,6 +204,9 @@ class Query extends async_1.Stream {
     }
     pause() {
         this._started = false;
+        this.pauseSubscription();
+    }
+    pauseSubscription() {
         if (this.subscribeListener) {
             this.subscribeListener.close();
             this.subscribeListener = null;
@@ -236,7 +240,7 @@ class Query extends async_1.Stream {
                 this.startSubscription();
             }
             else {
-                this.pause();
+                this.pauseSubscription();
             }
             this.scheduleOutput();
         }

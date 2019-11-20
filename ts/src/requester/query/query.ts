@@ -156,6 +156,7 @@ export class Query extends Stream<NodeQueryResult> {
       }
     } else {
       if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
+        this._listeners.clear(); // ignore all previous listeners when node is filterd out
         this.add(null);
         this.parent.scheduleOutput();
       }
@@ -175,6 +176,9 @@ export class Query extends Stream<NodeQueryResult> {
   }
   pause() {
     this._started = false;
+    this.pauseSubscription();
+  }
+  pauseSubscription() {
     if (this.subscribeListener) {
       this.subscribeListener.close();
       this.subscribeListener = null;
@@ -217,7 +221,7 @@ export class Query extends Stream<NodeQueryResult> {
     this.checkFilterTimer = null;
     if (this.filter) {
       let [matched, ready] = this.filter.check();
-      this.setFilterMatched(matched);
+      this.setFilterMatched(matched && this._started);
       this.setFilterReady(ready);
     }
   };
@@ -228,7 +232,7 @@ export class Query extends Stream<NodeQueryResult> {
       if (val) {
         this.startSubscription();
       } else {
-        this.pause();
+        this.pauseSubscription();
       }
       this.scheduleOutput();
     }

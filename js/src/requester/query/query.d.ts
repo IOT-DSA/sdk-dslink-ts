@@ -32,6 +32,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     _started: boolean;
     start(): void;
     pause(): void;
+    pauseSubscription(): void;
     checkFilterTimer: any;
     onFilterUpdate: () => void;
     _filterReady: boolean;
