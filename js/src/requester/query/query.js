@@ -24,6 +24,55 @@ class Query extends async_1.Stream {
         // fixed children will stay in memory even when parent node is filtered out
         // once fixed children is started, they will keep running until parent is destroyed
         this.fixedChildren = new Map();
+        this.checkGenerateOutput = () => {
+            if (!this._scheduleOutputTimeout) {
+                return;
+            }
+            this._scheduleOutputTimeout = null;
+            if (this.isNodeReady()) {
+                let configs;
+                let attributes;
+                if (this.listResult) {
+                    configs = copyMapWithFilter(this.listResult.configs, this.configFilter);
+                    attributes = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
+                }
+                else {
+                    configs = new Map();
+                    attributes = new Map();
+                }
+                let children = new Map();
+                for (let [key, query] of this.fixedChildren) {
+                    if (query._filterMatched && query._value) {
+                        children.set(key, query._value);
+                    }
+                }
+                if (this.dynamicChildren) {
+                    for (let [key, query] of this.dynamicChildren) {
+                        if (query._filterMatched && query._value) {
+                            children.set(key, query._value);
+                        }
+                    }
+                }
+                let newNode = new result_1.NodeQueryResult(this, this.subscribeResult, configs, attributes, children);
+                if (this._value) {
+                    if (this._value.isSame(newNode)) {
+                        return;
+                    }
+                    this._value.updateNode(newNode);
+                    this.add(this._value);
+                }
+                else {
+                    this.add(newNode);
+                    this.parent.scheduleOutput();
+                }
+            }
+            else {
+                if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
+                    this.add(null);
+                    this.parent.scheduleOutput();
+                }
+            }
+        };
         this._started = false;
         this.onFilterUpdate = () => {
             if (this.filter && !this.checkFilterTimer) {
@@ -69,8 +118,9 @@ class Query extends async_1.Stream {
                 }
                 for (let [key, child] of update.node.children) {
                     if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
-                        this.dynamicChildren.set(key, new Query(this, `${this.path}/${key}`, this.dynamicQuery));
-                        this.scheduleOutput();
+                        let childQuery = new Query(this, `${this.path}/${key}`, this.dynamicQuery);
+                        this.dynamicChildren.set(key, childQuery);
+                        childQuery.start();
                     }
                 }
             }
@@ -111,25 +161,24 @@ class Query extends async_1.Stream {
             this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query.$filter);
         }
     }
+    isQueryReadyAsChild() {
+        return this._filterReady && (this._value || !this._filterMatched);
+    }
     isNodeReady() {
-        if (!this._filterReady) {
+        if (!this._filterReady || !this._filterMatched) {
             return false;
-        }
-        if (!this._filterMatched) {
-            // not matched, so no need for children subscription,
-            return true;
         }
         if (!this._subscribeReady || !this._listReady) {
             return false;
         }
         for (let [key, query] of this.fixedChildren) {
-            if (!query._filterReady || (!query._value && query._filterMatched)) {
+            if (!query.isQueryReadyAsChild()) {
                 return false;
             }
         }
         if (this.dynamicChildren) {
             for (let [key, query] of this.dynamicChildren) {
-                if (!query._filterReady || (!query._value && query._filterMatched)) {
+                if (!query.isQueryReadyAsChild()) {
                     return false;
                 }
             }
@@ -139,47 +188,6 @@ class Query extends async_1.Stream {
     scheduleOutput() {
         if (!this._scheduleOutputTimeout) {
             this._scheduleOutputTimeout = setTimeout(this.checkGenerateOutput, 0);
-        }
-    }
-    checkGenerateOutput() {
-        if (!this._scheduleOutputTimeout) {
-            return;
-        }
-        this._scheduleOutputTimeout = null;
-        if (this.isNodeReady()) {
-            let configs = copyMapWithFilter(this.listResult.configs, this.configFilter);
-            let attributes = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
-            let children = new Map();
-            for (let [key, query] of this.fixedChildren) {
-                if (query._filterMatched && query._value) {
-                    children.set(key, query._value);
-                }
-            }
-            if (this.dynamicChildren) {
-                for (let [key, query] of this.dynamicChildren) {
-                    if (query._filterMatched && query._value) {
-                        children.set(key, query._value);
-                    }
-                }
-            }
-            let newNode = new result_1.NodeQueryResult(this, this.subscribeResult, configs, attributes, children);
-            if (this._value) {
-                if (this._value.isSame(newNode)) {
-                    return;
-                }
-                this._value.updateNode(newNode);
-                this.add(this._value);
-            }
-            else {
-                this.add(newNode);
-                this.parent.scheduleOutput();
-            }
-        }
-        else {
-            if (this._value != null) {
-                this.add(null);
-                this.parent.scheduleOutput();
-            }
         }
     }
     start() {
@@ -218,19 +226,19 @@ class Query extends async_1.Stream {
     setFilterReady(val) {
         if (val !== this._filterReady) {
             this._filterReady = val;
+            this.scheduleOutput();
         }
     }
     setFilterMatched(val) {
-        if (this._started) {
-            if (val !== this._filterMatched) {
-                this._filterMatched = val;
-                if (val) {
-                    this.startSubscription();
-                }
-                else {
-                    this.pause();
-                }
+        if (val !== this._filterMatched) {
+            this._filterMatched = val;
+            if (val) {
+                this.startSubscription();
             }
+            else {
+                this.pause();
+            }
+            this.scheduleOutput();
         }
     }
     startSubscription() {
@@ -259,14 +267,14 @@ class Query extends async_1.Stream {
     setSubscribeReady(val) {
         if (val !== this._subscribeReady) {
             this._subscribeReady = val;
-            this.scheduleOutput();
         }
+        this.scheduleOutput();
     }
     setListReady(val) {
         if (val !== this._listReady) {
             this._listReady = val;
-            this.scheduleOutput();
         }
+        this.scheduleOutput();
     }
     destroy() {
         if (this.checkFilterTimer) {

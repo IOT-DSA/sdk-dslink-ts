@@ -24,10 +24,11 @@ export declare class Query extends Stream<NodeQueryResult> {
     configFilter: string[];
     attributeFilter: string[];
     constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure);
+    isQueryReadyAsChild(): boolean | NodeQueryResult;
     isNodeReady(): boolean;
     _scheduleOutputTimeout: any;
     scheduleOutput(): void;
-    checkGenerateOutput(): void;
+    checkGenerateOutput: () => void;
     _started: boolean;
     start(): void;
     pause(): void;

@@ -82,26 +82,25 @@ export class Query extends Stream<NodeQueryResult> {
     }
   }
 
+  isQueryReadyAsChild() {
+    return this._filterReady && (this._value || !this._filterMatched);
+  }
   isNodeReady() {
-    if (!this._filterReady) {
+    if (!this._filterReady || !this._filterMatched) {
       return false;
-    }
-    if (!this._filterMatched) {
-      // not matched, so no need for children subscription,
-      return true;
     }
     if (!this._subscribeReady || !this._listReady) {
       return false;
     }
 
     for (let [key, query] of this.fixedChildren) {
-      if (!query._filterReady || (!query._value && query._filterMatched)) {
+      if (!query.isQueryReadyAsChild()) {
         return false;
       }
     }
     if (this.dynamicChildren) {
       for (let [key, query] of this.dynamicChildren) {
-        if (!query._filterReady || (!query._value && query._filterMatched)) {
+        if (!query.isQueryReadyAsChild()) {
           return false;
         }
       }
@@ -115,14 +114,22 @@ export class Query extends Stream<NodeQueryResult> {
       this._scheduleOutputTimeout = setTimeout(this.checkGenerateOutput, 0);
     }
   }
-  checkGenerateOutput() {
+  checkGenerateOutput = () => {
     if (!this._scheduleOutputTimeout) {
       return;
     }
     this._scheduleOutputTimeout = null;
     if (this.isNodeReady()) {
-      let configs: Map<string, any> = copyMapWithFilter(this.listResult.configs, this.configFilter);
-      let attributes: Map<string, any> = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
+      let configs: Map<string, any>;
+      let attributes: Map<string, any>;
+      if (this.listResult) {
+        configs = copyMapWithFilter(this.listResult.configs, this.configFilter);
+        attributes = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
+      } else {
+        configs = new Map();
+        attributes = new Map();
+      }
+
       let children: Map<string, NodeQueryResult> = new Map<string, NodeQueryResult>();
       for (let [key, query] of this.fixedChildren) {
         if (query._filterMatched && query._value) {
@@ -148,12 +155,12 @@ export class Query extends Stream<NodeQueryResult> {
         this.parent.scheduleOutput();
       }
     } else {
-      if (this._value != null) {
+      if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
         this.add(null);
         this.parent.scheduleOutput();
       }
     }
-  }
+  };
 
   _started = false;
   start() {
@@ -199,6 +206,7 @@ export class Query extends Stream<NodeQueryResult> {
   setFilterReady(val: boolean) {
     if (val !== this._filterReady) {
       this._filterReady = val;
+      this.scheduleOutput();
     }
   }
 
@@ -215,15 +223,14 @@ export class Query extends Stream<NodeQueryResult> {
   };
   _filterMatched = false;
   setFilterMatched(val: boolean) {
-    if (this._started) {
-      if (val !== this._filterMatched) {
-        this._filterMatched = val;
-        if (val) {
-          this.startSubscription();
-        } else {
-          this.pause();
-        }
+    if (val !== this._filterMatched) {
+      this._filterMatched = val;
+      if (val) {
+        this.startSubscription();
+      } else {
+        this.pause();
       }
+      this.scheduleOutput();
     }
   }
 
@@ -253,8 +260,8 @@ export class Query extends Stream<NodeQueryResult> {
   setSubscribeReady(val: boolean) {
     if (val !== this._subscribeReady) {
       this._subscribeReady = val;
-      this.scheduleOutput();
     }
+    this.scheduleOutput();
   }
   subscribeListener: Closable;
   subscribeResult: any;
@@ -271,8 +278,8 @@ export class Query extends Stream<NodeQueryResult> {
   setListReady(val: boolean) {
     if (val !== this._listReady) {
       this._listReady = val;
-      this.scheduleOutput();
     }
+    this.scheduleOutput();
   }
   listListener: Closable;
   listResult: RemoteNode;
@@ -292,8 +299,9 @@ export class Query extends Stream<NodeQueryResult> {
       }
       for (let [key, child] of update.node.children) {
         if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
-          this.dynamicChildren.set(key, new Query(this, `${this.path}/${key}`, this.dynamicQuery));
-          this.scheduleOutput();
+          let childQuery = new Query(this, `${this.path}/${key}`, this.dynamicQuery);
+          this.dynamicChildren.set(key, childQuery);
+          childQuery.start();
         }
       }
     }
