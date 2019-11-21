@@ -71,6 +71,8 @@ class Query extends async_1.Stream {
                 if (!this._filterMatched && this._value != null) {
                     this._listeners.clear(); // ignore all previous listeners when node is filtered out
                     this.add(null);
+                }
+                if (this._filterReady) {
                     this.parent.scheduleOutput();
                 }
             }
@@ -152,7 +154,7 @@ class Query extends async_1.Stream {
                     this.dynamicChildren = new Map();
                 }
                 else {
-                    this.fixedChildren.set(key, new Query(this, `${this.path}/${key}`, query[key]));
+                    this.fixedChildren.set(key, new Query(this, node_1.Path.concat(this.path, key), query[key]));
                 }
             }
         }

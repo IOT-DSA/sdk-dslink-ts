@@ -26,26 +26,26 @@ const mockData = {
     '$writable': 'write'
   },
   '?repeat': {
-    'count': 3,
-    'namePrefix': 'node',
-    'allowAddReduce': true,
-    'data': {
+    count: 3,
+    namePrefix: 'node',
+    allowAddReduce: true,
+    data: {
       '?value': () => ++count3,
       '$type': 'number',
       '$writable': 'write',
       '$state': () => ['on', 'off', 'auto'][++count1 % 3],
-      '@att': () => ++count2 % 2 === 0
-    },
-    '?repeat': {
-      count: 3,
-      namePrefix: 'str',
-      allowAddReduce: true,
-      data: {
-        '?value': () => (++count3).toString(),
-        '$type': 'string',
-        '$writable': 'write',
-        '$sub': () => ['on', 'off', 'auto'][++count4 % 3],
-        '@sub': () => ++count5 % 2 === 0
+      '@att': () => ++count2 % 2 === 0,
+      '?repeat': {
+        count: 3,
+        namePrefix: 'str',
+        allowAddReduce: true,
+        data: {
+          '?value': () => (++count3).toString(),
+          '$type': 'string',
+          '$writable': 'write',
+          '$sub': () => ['on', 'off', 'auto'][++count4 % 3],
+          '@sub': () => ++count5 % 2 === 0
+        }
       }
     }
   }
@@ -72,7 +72,11 @@ describe('query', function() {
 
   beforeEach(async () => {
     // reset counter to make sure data is same
+    count1 = 0;
+    count2 = 0;
     count3 = 0;
+    count4 = 0;
+    count5 = 0;
     rootNode = new RootMockNode(mockData);
     requesterClient = await broker.createRequester();
     responderClient = await broker.createResponder(rootNode);
@@ -89,17 +93,32 @@ describe('query', function() {
     let data: any;
     let query = requester.query(
       '/',
-      {'*': {$value: 'snapshot', $children: 'snapshot', $attributes: ['*']}} as any,
+      {'add': {$configs: '*'}, '*': {$value: 'snapshot', $children: 'snapshot', $attributes: ['*']}} as any,
       (n) => {
         data = n.toObject();
       }
     );
     await shouldHappen(() => data);
     assert.deepEqual(data, {
-      v: {$value: 'hello'},
-      node0: {'@att': false, '$value': 1},
-      node1: {'@att': true, '$value': 2},
-      node2: {'@att': false, '$value': 3}
+      add: {
+        $invokable: 'write',
+        $is: 'node'
+      },
+      node0: {
+        '$value': 1,
+        '@att': false
+      },
+      node1: {
+        '$value': 5,
+        '@att': true
+      },
+      node2: {
+        '$value': 9,
+        '@att': false
+      },
+      v: {
+        $value: 'hello'
+      }
     });
   });
 
@@ -107,7 +126,7 @@ describe('query', function() {
     let data: any;
     let query = requester.query(
       '/',
-      {'*': {$value: 'snapshot', $children: 'snapshot', $filter: {'field': '@att', '=': true}}} as any,
+      {'*': {$value: 'snapshot', $children: 'snapshot', $filter: {'field': '@att', '=': false}}} as any,
       (n) => {
         data = n.toObject();
       }
@@ -115,12 +134,12 @@ describe('query', function() {
     await shouldHappen(() => data);
     assert.deepEqual(data, {
       node0: {$value: 1},
-      node2: {$value: 3}
+      node2: {$value: 9}
     });
   });
   it('live update filter', async function() {
     let data: any;
-    requester.query(
+    let q = requester.query(
       '/',
       {'*': {$value: 'snapshot', $children: 'snapshot', $filter: {'field': '$value', '>': 1, 'mode': 'live'}}} as any,
       (n) => {
@@ -129,16 +148,52 @@ describe('query', function() {
     );
     await shouldHappen(() => data);
     assert.deepEqual(data, {
-      node1: {$value: 2},
-      node2: {$value: 3}
+      node1: {$value: 5},
+      node2: {$value: 9}
     });
     data = null;
     rootNode.getChild('node0').setValue(5);
+    rootNode.getChild('node1').setValue(4);
     rootNode.getChild('node2').setValue(-1);
     await shouldHappen(() => data);
     assert.deepEqual(data, {
       node0: {$value: 5},
-      node1: {$value: 2}
+      node1: {$value: 5} // unchanged, because of snapshot
     });
+    q.close();
+  });
+
+  it('live update nested children', async function() {
+    let data: any;
+    let q = requester.query(
+      '/',
+      {
+        '$children': 'live',
+        '*': {
+          '$value': 'live',
+          '*': {$value: 'live', $filter: {'field': '$value', '<': 4, 'mode': 'live'}}
+        }
+      } as any,
+      (n) => {
+        data = n.toObject();
+      }
+    );
+    await shouldHappen(() => data);
+
+    assert.deepEqual(data, {
+      v: {$value: 'hello'},
+      node0: {str0: {$value: '2'}, str1: {$value: '3'}, $value: 1},
+      node1: {$value: 5},
+      node2: {$value: 9}
+    });
+
+    requester.invoke('/reduce', {});
+    await shouldHappen(() => Object.keys(data).length === 3);
+
+    requester.invoke('/add', {});
+    requester.invoke('/add', {});
+    await shouldHappen(() => Object.keys(data).length === 5);
+
+    q.close();
   });
 });

@@ -71,7 +71,7 @@ export class Query extends Stream<NodeQueryResult> {
           this.dynamicQuery = query[key];
           this.dynamicChildren = new Map();
         } else {
-          this.fixedChildren.set(key, new Query(this, `${this.path}/${key}`, query[key]));
+          this.fixedChildren.set(key, new Query(this, Path.concat(this.path, key), query[key]));
         }
       }
     }
@@ -159,6 +159,8 @@ export class Query extends Stream<NodeQueryResult> {
       if (!this._filterMatched && this._value != null) {
         this._listeners.clear(); // ignore all previous listeners when node is filtered out
         this.add(null);
+      }
+      if (this._filterReady) {
         this.parent.scheduleOutput();
       }
     }
