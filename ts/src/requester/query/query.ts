@@ -53,20 +53,20 @@ export class Query extends Stream<NodeQueryResult> {
     this.parent = parent;
     this.requester = parent.requester;
     this.path = path;
-    this.valueMode = query.$value;
-    this.childrenMode = query.$children;
-    if (Array.isArray(query.$configs)) {
-      this.configFilter = query.$configs;
-    } else if (query.$configs === '*') {
+    this.valueMode = query['?value'];
+    this.childrenMode = query['?children'];
+    if (Array.isArray(query['?configs'])) {
+      this.configFilter = query['?configs'];
+    } else if (query['?configs'] === '*') {
       this.configFilter = ['*'];
     }
-    if (Array.isArray(query.$attributes)) {
-      this.attributeFilter = query.$attributes;
-    } else if (query.$attributes === '*') {
+    if (Array.isArray(query['?attributes'])) {
+      this.attributeFilter = query['?attributes'];
+    } else if (query['?attributes'] === '*') {
       this.attributeFilter = ['*'];
     }
     for (let key in query) {
-      if (!(key.startsWith('$') || key.startsWith('@')) && query[key] instanceof Object) {
+      if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
         if (key === '*') {
           this.dynamicQuery = query[key];
           this.dynamicChildren = new Map();
@@ -78,8 +78,8 @@ export class Query extends Stream<NodeQueryResult> {
     if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.dynamicQuery)) {
       this.childrenMode = 'snapshot';
     }
-    if (query.$filter) {
-      this.filter = QueryFilter.create(this.requester, path, this.onFilterUpdate, query.$filter);
+    if (query['?filter']) {
+      this.filter = QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter']);
     }
   }
 

@@ -62,7 +62,7 @@ class ValueFilter extends QueryFilter {
             return;
         }
         if (!this.listener) {
-            if (this.field === '$value') {
+            if (this.field === '?value') {
                 this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
             }
             else {

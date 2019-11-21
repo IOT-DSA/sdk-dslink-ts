@@ -78,7 +78,7 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
       result[key] = value.toObject();
     }
     if (this.value !== undefined) {
-      result.$value = this.value;
+      result['?value'] = this.value;
     }
     return result;
   }

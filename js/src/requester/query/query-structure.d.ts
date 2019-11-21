@@ -14,11 +14,11 @@ export interface LogicFilterStructure {
 }
 export declare type FilterStructure = ValueFilterStructure | LogicFilterStructure;
 interface NodeQueryOptions {
-    $filter?: FilterStructure;
-    $value?: 'live' | 'snapshot';
-    $children?: 'live' | 'snapshot';
-    $configs?: '*' | string[];
-    $attributes?: '*' | string[];
+    '?filter'?: FilterStructure;
+    '?value'?: 'live' | 'snapshot';
+    '?children'?: 'live' | 'snapshot';
+    '?configs'?: '*' | string[];
+    '?attributes'?: '*' | string[];
 }
 interface ChildrenNodeQueryStructure {
     '*'?: NodeQueryStructure;

@@ -17,11 +17,11 @@ export interface LogicFilterStructure {
 export type FilterStructure = ValueFilterStructure | LogicFilterStructure;
 
 interface NodeQueryOptions {
-  $filter?: FilterStructure;
-  $value?: 'live' | 'snapshot'; // ignore value if not specified
-  $children?: 'live' | 'snapshot'; // default is snapshot
-  $configs?: '*' | string[];
-  $attributes?: '*' | string[];
+  '?filter'?: FilterStructure;
+  '?value'?: 'live' | 'snapshot'; // ignore value if not specified
+  '?children'?: 'live' | 'snapshot'; // default is snapshot
+  '?configs'?: '*' | string[];
+  '?attributes'?: '*' | string[];
 }
 
 interface ChildrenNodeQueryStructure {
