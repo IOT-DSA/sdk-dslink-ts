@@ -93,7 +93,7 @@ describe('query', function() {
     let data: any;
     let query = requester.query(
       '/',
-      {'add': {'?configs': '*'}, '*': {'?value': 'snapshot', '?children': 'snapshot', '?attributes': ['*']}} as any,
+      {'add': {'?configs': '*'}, '*': {'?value': 'snapshot', '?children': 'snapshot', '?attributes': ['*']}},
       (n) => {
         data = n.toObject();
       }
@@ -126,7 +126,7 @@ describe('query', function() {
     let data: any;
     let query = requester.query(
       '/',
-      {'*': {'?value': 'snapshot', '?children': 'snapshot', '?filter': {'field': '@att', '=': false}}} as any,
+      {'*': {'?value': 'snapshot', '?children': 'snapshot', '?filter': {'field': '@att', '=': false}}},
       (n) => {
         data = n.toObject();
       }
@@ -143,7 +143,7 @@ describe('query', function() {
       '/',
       {
         '*': {'?value': 'snapshot', '?children': 'snapshot', '?filter': {'field': '?value', '>': 1, 'mode': 'live'}}
-      } as any,
+      },
       (n) => {
         data = n.toObject();
       }
@@ -175,7 +175,7 @@ describe('query', function() {
           '?value': 'live',
           '*': {'?value': 'live', '?filter': {'field': '?value', '<': 4, 'mode': 'live'}}
         }
-      } as any,
+      },
       (n) => {
         data = n.toObject();
       }

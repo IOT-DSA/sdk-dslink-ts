@@ -1,5 +1,5 @@
-export interface ValueFilterStructure {
-  'field': string;
+export interface FilterStructure {
+  'field'?: string;
   'mode'?: 'live' | 'snapshot'; // default is snapshot
   '='?: any;
   '!='?: any;
@@ -7,16 +7,11 @@ export interface ValueFilterStructure {
   '<'?: number | string;
   '>='?: number | string;
   '<='?: number | string;
+  'and'?: FilterStructure[];
+  'or'?: FilterStructure[];
 }
 
-export interface LogicFilterStructure {
-  and?: FilterStructure[];
-  or?: FilterStructure[];
-}
-
-export type FilterStructure = ValueFilterStructure | LogicFilterStructure;
-
-interface NodeQueryOptions {
+export interface NodeQueryStructure {
   '?filter'?: FilterStructure;
   '?value'?: 'live' | 'snapshot'; // ignore value if not specified
   '?children'?: 'live' | 'snapshot'; // default is snapshot when any of ?configs ?attributes or * is defined
@@ -26,11 +21,7 @@ interface NodeQueryOptions {
    * ?useChildren is a client side feature that only used by react hook
    */
   '?useChildren'?: '*' | string[];
-}
 
-interface ChildrenNodeQueryStructure {
   '*'?: NodeQueryStructure;
-  [key: string]: NodeQueryStructure;
+  [key: string]: NodeQueryStructure | any;
 }
-
-export type NodeQueryStructure = NodeQueryOptions & ChildrenNodeQueryStructure;

@@ -1,4 +1,4 @@
-import {FilterStructure, ValueFilterStructure} from './query-structure';
+import {FilterStructure} from './query-structure';
 import {Requester} from '../requester';
 import {ValueUpdate} from '../../common/value';
 import {Closable} from '../../utils/async';
@@ -6,12 +6,12 @@ import {RequesterListUpdate} from '../request/list';
 
 type Operation = 'all' | 'any' | '=' | '!=' | '>' | '<' | '>=' | '<=';
 const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = {
-  '=': (filter: ValueFilterStructure) => new EqualsFilter(filter),
-  '!=': (filter: ValueFilterStructure) => new NotEqualsFilter(filter),
-  '>': (filter: ValueFilterStructure) => new GreaterFilter(filter),
-  '<': (filter: ValueFilterStructure) => new LessFilter(filter),
-  '>=': (filter: ValueFilterStructure) => new GreaterEqualFilter(filter),
-  '<=': (filter: ValueFilterStructure) => new LessEqualFilter(filter)
+  '=': (filter: FilterStructure) => new EqualsFilter(filter),
+  '!=': (filter: FilterStructure) => new NotEqualsFilter(filter),
+  '>': (filter: FilterStructure) => new GreaterFilter(filter),
+  '<': (filter: FilterStructure) => new LessFilter(filter),
+  '>=': (filter: FilterStructure) => new GreaterEqualFilter(filter),
+  '<=': (filter: FilterStructure) => new LessEqualFilter(filter)
 };
 
 export abstract class QueryFilter {
@@ -53,7 +53,7 @@ abstract class ValueFilter extends QueryFilter {
   _ready = false;
   _invalid = false;
 
-  protected constructor(filter: ValueFilterStructure) {
+  protected constructor(filter: FilterStructure) {
     super();
     this.field = filter.field;
     this.live = filter.mode === 'live';
@@ -117,7 +117,7 @@ abstract class ValueFilter extends QueryFilter {
 }
 
 class EqualsFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['='];
   }
@@ -128,7 +128,7 @@ class EqualsFilter extends ValueFilter {
 }
 
 class NotEqualsFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['!='];
   }
@@ -139,7 +139,7 @@ class NotEqualsFilter extends ValueFilter {
 }
 
 class GreaterFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['>'];
   }
@@ -150,7 +150,7 @@ class GreaterFilter extends ValueFilter {
 }
 
 class LessFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['<'];
   }
@@ -161,7 +161,7 @@ class LessFilter extends ValueFilter {
 }
 
 class GreaterEqualFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['>='];
   }
@@ -172,7 +172,7 @@ class GreaterEqualFilter extends ValueFilter {
 }
 
 class LessEqualFilter extends ValueFilter {
-  constructor(filter: ValueFilterStructure) {
+  constructor(filter: FilterStructure) {
     super(filter);
     this.target = filter['<='];
   }

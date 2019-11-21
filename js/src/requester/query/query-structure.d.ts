@@ -1,5 +1,5 @@
-export interface ValueFilterStructure {
-    'field': string;
+export interface FilterStructure {
+    'field'?: string;
     'mode'?: 'live' | 'snapshot';
     '='?: any;
     '!='?: any;
@@ -7,13 +7,10 @@ export interface ValueFilterStructure {
     '<'?: number | string;
     '>='?: number | string;
     '<='?: number | string;
+    'and'?: FilterStructure[];
+    'or'?: FilterStructure[];
 }
-export interface LogicFilterStructure {
-    and?: FilterStructure[];
-    or?: FilterStructure[];
-}
-export declare type FilterStructure = ValueFilterStructure | LogicFilterStructure;
-interface NodeQueryOptions {
+export interface NodeQueryStructure {
     '?filter'?: FilterStructure;
     '?value'?: 'live' | 'snapshot';
     '?children'?: 'live' | 'snapshot';
@@ -23,10 +20,6 @@ interface NodeQueryOptions {
      * ?useChildren is a client side feature that only used by react hook
      */
     '?useChildren'?: '*' | string[];
-}
-interface ChildrenNodeQueryStructure {
     '*'?: NodeQueryStructure;
-    [key: string]: NodeQueryStructure;
+    [key: string]: NodeQueryStructure | any;
 }
-export declare type NodeQueryStructure = NodeQueryOptions & ChildrenNodeQueryStructure;
-export {};
