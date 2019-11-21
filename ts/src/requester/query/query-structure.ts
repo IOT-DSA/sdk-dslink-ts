@@ -19,9 +19,13 @@ export type FilterStructure = ValueFilterStructure | LogicFilterStructure;
 interface NodeQueryOptions {
   '?filter'?: FilterStructure;
   '?value'?: 'live' | 'snapshot'; // ignore value if not specified
-  '?children'?: 'live' | 'snapshot'; // default is snapshot
+  '?children'?: 'live' | 'snapshot'; // default is snapshot when any of ?configs ?attributes or * is defined
   '?configs'?: '*' | string[];
   '?attributes'?: '*' | string[];
+  /**
+   * ?useChildren is a client side feature that only used by react hook
+   */
+  '?useChildren'?: '*' | string[];
 }
 
 interface ChildrenNodeQueryStructure {

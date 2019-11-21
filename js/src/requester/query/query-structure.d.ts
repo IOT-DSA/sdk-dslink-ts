@@ -19,6 +19,10 @@ interface NodeQueryOptions {
     '?children'?: 'live' | 'snapshot';
     '?configs'?: '*' | string[];
     '?attributes'?: '*' | string[];
+    /**
+     * ?useChildren is a client side feature that only used by react hook
+     */
+    '?useChildren'?: '*' | string[];
 }
 interface ChildrenNodeQueryStructure {
     '*'?: NodeQueryStructure;
