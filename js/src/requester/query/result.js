@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_1 = require("../../common/node");
 class NodeQueryResult extends node_1.Node {
-    constructor(stream, value, configs, attributes, children) {
+    constructor(path, stream, value, configs, attributes, children) {
         super();
+        this.path = path;
         this.stream = stream;
         this.updateNode({ value, configs, attributes, children });
     }
@@ -15,6 +16,9 @@ class NodeQueryResult extends node_1.Node {
         this.configs = node.configs;
         this.attributes = node.attributes;
         this.children = node.children;
+    }
+    clone() {
+        return new NodeQueryResult(this.path, this.stream, this.value, this.configs, this.attributes, this.children);
     }
     isSame(node) {
         const { value, configs, attributes, children } = node;

@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 function useDsaQuery(link, path, query, callback) {
-    function parseUseChildren(input) {
+    function parseUseChildren() {
+        const input = query['?useChildren'];
         if (Array.isArray(input)) {
             return input;
         }
@@ -39,4 +40,17 @@ function useDsaQuery(link, path, query, callback) {
     }, [link, path]);
 }
 exports.useDsaQuery = useDsaQuery;
+function useDsaQueryNode(node, callback) {
+    const callbackRef = react_1.useRef();
+    callbackRef.current = callback;
+    react_1.useEffect(() => {
+        const subscription = node.listen((node) => {
+            callbackRef.current(node);
+        });
+        return () => {
+            subscription.close();
+        };
+    }, [node]);
+}
+exports.useDsaQueryNode = useDsaQueryNode;
 //# sourceMappingURL=react-hook.js.map

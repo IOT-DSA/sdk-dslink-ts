@@ -10,7 +10,8 @@ export function useDsaQuery(
   query: NodeQueryStructure,
   callback?: Listener<NodeQueryResult>
 ) {
-  function parseUseChildren(input?: '*' | string[]) {
+  function parseUseChildren() {
+    const input = query['?useChildren'];
     if (Array.isArray(input)) {
       return input;
     }
@@ -45,4 +46,18 @@ export function useDsaQuery(
       subscription.close();
     };
   }, [link, path]);
+}
+
+export function useDsaQueryNode(node: NodeQueryResult, callback?: Listener<NodeQueryResult>) {
+  const callbackRef = useRef<Listener<NodeQueryResult>>();
+  callbackRef.current = callback;
+
+  useEffect(() => {
+    const subscription = node.listen((node) => {
+      callbackRef.current(node);
+    });
+    return () => {
+      subscription.close();
+    };
+  }, [node]);
 }

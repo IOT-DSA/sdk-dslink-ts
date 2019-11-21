@@ -2,18 +2,17 @@ import {Node} from '../../common/node';
 import {Listener, Stream, StreamSubscription} from '../../utils/async';
 
 export class NodeQueryResult extends Node<NodeQueryResult> {
-  stream: Stream<NodeQueryResult>;
   value: any;
 
   constructor(
-    stream: Stream<NodeQueryResult>,
+    public path: string,
+    public stream: Stream<NodeQueryResult>,
     value: any,
     configs: Map<string, any>,
     attributes: Map<string, any>,
     children: Map<string, NodeQueryResult>
   ) {
     super();
-    this.stream = stream;
     this.updateNode({value, configs, attributes, children});
   }
 
@@ -31,6 +30,10 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
     this.configs = node.configs;
     this.attributes = node.attributes;
     this.children = node.children;
+  }
+
+  clone() {
+    return new NodeQueryResult(this.path, this.stream, this.value, this.configs, this.attributes, this.children);
   }
 
   isSame(node: {

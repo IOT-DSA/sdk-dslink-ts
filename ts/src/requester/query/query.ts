@@ -144,7 +144,7 @@ export class Query extends Stream<NodeQueryResult> {
           }
         }
       }
-      let newNode = new NodeQueryResult(this, this.subscribeResult, configs, attributes, children);
+      let newNode = new NodeQueryResult(this.path, this, this.subscribeResult, configs, attributes, children);
       if (this._value) {
         if (this._value.isSame(newNode)) {
           return;
