@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const filter_1 = require("./filter");
 const async_1 = require("../../utils/async");
 const result_1 = require("./result");
+const node_1 = require("../../common/node");
 function copyMapWithFilter(m, filter) {
     if (!filter) {
         return new Map();
@@ -67,8 +68,8 @@ class Query extends async_1.Stream {
                 }
             }
             else {
-                if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
-                    this._listeners.clear(); // ignore all previous listeners when node is filterd out
+                if (!this._filterMatched && this._value != null) {
+                    this._listeners.clear(); // ignore all previous listeners when node is filtered out
                     this.add(null);
                     this.parent.scheduleOutput();
                 }
@@ -119,7 +120,7 @@ class Query extends async_1.Stream {
                 }
                 for (let [key, child] of update.node.children) {
                     if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
-                        let childQuery = new Query(this, `${this.path}/${key}`, this.dynamicQuery);
+                        let childQuery = new Query(this, node_1.Path.concat(this.path, key), this.dynamicQuery);
                         this.dynamicChildren.set(key, childQuery);
                         childQuery.start();
                     }

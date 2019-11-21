@@ -9,6 +9,7 @@ class Permission {
         return defaultVal;
     }
 }
+exports.Permission = Permission;
 /// now allowed to do anything
 Permission.NONE = 0;
 /// list node
@@ -30,5 +31,4 @@ Permission.nameParser = {
     config: Permission.CONFIG,
     never: Permission.NEVER
 };
-exports.Permission = Permission;
 //# sourceMappingURL=permission.js.map

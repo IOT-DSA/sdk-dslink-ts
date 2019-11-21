@@ -112,12 +112,12 @@ class Logger {
         return new TaggedLogger(this, tag);
     }
 }
+exports.Logger = Logger;
 Logger.TRACE = TRACE;
 Logger.DEBUG = DEBUG;
 Logger.INFO = INFO;
 Logger.WARN = WARN;
 Logger.ERROR = ERROR;
-exports.Logger = Logger;
 class TaggedLogger {
     constructor(logger, tag) {
         this.logger = logger;

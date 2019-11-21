@@ -107,8 +107,8 @@ class DsMsgPackCodecImpl extends DsCodec {
         return msgpack_lite_1.default.encode(val);
     }
 }
-DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
+DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 DsCodec._codecs = {
     json: DsJson.instance,
     msgpack: DsMsgPackCodecImpl.instance

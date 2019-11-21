@@ -30,12 +30,12 @@ export declare class ValueSubscriber {
     lastValue: ValueUpdate;
     _qosLevel: number;
     _storage: ISubscriptionNodeStorage;
-    qosLevel: number;
+    set qosLevel(v: number);
     _caching: boolean;
-    caching: boolean;
+    set caching(val: boolean);
     cachingQueue: boolean;
     _persist: boolean;
-    persist: boolean;
+    set persist(val: boolean);
     constructor(response: SubscribeResponse, node: NodeState, sid: number, qos: number);
     _isCacheValid: boolean;
     addValue(val: ValueUpdate): void;

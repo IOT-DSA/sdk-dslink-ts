@@ -4,6 +4,19 @@ const base_local_node_1 = require("../responder/base-local-node");
 const action_node_1 = require("../responder/node/action-node");
 const MockAction_1 = require("./MockAction");
 const node_state_1 = require("../responder/node_state");
+function evaluateNodeData(data) {
+    let result = {};
+    for (let key in data) {
+        let value = data[key];
+        if (key !== '?value' && typeof value === 'function') {
+            result[key] = value();
+        }
+        else {
+            result[key] = value;
+        }
+    }
+    return result;
+}
 class MockNode extends base_local_node_1.BaseLocalNode {
     constructor() {
         super(...arguments);
@@ -13,7 +26,7 @@ class MockNode extends base_local_node_1.BaseLocalNode {
         return true;
     }
     load(data) {
-        super.load(data);
+        super.load(evaluateNodeData(data));
         if (data.hasOwnProperty('?value')) {
             let value = data['?value'];
             if (typeof value === 'function') {
@@ -65,9 +78,9 @@ class MockNode extends base_local_node_1.BaseLocalNode {
         super.destroy();
     }
 }
+exports.MockNode = MockNode;
 MockNode.profileName = 'mock';
 MockNode.interval = 1000;
-exports.MockNode = MockNode;
 class RootMockNode extends MockNode {
     constructor(data) {
         super('/', new node_state_1.NodeProvider());

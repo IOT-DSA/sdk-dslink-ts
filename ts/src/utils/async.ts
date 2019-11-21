@@ -44,7 +44,11 @@ export class Stream<T> {
     }
     if (this._value !== undefined && !this._updating) {
       // skip extra update if it's already in updating iteration
-      listener(this._value);
+      setTimeout(() => {
+        if (this._listeners.has(listener) && this._value !== undefined) {
+          listener(this._value);
+        }
+      }, 0);
     }
     return new StreamSubscription<T>(this, listener);
   }

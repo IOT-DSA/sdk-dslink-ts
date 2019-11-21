@@ -6,6 +6,7 @@ import {RequesterListUpdate} from '../request/list';
 import {Requester} from '../requester';
 import {RemoteNode} from '../node_cache';
 import {NodeQueryResult} from './result';
+import {Path} from '../../common/node';
 
 function copyMapWithFilter(m: Map<string, any>, filter: string[]) {
   if (!filter) {
@@ -155,8 +156,8 @@ export class Query extends Stream<NodeQueryResult> {
         this.parent.scheduleOutput();
       }
     } else {
-      if (this._value != null || (this._value === undefined && this.isQueryReadyAsChild())) {
-        this._listeners.clear(); // ignore all previous listeners when node is filterd out
+      if (!this._filterMatched && this._value != null) {
+        this._listeners.clear(); // ignore all previous listeners when node is filtered out
         this.add(null);
         this.parent.scheduleOutput();
       }
@@ -303,7 +304,7 @@ export class Query extends Stream<NodeQueryResult> {
       }
       for (let [key, child] of update.node.children) {
         if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
-          let childQuery = new Query(this, `${this.path}/${key}`, this.dynamicQuery);
+          let childQuery = new Query(this, Path.concat(this.path, key), this.dynamicQuery);
           this.dynamicChildren.set(key, childQuery);
           childQuery.start();
         }

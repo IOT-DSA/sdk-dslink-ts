@@ -9,7 +9,7 @@ export declare class Request {
     };
     readonly updater: RequestUpdater;
     _isClosed: boolean;
-    readonly isClosed: boolean;
+    get isClosed(): boolean;
     constructor(requester: Requester, rid: number, updater: RequestUpdater, data: {
         [key: string]: any;
     });

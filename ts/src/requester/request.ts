@@ -31,7 +31,7 @@ export class Request {
 
   _update(m: {[key: string]: any}) {
     if (typeof m['stream'] === 'string') {
-      this.streamStatus = m['stream'];
+      this.streamStatus = m['stream'] as StreamStatus;
     }
     let updates: any[];
     let columns: any[];

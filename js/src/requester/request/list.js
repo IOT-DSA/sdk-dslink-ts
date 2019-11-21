@@ -262,11 +262,11 @@ class ListController {
         this.node._listController = null;
     }
 }
+exports.ListController = ListController;
 ListController._ignoreProfileProps = [
     '$is',
     // '$permission',
     // '$settings',
     '$disconnectedTs'
 ];
-exports.ListController = ListController;
 //# sourceMappingURL=list.js.map

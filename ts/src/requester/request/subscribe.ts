@@ -268,7 +268,11 @@ export class ReqSubscribeController {
         this.currentQos = qos;
       }
       if (this._lastUpdate != null) {
-        callback(this._lastUpdate);
+        setTimeout(() => {
+          if (this.callbacks.has(callback) && this._lastUpdate != null) {
+            callback(this._lastUpdate);
+          }
+        }, 0);
       }
     }
 

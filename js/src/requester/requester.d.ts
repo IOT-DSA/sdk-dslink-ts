@@ -18,8 +18,8 @@ export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _subscription: SubscribeRequest;
     constructor(cache?: RemoteNodeCache);
-    readonly subscriptionCount: number;
-    readonly openRequestCount: number;
+    get subscriptionCount(): number;
+    get openRequestCount(): number;
     /** @ignore */
     onData: (list: any[]) => void;
     /** @ignore */

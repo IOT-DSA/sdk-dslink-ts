@@ -304,11 +304,11 @@ class Path {
         }
     }
 }
+exports.Path = Path;
 /// Regular Expression for invalid characters in paths.
 /** @ignore */
 Path.invalidChar = /[\\\?\*|"<>:]/;
 /// Regular Expression for invalid characters in names.
 /** @ignore */
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
-exports.Path = Path;
 //# sourceMappingURL=node.js.map

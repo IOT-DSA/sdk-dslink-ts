@@ -39,7 +39,7 @@ export declare class Path {
     path: string;
     parentPath: string;
     /**  Get the parent of this path. */
-    readonly parent: Path;
+    get parent(): Path;
     /** Get a child of this path. */
     child(name: string): Path;
     name: string;
@@ -47,11 +47,11 @@ export declare class Path {
     constructor(path: string);
     /** @ignore */
     _parse(): void;
-    readonly isAbsolute: boolean;
-    readonly isRoot: boolean;
-    readonly isConfig: boolean;
-    readonly isAttribute: boolean;
-    readonly isNode: boolean;
+    get isAbsolute(): boolean;
+    get isRoot(): boolean;
+    get isConfig(): boolean;
+    get isAttribute(): boolean;
+    get isNode(): boolean;
     /** @ignore */
     mergeBasePath(base: string, force?: boolean): void;
 }

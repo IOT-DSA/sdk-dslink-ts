@@ -5,13 +5,13 @@ import { Completer } from '../utils/async';
 import { DsCodec } from '../utils/codec';
 export declare class WebSocketConnection extends Connection {
     _responderChannel: PassiveChannel;
-    readonly responderChannel: ConnectionChannel;
+    get responderChannel(): ConnectionChannel;
     _requesterChannel: PassiveChannel;
-    readonly requesterChannel: ConnectionChannel;
+    get requesterChannel(): ConnectionChannel;
     _onRequestReadyCompleter: Completer<ConnectionChannel>;
-    readonly onRequesterReady: Promise<ConnectionChannel>;
+    get onRequesterReady(): Promise<ConnectionChannel>;
     _onDisconnectedCompleter: Completer<boolean>;
-    readonly onDisconnected: Promise<boolean>;
+    get onDisconnected(): Promise<boolean>;
     readonly clientLink: ClientLink;
     readonly socket: WebSocket;
     onConnect: Function;
@@ -23,7 +23,7 @@ export declare class WebSocketConnection extends Connection {
     onPingTimer: () => void;
     requireSend(): void;
     _opened: boolean;
-    readonly opened: boolean;
+    get opened(): boolean;
     _onOpen: (e: {
         target: WebSocket;
     }) => void;

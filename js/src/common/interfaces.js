@@ -132,9 +132,9 @@ class ClientLink extends BaseLink {
 exports.ClientLink = ClientLink;
 class ErrorPhase {
 }
+exports.ErrorPhase = ErrorPhase;
 ErrorPhase.request = 'request';
 ErrorPhase.response = 'response';
-exports.ErrorPhase = ErrorPhase;
 class DsError {
     constructor(type, options = {}) {
         this.type = type;
@@ -197,6 +197,7 @@ class DsError {
         return rslt;
     }
 }
+exports.DsError = DsError;
 DsError.PERMISSION_DENIED = new DsError('permissionDenied');
 DsError.INVALID_METHOD = new DsError('invalidMethod');
 DsError.NOT_IMPLEMENTED = new DsError('notImplemented');
@@ -206,5 +207,4 @@ DsError.INVALID_VALUE = new DsError('invalidValue');
 DsError.INVALID_PARAMETER = new DsError('invalidParameter');
 DsError.DISCONNECTED = new DsError('disconnected', { phase: ErrorPhase.request });
 DsError.FAILED = new DsError('failed');
-exports.DsError = DsError;
 //# sourceMappingURL=interfaces.js.map

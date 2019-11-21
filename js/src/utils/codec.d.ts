@@ -8,7 +8,7 @@ export declare abstract class DsCodec {
     static register(name: string, codec: DsCodec): void;
     static getCodec(name: string): DsCodec;
     _blankData: any;
-    readonly blankData: any;
+    get blankData(): any;
     abstract encodeFrame(val: any): any;
     abstract decodeStringFrame(input: string): any;
     abstract decodeBinaryFrame(input: Uint8Array): any;

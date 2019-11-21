@@ -121,6 +121,6 @@ class ValueUpdate {
         });
     }
 }
-ValueUpdate._lastTs = 0;
 exports.ValueUpdate = ValueUpdate;
+ValueUpdate._lastTs = 0;
 //# sourceMappingURL=value.js.map

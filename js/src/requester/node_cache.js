@@ -215,6 +215,7 @@ exports.RemoteDefNode = RemoteDefNode;
 /** @ignore */
 class DefaultDefNodes {
 }
+exports.DefaultDefNodes = DefaultDefNodes;
 DefaultDefNodes._defaultDefs = {
     node: {},
     static: {},
@@ -305,5 +306,4 @@ DefaultDefNodes.pathMap = (function () {
     }
     return rslt;
 })();
-exports.DefaultDefNodes = DefaultDefNodes;
 //# sourceMappingURL=node_cache.js.map

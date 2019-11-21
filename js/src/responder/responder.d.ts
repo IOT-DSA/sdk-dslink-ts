@@ -16,8 +16,8 @@ export declare class Responder extends ConnectionHandler {
     maxPermission: number;
     /** @ignore */
     readonly _responses: Map<number, Response>;
-    readonly openResponseCount: number;
-    readonly subscriptionCount: number;
+    get openResponseCount(): number;
+    get subscriptionCount(): number;
     /** @ignore */
     _subscription: SubscribeResponse;
     readonly nodeProvider: NodeProvider;

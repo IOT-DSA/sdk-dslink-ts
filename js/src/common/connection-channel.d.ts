@@ -10,11 +10,12 @@ export declare class PassiveChannel implements ConnectionChannel {
     sendWhenReady(handler: ConnectionHandler): void;
     getSendingData(currentTime: number, waitingAckId: number): ProcessorResult;
     _isReady: boolean;
-    isReady: boolean;
+    get isReady(): boolean;
+    set isReady(val: boolean);
     connected: boolean;
     readonly onDisconnectController: Completer<ConnectionChannel>;
-    readonly onDisconnected: Promise<ConnectionChannel>;
+    get onDisconnected(): Promise<ConnectionChannel>;
     readonly onConnectController: Completer<ConnectionChannel>;
-    readonly onConnected: Promise<ConnectionChannel>;
+    get onConnected(): Promise<ConnectionChannel>;
     updateConnect(): void;
 }
