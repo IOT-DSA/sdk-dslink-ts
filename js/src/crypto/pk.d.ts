@@ -22,7 +22,7 @@ export declare class PrivateKey {
     getSecret(key: string): ECDH;
 }
 export declare class ECDH extends ECDHBase {
-    readonly encodedPublicKey: string;
+    get encodedPublicKey(): string;
     sharedSecret: Buffer;
     privateKey: PrivateKey;
     constructor(privateKey: PrivateKey, sharedSecret: Buffer);

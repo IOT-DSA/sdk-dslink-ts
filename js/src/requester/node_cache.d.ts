@@ -27,9 +27,9 @@ export declare class RemoteNode extends Node {
     /** @ignore */
     _subscribeController: ReqSubscribeController;
     /** @ignore */
-    readonly subscribeController: ReqSubscribeController;
-    readonly hasValueUpdate: boolean;
-    readonly lastValueUpdate: ValueUpdate;
+    get subscribeController(): ReqSubscribeController;
+    get hasValueUpdate(): boolean;
+    get lastValueUpdate(): ValueUpdate;
     constructor(remotePath: string);
     /** @ignore */
     _getRawName(): void;

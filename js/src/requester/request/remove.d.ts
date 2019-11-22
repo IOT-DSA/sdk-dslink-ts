@@ -6,7 +6,7 @@ import { RequesterUpdate, RequestUpdater } from '../interface';
 /** @ignore */
 export declare class RemoveController implements RequestUpdater {
     readonly completer: Completer<RequesterUpdate>;
-    readonly future: Promise<RequesterUpdate>;
+    get future(): Promise<RequesterUpdate>;
     readonly requester: Requester;
     readonly path: string;
     _request: Request;

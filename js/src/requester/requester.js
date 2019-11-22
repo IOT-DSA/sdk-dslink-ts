@@ -11,6 +11,7 @@ const permission_1 = require("../common/permission");
 const invoke_1 = require("./request/invoke");
 const set_1 = require("./request/set");
 const remove_1 = require("./request/remove");
+const query_1 = require("./query/query");
 class Requester extends connection_handler_1.ConnectionHandler {
     constructor(cache) {
         super();
@@ -246,6 +247,23 @@ class Requester extends connection_handler_1.ConnectionHandler {
      */
     remove(path) {
         return new remove_1.RemoveController(this, path).future;
+    }
+    /**
+     * Query the node
+     * @param path
+     * @param queryStruct
+     * @param callback The callback will be called only when
+     *  - node value changed if ?value is defined
+     *  - value of config that matches ?configs is changed
+     *  - value of attribute that matches ?attributes is changed
+     *  - child is removed or new child is added when wildcard children match * is defined
+     */
+    query(path, queryStruct, callback) {
+        queryStruct = Object.assign({}, queryStruct);
+        delete queryStruct.$filter; // make sure root node has no filter;
+        let query = new query_1.Query({ requester: this, scheduleOutput: () => { } }, path, queryStruct);
+        query.start();
+        return query.listen(callback);
     }
     /// close the request from requester side and notify responder
     /** @ignore */

@@ -6,7 +6,7 @@ import { WebSocketConnection } from './browser-ws-conn';
 export declare class BrowserUserLink extends ClientLink {
     /** @ignore */
     _onRequesterReadyCompleter: Completer<Requester>;
-    readonly onRequesterReady: Promise<Requester>;
+    get onRequesterReady(): Promise<Requester>;
     /** @ignore */
     static session: string;
     readonly requester: Requester;

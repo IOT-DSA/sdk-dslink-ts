@@ -7,7 +7,7 @@ import { LocalNode } from '../responder/node_state';
 import { Responder } from '../responder/responder';
 import { Requester } from '../requester/requester';
 export declare abstract class ECDH {
-    abstract readonly encodedPublicKey: string;
+    abstract get encodedPublicKey(): string;
     abstract hashSalt(salt: string): string;
     verifySalt(salt: string, hash: string): boolean;
 }
@@ -76,7 +76,7 @@ export declare abstract class ClientLink extends BaseLink {
     /** @ignore */
     abstract updateSalt(salt: string): void;
     /** @ignore */
-    readonly logName: string;
+    get logName(): string;
     /** @ignore */
     formatLogMessage(msg: string): string;
     /** @ignore */

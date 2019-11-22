@@ -9,7 +9,7 @@ export declare class ValueUpdate {
     value: any;
     ts: string;
     _timestamp: Date;
-    readonly timestamp: Date;
+    get timestamp(): Date;
     status: string;
     count: number;
     created: Date;
@@ -19,7 +19,7 @@ export declare class ValueUpdate {
     });
     static merge(oldUpdate: ValueUpdate, newUpdate: ValueUpdate): ValueUpdate;
     _latency: number;
-    readonly latency: number;
+    get latency(): number;
     mergeAdd(newUpdate: ValueUpdate): void;
     equals(other: ValueUpdate): boolean;
     toMap(): {

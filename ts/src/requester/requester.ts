@@ -11,6 +11,9 @@ import {Permission} from '../common/permission';
 import {RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
 import {SetController} from './request/set';
 import {RemoveController} from './request/remove';
+import {NodeQueryStructure} from './query/query-structure';
+import {NodeQueryResult} from './query/result';
+import {Query} from './query/query';
 
 export class Requester extends ConnectionHandler {
   /** @ignore */
@@ -299,6 +302,28 @@ export class Requester extends ConnectionHandler {
    */
   remove(path: string): Promise<RequesterUpdate> {
     return new RemoveController(this, path).future;
+  }
+
+  /**
+   * Query the node
+   * @param path
+   * @param queryStruct
+   * @param callback The callback will be called only when
+   *  - node value changed if ?value is defined
+   *  - value of config that matches ?configs is changed
+   *  - value of attribute that matches ?attributes is changed
+   *  - child is removed or new child is added when wildcard children match * is defined
+   */
+  query(
+    path: string,
+    queryStruct: NodeQueryStructure,
+    callback?: Listener<NodeQueryResult>
+  ): StreamSubscription<NodeQueryResult> {
+    queryStruct = {...queryStruct};
+    delete queryStruct.$filter; // make sure root node has no filter;
+    let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct);
+    query.start();
+    return query.listen(callback);
   }
 
   /// close the request from requester side and notify responder

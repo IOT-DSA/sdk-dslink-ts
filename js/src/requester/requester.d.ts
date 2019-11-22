@@ -8,6 +8,8 @@ import { DsError, ProcessorResult } from '../common/interfaces';
 import { ValueUpdate } from '../common/value';
 import { RequesterListUpdate } from './request/list';
 import { RequesterInvokeStream, RequesterInvokeUpdate } from './request/invoke';
+import { NodeQueryStructure } from './query/query-structure';
+import { NodeQueryResult } from './query/result';
 export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _requests: Map<number, Request>;
@@ -16,8 +18,8 @@ export declare class Requester extends ConnectionHandler {
     /** @ignore */
     _subscription: SubscribeRequest;
     constructor(cache?: RemoteNodeCache);
-    readonly subscriptionCount: number;
-    readonly openRequestCount: number;
+    get subscriptionCount(): number;
+    get openRequestCount(): number;
     /** @ignore */
     onData: (list: any[]) => void;
     /** @ignore */
@@ -102,6 +104,17 @@ export declare class Requester extends ConnectionHandler {
      * Remove an attribute
      */
     remove(path: string): Promise<RequesterUpdate>;
+    /**
+     * Query the node
+     * @param path
+     * @param queryStruct
+     * @param callback The callback will be called only when
+     *  - node value changed if ?value is defined
+     *  - value of config that matches ?configs is changed
+     *  - value of attribute that matches ?attributes is changed
+     *  - child is removed or new child is added when wildcard children match * is defined
+     */
+    query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeQueryResult>): StreamSubscription<NodeQueryResult>;
     /** @ignore */
     closeRequest(request: Request): void;
     /** @ignore */

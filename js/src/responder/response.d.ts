@@ -5,7 +5,7 @@ export declare class Response implements ConnectionProcessor {
     readonly rid: number;
     type: string;
     _sentStreamStatus: string;
-    readonly sentStreamStatus: string;
+    get sentStreamStatus(): string;
     constructor(responder: Responder, rid: number, type?: string);
     close(err?: DsError): void;
     _close(): void;

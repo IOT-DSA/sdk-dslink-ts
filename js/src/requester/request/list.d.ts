@@ -30,7 +30,7 @@ export declare class ListController implements RequestUpdater, ConnectionProcess
     stream: Stream<RequesterListUpdate>;
     request: Request;
     constructor(node: RemoteNode, requester: Requester);
-    readonly initialized: boolean;
+    get initialized(): boolean;
     disconnectTs: string;
     onDisconnect(): void;
     onReconnect(): void;

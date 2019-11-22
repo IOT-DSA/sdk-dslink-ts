@@ -3,6 +3,18 @@ import {ActionNode} from '../responder/node/action-node';
 import {MockActionNode} from './MockAction';
 import {NodeProvider} from '../responder/node_state';
 
+function evaluateNodeData(data: {[p: string]: any}): {[p: string]: any} {
+  let result: any = {};
+  for (let key in data) {
+    let value = data[key];
+    if (key !== '?value' && typeof value === 'function') {
+      result[key] = value();
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 export class MockNode extends BaseLocalNode {
   static profileName = 'mock';
   static interval: number = 1000;
@@ -17,12 +29,13 @@ export class MockNode extends BaseLocalNode {
   }
 
   load(data: {[p: string]: any}) {
-    super.load(data);
+    super.load(evaluateNodeData(data));
     if (data.hasOwnProperty('?value')) {
       let value = data['?value'];
       if (typeof value === 'function') {
         // change value with a timer
         this.setValue(value());
+
         this.setValueTimer = setInterval(() => this.setValue(value()), MockNode.interval);
       } else {
         this.setValue(value);

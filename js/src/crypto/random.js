@@ -30,6 +30,6 @@ class DSRandom {
         return this._cache[this._pos++];
     }
 }
-DSRandom.instance = new DSRandom();
 exports.DSRandom = DSRandom;
+DSRandom.instance = new DSRandom();
 //# sourceMappingURL=random.js.map

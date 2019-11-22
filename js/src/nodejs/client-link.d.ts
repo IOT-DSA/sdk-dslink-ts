@@ -8,7 +8,7 @@ import { LocalNode, NodeProvider } from '../responder/node_state';
 export declare class HttpClientLink extends ClientLink {
     /** @ignore */
     _onReadyCompleter: Completer<[Requester, Responder]>;
-    readonly onReady: Promise<[Requester, Responder]>;
+    get onReady(): Promise<[Requester, Responder]>;
     remotePath: string;
     readonly dsId: string;
     /** @ignore */
@@ -21,7 +21,7 @@ export declare class HttpClientLink extends ClientLink {
     /** @ignore */
     _nonce: ECDH;
     /** @ignore */
-    readonly nonce: ECDH;
+    get nonce(): ECDH;
     /** @ignore */
     _wsConnection: WebSocketConnection;
     /** @ignore */

@@ -105,9 +105,9 @@ class BrowserUserLink extends interfaces_1.ClientLink {
         }
     }
 }
+exports.BrowserUserLink = BrowserUserLink;
 /** @ignore */
 BrowserUserLink.session = Math.random()
     .toString(16)
     .substr(2, 8);
-exports.BrowserUserLink = BrowserUserLink;
 //# sourceMappingURL=browser-user-link.js.map

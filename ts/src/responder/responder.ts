@@ -124,7 +124,7 @@ export class Responder extends ConnectionHandler {
       response._sentStreamStatus = 'closed';
       rid = response.rid;
     }
-    let m: any = {rid: rid, stream: 'closed'};
+    let m: any = {rid, stream: 'closed'};
     if (error != null) {
       m['error'] = error.serialize();
     }

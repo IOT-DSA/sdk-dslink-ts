@@ -25,12 +25,12 @@ export declare class RequesterInvokeUpdate extends RequesterUpdate {
     }, error?: DsError);
     /** @ignore */
     _rows: any[][];
-    readonly rows: any[][];
+    get rows(): any[][];
     /**
      * Convert the update to a simple js Object
      * If there are multiple rows, only the first row is returned
      */
-    readonly result: any;
+    get result(): any;
 }
 export declare class RequesterInvokeStream extends Stream<RequesterInvokeUpdate> {
     request: Request;

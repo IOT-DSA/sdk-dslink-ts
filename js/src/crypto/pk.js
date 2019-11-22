@@ -27,6 +27,13 @@ class PublicKey {
 }
 exports.PublicKey = PublicKey;
 class PrivateKey {
+    constructor(ecPrivateKey, ecPublicKey) {
+        this.ecPrivateKey = ecPrivateKey;
+        this.ecPublicKey = ecPublicKey;
+        this.ecc = crypto_1.default.createECDH('prime256v1');
+        this.ecc.setPrivateKey(ecPrivateKey);
+        this.publicKey = new PublicKey(ecPublicKey);
+    }
     static generate() {
         let ec = crypto_1.default.createECDH('prime256v1');
         ec.generateKeys();
@@ -52,13 +59,6 @@ class PrivateKey {
             return null;
         }
     }
-    constructor(ecPrivateKey, ecPublicKey) {
-        this.ecPrivateKey = ecPrivateKey;
-        this.ecPublicKey = ecPublicKey;
-        this.ecc = crypto_1.default.createECDH('prime256v1');
-        this.ecc.setPrivateKey(ecPrivateKey);
-        this.publicKey = new PublicKey(ecPublicKey);
-    }
     saveToString() {
         return `${base64_1.default.encode(this.ecPrivateKey)} ${this.publicKey.qBase64}`;
     }
@@ -70,13 +70,13 @@ class PrivateKey {
 }
 exports.PrivateKey = PrivateKey;
 class ECDH extends interfaces_1.ECDH {
-    get encodedPublicKey() {
-        return base64_1.default.encode(this.privateKey.ecPublicKey);
-    }
     constructor(privateKey, sharedSecret) {
         super();
         this.privateKey = privateKey;
         this.sharedSecret = sharedSecret;
+    }
+    get encodedPublicKey() {
+        return base64_1.default.encode(this.privateKey.ecPublicKey);
     }
     hashSalt(salt) {
         let encoded = Buffer.from(salt);

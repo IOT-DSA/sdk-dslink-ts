@@ -86,6 +86,9 @@ describe('subscribe', function() {
 
     setTimeout(() => rootNode.createChild('lazy2', TestLazyValue), 10);
     // subscribe before value node gets created
+    assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, null);
+    
+    await new Promise((resolve) => setTimeout(resolve, 30));
     assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, 'ready');
   });
 

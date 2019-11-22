@@ -10,8 +10,9 @@ export declare abstract class ConnectionHandler {
     /** @ignore */
     _connListener: StreamSubscription<any[]>;
     /** @ignore */
+    get connection(): ConnectionChannel;
     /** @ignore */
-    connection: ConnectionChannel;
+    set connection(conn: ConnectionChannel);
     /** @ignore */
     _onDisconnected(conn: ConnectionChannel): void;
     abstract onDisconnected(): void;
