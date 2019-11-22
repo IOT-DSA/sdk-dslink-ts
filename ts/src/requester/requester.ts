@@ -304,6 +304,16 @@ export class Requester extends ConnectionHandler {
     return new RemoveController(this, path).future;
   }
 
+  /**
+   * Query the node
+   * @param path
+   * @param queryStruct
+   * @param callback The callback will be called only when
+   *  - node value changed if ?value is defined
+   *  - value of config that matches ?configs is changed
+   *  - value of attribute that matches ?attributes is changed
+   *  - child is removed or new child is added when wildcard children match * is defined
+   */
   query(
     path: string,
     queryStruct: NodeQueryStructure,

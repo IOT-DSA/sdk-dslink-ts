@@ -1,28 +1,19 @@
 import {BrowserUserLink} from './src/browser/browser-user-link';
 import {NodeQueryStructure} from './src/requester/query/query-structure';
-import {Listener} from './src/utils/async';
+import {Closable, Listener} from './src/utils/async';
 import {NodeQueryResult} from './src/requester/query/result';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-export function useDsaQuery(
+function useRawDsaQuery(
   link: BrowserUserLink,
-  path: string,
+  pathOrNode: string | NodeQueryResult,
   query: NodeQueryStructure,
-  callback?: Listener<NodeQueryResult>
+  callback?: Listener<NodeQueryResult>,
+  useChildren?: '*' | string[]
 ) {
-  function parseUseChildren() {
-    const input = query['?useChildren'];
-    if (Array.isArray(input)) {
-      return input;
-    }
-    if (input === '*') {
-      return ['*'];
-    }
-    return null;
-  }
-  const [useChildren] = useState<string[]>(parseUseChildren);
   const callbackRef = useRef<Listener<NodeQueryResult>>();
   const rootNodeCache = useRef<NodeQueryResult>();
+  const [, forceUpdate] = useState(1);
   callbackRef.current = callback;
   let childCallback = useCallback((node: NodeQueryResult) => {
     if (rootNodeCache.current) {
@@ -30,7 +21,6 @@ export function useDsaQuery(
     }
   }, []);
   const rootCallback = useCallback((node: NodeQueryResult) => {
-    callbackRef.current(node);
     rootNodeCache.current = node;
     if (useChildren) {
       for (let [name, child] of node.children) {
@@ -39,25 +29,65 @@ export function useDsaQuery(
         }
       }
     }
+    if (callbackRef.current) {
+      callbackRef.current(node);
+    }
+    // force render on node change
+    forceUpdate((v) => -v);
   }, []);
   useEffect(() => {
-    const subscription = link.requester.query(path, query, rootCallback);
+    let subscription: Closable;
+    if (typeof pathOrNode === 'string') {
+      subscription = link.requester.query(pathOrNode, query, rootCallback);
+    } else if (pathOrNode instanceof NodeQueryResult) {
+      pathOrNode.listen(rootCallback);
+    }
     return () => {
-      subscription.close();
+      if (subscription) {
+        subscription.close();
+      }
     };
-  }, [link, path]);
+  }, [link, pathOrNode]);
 }
 
-export function useDsaQueryNode(node: NodeQueryResult, callback?: Listener<NodeQueryResult>) {
-  const callbackRef = useRef<Listener<NodeQueryResult>>();
-  callbackRef.current = callback;
+/**
+ * Query a node and its children
+ * @param link
+ * @param path The node path to be queried.
+ * @param query
+ * @param callback The callback will be called only when
+ *  - node value changed if ?value is defined
+ *  - value of config that matches ?configs is changed
+ *  - value of attribute that matches ?attributes is changed
+ *  - child is removed or new child is added when wildcard children match * is defined
+ *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
+ * @param useChildren defines the children nodes that will trigger the callback on any change
+ */
+export function useDsaQuery(
+  link: BrowserUserLink,
+  path: string,
+  query: NodeQueryStructure,
+  callback?: Listener<NodeQueryResult>,
+  useChildren?: '*' | string[]
+) {
+  return useRawDsaQuery(link, path, query, callback, useChildren);
+}
 
-  useEffect(() => {
-    const subscription = node.listen((node) => {
-      callbackRef.current(node);
-    });
-    return () => {
-      subscription.close();
-    };
-  }, [node]);
+/**
+ * Query a child node and its children
+ * @param node The node from a result of a parent query.
+ * @param callback The callback will be called only when
+ *  - node value changed if ?value is defined
+ *  - value of config that matches ?configs is changed
+ *  - value of attribute that matches ?attributes is changed
+ *  - child is removed or new child is added when wildcard children match * is defined
+ *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
+ * @param useChildren defines the children nodes that will trigger the callback on any change
+ */
+export function useDsaChildQuery(
+  node: NodeQueryResult,
+  callback?: Listener<NodeQueryResult>,
+  useChildren?: '*' | string[]
+) {
+  return useRawDsaQuery(null, node, null, callback, useChildren);
 }
