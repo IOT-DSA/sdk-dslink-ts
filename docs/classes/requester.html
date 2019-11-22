@@ -103,6 +103,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#isnodecached" class="tsd-kind-icon">is<wbr>Node<wbr>Cached</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#list" class="tsd-kind-icon">list</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#listonce" class="tsd-kind-icon">list<wbr>Once</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#query" class="tsd-kind-icon">query</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#remove" class="tsd-kind-icon">remove</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#set" class="tsd-kind-icon">set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requester.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
@@ -125,7 +126,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L24">src/requester/requester.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L26">src/requester/requester.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -151,7 +152,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L37">src/requester/requester.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L39">src/requester/requester.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -168,7 +169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L33">src/requester/requester.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L35">src/requester/requester.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -182,20 +183,20 @@
 					<a name="invoke" class="tsd-anchor"></a>
 					<h3>invoke</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">invoke<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></li>
+						<li class="tsd-signature tsd-kind-icon">invoke<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequesterInvokeStream</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L217">src/requester/requester.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L223">src/requester/requester.ts:223</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Invoke a node action, and receive updates.
 										Usually an action stream will be closed on server side,
-									but in the case of a streaming action the returned stream needs to be closed with <a href="requesterinvokestream.html#close">RequesterInvokeStream.close</a></p>
+									but in the case of a streaming action the returned stream needs to be closed with [[RequesterInvokeStream.close]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -212,13 +213,13 @@
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxPermission: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Permission.CONFIG</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RequesterInvokeStream</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -226,13 +227,13 @@
 					<a name="invokeonce" class="tsd-anchor"></a>
 					<h3>invoke<wbr>Once</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Once<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Once<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L244">src/requester/requester.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L254">src/requester/requester.ts:254</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -257,7 +258,7 @@
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxPermission: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Permission.CONFIG</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -265,13 +266,13 @@
 					<a name="invokestream" class="tsd-anchor"></a>
 					<h3>invoke<wbr>Stream</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Stream<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></li>
+						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Stream<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span>, maxPermission<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequesterInvokeStream</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L266">src/requester/requester.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L278">src/requester/requester.ts:278</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -294,13 +295,13 @@
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterinvokeupdate.html" class="tsd-signature-type">RequesterInvokeUpdate</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterInvokeUpdate</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxPermission: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Permission.CONFIG</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="requesterinvokestream.html" class="tsd-signature-type">RequesterInvokeStream</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RequesterInvokeStream</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -314,7 +315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L102">src/requester/requester.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L104">src/requester/requester.ts:104</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -331,13 +332,13 @@
 					<a name="list" class="tsd-anchor"></a>
 					<h3>list</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">list<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterlistupdate.html" class="tsd-signature-type">RequesterListUpdate</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><a href="requesterlistupdate.html" class="tsd-signature-type">RequesterListUpdate</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">list<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterListUpdate</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterListUpdate</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L207">src/requester/requester.ts:207</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L213">src/requester/requester.ts:213</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -353,10 +354,10 @@
 									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="requesterlistupdate.html" class="tsd-signature-type">RequesterListUpdate</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterListUpdate</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><a href="requesterlistupdate.html" class="tsd-signature-type">RequesterListUpdate</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RequesterListUpdate</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -370,7 +371,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L187">src/requester/requester.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L194">src/requester/requester.ts:194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -389,6 +390,49 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="query" class="tsd-anchor"></a>
+					<h3>query</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, queryStruct<span class="tsd-signature-symbol">: </span><a href="../interfaces/nodequerystructure.html" class="tsd-signature-type">NodeQueryStructure</a>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="nodequeryresult.html" class="tsd-signature-type">NodeQueryResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><a href="nodequeryresult.html" class="tsd-signature-type">NodeQueryResult</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L317">src/requester/requester.ts:317</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Query the node</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>queryStruct: <a href="../interfaces/nodequerystructure.html" class="tsd-signature-type">NodeQueryStructure</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">Listener</span><span class="tsd-signature-symbol">&lt;</span><a href="nodequeryresult.html" class="tsd-signature-type">NodeQueryResult</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The callback will be called only when</p>
+										<ul>
+											<li>node value changed if ?value is defined</li>
+											<li>value of config that matches ?configs is changed</li>
+											<li>value of attribute that matches ?attributes is changed</li>
+											<li>child is removed or new child is added when wildcard children match * is defined</li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="streamsubscription.html" class="tsd-signature-type">StreamSubscription</a><span class="tsd-signature-symbol">&lt;</span><a href="nodequeryresult.html" class="tsd-signature-type">NodeQueryResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="remove" class="tsd-anchor"></a>
 					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -398,7 +442,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L288">src/requester/requester.ts:288</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L303">src/requester/requester.ts:303</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -426,7 +470,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L280">src/requester/requester.ts:280</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L296">src/requester/requester.ts:296</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -454,13 +498,13 @@
 					<a name="subscribe" class="tsd-anchor"></a>
 					<h3>subscribe</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, qos<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="reqsubscribelistener.html" class="tsd-signature-type">ReqSubscribeListener</a></li>
+						<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, qos<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReqSubscribeListener</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L118">src/requester/requester.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L120">src/requester/requester.ts:120</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -468,7 +512,7 @@
 									<p>Subscribe a path and get value updates in a async callback
 									If you only need to get the current value once, use <a href="requester.html#subscribeonce">subscribeOnce</a> instead.</p>
 								</div>
-								<p>A Subscription listener should be closed with <a href="reqsubscribelistener.html#close">ReqSubscribeListener.close</a> when it&#39;s no longer needed.
+								<p>A Subscription listener should be closed with [[ReqSubscribeListener.close]] when it&#39;s no longer needed.
 								You can also use the <a href="requester.html#unsubscribe">unsubscribe</a> method to close the callback.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -511,7 +555,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="reqsubscribelistener.html" class="tsd-signature-type">ReqSubscribeListener</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ReqSubscribeListener</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -525,7 +569,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L156">src/requester/requester.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L163">src/requester/requester.ts:163</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -556,7 +600,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/d5cced1/ts/src/requester/requester.ts#L128">src/requester/requester.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/IOT-DSA/sdk-dslink-ts/blob/90843c3/ts/src/requester/requester.ts#L129">src/requester/requester.ts:129</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -635,13 +679,16 @@
 						<a href="nodeprovider.html" class="tsd-kind-icon">Node<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="nodequeryresult.html" class="tsd-kind-icon">Node<wbr>Query<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="nodestate.html" class="tsd-kind-icon">Node<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="remotenode.html" class="tsd-kind-icon">Remote<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="reqsubscribelistener.html" class="tsd-kind-icon">Req<wbr>Subscribe<wbr>Listener</a>
+						<a href="request.html" class="tsd-kind-icon">Request</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -676,6 +723,9 @@
 								<a href="requester.html#listonce" class="tsd-kind-icon">list<wbr>Once</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="requester.html#query" class="tsd-kind-icon">query</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="requester.html#remove" class="tsd-kind-icon">remove</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -695,15 +745,6 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class">
-						<a href="requesterinvokestream.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Stream</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="requesterinvokeupdate.html" class="tsd-kind-icon">Requester<wbr>Invoke<wbr>Update</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="requesterlistupdate.html" class="tsd-kind-icon">Requester<wbr>List<wbr>Update</a>
-					</li>
-					<li class=" tsd-kind-class">
 						<a href="responder.html" class="tsd-kind-icon">Responder</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -721,6 +762,12 @@
 					<li class=" tsd-kind-interface tsd-is-not-exported">
 						<a href="../interfaces/dslinkoption.html" class="tsd-kind-icon">DSLink<wbr>Option</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/filterstructure.html" class="tsd-kind-icon">Filter<wbr>Structure</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/nodequerystructure.html" class="tsd-kind-icon">Node<wbr>Query<wbr>Structure</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-is-not-exported">
 						<a href="../interfaces/provideroptions.html" class="tsd-kind-icon">Provider<wbr>Options</a>
 					</li>
@@ -735,6 +782,12 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#onreqparams" class="tsd-kind-icon">On<wbr>Req<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#usedsachildquery" class="tsd-kind-icon">use<wbr>Dsa<wbr>Child<wbr>Query</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#usedsaquery" class="tsd-kind-icon">use<wbr>Dsa<wbr>Query</a>
 					</li>
 				</ul>
 			</nav>

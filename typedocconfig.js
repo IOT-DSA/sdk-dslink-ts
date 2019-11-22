@@ -1,5 +1,6 @@
 module.exports = {
   src: [
+    './ts/react-hook.ts',
     './ts/web.ts',
     './ts/src/browser/browser-user-link.ts',
     './ts/src/requester/requester.ts',

@@ -2,7 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const result_1 = require("./src/requester/query/result");
 const react_1 = require("react");
-function useRawDsaQuery(link, pathOrNode, query, callback, useChildren) {
+/** @ignore */
+function useRawDsaQuery(link, pathOrNode, query, callback, watchChildren) {
+    if (typeof watchChildren === 'string') {
+        watchChildren = [watchChildren];
+    }
     const callbackRef = react_1.useRef();
     const rootNodeCache = react_1.useRef();
     const [, forceUpdate] = react_1.useState(1);
@@ -14,9 +18,9 @@ function useRawDsaQuery(link, pathOrNode, query, callback, useChildren) {
     }, []);
     const rootCallback = react_1.useCallback((node) => {
         rootNodeCache.current = node;
-        if (useChildren) {
+        if (watchChildren) {
             for (let [name, child] of node.children) {
-                if (useChildren[0] === '*' || useChildren.includes(name)) {
+                if (watchChildren[0] === '*' || watchChildren.includes(name)) {
                     child.listen(childCallback);
                 }
             }
@@ -52,11 +56,11 @@ function useRawDsaQuery(link, pathOrNode, query, callback, useChildren) {
  *  - value of config that matches ?configs is changed
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
- *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
- * @param useChildren defines the children nodes that will trigger the callback on any change
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
-function useDsaQuery(link, path, query, callback, useChildren) {
-    return useRawDsaQuery(link, path, query, callback, useChildren);
+function useDsaQuery(link, path, query, callback, watchChildren) {
+    return useRawDsaQuery(link, path, query, callback, watchChildren);
 }
 exports.useDsaQuery = useDsaQuery;
 /**
@@ -67,11 +71,11 @@ exports.useDsaQuery = useDsaQuery;
  *  - value of config that matches ?configs is changed
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
- *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
- * @param useChildren defines the children nodes that will trigger the callback on any change
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
-function useDsaChildQuery(node, callback, useChildren) {
-    return useRawDsaQuery(null, node, null, callback, useChildren);
+function useDsaChildQuery(node, callback, watchChildren) {
+    return useRawDsaQuery(null, node, null, callback, watchChildren);
 }
 exports.useDsaChildQuery = useDsaChildQuery;
 //# sourceMappingURL=react-hook.js.map

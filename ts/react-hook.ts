@@ -4,13 +4,17 @@ import {Closable, Listener} from './src/utils/async';
 import {NodeQueryResult} from './src/requester/query/result';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+/** @ignore */
 function useRawDsaQuery(
   link: BrowserUserLink,
   pathOrNode: string | NodeQueryResult,
   query: NodeQueryStructure,
   callback?: Listener<NodeQueryResult>,
-  useChildren?: '*' | string[]
+  watchChildren?: '*' | string[]
 ) {
+  if (typeof watchChildren === 'string') {
+    watchChildren = [watchChildren];
+  }
   const callbackRef = useRef<Listener<NodeQueryResult>>();
   const rootNodeCache = useRef<NodeQueryResult>();
   const [, forceUpdate] = useState(1);
@@ -22,9 +26,9 @@ function useRawDsaQuery(
   }, []);
   const rootCallback = useCallback((node: NodeQueryResult) => {
     rootNodeCache.current = node;
-    if (useChildren) {
+    if (watchChildren) {
       for (let [name, child] of node.children) {
-        if (useChildren[0] === '*' || useChildren.includes(name)) {
+        if (watchChildren[0] === '*' || watchChildren.includes(name)) {
           child.listen(childCallback);
         }
       }
@@ -60,17 +64,17 @@ function useRawDsaQuery(
  *  - value of config that matches ?configs is changed
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
- *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
- * @param useChildren defines the children nodes that will trigger the callback on any change
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
 export function useDsaQuery(
   link: BrowserUserLink,
   path: string,
   query: NodeQueryStructure,
   callback?: Listener<NodeQueryResult>,
-  useChildren?: '*' | string[]
+  watchChildren?: '*' | string[]
 ) {
-  return useRawDsaQuery(link, path, query, callback, useChildren);
+  return useRawDsaQuery(link, path, query, callback, watchChildren);
 }
 
 /**
@@ -81,13 +85,13 @@ export function useDsaQuery(
  *  - value of config that matches ?configs is changed
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
- *  - an child has updated internally (same as the above condition), and the child is defined in useChildren
- * @param useChildren defines the children nodes that will trigger the callback on any change
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
 export function useDsaChildQuery(
   node: NodeQueryResult,
   callback?: Listener<NodeQueryResult>,
-  useChildren?: '*' | string[]
+  watchChildren?: '*' | string[]
 ) {
-  return useRawDsaQuery(null, node, null, callback, useChildren);
+  return useRawDsaQuery(null, node, null, callback, watchChildren);
 }
