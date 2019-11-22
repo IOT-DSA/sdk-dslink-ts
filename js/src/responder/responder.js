@@ -104,7 +104,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
             response._sentStreamStatus = 'closed';
             rid = response.rid;
         }
-        let m = { rid: rid, stream: 'closed' };
+        let m = { rid, stream: 'closed' };
         if (error != null) {
             m['error'] = error.serialize();
         }

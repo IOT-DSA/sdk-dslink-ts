@@ -321,6 +321,13 @@ class NodeState {
         else if (this._lastValueUpdate) {
             s.addValue(this._lastValueUpdate);
         }
+        else if (!this._node || !this._node.getConfig('$type')) {
+            // value not supported
+            s.addValue(new value_1.ValueUpdate(null, null, { status: 'unknown' }));
+        }
+        else {
+            // no value will be sent, responder will just wait until a value is ready
+        }
         if (this._node) {
             this._node.onSubscribe(s);
         }
