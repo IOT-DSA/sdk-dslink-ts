@@ -21,7 +21,7 @@ function useRawDsaQuery(link, pathOrNode, query, callback, watchChildren) {
         if (watchChildren) {
             for (let [name, child] of node.children) {
                 if (watchChildren[0] === '*' || watchChildren.includes(name)) {
-                    child.listen(childCallback);
+                    child.listen(childCallback, false);
                 }
             }
         }

@@ -15,7 +15,7 @@ class Stream {
         this._onListen = onListen;
         this._cached = cached;
     }
-    listen(listener) {
+    listen(listener, useCache = true) {
         this._listeners.add(listener);
         if (this._onStartListen && this._listeners.size === 1) {
             this._onStartListen();
@@ -23,7 +23,7 @@ class Stream {
         if (this._onListen) {
             this._onListen(listener);
         }
-        if (this._value !== undefined && !this._updating) {
+        if (useCache && this._value !== undefined && !this._updating) {
             // skip extra update if it's already in updating iteration
             setTimeout(() => {
                 if (this._listeners.has(listener) && this._value !== undefined) {

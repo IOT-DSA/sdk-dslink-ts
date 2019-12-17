@@ -8,8 +8,8 @@ class NodeQueryResult extends node_1.Node {
         this.stream = stream;
         this.updateNode({ value, configs, attributes, children });
     }
-    listen(listener) {
-        return this.stream.listen(listener);
+    listen(listener, useCache = true) {
+        return this.stream.listen(listener, useCache);
     }
     updateNode(node) {
         this.value = node.value;

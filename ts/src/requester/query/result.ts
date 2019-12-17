@@ -16,8 +16,8 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
     this.updateNode({value, configs, attributes, children});
   }
 
-  listen(listener: Listener<NodeQueryResult>): StreamSubscription<NodeQueryResult> {
-    return this.stream.listen(listener);
+  listen(listener: Listener<NodeQueryResult>, useCache = true): StreamSubscription<NodeQueryResult> {
+    return this.stream.listen(listener, useCache);
   }
 
   updateNode(node: {

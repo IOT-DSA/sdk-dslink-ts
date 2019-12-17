@@ -34,7 +34,7 @@ export class Stream<T> {
     this._cached = cached;
   }
 
-  listen(listener: Listener<T>): StreamSubscription<T> {
+  listen(listener: Listener<T>, useCache = true): StreamSubscription<T> {
     this._listeners.add(listener);
     if (this._onStartListen && this._listeners.size === 1) {
       this._onStartListen();
@@ -42,7 +42,7 @@ export class Stream<T> {
     if (this._onListen) {
       this._onListen(listener);
     }
-    if (this._value !== undefined && !this._updating) {
+    if (useCache && this._value !== undefined && !this._updating) {
       // skip extra update if it's already in updating iteration
       setTimeout(() => {
         if (this._listeners.has(listener) && this._value !== undefined) {
