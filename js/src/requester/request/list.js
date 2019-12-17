@@ -120,87 +120,90 @@ class ListController {
     }
     onUpdate(streamStatus, updates, columns, meta, error) {
         let reseted = false;
-        if (error && !updates) {
-            updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+        if (!updates) {
+            if (error) {
+                updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+            }
+            else {
+                updates = [];
+            }
         }
-        if (updates) {
-            for (let update of updates) {
-                let name;
-                let value;
-                let removed = false;
-                if (Array.isArray(update)) {
-                    if (update.length > 0 && typeof update[0] === 'string') {
-                        name = update[0];
-                        if (update.length > 1) {
-                            value = update[1];
-                        }
-                    }
-                    else {
-                        continue; // invalid response
-                    }
-                }
-                else if (update != null && update instanceof Object) {
-                    if (typeof update['name'] === 'string') {
-                        name = update['name'];
-                    }
-                    else {
-                        continue; // invalid response
-                    }
-                    if (update['change'] === 'remove') {
-                        removed = true;
-                    }
-                    else {
-                        value = update['value'];
+        for (let update of updates) {
+            let name;
+            let value;
+            let removed = false;
+            if (Array.isArray(update)) {
+                if (update.length > 0 && typeof update[0] === 'string') {
+                    name = update[0];
+                    if (update.length > 1) {
+                        value = update[1];
                     }
                 }
                 else {
                     continue; // invalid response
                 }
-                if (name.startsWith('$')) {
-                    if (!reseted &&
-                        (name === '$is' || name === '$base' || (name === '$disconnectedTs' && typeof value === 'string'))) {
-                        reseted = true;
-                        this.node.resetNodeCache();
-                    }
-                    if (name === '$is') {
-                        this.loadProfile(value);
-                    }
-                    this.changes.add(name);
-                    if (removed) {
-                        this.node.configs.delete(name);
-                    }
-                    else {
-                        this.node.configs.set(name, value);
-                    }
-                }
-                else if (name.startsWith('@')) {
-                    this.changes.add(name);
-                    if (removed) {
-                        this.node.attributes.delete(name);
-                    }
-                    else {
-                        this.node.attributes.set(name, value);
-                    }
+            }
+            else if (update != null && update instanceof Object) {
+                if (typeof update['name'] === 'string') {
+                    name = update['name'];
                 }
                 else {
-                    this.changes.add(name);
-                    if (removed) {
-                        this.node.children.delete(name);
-                    }
-                    else if (value != null && value instanceof Object) {
-                        // TODO, also wait for children $is
-                        this.node.children.set(name, this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
-                    }
+                    continue; // invalid response
+                }
+                if (update['change'] === 'remove') {
+                    removed = true;
+                }
+                else {
+                    value = update['value'];
                 }
             }
-            if (this.request.streamStatus !== 'initialize') {
-                this.node._listed = true;
+            else {
+                continue; // invalid response
             }
-            if (this._pendingRemoveDef) {
-                this._checkRemoveDef();
+            if (name.startsWith('$')) {
+                if (!reseted &&
+                    (name === '$is' || name === '$base' || (name === '$disconnectedTs' && typeof value === 'string'))) {
+                    reseted = true;
+                    this.node.resetNodeCache();
+                }
+                if (name === '$is') {
+                    this.loadProfile(value);
+                }
+                this.changes.add(name);
+                if (removed) {
+                    this.node.configs.delete(name);
+                }
+                else {
+                    this.node.configs.set(name, value);
+                }
             }
-            this.onProfileUpdated();
+            else if (name.startsWith('@')) {
+                this.changes.add(name);
+                if (removed) {
+                    this.node.attributes.delete(name);
+                }
+                else {
+                    this.node.attributes.set(name, value);
+                }
+            }
+            else {
+                this.changes.add(name);
+                if (removed) {
+                    this.node.children.delete(name);
+                }
+                else if (value != null && value instanceof Object) {
+                    // TODO, also wait for children $is
+                    this.node.children.set(name, this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
+                }
+            }
         }
+        if (this.request.streamStatus !== 'initialize') {
+            this.node._listed = true;
+        }
+        if (this._pendingRemoveDef) {
+            this._checkRemoveDef();
+        }
+        this.onProfileUpdated();
     }
     loadProfile(defName) {
         this._ready = true;
