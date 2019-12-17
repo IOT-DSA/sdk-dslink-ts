@@ -21,3 +21,5 @@ nodes.json
 /test
 /example
 /docs
+.nycrc
+.prettierrc
