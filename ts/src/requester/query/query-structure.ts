@@ -33,6 +33,10 @@ export interface NodeQueryStructure {
    * filter the attributes to be queried, if not specified then no attribute will be returned
    */
   '?attributes'?: '*' | string[];
+  /**
+   * filter the action nodes to be queried, if not specified then no action node will be returned
+   */
+  '?actions'?: '*' | string[];
 
   /**
    * nested query for all children nodes, except action nodes or any node that already has explicit nested query with its node name

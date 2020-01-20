@@ -43,10 +43,12 @@ export class Query extends Stream<NodeQueryResult> {
   fixedChildren: Map<string, Query> = new Map();
   dynamicQuery: NodeQueryStructure;
   dynamicChildren: Map<string, Query>;
-  // null means all configs are required
+  // null means no config required
   configFilter: string[];
-  // null means all attributes are required
+  // null means no attribute required
   attributeFilter: string[];
+  // null means no action required
+  actionFilter: string[];
 
   constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure) {
     super(null, parent.onAllCancel, null, true);
@@ -64,6 +66,11 @@ export class Query extends Stream<NodeQueryResult> {
       this.attributeFilter = query['?attributes'];
     } else if (query['?attributes'] === '*') {
       this.attributeFilter = ['*'];
+    }
+    if (Array.isArray(query['?actions'])) {
+      this.actionFilter = query['?actions'];
+    } else if (query['?actions'] === '*') {
+      this.actionFilter = ['*'];
     }
     for (let key in query) {
       if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
@@ -305,7 +312,12 @@ export class Query extends Stream<NodeQueryResult> {
         }
       }
       for (let [key, child] of update.node.children) {
-        if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+        if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+          if (child.configs.has('$invokable')) {
+            if (!this.actionFilter || (!this.actionFilter.includes(key) && this.actionFilter[0] !== '*')) {
+              continue;
+            }
+          }
           let childQuery = new Query(this, Path.concat(this.path, key), this.dynamicQuery);
           this.dynamicChildren.set(key, childQuery);
           childQuery.start();

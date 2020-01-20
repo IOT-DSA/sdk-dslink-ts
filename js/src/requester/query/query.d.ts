@@ -23,6 +23,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     dynamicChildren: Map<string, Query>;
     configFilter: string[];
     attributeFilter: string[];
+    actionFilter: string[];
     constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure);
     isQueryReadyAsChild(): boolean | NodeQueryResult;
     isNodeReady(): boolean;

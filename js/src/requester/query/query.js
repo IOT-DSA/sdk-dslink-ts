@@ -121,7 +121,12 @@ class Query extends async_1.Stream {
                     }
                 }
                 for (let [key, child] of update.node.children) {
-                    if (!child.configs.has('$invokable') && !this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+                    if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+                        if (child.configs.has('$invokable')) {
+                            if (!this.actionFilter || (!this.actionFilter.includes(key) && this.actionFilter[0] !== '*')) {
+                                continue;
+                            }
+                        }
                         let childQuery = new Query(this, node_1.Path.concat(this.path, key), this.dynamicQuery);
                         this.dynamicChildren.set(key, childQuery);
                         childQuery.start();
@@ -146,6 +151,12 @@ class Query extends async_1.Stream {
         }
         else if (query['?attributes'] === '*') {
             this.attributeFilter = ['*'];
+        }
+        if (Array.isArray(query['?actions'])) {
+            this.actionFilter = query['?actions'];
+        }
+        else if (query['?actions'] === '*') {
+            this.actionFilter = ['*'];
         }
         for (let key in query) {
             if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
