@@ -123,7 +123,12 @@ class EqualsFilter extends ValueFilter {
   }
 
   compare(): boolean {
-    return this.value === this.target;
+    if (this.target == null) {
+      // null and undefined should be treated as equal
+      return this.value == null;
+    } else {
+      return this.value === this.target;
+    }
   }
 }
 
@@ -134,7 +139,12 @@ class NotEqualsFilter extends ValueFilter {
   }
 
   compare(): boolean {
-    return this.value !== this.target;
+    if (this.target == null) {
+      // null and undefined should be treated as equal
+      return this.value != null;
+    } else {
+      return this.value !== this.target;
+    }
   }
 }
 

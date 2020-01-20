@@ -92,7 +92,13 @@ class EqualsFilter extends ValueFilter {
         this.target = filter['='];
     }
     compare() {
-        return this.value === this.target;
+        if (this.target == null) {
+            // null and undefined should be treated as equal
+            return this.value == null;
+        }
+        else {
+            return this.value === this.target;
+        }
     }
 }
 class NotEqualsFilter extends ValueFilter {
@@ -101,7 +107,13 @@ class NotEqualsFilter extends ValueFilter {
         this.target = filter['!='];
     }
     compare() {
-        return this.value !== this.target;
+        if (this.target == null) {
+            // null and undefined should be treated as equal
+            return this.value != null;
+        }
+        else {
+            return this.value !== this.target;
+        }
     }
 }
 class GreaterFilter extends ValueFilter {
