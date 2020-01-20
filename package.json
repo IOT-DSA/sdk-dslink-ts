@@ -50,7 +50,7 @@
   },
   "scripts": {
     "js-example": "parcel example/browser/basic.html --out-dir temp --open --no-source-maps ",
-    "query-example": "parcel example/query/react-hook.html --out-dir temp --open --no-source-maps ",
+    "query-example": "parcel example/query-react/react-hook.html --out-dir temp --open --no-source-maps ",
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.js",
     "test": "mocha 'ts/**/*.spec.ts'",
