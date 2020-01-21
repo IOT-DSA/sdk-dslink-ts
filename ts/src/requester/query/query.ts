@@ -140,7 +140,7 @@ export class Query extends Stream<NodeQueryResult> {
 
       let children: Map<string, NodeQueryResult> = new Map<string, NodeQueryResult>();
       for (let [key, query] of this.fixedChildren) {
-        if (query._filterMatched && query._value) {
+        if (query._filterMatched && query._value && !query.disconnected) {
           children.set(key, query._value);
         }
       }
@@ -297,12 +297,14 @@ export class Query extends Stream<NodeQueryResult> {
   }
   listListener: Closable;
   listResult: RemoteNode;
+  disconnected: boolean;
   listCallback = (update: RequesterListUpdate) => {
     if (this.childrenMode === 'snapshot') {
       this.listListener.close();
       this.listListener = null;
     }
     this.listResult = update.node;
+    this.disconnected = Boolean(this.listResult.getConfig('$disconnectedTs'));
     if (this.dynamicChildren) {
       for (let [key, child] of this.dynamicChildren) {
         if (!update.node.children.has(key)) {

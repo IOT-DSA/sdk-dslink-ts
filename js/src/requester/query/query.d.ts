@@ -51,6 +51,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     setListReady(val: boolean): void;
     listListener: Closable;
     listResult: RemoteNode;
+    disconnected: boolean;
     listCallback: (update: RequesterListUpdate) => void;
     destroy(): void;
 }

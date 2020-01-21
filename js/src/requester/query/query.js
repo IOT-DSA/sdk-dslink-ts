@@ -43,7 +43,7 @@ class Query extends async_1.Stream {
                 }
                 let children = new Map();
                 for (let [key, query] of this.fixedChildren) {
-                    if (query._filterMatched && query._value) {
+                    if (query._filterMatched && query._value && !query.disconnected) {
                         children.set(key, query._value);
                     }
                 }
@@ -112,6 +112,7 @@ class Query extends async_1.Stream {
                 this.listListener = null;
             }
             this.listResult = update.node;
+            this.disconnected = Boolean(this.listResult.getConfig('$disconnectedTs'));
             if (this.dynamicChildren) {
                 for (let [key, child] of this.dynamicChildren) {
                     if (!update.node.children.has(key)) {
