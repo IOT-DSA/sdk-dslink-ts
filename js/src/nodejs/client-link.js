@@ -17,6 +17,7 @@ const pk_1 = require("../crypto/pk");
 const utils_1 = require("../utils");
 const logger_1 = require("../utils/logger");
 const serialize_1 = require("./serialize");
+const encrypt_1 = require("../utils/encrypt");
 /** @ignore */
 let logger = logger_1.logger.tag('link');
 class HttpClientLink extends interfaces_1.ClientLink {
@@ -47,6 +48,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         else {
             this.privateKey = serialize_1.getKeyFromFile('.dslink.key');
         }
+        encrypt_1.initEncryptionSecret(this.privateKey.ecPrivateKey);
         this.linkData = options.linkData;
         if (options.format) {
             if (Array.isArray(options.format)) {

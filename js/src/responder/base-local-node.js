@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_state_1 = require("./node_state");
 const node_1 = require("../common/node");
+const encrypt_1 = require("../utils/encrypt");
 class BaseLocalNode extends node_state_1.LocalNode {
     createChild(name, cls, ...args) {
         let childPath = node_1.Path.concat(this.path, name);
@@ -38,7 +39,12 @@ class BaseLocalNode extends node_state_1.LocalNode {
     saveConfigs(data) {
         for (let [key, value] of this.configs) {
             if (this.shouldSaveConfig(key)) {
-                data[key] = value;
+                if (key.startsWith('$$') && key.endsWith('password')) {
+                    data[key] = encrypt_1.encryptPassword(value);
+                }
+                else {
+                    data[key] = value;
+                }
             }
         }
     }
@@ -52,7 +58,12 @@ class BaseLocalNode extends node_state_1.LocalNode {
                     continue;
                 case 36 /* $ */:
                     if (this.shouldSaveConfig(key)) {
-                        this.configs.set(key, data[key]);
+                        if (key.startsWith('$$') && key.endsWith('password')) {
+                            this.configs.set(key, encrypt_1.decryptPassword(data[key]));
+                        }
+                        else {
+                            this.configs.set(key, data[key]);
+                        }
                     }
                     continue;
                 case 63 /* ? */:

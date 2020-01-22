@@ -25,6 +25,7 @@ describe('save nodes', function() {
         saveNodes: true
       });
       rootNode.val.setAttribute('@attr1', 'value1');
+      rootNode.setConfig('$$password', 'value2');
       rootNode.val.onValueChange(207);
       link.close();
 
@@ -43,6 +44,7 @@ describe('save nodes', function() {
       });
 
       assert.equal(rootNode.val.getAttribute('@attr1'), 'value1');
+      assert.equal(rootNode.getConfig('$$password'), 'value2');
       assert.equal(rootNode.val._value, 207);
 
       link.close();

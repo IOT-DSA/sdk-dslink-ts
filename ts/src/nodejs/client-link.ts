@@ -16,6 +16,7 @@ import {LocalNode, NodeProvider} from '../responder/node_state';
 
 import {logger as mainLogger} from '../utils/logger';
 import {getKeyFromFile, NodeSerializer} from './serialize';
+import {initEncryptionSecret} from "../utils/encrypt";
 
 /** @ignore */
 let logger = mainLogger.tag('link');
@@ -99,6 +100,7 @@ export class HttpClientLink extends ClientLink {
     } else {
       this.privateKey = getKeyFromFile('.dslink.key');
     }
+    initEncryptionSecret(this.privateKey.ecPrivateKey);
 
     this.linkData = options.linkData;
     if (options.format) {

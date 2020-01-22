@@ -3,6 +3,7 @@ import {Responder} from './responder';
 import {Response} from './response';
 import {Permission} from '../common/permission';
 import {Path} from '../common/node';
+import {decryptPassword, encryptPassword} from '../utils/encrypt';
 
 export class BaseLocalNode extends LocalNode {
   createChild(name: string, cls: typeof LocalNode, ...args: any[]): LocalNode {
@@ -45,7 +46,11 @@ export class BaseLocalNode extends LocalNode {
   saveConfigs(data: {[key: string]: any}) {
     for (let [key, value] of this.configs) {
       if (this.shouldSaveConfig(key)) {
-        data[key] = value;
+        if (key.startsWith('$$') && key.endsWith('password')) {
+          data[key] = encryptPassword(value);
+        } else {
+          data[key] = value;
+        }
       }
     }
   }
@@ -59,7 +64,11 @@ export class BaseLocalNode extends LocalNode {
           continue;
         case 36 /* $ */:
           if (this.shouldSaveConfig(key)) {
-            this.configs.set(key, data[key]);
+            if (key.startsWith('$$') && key.endsWith('password')) {
+              this.configs.set(key, decryptPassword(data[key]));
+            } else {
+              this.configs.set(key, data[key]);
+            }
           }
           continue;
         case 63 /* ? */:

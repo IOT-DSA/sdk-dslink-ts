@@ -48,4 +48,7 @@ export class TestRootNode extends RootNode {
     this.val = this.createChild('val', TestValueNode) as TestValueNode;
     this.action = this.createChild('act', TestActionNode) as TestActionNode;
   }
+  shouldSaveConfig(key: string): boolean {
+    return super.shouldSaveConfig(key) || key === '$$password';
+  }
 }
