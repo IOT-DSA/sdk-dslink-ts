@@ -38,6 +38,9 @@ class ListResponse extends response_1.Response {
         if (!node) {
             updates.push(['$disconnectedTs', this.state._disconnectedTs]);
         }
+        else if (node.useVirtualList) {
+            node.virtualList(updates);
+        }
         else {
             let updateIs;
             let updateBase;
@@ -114,7 +117,9 @@ class ListResponse extends response_1.Response {
                 .concat(updateChildren);
         }
         this.changes.clear();
-        this.responder.updateResponse(this, updates, { streamStatus: 'open' });
+        if (updates.length) {
+            this.responder.updateResponse(this, updates, { streamStatus: 'open' });
+        }
     }
     ackReceived(receiveAckId, startTime, currentTime) {
         if (receiveAckId === this._lastWatingAckId) {

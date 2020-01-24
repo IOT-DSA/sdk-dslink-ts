@@ -44,6 +44,8 @@ export class ListResponse extends Response {
 
     if (!node) {
       updates.push(['$disconnectedTs', this.state._disconnectedTs]);
+    } else if (node.useVirtualList) {
+      node.virtualList(updates);
     } else {
       let updateIs: any;
       let updateBase: any;
@@ -118,8 +120,9 @@ export class ListResponse extends Response {
     }
 
     this.changes.clear();
-
-    this.responder.updateResponse(this, updates, {streamStatus: 'open'});
+    if (updates.length) {
+      this.responder.updateResponse(this, updates, {streamStatus: 'open'});
+    }
   }
 
   _waitingAckCount: number = 0;

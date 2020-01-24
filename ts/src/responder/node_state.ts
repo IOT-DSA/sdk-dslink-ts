@@ -22,7 +22,8 @@ export class LocalNode extends Node<LocalNode> {
     this.initialize();
   }
 
-  initialize() {}
+  initialize() {
+  }
 
   addChild(name: string, node: LocalNode) {
     if (node.provider !== this.provider) {
@@ -150,7 +151,8 @@ export class LocalNode extends Node<LocalNode> {
    */
   _value: any;
 
-  onSubscribe(subscriber: Subscriber) {}
+  onSubscribe(subscriber: Subscriber) {
+  }
 
   /// Called by the link internals to set a value of a node.
   setValue(value: any, responder?: Responder, response?: Response, maxPermission: number = Permission.CONFIG) {
@@ -183,11 +185,17 @@ export class LocalNode extends Node<LocalNode> {
     return true;
   }
 
+  useVirtualList: boolean;
+
+  virtualList(updates: any[]) {
+  }
+
   save(): {[key: string]: any} {
     return null;
   }
 
-  load(data: {[key: string]: any}) {}
+  load(data: {[key: string]: any}) {
+  }
 
   destroy() {
     if (this._state) {

@@ -33,6 +33,8 @@ export declare class LocalNode extends Node<LocalNode> {
      * @return true when the change is valid
      */
     onValueChange(newVal: any): boolean;
+    useVirtualList: boolean;
+    virtualList(updates: any[]): void;
     save(): {
         [key: string]: any;
     };

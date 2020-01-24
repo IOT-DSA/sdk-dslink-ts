@@ -12,7 +12,8 @@ class LocalNode extends node_1.Node {
         this.provider = provider;
         this.initialize();
     }
-    initialize() { }
+    initialize() {
+    }
     addChild(name, node) {
         if (node.provider !== this.provider) {
             // TODO log warning
@@ -118,7 +119,8 @@ class LocalNode extends node_1.Node {
             response.close();
         }
     }
-    onSubscribe(subscriber) { }
+    onSubscribe(subscriber) {
+    }
     /// Called by the link internals to set a value of a node.
     setValue(value, responder, response, maxPermission = permission_1.Permission.CONFIG) {
         try {
@@ -150,10 +152,13 @@ class LocalNode extends node_1.Node {
         this._value = newVal;
         return true;
     }
+    virtualList(updates) {
+    }
     save() {
         return null;
     }
-    load(data) { }
+    load(data) {
+    }
     destroy() {
         if (this._state) {
             this._state.setNode(null);
