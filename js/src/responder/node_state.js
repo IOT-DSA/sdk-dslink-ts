@@ -191,6 +191,9 @@ class NodeProvider {
             }
         }
     }
+    getVirtualNode(path) {
+        return null;
+    }
     getNode(path) {
         if (this._states.has(path)) {
             return this._states.get(path)._node;
@@ -203,6 +206,9 @@ class NodeProvider {
         }
         let state = new NodeState(path, this);
         this._states.set(path, state);
+        if (!state._node) {
+            state.setNode(this.getVirtualNode(path));
+        }
         return state;
     }
     removeNode(path) {

@@ -48,6 +48,7 @@ interface ProviderOptions {
 export declare class NodeProvider {
     /** @ignore */
     _states: Map<string, NodeState>;
+    getVirtualNode(path: string): LocalNode;
     getNode(path: string): LocalNode;
     createState(path: string): NodeState;
     removeNode(path: string): void;

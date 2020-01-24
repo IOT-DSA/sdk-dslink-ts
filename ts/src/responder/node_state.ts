@@ -209,6 +209,10 @@ export class NodeProvider {
   /** @ignore */
   _states: Map<string, NodeState> = new Map<string, NodeState>();
 
+  getVirtualNode(path: string): LocalNode {
+    return null;
+  }
+
   getNode(path: string): LocalNode {
     if (this._states.has(path)) {
       return this._states.get(path)._node;
@@ -222,6 +226,9 @@ export class NodeProvider {
     }
     let state = new NodeState(path, this);
     this._states.set(path, state);
+    if (!state._node) {
+      state.setNode(this.getVirtualNode(path));
+    }
     return state;
   }
 

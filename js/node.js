@@ -22,4 +22,6 @@ exports.DsError = interfaces_1.DsError;
 var logger_1 = require("./src/utils/logger");
 exports.Logger = logger_1.Logger;
 exports.logger = logger_1.logger;
+var node_state_1 = require("./src/responder/node_state");
+exports.NodeProvider = node_state_1.NodeProvider;
 //# sourceMappingURL=node.js.map
