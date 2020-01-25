@@ -64,11 +64,16 @@ class SubscribeResponse extends response_1.Response {
             this._lastWaitingAckId = waitingAckId;
         }
         let updates = [];
+        let count = 0;
         for (let subscriber of this.changed) {
+            if (++count > 32) {
+                this.prepareSending();
+                break;
+            }
             updates = updates.concat(subscriber.process(waitingAckId));
+            this.changed.delete(subscriber);
         }
         this.responder.updateResponse(this, updates);
-        this.changed.clear();
     }
     ackReceived(receiveAckId, startTime, currentTime) {
         if (receiveAckId === this._lastWaitingAckId) {
