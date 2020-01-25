@@ -172,7 +172,22 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     let toAdd: any[] = [];
 
     let processingPaths: Set<string> = this._changedPaths;
-    this._changedPaths = new Set<string>();
+    if (processingPaths.size > 32) {
+      processingPaths = new Set<string>();
+      let pendingPaths = new Set<string>();
+      let count = 0;
+      for (let path of this._changedPaths) {
+        if (++count > 32) {
+          pendingPaths.add(path);
+        } else {
+          processingPaths.add(path);
+        }
+      }
+      this._changedPaths = pendingPaths;
+      this.prepareSending();
+    } else {
+      this._changedPaths = new Set<string>();
+    }
     for (let path of processingPaths) {
       if (this.subscriptions.has(path)) {
         let sub: ReqSubscribeController = this.subscriptions.get(path);
@@ -189,15 +204,19 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     if (this.toRemove.size > 0) {
       let removeSids: any[] = [];
       for (let [sid, sub] of this.toRemove) {
+        if (removeSids.length >= 32) {
+          this.prepareSending();
+          break;
+        }
         if (sub.callbacks.size === 0) {
           removeSids.push(sid);
           this.subscriptions.delete(sub.node.remotePath);
           this.subscriptionIds.delete(sub.sid);
           sub._destroy();
         }
+        this.toRemove.delete(sid);
       }
       this.requester._sendRequest({method: 'unsubscribe', sids: removeSids}, null);
-      this.toRemove.clear();
     }
   }
 

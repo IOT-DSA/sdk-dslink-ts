@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../common/interfaces");
 const connection_channel_1 = require("../common/connection-channel");
 const async_1 = require("../utils/async");
+const codec_1 = require("../utils/codec");
 const logger_1 = require("../utils/logger");
 let logger = logger_1.logger.tag('ws');
 class WebSocketConnection extends interfaces_1.Connection {
@@ -56,7 +57,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
-                    //        logger.fine("$m");
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
                     if (typeof m['salt'] === 'string') {
                         this.clientLink.updateSalt(m['salt']);
                     }
@@ -90,7 +91,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             else if (typeof e.data === 'string') {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
-                    //        logger.fine("$m");
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
                     let needAck = false;
                     if (Array.isArray(m['responses']) && m['responses'].length > 0) {
                         needAck = true;
@@ -257,7 +258,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this.nextMsgId = 1;
                 }
             }
-            //      logger.fine("send: $m");
+            logger.trace(() => 'send' + codec_1.DsJson.encode(m, true));
             let encoded = this.codec.encodeFrame(m);
             try {
                 this.socket.send(encoded);
