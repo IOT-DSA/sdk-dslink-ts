@@ -8,7 +8,7 @@ import {
 } from '../common/interfaces';
 import {PassiveChannel} from '../common/connection-channel';
 import {Completer} from '../utils/async';
-import {DsCodec} from '../utils/codec';
+import {DsCodec, DsJson} from '../utils/codec';
 import {logger as mainLogger} from '../utils/logger';
 
 let logger = mainLogger.tag('ws');
@@ -147,7 +147,7 @@ export class WebSocketConnection extends Connection {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
-        //        logger.fine("$m");
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
 
         if (typeof m['salt'] === 'string') {
           this.clientLink.updateSalt(m['salt']);
@@ -181,7 +181,7 @@ export class WebSocketConnection extends Connection {
     } else if (typeof e.data === 'string') {
       try {
         m = this.codec.decodeStringFrame(e.data);
-        //        logger.fine("$m");
+        logger.trace(() => 'receive' + DsJson.encode(m, true));
 
         let needAck = false;
         if (Array.isArray(m['responses']) && m['responses'].length > 0) {
@@ -271,7 +271,7 @@ export class WebSocketConnection extends Connection {
         }
       }
 
-      //      logger.fine("send: $m");
+      logger.trace(() => 'send' + DsJson.encode(m, true));
       let encoded = this.codec.encodeFrame(m);
 
       try {

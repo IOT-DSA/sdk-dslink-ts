@@ -97,7 +97,13 @@ export abstract class ConnectionHandler {
   getSendingData(currentTime: number, waitingAckId: number): ProcessorResult {
     this._pendingSend = false;
     let processors: ConnectionProcessor[] = this._processors;
-    this._processors = [];
+    if (processors.length > 32) {
+      processors = this._processors.slice(0, 32);
+      this._processors = this._processors.slice(32);
+      this._conn.sendWhenReady(this);
+    } else {
+      this._processors = [];
+    }
     for (let proc of processors) {
       proc.startSendingData(currentTime, waitingAckId);
     }

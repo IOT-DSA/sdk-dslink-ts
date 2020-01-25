@@ -76,11 +76,16 @@ export class SubscribeResponse extends Response {
     }
 
     let updates: any[] = [];
+    let count = 0;
     for (let subscriber of this.changed) {
+      if (++count > 32) {
+        this.prepareSending();
+        break;
+      }
       updates = updates.concat(subscriber.process(waitingAckId));
+      this.changed.delete(subscriber);
     }
     this.responder.updateResponse(this, updates);
-    this.changed.clear();
   }
 
   _waitingAckCount: number = 0;
