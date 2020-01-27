@@ -212,7 +212,10 @@ class NodeProvider {
         let state = new NodeState(path, this);
         this._states.set(path, state);
         if (!state._node) {
-            state.setNode(this.getVirtualNode(path));
+            let virtualNode = this.getVirtualNode(path);
+            if (virtualNode) {
+                state.setNode(virtualNode);
+            }
         }
         return state;
     }
