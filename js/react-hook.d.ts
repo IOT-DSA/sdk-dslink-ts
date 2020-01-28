@@ -13,9 +13,8 @@ import { NodeQueryResult } from './src/requester/query/result';
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
- * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
-export declare function useDsaQuery(link: BrowserUserLink, path: string, query: NodeQueryStructure, callback?: Listener<NodeQueryResult>, watchChildren?: '*' | string[]): void;
+export declare function useDsaQuery(link: BrowserUserLink, path: string, query: NodeQueryStructure, callback?: Listener<NodeQueryResult>): void;
 /**
  * Query a child node and its children
  * @param node The node from a result of a parent query.
@@ -25,6 +24,5 @@ export declare function useDsaQuery(link: BrowserUserLink, path: string, query: 
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
- * @param watchChildren defines the children nodes that will trigger the callback on its internal change
  */
-export declare function useDsaChildQuery(node: NodeQueryResult, callback?: Listener<NodeQueryResult>, watchChildren?: '*' | string[]): void;
+export declare function useDsaChildQuery(node: NodeQueryResult, callback?: Listener<NodeQueryResult>): void;
