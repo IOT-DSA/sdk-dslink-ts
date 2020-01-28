@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {LocalNode, NodeProvider} from '../src/responder/node_state';
+import {LocalNode, NodeProvider, Subscriber} from '../src/responder/node_state';
 import {MockBroker} from './utils/mock-broker';
 import {Logger, logger} from '../src/utils/logger';
 import {HttpClientLink} from '../src/nodejs/client-link';
@@ -30,6 +30,16 @@ class VirtualChild extends LocalNode {
           this._state.listStream.add('$is');
         }, 20);
       }
+    }
+  }
+
+  onSubscribe(subscriber: Subscriber) {
+    if (subscriber) {
+      // load the value only when there is a subscriber, (use setTimeout to simulate the delay)
+      setTimeout(() => {
+        // requester wont receive any update until the value is loaded
+        this.setValue('ready');
+      }, 20);
     }
   }
 }
@@ -82,5 +92,45 @@ describe('virtual node', function() {
     await sleep(10);
     assert.isUndefined(node); // node list should have a delay
     await shouldHappen(() => node && node.getChild('vchild1'));
+  });
+
+  it('split list requests', async function() {
+    let count = 0;
+    let checked = 0;
+
+    for (let i = 0; i < 1000; ++i) {
+      (async () => {
+        await requester.listOnce(resolve('anychild' + i));
+        ++count;
+      })();
+    }
+
+    while (count < 1000) {
+      await sleep(0);
+      // shouldn't receive a lot of updates at same time
+      assert.isTrue(count - checked < 100);
+      checked = count;
+    }
+    assert.equal(count, 1000);
+  });
+
+  it('split subscribe requests', async function() {
+    let count = 0;
+    let checked = 0;
+
+    for (let i = 0; i < 1000; ++i) {
+      (async () => {
+        await requester.subscribeOnce(resolve('anychild' + i));
+        ++count;
+      })();
+    }
+
+    while (count < 1000) {
+      await sleep(0);
+      // shouldn't receive a lot of updates at same time
+      assert.isTrue(count - checked < 100);
+      checked = count;
+    }
+    assert.equal(count, 1000);
   });
 });

@@ -15,6 +15,7 @@ import {ValueNode} from '../src/responder/node/value-node';
 import {LocalNode, NodeProvider, Subscriber} from '../src/responder/node_state';
 import {ActionNode, HttpClientLink, Permission} from '../node';
 import {InvokeResponse} from '../src/responder/response/invoke';
+import {sleep} from '../src/utils/async';
 
 class TestStreamAction extends ActionNode {
   initialize() {
@@ -201,5 +202,24 @@ describe('invoke', function() {
     assert.deepEqual(rows1, [[0]]);
     assert.deepEqual(rows2, [[1], [2], [3]]);
     assert.deepEqual(rows3, [[4], [5], [6]]);
+  });
+
+  it('split requests', async function() {
+    let count = 0;
+    let checked = 0;
+
+    for (let i = 0; i < 1000; ++i) {
+      requester.invoke(resolve('act'), {value: i}, (update: RequesterInvokeUpdate) => {
+        ++count;
+      });
+    }
+
+    while (count < 1000) {
+      await sleep(0);
+      // shouldn't receive a lot of updates at same time
+      assert.isTrue(count - checked < 100);
+      checked = count;
+    }
+    assert.equal(count, 1000);
   });
 });
