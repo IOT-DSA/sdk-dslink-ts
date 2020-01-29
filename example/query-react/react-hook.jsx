@@ -12,34 +12,23 @@ const ChildComponent = ({node}) => {
   useDsaChildQuery(node);
   return <div>data out: {node.value}</div>;
 };
-
 const MainComponent = ({link}) => {
-  const [node, setNode] = useState(null);
-  useDsaQuery(
-    link,
-    '/',
-    {
-      sys: {
-        '?configs': '*',
-        'dataInPerSecond': {'?value': 'live'},
-        'dataOutPerSecond': {'?value': 'live'}
-      }
-    },
-    (node) => {
-      setNode(node.clone()); // clone the node to force a re-render
+  let node = useDsaQuery(link, '/', {
+    sys: {
+      '?configs': '*',
+      '*': {'?value': 'live', '?filter': {'field': '$type', '!=': null}}
     }
-  );
+  });
   if (!node) {
     return <div />;
   }
 
   let sysNode = node.getChild('sys');
+
   return (
     <div>
-      {/* dataInPerSecond will trigger parent node's query callback can be directly rendered */}
       <div>data in: {sysNode.getChild('dataInPerSecond').value}</div>
-      {/* dataOutPerSecond will not trigger parent callback after the first update, it needs to be monitored inside ChildComponent */}
-      <ChildComponent node={sysNode.getChild('dataOutPerSecond')} />
+      <div>data in: {sysNode.getChild('dataOutPerSecond').value}</div>
     </div>
   );
 };

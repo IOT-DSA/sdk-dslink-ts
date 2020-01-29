@@ -9,37 +9,60 @@ function useRawDsaQuery(
   link: BrowserUserLink,
   pathOrNode: string | NodeQueryResult,
   query: NodeQueryStructure,
-  callback?: Listener<NodeQueryResult>
-) {
+  callback?: Listener<NodeQueryResult>,
+  delay = 0
+): NodeQueryResult {
   const callbackRef = useRef<Listener<NodeQueryResult>>();
+  callbackRef.current = callback;
+  const delayRef = useRef<number>();
+  delayRef.current = Math.max(delay, 0); // delay must >= 0
+
+  const callbackTimerRef = useRef<any>(false);
   const rootNodeCache = useRef<NodeQueryResult>();
   const [, forceUpdate] = useState(1);
-  const watchingNodes = new WeakSet<NodeQueryResult>();
-  callbackRef.current = callback;
-  let childCallback = useCallback((node: NodeQueryResult) => {
+  const watchingNodes = useRef(new WeakSet<NodeQueryResult>());
+
+  const executeCallback = useCallback(() => {
+    if (callbackRef.current) {
+      callbackRef.current(rootNodeCache.current);
+    } else {
+      // force a state change to render
+      forceUpdate((v) => -v);
+    }
+    callbackTimerRef.current = null;
+  }, []);
+
+  const delayedCallback = useCallback(() => {
+    if (callbackTimerRef.current) {
+      return;
+    }
+    if (callbackTimerRef.current === false && rootNodeCache.current) {
+      executeCallback();
+    } else {
+      callbackTimerRef.current = setTimeout(executeCallback, delayRef.current);
+    }
+  }, []);
+
+  const childCallback = useCallback((node: NodeQueryResult) => {
     for (let [name, child] of node.children) {
-      if (!watchingNodes.has(child)) {
-        watchingNodes.add(child);
+      if (!watchingNodes.current.has(child)) {
+        watchingNodes.current.add(child);
         child.listen(childCallback, false);
+        childCallback(child);
       }
     }
-    if (rootNodeCache.current) {
-      rootCallback(rootNodeCache.current);
-    }
+    delayedCallback();
   }, []);
   const rootCallback = useCallback((node: NodeQueryResult) => {
     rootNodeCache.current = node;
     for (let [name, child] of node.children) {
-      if (!watchingNodes.has(child)) {
-        watchingNodes.add(child);
+      if (!watchingNodes.current.has(child)) {
+        watchingNodes.current.add(child);
         child.listen(childCallback, false);
+        childCallback(child);
       }
     }
-    if (callbackRef.current) {
-      callbackRef.current(node);
-    }
-    // force render on node change
-    forceUpdate((v) => -v);
+    delayedCallback();
   }, []);
   useEffect(() => {
     let subscription: Closable;
@@ -54,6 +77,8 @@ function useRawDsaQuery(
       }
     };
   }, [link, pathOrNode]);
+
+  return rootNodeCache.current;
 }
 
 /**
@@ -72,9 +97,10 @@ export function useDsaQuery(
   link: BrowserUserLink,
   path: string,
   query: NodeQueryStructure,
-  callback?: Listener<NodeQueryResult>
+  callback?: Listener<NodeQueryResult>,
+  delay?: number
 ) {
-  return useRawDsaQuery(link, path, query, callback);
+  return useRawDsaQuery(link, path, query, callback, delay);
 }
 
 /**
