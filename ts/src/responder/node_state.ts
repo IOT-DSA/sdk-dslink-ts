@@ -6,6 +6,7 @@ import {Responder} from './responder';
 import {Response} from './response';
 import {ValueUpdate, ValueUpdateCallback} from '../common/value';
 import {DsError, NodeStore} from '../common/interfaces';
+import {StaticNode} from './node/static-node';
 
 export class LocalNode extends Node<LocalNode> {
   provider: NodeProvider;
@@ -308,9 +309,12 @@ export class NodeProvider implements NodeStore {
     }
   }
 
-  addDef(node: LocalNode) {
-    let state = this.createState(node.path);
-    state.setNode(node);
+  addProfile(path: string, data: {[key: string]: any}) {
+    let nodePath = `/defs/profile/${path}`;
+    let state = this.createState(nodePath);
+    let profileNode = new StaticNode(nodePath, this);
+    state.setNode(profileNode);
+    profileNode.load(data);
   }
 }
 

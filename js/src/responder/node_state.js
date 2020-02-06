@@ -5,6 +5,7 @@ const node_1 = require("../common/node");
 const permission_1 = require("../common/permission");
 const value_1 = require("../common/value");
 const interfaces_1 = require("../common/interfaces");
+const static_node_1 = require("./node/static-node");
 class LocalNode extends node_1.Node {
     constructor(path, provider) {
         super(null);
@@ -251,9 +252,12 @@ class NodeProvider {
             this.onSaveTimer();
         }
     }
-    addDef(node) {
-        let state = this.createState(node.path);
-        state.setNode(node);
+    addProfile(path, data) {
+        let nodePath = `/defs/profile/${path}`;
+        let state = this.createState(nodePath);
+        let profileNode = new static_node_1.StaticNode(nodePath, this);
+        state.setNode(profileNode);
+        profileNode.load(data);
     }
 }
 exports.NodeProvider = NodeProvider;

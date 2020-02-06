@@ -1,5 +1,5 @@
 /// a client link for both http and ws
-import {ClientLink, DummyECDH, ECDH, NodeProvider} from '../common/interfaces';
+import {ClientLink, DummyECDH, ECDH} from '../common/interfaces';
 import {Completer} from '../utils/async';
 import {Requester} from '../requester/requester';
 

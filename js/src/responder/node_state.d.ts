@@ -70,7 +70,9 @@ export declare class NodeProvider implements NodeStore {
     /** @ignore */
     onSaveTimer: () => void;
     finishSaveTimer(): void;
-    addDef(node: LocalNode): void;
+    addProfile(path: string, data: {
+        [key: string]: any;
+    }): void;
 }
 export interface Subscriber {
     addValue: ValueUpdateCallback;
