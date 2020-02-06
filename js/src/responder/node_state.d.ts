@@ -4,6 +4,7 @@ import { InvokeResponse } from './response/invoke';
 import { Responder } from './responder';
 import { Response } from './response';
 import { ValueUpdate, ValueUpdateCallback } from '../common/value';
+import { NodeStore } from '../common/interfaces';
 export declare class LocalNode extends Node<LocalNode> {
     provider: NodeProvider;
     readonly path: string;
@@ -47,7 +48,7 @@ interface ProviderOptions {
     saveFunction?: (data: any) => void;
     saveIntervalMs?: number;
 }
-export declare class NodeProvider {
+export declare class NodeProvider implements NodeStore {
     /** @ignore */
     _states: Map<string, NodeState>;
     getVirtualNode(path: string): LocalNode;
@@ -69,6 +70,7 @@ export declare class NodeProvider {
     /** @ignore */
     onSaveTimer: () => void;
     finishSaveTimer(): void;
+    addDef(node: LocalNode): void;
 }
 export interface Subscriber {
     addValue: ValueUpdateCallback;

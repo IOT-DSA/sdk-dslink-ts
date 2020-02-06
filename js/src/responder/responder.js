@@ -209,7 +209,10 @@ class Responder extends connection_handler_1.ConnectionHandler {
         if (path != null && path.isAbsolute) {
             let rid = m['rid'];
             let parentNode = this.nodeProvider.getNode(path.parentPath);
-            let node = this.nodeProvider.getNode(path.path);
+            let node = parentNode.getChild(path.name);
+            if (node == null) {
+                node = this.nodeProvider.getNode(path.path);
+            }
             if (node == null) {
                 this.closeResponse(m['rid'], null, interfaces_1.DsError.NOT_IMPLEMENTED);
                 return;

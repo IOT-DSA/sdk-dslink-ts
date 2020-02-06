@@ -5,7 +5,7 @@ import {InvokeResponse} from './response/invoke';
 import {Responder} from './responder';
 import {Response} from './response';
 import {ValueUpdate, ValueUpdateCallback} from '../common/value';
-import {DsError} from '../common/interfaces';
+import {DsError, NodeStore} from '../common/interfaces';
 
 export class LocalNode extends Node<LocalNode> {
   provider: NodeProvider;
@@ -22,8 +22,7 @@ export class LocalNode extends Node<LocalNode> {
     this.initialize();
   }
 
-  initialize() {
-  }
+  initialize() {}
 
   addChild(name: string, node: LocalNode) {
     if (node.provider !== this.provider) {
@@ -151,8 +150,7 @@ export class LocalNode extends Node<LocalNode> {
    */
   _value: any;
 
-  onSubscribe(subscriber: Subscriber) {
-  }
+  onSubscribe(subscriber: Subscriber) {}
 
   /// Called by the link internals to set a value of a node.
   setValue(value: any, responder?: Responder, response?: Response, maxPermission: number = Permission.CONFIG) {
@@ -187,15 +185,13 @@ export class LocalNode extends Node<LocalNode> {
 
   useVirtualList: boolean;
 
-  virtualList(updates: any[]) {
-  }
+  virtualList(updates: any[]) {}
 
   save(): {[key: string]: any} {
     return null;
   }
 
-  load(data: {[key: string]: any}) {
-  }
+  load(data: {[key: string]: any}) {}
 
   destroy() {
     if (this._state) {
@@ -213,7 +209,7 @@ interface ProviderOptions {
   saveIntervalMs?: number;
 }
 
-export class NodeProvider {
+export class NodeProvider implements NodeStore {
   /** @ignore */
   _states: Map<string, NodeState> = new Map<string, NodeState>();
 
@@ -310,6 +306,11 @@ export class NodeProvider {
       clearTimeout(this._saveTimer);
       this.onSaveTimer();
     }
+  }
+
+  addDef(node: LocalNode) {
+    let state = this.createState(node.path);
+    state.setNode(node);
   }
 }
 

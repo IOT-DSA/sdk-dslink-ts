@@ -96,7 +96,7 @@ export interface ServerLinkManager {
     removeLink(link: ServerLink, id: string): void;
     getLinkAndConnectNode(dsId: string, sessionId?: string): ServerLink;
     getRequester(dsId: string): Requester;
-    getResponder(dsId: string, nodeProvider: NodeProvider, sessionId?: string, trusted?: boolean): Responder;
+    getResponder(dsId: string, nodeProvider: NodeStore, sessionId?: string, trusted?: boolean): Responder;
     updateLinkData(dsId: string, m: any): void;
 }
 export declare type StreamStatus = 'initialize' | 'open' | 'closed';
@@ -129,7 +129,6 @@ export declare class DsError {
     static readonly DISCONNECTED: DsError;
     static readonly FAILED: DsError;
 }
-export interface NodeProvider {
+export interface NodeStore {
     getNode(path: string): LocalNode;
-    getOrCreateNode(path: string, addToTree?: boolean): LocalNode;
 }

@@ -232,7 +232,7 @@ export interface ServerLinkManager {
 
   getRequester(dsId: string): Requester;
 
-  getResponder(dsId: string, nodeProvider: NodeProvider, sessionId?: string, trusted?: boolean): Responder;
+  getResponder(dsId: string, nodeProvider: NodeStore, sessionId?: string, trusted?: boolean): Responder;
 
   updateLinkData(dsId: string, m: any): void;
 }
@@ -329,13 +329,7 @@ export class DsError {
 
 /// Provides Nodes for a responder.
 /// A single node provider can be reused by multiple responder.
-export interface NodeProvider {
+export interface NodeStore {
   /// Gets an existing node.
   getNode(path: string): LocalNode;
-
-  /// Gets a node at the given [path] if it exists.
-  /// If it does not exist, create a new node and return it.
-  ///
-  /// When [addToTree] is false, the node will not be inserted into the node provider.
-  getOrCreateNode(path: string, addToTree?: boolean): LocalNode;
 }
