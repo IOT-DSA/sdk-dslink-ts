@@ -72,7 +72,8 @@ export class ActionNode extends LocalNode {
         response.close(rslt);
       } else if (rslt instanceof Promise) {
         rslt.then(sendResult).catch((e) => {
-          response.close(DsError.FAILED);
+          let error = new DsError('invokeException', {msg: String(e)});
+          response.close(error);
         });
       } else {
         response.close();

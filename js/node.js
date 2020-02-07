@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./src/responder/node/static-node");
 var client_link_1 = require("./src/nodejs/client-link");
 exports.HttpClientLink = client_link_1.HttpClientLink;
 var cli_link_wrapper_1 = require("./src/nodejs/cli-link-wrapper");

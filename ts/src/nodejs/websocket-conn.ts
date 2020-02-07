@@ -152,7 +152,7 @@ export class WebSocketConnection extends Connection {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
 
         m = this.codec.decodeBinaryFrame(bytes);
-        logger.trace(() => 'receive' + DsJson.encode(m, true));
+        logger.trace(() => 'receive' + DsJson.encode(m));
 
         if (typeof m['salt'] === 'string') {
           this.clientLink.updateSalt(m['salt']);
@@ -186,7 +186,7 @@ export class WebSocketConnection extends Connection {
     } else if (typeof e.data === 'string') {
       try {
         m = this.codec.decodeStringFrame(e.data);
-        logger.trace(() => 'receive' + DsJson.encode(m, true));
+        logger.trace(() => 'receive' + DsJson.encode(m));
         let needAck = false;
         if (Array.isArray(m['responses']) && m['responses'].length > 0) {
           needAck = true;
@@ -275,7 +275,7 @@ export class WebSocketConnection extends Connection {
         }
       }
 
-      logger.trace(() => 'send' + DsJson.encode(m, true));
+      logger.trace(() => 'send' + DsJson.encode(m));
       let encoded = this.codec.encodeFrame(m);
 
       try {

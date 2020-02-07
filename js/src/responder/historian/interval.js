@@ -8,6 +8,12 @@ class Interval {
     constructor(tz) {
         this.tz = tz;
     }
+    getCurrent() {
+        if (this.current) {
+            return this.current.toISOString(true);
+        }
+        return null;
+    }
 }
 // second, minutes ( not hours )
 class SimpleInterval extends Interval {
@@ -18,11 +24,11 @@ class SimpleInterval extends Interval {
     changed(ts) {
         let result = null;
         let newcurrent = Math.floor(ts / this.interval);
-        if (newcurrent !== this.current) {
-            if (this.current != null) {
-                result = moment_timezone_1.default.tz(this.current * this.interval, this.tz).toISOString(true);
+        if (newcurrent !== this.currentTs) {
+            if (this.currentTs != null) {
+                result = moment_timezone_1.default.tz(this.currentTs * this.interval, this.tz).toISOString(true);
             }
-            this.current = newcurrent;
+            this.currentTs = newcurrent;
         }
         return result;
     }
@@ -37,17 +43,17 @@ class HourInterval extends Interval {
         if (ts < this.nextTs) {
             return null;
         }
-        let result = null;
-        if (this.current) {
-            result = this.current.toISOString(true);
-        }
+        let result = this.getCurrent();
         let date = moment_timezone_1.default.tz(ts, this.tz);
         let h0 = Math.floor(date.hour() / this.hour) * this.hour;
-        this.current = moment_timezone_1.default.tz([date.year(), date.month(), date.day(), h0], this.tz);
-        this.nextTs = moment_timezone_1.default.tz([date.year(), date.month(), date.day(), h0 + this.hour], this.tz).valueOf();
+        this.current = moment_timezone_1.default.tz([date.year(), date.month(), date.date(), h0], this.tz);
+        this.nextTs = this.current
+            .clone()
+            .add(this.hour, 'hour')
+            .valueOf();
         if (this.nextTs < ts) {
             // protection on day light saving special cases
-            this.nextTs = moment_timezone_1.default.tz([date.year(), date.month(), date.day(), h0 + this.hour + 1], this.tz).valueOf();
+            this.nextTs = this.current.clone().add(this.hour + 1, 'hour').valueOf();
         }
         return result;
     }
@@ -61,13 +67,13 @@ class DayInterval extends Interval {
         if (ts < this.nextTs) {
             return null;
         }
-        let result = null;
-        if (this.current) {
-            result = this.current.toISOString(true);
-        }
+        let result = this.getCurrent();
         let date = moment_timezone_1.default.tz(ts, this.tz);
-        this.current = moment_timezone_1.default.tz([date.year(), date.month(), date.day()], this.tz);
-        this.nextTs = moment_timezone_1.default.tz([date.year(), date.month(), date.day() + 1], this.tz).valueOf();
+        this.current = moment_timezone_1.default.tz([date.year(), date.month(), date.date()], this.tz);
+        this.nextTs = this.nextTs = this.current
+            .clone()
+            .add(1, 'day')
+            .valueOf();
         return result;
     }
 }
@@ -80,14 +86,14 @@ class WeekInterval extends Interval {
         if (ts < this.nextTs) {
             return null;
         }
-        let result = null;
-        if (this.current) {
-            result = this.current.toISOString(true);
-        }
+        let result = this.getCurrent();
         let date = moment_timezone_1.default.tz(ts, this.tz);
-        let day = date.day() - date.weekday();
+        let day = date.date() - date.day();
         this.current = moment_timezone_1.default.tz([date.year(), date.month(), day], this.tz);
-        this.nextTs = moment_timezone_1.default.tz([date.year(), date.month(), day + 7], this.tz).valueOf();
+        this.nextTs = this.nextTs = this.current
+            .clone()
+            .add(7, 'day')
+            .valueOf();
         return result;
     }
 }
@@ -101,27 +107,14 @@ class MonthInterval extends Interval {
         if (ts < this.nextTs) {
             return null;
         }
-        let result = null;
-        if (this.current) {
-            result = this.current.toISOString(true);
-        }
+        let result = this.getCurrent();
         let date = moment_timezone_1.default.tz(ts, this.tz);
         let month = Math.floor(date.month() / this.month) * this.month;
         this.current = moment_timezone_1.default.tz([date.year(), month], this.tz);
-        this.nextTs = moment_timezone_1.default.tz([date.year(), month + this.month], this.tz).valueOf();
-        return result;
-    }
-}
-class NoneInterval extends Interval {
-    constructor(tz) {
-        super(tz);
-    }
-    changed(ts) {
-        let result = null;
-        if (this.current) {
-            result = this.current.toISOString(true);
-        }
-        this.current = moment_timezone_1.default.tz(ts, this.tz);
+        this.nextTs = this.nextTs = this.current
+            .clone()
+            .add(this.month, 'month')
+            .valueOf();
         return result;
     }
 }
@@ -150,7 +143,7 @@ function getInterval(interval, tz) {
             }
         }
     }
-    return new NoneInterval(tz);
+    return null;
 }
 exports.getInterval = getInterval;
 //# sourceMappingURL=interval.js.map

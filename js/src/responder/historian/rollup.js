@@ -14,7 +14,8 @@ class AvgRollup {
         this.count = 0;
     }
     update(value) {
-        if (typeof value === 'number') {
+        value = Number(value);
+        if (value === value) {
             this.total += value;
             ++this.count;
         }
@@ -39,7 +40,8 @@ class MinRollup {
         this.value = Infinity;
     }
     update(value) {
-        if (typeof value === 'number' && value < this.value) {
+        value = Number(value);
+        if (value === value && value < this.value) {
             this.value = value;
         }
     }
@@ -58,7 +60,8 @@ class MaxRollup {
         this.value = -Infinity;
     }
     update(value) {
-        if (typeof value === 'number' && value > this.value) {
+        value = Number(value);
+        if (value === value && value > this.value) {
             this.value = value;
         }
     }
@@ -97,40 +100,66 @@ class LastRollup {
     }
 }
 class AndRollup {
-    constructor() {
-        this.value = null;
+    checkBool(val) {
+        val = String(val).toLowerCase();
+        switch (val) {
+            case 'true':
+                return true;
+            case 'false':
+                return false;
+            case '1':
+            case 'yes':
+            case 'on':
+            case 'active':
+            case 'enabled':
+            case 'occupied':
+                return true;
+            case '0':
+            case 'no':
+            case 'off':
+            case 'inactive':
+            case 'disabled':
+            case 'unoccupied':
+                return false;
+            default:
+                return null;
+        }
     }
     getValue() {
         return this.value;
     }
     reset() {
-        this.value = null;
+        this.value = undefined;
+        this.bool = undefined;
     }
     update(value) {
-        if (value === undefined) {
-            this.value = value;
+        let bool = this.checkBool(value);
+        if (bool == null) {
+            return;
         }
-        else if (this.value && !value) {
-            this.value = false;
+        if (this.bool === undefined) {
+            this.value = value;
+            this.bool = bool;
+        }
+        else if (this.bool && !bool) {
+            this.value = value;
+            this.bool = false;
         }
     }
 }
-class OrRollup {
-    constructor() {
-        this.value = null;
-    }
-    getValue() {
-        return this.value;
-    }
-    reset() {
-        this.value = null;
-    }
+class OrRollup extends AndRollup {
     update(value) {
-        if (value === undefined) {
-            this.value = value;
+        let bool = this.checkBool(value);
+        if (bool == null) {
+            return;
         }
-        else if (!this.value && value) {
-            this.value = true;
+        if (this.bool === undefined) {
+            this.value = value;
+            this.bool = bool;
+        }
+        else if (!this.bool && bool) {
+            this.value = value;
+            this.bool = true;
         }
     }
 }

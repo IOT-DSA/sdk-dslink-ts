@@ -1,3 +1,5 @@
+import './src/responder/node/static-node';
+
 export {HttpClientLink} from './src/nodejs/client-link';
 export {DSLink} from './src/nodejs/cli-link-wrapper';
 

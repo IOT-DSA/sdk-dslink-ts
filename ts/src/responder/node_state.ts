@@ -6,7 +6,6 @@ import {Responder} from './responder';
 import {Response} from './response';
 import {ValueUpdate, ValueUpdateCallback} from '../common/value';
 import {DsError, NodeStore} from '../common/interfaces';
-import {StaticNode} from './node/static-node';
 
 export class LocalNode extends Node<LocalNode> {
   provider: NodeProvider;
@@ -211,6 +210,8 @@ interface ProviderOptions {
 }
 
 export class NodeProvider implements NodeStore {
+  static ProfileNode: new (path: string, provider: NodeProvider) => LocalNode;
+
   /** @ignore */
   _states: Map<string, NodeState> = new Map<string, NodeState>();
 
@@ -221,17 +222,23 @@ export class NodeProvider implements NodeStore {
   getNode(path: string): LocalNode {
     if (this._states.has(path)) {
       return this._states.get(path)._node;
+    } else {
+      let virtualNode = this.getVirtualNode(path);
+      if (virtualNode) {
+        this.createState(path, false).setNode(virtualNode);
+        return virtualNode;
+      }
     }
     return null;
   }
 
-  createState(path: string): NodeState {
+  createState(path: string, createVirtualNode = true): NodeState {
     if (this._states.has(path)) {
       return this._states.get(path);
     }
     let state = new NodeState(path, this);
     this._states.set(path, state);
-    if (!state._node) {
+    if (!state._node && createVirtualNode) {
       let virtualNode = this.getVirtualNode(path);
       if (virtualNode) {
         state.setNode(virtualNode);
@@ -312,7 +319,7 @@ export class NodeProvider implements NodeStore {
   addProfile(path: string, data: {[key: string]: any}) {
     let nodePath = `/defs/profile/${path}`;
     let state = this.createState(nodePath);
-    let profileNode = new StaticNode(nodePath, this);
+    let profileNode = new NodeProvider.ProfileNode(nodePath, this);
     state.setNode(profileNode);
     profileNode.load(data);
   }

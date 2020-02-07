@@ -19,7 +19,8 @@ class AvgRollup implements Rollup {
   }
 
   update(value: any): void {
-    if (typeof value === 'number') {
+    value = Number(value);
+    if (value === value) {
       this.total += value;
       ++this.count;
     }
@@ -45,7 +46,8 @@ class MinRollup implements Rollup {
     this.value = Infinity;
   }
   update(value: any): void {
-    if (typeof value === 'number' && value < this.value) {
+    value = Number(value);
+    if (value === value && value < this.value) {
       this.value = value;
     }
   }
@@ -64,7 +66,8 @@ class MaxRollup implements Rollup {
     this.value = -Infinity;
   }
   update(value: any): void {
-    if (typeof value === 'number' && value > this.value) {
+    value = Number(value);
+    if (value === value && value > this.value) {
       this.value = value;
     }
   }
@@ -104,37 +107,68 @@ class LastRollup implements Rollup {
 }
 
 class AndRollup implements Rollup {
+  checkBool(val: any) {
+    val = String(val).toLowerCase();
+    switch (val) {
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      case '1':
+      case 'yes':
+      case 'on':
+      case 'active':
+      case 'enabled':
+      case 'occupied':
+        return true;
+      case '0':
+      case 'no':
+      case 'off':
+      case 'inactive':
+      case 'disabled':
+      case 'unoccupied':
+        return false;
+      default:
+        return null;
+    }
+  }
   getValue(): any {
     return this.value;
   }
 
-  value: boolean = null;
+  value: boolean;
+  bool: boolean;
   reset() {
-    this.value = null;
+    this.value = undefined;
+    this.bool = undefined;
   }
   update(value: any): void {
-    if (value === undefined) {
+    let bool = this.checkBool(value);
+    if (bool == null) {
+      return;
+    }
+    if (this.bool === undefined) {
       this.value = value;
-    } else if (this.value && !value) {
-      this.value = false;
+      this.bool = bool;
+    } else if (this.bool && !bool) {
+      this.value = value;
+      this.bool = false;
     }
   }
 }
 
-class OrRollup implements Rollup {
-  getValue(): any {
-    return this.value;
-  }
-
-  value: boolean = null;
-  reset() {
-    this.value = null;
-  }
+class OrRollup extends AndRollup {
   update(value: any): void {
-    if (value === undefined) {
+    let bool = this.checkBool(value);
+    if (bool == null) {
+      return;
+    }
+    if (this.bool === undefined) {
       this.value = value;
-    } else if (!this.value && value) {
-      this.value = true;
+      this.bool = bool;
+    } else if (!this.bool && bool) {
+      this.value = value;
+      this.bool = true;
     }
   }
 }

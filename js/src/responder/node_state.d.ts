@@ -49,11 +49,12 @@ interface ProviderOptions {
     saveIntervalMs?: number;
 }
 export declare class NodeProvider implements NodeStore {
+    static ProfileNode: new (path: string, provider: NodeProvider) => LocalNode;
     /** @ignore */
     _states: Map<string, NodeState>;
     getVirtualNode(path: string): LocalNode;
     getNode(path: string): LocalNode;
-    createState(path: string): NodeState;
+    createState(path: string, createVirtualNode?: boolean): NodeState;
     removeNode(path: string): void;
     /** @ignore */
     _root: LocalNode;

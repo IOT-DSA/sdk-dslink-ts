@@ -2,6 +2,13 @@ import moment from 'moment-timezone';
 type Moment = moment.Moment;
 
 abstract class Interval {
+  current: Moment;
+  getCurrent(): string {
+    if (this.current) {
+      return this.current.toISOString(true);
+    }
+    return null;
+  }
   constructor(public tz: string) {}
   // return the previous range if range changed
   abstract changed(ts: number): string;
@@ -9,7 +16,7 @@ abstract class Interval {
 
 // second, minutes ( not hours )
 class SimpleInterval extends Interval {
-  current: number;
+  currentTs: number;
   constructor(tz: string, public interval: number) {
     super(tz);
   }
@@ -17,18 +24,17 @@ class SimpleInterval extends Interval {
   changed(ts: number) {
     let result: string = null;
     let newcurrent = Math.floor(ts / this.interval);
-    if (newcurrent !== this.current) {
-      if (this.current != null) {
-        result = moment.tz(this.current * this.interval, this.tz).toISOString(true);
+    if (newcurrent !== this.currentTs) {
+      if (this.currentTs != null) {
+        result = moment.tz(this.currentTs * this.interval, this.tz).toISOString(true);
       }
-      this.current = newcurrent;
+      this.currentTs = newcurrent;
     }
     return result;
   }
 }
 
 class HourInterval extends Interval {
-  current: Moment;
   nextTs: number = NaN;
   constructor(tz: string, public hour: number) {
     super(tz);
@@ -38,24 +44,23 @@ class HourInterval extends Interval {
     if (ts < this.nextTs) {
       return null;
     }
-    let result: string = null;
-    if (this.current) {
-      result = this.current.toISOString(true);
-    }
+    let result = this.getCurrent();
     let date = moment.tz(ts, this.tz);
     let h0 = Math.floor(date.hour() / this.hour) * this.hour;
-    this.current = moment.tz([date.year(), date.month(), date.day(), h0], this.tz);
-    this.nextTs = moment.tz([date.year(), date.month(), date.day(), h0 + this.hour], this.tz).valueOf();
+    this.current = moment.tz([date.year(), date.month(), date.date(), h0], this.tz);
+    this.nextTs = this.current
+      .clone()
+      .add(this.hour, 'hour')
+      .valueOf();
     if (this.nextTs < ts) {
       // protection on day light saving special cases
-      this.nextTs = moment.tz([date.year(), date.month(), date.day(), h0 + this.hour + 1], this.tz).valueOf();
+      this.nextTs = this.current.clone().add(this.hour + 1, 'hour').valueOf();
     }
     return result;
   }
 }
 
 class DayInterval extends Interval {
-  current: Moment;
   nextTs: number = NaN;
   constructor(tz: string) {
     super(tz);
@@ -65,19 +70,18 @@ class DayInterval extends Interval {
     if (ts < this.nextTs) {
       return null;
     }
-    let result: string = null;
-    if (this.current) {
-      result = this.current.toISOString(true);
-    }
+    let result = this.getCurrent();
     let date = moment.tz(ts, this.tz);
-    this.current = moment.tz([date.year(), date.month(), date.day()], this.tz);
-    this.nextTs = moment.tz([date.year(), date.month(), date.day() + 1], this.tz).valueOf();
+    this.current = moment.tz([date.year(), date.month(), date.date()], this.tz);
+    this.nextTs = this.nextTs = this.current
+      .clone()
+      .add(1, 'day')
+      .valueOf();
     return result;
   }
 }
 
 class WeekInterval extends Interval {
-  current: Moment;
   nextTs: number = NaN;
   constructor(tz: string) {
     super(tz);
@@ -87,20 +91,19 @@ class WeekInterval extends Interval {
     if (ts < this.nextTs) {
       return null;
     }
-    let result: string = null;
-    if (this.current) {
-      result = this.current.toISOString(true);
-    }
+    let result = this.getCurrent();
     let date = moment.tz(ts, this.tz);
-    let day = date.day() - date.weekday();
+    let day = date.date() - date.day();
     this.current = moment.tz([date.year(), date.month(), day], this.tz);
-    this.nextTs = moment.tz([date.year(), date.month(), day + 7], this.tz).valueOf();
+    this.nextTs = this.nextTs = this.current
+      .clone()
+      .add(7, 'day')
+      .valueOf();
     return result;
   }
 }
 
 class MonthInterval extends Interval {
-  current: Moment;
   nextTs: number = NaN;
   constructor(tz: string, public month: number) {
     super(tz);
@@ -110,33 +113,18 @@ class MonthInterval extends Interval {
     if (ts < this.nextTs) {
       return null;
     }
-    let result: string = null;
-    if (this.current) {
-      result = this.current.toISOString(true);
-    }
+    let result = this.getCurrent();
     let date = moment.tz(ts, this.tz);
     let month = Math.floor(date.month() / this.month) * this.month;
     this.current = moment.tz([date.year(), month], this.tz);
-    this.nextTs = moment.tz([date.year(), month + this.month], this.tz).valueOf();
+    this.nextTs = this.nextTs = this.current
+      .clone()
+      .add(this.month, 'month')
+      .valueOf();
     return result;
   }
 }
 
-class NoneInterval extends Interval {
-  current: Moment;
-  constructor(tz: string) {
-    super(tz);
-  }
-
-  changed(ts: number) {
-    let result: string = null;
-    if (this.current) {
-      result = this.current.toISOString(true);
-    }
-    this.current = moment.tz(ts, this.tz);
-    return result;
-  }
-}
 export function getInterval(interval: string, tz: string): Interval {
   if (interval) {
     if (interval.length === 2 || interval.length === 3) {
@@ -162,5 +150,5 @@ export function getInterval(interval: string, tz: string): Interval {
       }
     }
   }
-  return new NoneInterval(tz);
+  return null;
 }

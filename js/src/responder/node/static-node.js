@@ -1,11 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_local_node_1 = require("../base-local-node");
+const node_state_1 = require("../node_state");
 class StaticNode extends base_local_node_1.BaseLocalNode {
-    constructor() {
-        super(...arguments);
-        this.profileName = 'static';
-    }
     loadChild(key, data) {
         let childNode = new StaticNode(`${this.path}/${key}`, this.provider);
         childNode.load(data);
@@ -19,4 +16,6 @@ class StaticNode extends base_local_node_1.BaseLocalNode {
     }
 }
 exports.StaticNode = StaticNode;
+StaticNode.profileName = 'static';
+node_state_1.NodeProvider.ProfileNode = StaticNode;
 //# sourceMappingURL=static-node.js.map

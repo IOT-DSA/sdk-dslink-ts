@@ -245,14 +245,13 @@ export class Responder extends ConnectionHandler {
       let rid: number = m['rid'];
       let parentNode = this.nodeProvider.getNode(path.parentPath);
 
-      let node: LocalNode = parentNode.getChild(path.name);
-      if (node == null) {
-        node = this.nodeProvider.getNode(path.path);
-      }
-      if (node == null) {
+      let actionNode: LocalNode = parentNode?.getChild(path.name) || this.nodeProvider.getNode(path.path);
+
+      if (actionNode == null) {
         this.closeResponse(m['rid'], null, DsError.NOT_IMPLEMENTED);
         return;
       }
+
       let permission = Permission.parse(m['permit']);
 
       let params: {[key: string]: any};
@@ -262,10 +261,10 @@ export class Responder extends ConnectionHandler {
         params = {};
       }
 
-      if (node.getInvokePermission() <= permission) {
-        node.invoke(
+      if (actionNode.getInvokePermission() <= permission) {
+        actionNode.invoke(
           params,
-          this.addResponse(new InvokeResponse(this, rid, parentNode, node, path.name)),
+          this.addResponse(new InvokeResponse(this, rid, parentNode, actionNode, path.name)),
           parentNode,
           permission
         );

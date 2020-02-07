@@ -1,6 +1,6 @@
 import { BaseLocalNode } from '../base-local-node';
 export declare class StaticNode extends BaseLocalNode {
-    profileName: string;
+    static profileName: string;
     loadChild(key: string, data: {
         [p: string]: any;
     }): void;

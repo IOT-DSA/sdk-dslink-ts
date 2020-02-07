@@ -67,7 +67,8 @@ class ActionNode extends node_state_1.LocalNode {
             }
             else if (rslt instanceof Promise) {
                 rslt.then(sendResult).catch((e) => {
-                    response.close(interfaces_1.DsError.FAILED);
+                    let error = new interfaces_1.DsError('invokeException', { msg: String(e) });
+                    response.close(error);
                 });
             }
             else {

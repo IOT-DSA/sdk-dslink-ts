@@ -57,7 +57,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
-                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
                     if (typeof m['salt'] === 'string') {
                         this.clientLink.updateSalt(m['salt']);
                     }
@@ -91,7 +91,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             else if (typeof e.data === 'string') {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
-                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m, true));
+                    logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
                     let needAck = false;
                     if (Array.isArray(m['responses']) && m['responses'].length > 0) {
                         needAck = true;
@@ -258,7 +258,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this.nextMsgId = 1;
                 }
             }
-            logger.trace(() => 'send' + codec_1.DsJson.encode(m, true));
+            logger.trace(() => 'send' + codec_1.DsJson.encode(m));
             let encoded = this.codec.encodeFrame(m);
             try {
                 this.socket.send(encoded);
