@@ -67,8 +67,10 @@ abstract class ValueFilter extends QueryFilter {
     if (!this.listener) {
       if (this.field === '?value') {
         this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
-      } else {
+      } else if (this.field.startsWith('@') || this.field.startsWith('$')) {
         this.listener = this.requester.list(this.path, this.listCallback);
+      } else if (!this.field.startsWith('?')) {
+        this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback);
       }
     }
   }
