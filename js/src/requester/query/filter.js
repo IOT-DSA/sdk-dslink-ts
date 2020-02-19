@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const operationMap = {
     '=': (filter) => new EqualsFilter(filter),
+    'all': (filter) => new AllFilter(filter),
+    'any': (filter) => new AnyFilter(filter),
     '!=': (filter) => new NotEqualsFilter(filter),
     '>': (filter) => new GreaterFilter(filter),
     '<': (filter) => new LessFilter(filter),
@@ -152,6 +154,78 @@ class LessEqualFilter extends ValueFilter {
     }
     compare() {
         return this.value <= this.target;
+    }
+}
+class MultiFilter extends QueryFilter {
+    constructor() {
+        super(...arguments);
+        this.filterData = [];
+        this.filters = [];
+    }
+    initFilters() {
+        if (this.filters.length === 0) {
+            for (let filter of this.filterData) {
+                this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter));
+            }
+        }
+    }
+    start() {
+        this.initFilters();
+        for (let filter of this.filters) {
+            filter.start();
+        }
+    }
+    destroy() {
+        for (let filter of this.filters) {
+            filter.destroy();
+        }
+    }
+}
+class AllFilter extends MultiFilter {
+    constructor(filter) {
+        super();
+        if (Array.isArray(filter.all)) {
+            this.filterData = filter.all;
+        }
+    }
+    check() {
+        let matched = true;
+        for (let filter of this.filters) {
+            let [m, r] = filter.check();
+            if (r) {
+                if (!m) {
+                    matched = false;
+                }
+            }
+            else {
+                // not ready
+                return [false, false];
+            }
+        }
+        return [matched, true];
+    }
+}
+class AnyFilter extends MultiFilter {
+    constructor(filter) {
+        super();
+        if (Array.isArray(filter.any)) {
+            this.filterData = filter.any;
+        }
+    }
+    check() {
+        for (let filter of this.filters) {
+            let [m, r] = filter.check();
+            if (r) {
+                if (m) {
+                    return [true, true];
+                }
+            }
+            else {
+                // not ready
+                return [false, false];
+            }
+        }
+        return [false, true];
     }
 }
 //# sourceMappingURL=filter.js.map

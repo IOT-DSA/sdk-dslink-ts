@@ -7,8 +7,8 @@ export interface FilterStructure {
     '<'?: number | string;
     '>='?: number | string;
     '<='?: number | string;
-    'and'?: FilterStructure[];
-    'or'?: FilterStructure[];
+    'all'?: FilterStructure[];
+    'any'?: FilterStructure[];
 }
 export interface NodeQueryStructure {
     /**

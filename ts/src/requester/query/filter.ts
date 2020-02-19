@@ -7,6 +7,8 @@ import {RequesterListUpdate} from '../request/list';
 type Operation = 'all' | 'any' | '=' | '!=' | '>' | '<' | '>=' | '<=';
 const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = {
   '=': (filter: FilterStructure) => new EqualsFilter(filter),
+  'all': (filter: FilterStructure) => new AllFilter(filter),
+  'any': (filter: FilterStructure) => new AnyFilter(filter),
   '!=': (filter: FilterStructure) => new NotEqualsFilter(filter),
   '>': (filter: FilterStructure) => new GreaterFilter(filter),
   '<': (filter: FilterStructure) => new LessFilter(filter),
@@ -190,5 +192,77 @@ class LessEqualFilter extends ValueFilter {
 
   compare(): boolean {
     return this.value <= this.target;
+  }
+}
+
+abstract class MultiFilter extends QueryFilter {
+  filterData: FilterStructure[] = [];
+  filters: QueryFilter[] = [];
+
+  initFilters() {
+    if (this.filters.length === 0) {
+      for (let filter of this.filterData) {
+        this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter));
+      }
+    }
+  }
+
+  start(): void {
+    this.initFilters();
+    for (let filter of this.filters) {
+      filter.start();
+    }
+  }
+  destroy(): void {
+    for (let filter of this.filters) {
+      filter.destroy();
+    }
+  }
+}
+
+class AllFilter extends MultiFilter {
+  constructor(filter: FilterStructure) {
+    super();
+    if (Array.isArray(filter.all)) {
+      this.filterData = filter.all;
+    }
+  }
+  check(): [boolean, boolean] {
+    let matched = true;
+    for (let filter of this.filters) {
+      let [m, r] = filter.check();
+      if (r) {
+        if (!m) {
+          matched = false;
+        }
+      } else {
+        // not ready
+        return [false, false];
+      }
+    }
+    return [matched, true];
+  }
+}
+
+class AnyFilter extends MultiFilter {
+  constructor(filter: FilterStructure) {
+    super();
+    if (Array.isArray(filter.any)) {
+      this.filterData = filter.any;
+    }
+  }
+  check(): [boolean, boolean] {
+    for (let filter of this.filters) {
+      let [m, r] = filter.check();
+      if (r) {
+        if (m) {
+          return [true, true];
+        }
+      } else {
+        // not ready
+        return [false, false];
+      }
+    }
+    return [false, true];
   }
 }
