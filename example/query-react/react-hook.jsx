@@ -9,7 +9,6 @@ const {useState} = React;
 
 const ChildComponent = ({node}) => {
   // this will rerender the component on node's internal data change
-  useDsaChildQuery(node);
   return <div>data out: {node.value}</div>;
 };
 const MainComponent = ({link}) => {
@@ -18,7 +17,7 @@ const MainComponent = ({link}) => {
       '?configs': '*',
       '*': {'?value': 'live', '?filter': {'field': '$type', '!=': null}}
     }
-  });
+  }, null, 3000);
   if (!node) {
     return <div />;
   }

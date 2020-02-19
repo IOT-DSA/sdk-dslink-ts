@@ -10,6 +10,7 @@ import {PassiveChannel} from '../common/connection-channel';
 import {Completer} from '../utils/async';
 import {DsCodec, DsJson} from '../utils/codec';
 import {logger as mainLogger} from '../utils/logger';
+import {endBatchUpdate, startBatchUpdate} from './batch-update';
 
 let logger = mainLogger.tag('ws');
 
@@ -142,6 +143,7 @@ export class WebSocketConnection extends Connection {
     }
     this._dataReceiveCount = 0;
     let m: {[key: string]: any};
+    startBatchUpdate();
     if (e.data instanceof ArrayBuffer) {
       try {
         let bytes: Uint8Array = new Uint8Array(e.data as ArrayBuffer);
@@ -177,6 +179,8 @@ export class WebSocketConnection extends Connection {
         console.error('error in onData', err);
         this.close();
         return;
+      } finally {
+        endBatchUpdate();
       }
     } else if (typeof e.data === 'string') {
       try {
@@ -208,6 +212,8 @@ export class WebSocketConnection extends Connection {
         console.error(err);
         this.close();
         return;
+      } finally {
+        endBatchUpdate();
       }
     }
   };

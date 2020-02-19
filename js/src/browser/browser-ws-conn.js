@@ -5,6 +5,7 @@ const connection_channel_1 = require("../common/connection-channel");
 const async_1 = require("../utils/async");
 const codec_1 = require("../utils/codec");
 const logger_1 = require("../utils/logger");
+const batch_update_1 = require("./batch-update");
 let logger = logger_1.logger.tag('ws');
 class WebSocketConnection extends interfaces_1.Connection {
     /// clientLink is not needed when websocket works in server link
@@ -53,6 +54,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             }
             this._dataReceiveCount = 0;
             let m;
+            batch_update_1.startBatchUpdate();
             if (e.data instanceof ArrayBuffer) {
                 try {
                     let bytes = new Uint8Array(e.data);
@@ -87,6 +89,9 @@ class WebSocketConnection extends interfaces_1.Connection {
                     this.close();
                     return;
                 }
+                finally {
+                    batch_update_1.endBatchUpdate();
+                }
             }
             else if (typeof e.data === 'string') {
                 try {
@@ -117,6 +122,9 @@ class WebSocketConnection extends interfaces_1.Connection {
                     console.error(err);
                     this.close();
                     return;
+                }
+                finally {
+                    batch_update_1.endBatchUpdate();
                 }
             }
         };

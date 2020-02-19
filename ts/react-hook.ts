@@ -1,8 +1,10 @@
+import {useCallback, useEffect, useRef, useState} from 'react';
+import ReactDOM from 'react-dom';
 import {BrowserUserLink} from './src/browser/browser-user-link';
 import {NodeQueryStructure} from './src/requester/query/query-structure';
 import {Closable, Listener} from './src/utils/async';
 import {NodeQueryResult} from './src/requester/query/result';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {addBatchUpdateCallback, isBatchUpdating} from './src/browser/batch-update';
 
 /** @ignore */
 function useRawDsaQuery(
@@ -37,9 +39,10 @@ function useRawDsaQuery(
       return;
     }
     if (callbackTimerRef.current === false && rootNodeCache.current) {
-      executeCallback();
+      // when === false, it's the initial callback
+      batchUpdate(executeCallback);
     } else {
-      callbackTimerRef.current = setTimeout(executeCallback, delayRef.current);
+      callbackTimerRef.current = setTimeout(batchUpdate, delayRef.current, executeCallback);
     }
   }, []);
 
@@ -92,6 +95,7 @@ function useRawDsaQuery(
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param delay
  */
 export function useDsaQuery(
   link: BrowserUserLink,
@@ -104,6 +108,7 @@ export function useDsaQuery(
 }
 
 /**
+ * @deprecated
  * Query a child node and its children
  * @param node The node from a result of a parent query.
  * @param callback The callback will be called only when
@@ -116,3 +121,24 @@ export function useDsaQuery(
 export function useDsaChildQuery(node: NodeQueryResult, callback?: Listener<NodeQueryResult>) {
   return useRawDsaQuery(null, node, null, callback);
 }
+
+const callbacks = new Set<() => void>();
+let mergedBatchUpdateTimeout: any;
+function batchUpdate(callback: () => void) {
+  callbacks.add(callback);
+  if (!isBatchUpdating() && !mergedBatchUpdateTimeout) {
+    // when query callback triggered without incoming dsa response, use a timer
+    mergedBatchUpdateTimeout = setTimeout(mergedBatchUpdate, 0);
+  }
+}
+function mergedBatchUpdate() {
+  ReactDOM.unstable_batchedUpdates(() => {
+    for (let callback of callbacks) {
+      callback();
+    }
+    callbacks.clear();
+  });
+  mergedBatchUpdateTimeout = null;
+}
+
+addBatchUpdateCallback(mergedBatchUpdate);
