@@ -91,9 +91,8 @@ abstract class ValueFilter extends QueryFilter {
   subscribeCallback = (update: ValueUpdate) => {
     this.value = update.value;
     // TODO maintain list of error state
-    if (!update.status) {
-      this._ready = true;
-    }
+    this._invalid = Boolean(update.status);
+    this._ready = true;
     this.onChange();
     if (!this.live && this.listener) {
       this.listener.close();

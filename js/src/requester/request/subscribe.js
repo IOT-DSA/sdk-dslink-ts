@@ -177,7 +177,7 @@ class SubscribeRequest extends request_1.Request {
         for (let path of processingPaths) {
             if (this.subscriptions.has(path)) {
                 let sub = this.subscriptions.get(path);
-                let m = { path: path, sid: sub.sid };
+                let m = { path, sid: sub.sid };
                 if (sub.currentQos > 0) {
                     m['qos'] = sub.currentQos;
                 }

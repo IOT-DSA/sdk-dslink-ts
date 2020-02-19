@@ -191,7 +191,7 @@ export class SubscribeRequest extends Request implements ConnectionProcessor {
     for (let path of processingPaths) {
       if (this.subscriptions.has(path)) {
         let sub: ReqSubscribeController = this.subscriptions.get(path);
-        let m: any = {path: path, sid: sub.sid};
+        let m: any = {path, sid: sub.sid};
         if (sub.currentQos > 0) {
           m['qos'] = sub.currentQos;
         }
