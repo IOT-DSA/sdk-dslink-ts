@@ -21,6 +21,14 @@ class TestActionNode extends ActionNode {
 
   onInvoke(params: {[key: string]: any}): any {
     let input = params['value'];
+    if (input > 1000) {
+      // return multi-rows response
+      let results: any[] = [];
+      for (let i = 0; i < input; ++i) {
+        results.push([0, i]);
+      }
+      return results;
+    }
     return {c1: Number(input), c2: String(input)};
   }
 }

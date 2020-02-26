@@ -156,7 +156,7 @@ describe('invoke', function() {
     } catch (e) {
       error = e;
     }
-    assert.equal(error.type, 'failed');
+    assert.equal(error.type, 'invokeException');
   });
 
   it('stream response', async function() {
@@ -221,5 +221,15 @@ describe('invoke', function() {
       checked = count;
     }
     assert.equal(count, 1000);
+  });
+
+  it('split rows in response', async function () {
+
+    let updates: any[];
+    requester.invoke(resolve('act'), {value: 1001}, (update: RequesterInvokeUpdate) => {
+      updates = update.updates;
+    });
+
+    await shouldHappen(() => updates?.length === 1001);
   });
 });

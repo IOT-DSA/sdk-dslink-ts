@@ -105,11 +105,29 @@ export class InvokeResponse extends Response {
       return;
     }
 
-    for (let update of this.pendingData) {
+    let totalRows = 0;
+    for (let i = 0; i < this.pendingData.length; ++i) {
+      let update = this.pendingData[i];
       let outColumns: any[];
       if (update.columns != null) {
         outColumns = TableColumn.serializeColumns(update.columns);
       }
+      // dont send more than 64 rows in one message frame
+      if (update.updates?.length + totalRows > 64) {
+        let count = 64 - totalRows;
+        if (count > 0) {
+          this.responder.updateResponse(this, update.updates.slice(0, count), {
+            columns: outColumns
+          });
+          // dont resend rows and columns that's already sent
+          update.updates = update.updates.slice(count);
+          update.columns = null;
+        }
+        this.pendingData = this.pendingData.slice(i);
+        this.prepareSending();
+        return;
+      }
+      totalRows += update.updates?.length || 0;
 
       this.responder.updateResponse(this, update.updates, {
         streamStatus: update.status,

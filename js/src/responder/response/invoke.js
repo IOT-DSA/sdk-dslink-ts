@@ -57,6 +57,7 @@ class InvokeResponse extends response_1.Response {
     }
     /** @ignore */
     startSendingData(currentTime, waitingAckId) {
+        var _a, _b;
         this._pendingSending = false;
         if (this._err != null) {
             this.responder.closeResponse(this.rid, this, this._err);
@@ -65,11 +66,29 @@ class InvokeResponse extends response_1.Response {
             }
             return;
         }
-        for (let update of this.pendingData) {
+        let totalRows = 0;
+        for (let i = 0; i < this.pendingData.length; ++i) {
+            let update = this.pendingData[i];
             let outColumns;
             if (update.columns != null) {
                 outColumns = table_1.TableColumn.serializeColumns(update.columns);
             }
+            // dont send more than 64 rows in one message frame
+            if (((_a = update.updates) === null || _a === void 0 ? void 0 : _a.length) + totalRows > 64) {
+                let count = 64 - totalRows;
+                if (count > 0) {
+                    this.responder.updateResponse(this, update.updates.slice(0, count), {
+                        columns: outColumns
+                    });
+                    // dont resend rows and columns that's already sent
+                    update.updates = update.updates.slice(count);
+                    update.columns = null;
+                }
+                this.pendingData = this.pendingData.slice(i);
+                this.prepareSending();
+                return;
+            }
+            totalRows += ((_b = update.updates) === null || _b === void 0 ? void 0 : _b.length) || 0;
             this.responder.updateResponse(this, update.updates, {
                 streamStatus: update.status,
                 columns: outColumns,
