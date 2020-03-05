@@ -205,12 +205,11 @@ class Responder extends connection_handler_1.ConnectionHandler {
     }
     /** @ignore */
     invoke(m) {
-        var _a;
         let path = node_1.Path.getValidNodePath(m['path']);
         if (path != null && path.isAbsolute) {
             let rid = m['rid'];
             let parentNode = this.nodeProvider.getNode(path.parentPath);
-            let actionNode = ((_a = parentNode) === null || _a === void 0 ? void 0 : _a.getChild(path.name)) || this.nodeProvider.getNode(path.path);
+            let actionNode = (parentNode === null || parentNode === void 0 ? void 0 : parentNode.getChild(path.name)) || this.nodeProvider.getNode(path.path);
             if (actionNode == null) {
                 this.closeResponse(m['rid'], null, interfaces_1.DsError.NOT_IMPLEMENTED);
                 return;

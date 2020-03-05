@@ -33,10 +33,10 @@ class WebSocketConnection extends interfaces_1.Connection {
             }
             this.addConnCommand(null, null);
         };
-        this._opened = false;
+        this._openTs = Infinity;
         this._onOpen = (e) => {
             logger.trace('Connected');
-            this._opened = true;
+            this._openTs = new Date().getTime();
             if (this.onConnect != null) {
                 this.onConnect();
             }
@@ -199,8 +199,8 @@ class WebSocketConnection extends interfaces_1.Connection {
             }, 0);
         }
     }
-    get opened() {
-        return this._opened;
+    get openTs() {
+        return this._openTs;
     }
     /// add server command, will be called only when used as server connection
     addConnCommand(key, value) {

@@ -102,14 +102,14 @@ export class WebSocketConnection extends Connection {
     }
   }
 
-  _opened: boolean = false;
-  get opened(): boolean {
-    return this._opened;
+  _openTs = Infinity;
+  get openTs(): number {
+    return this._openTs;
   }
 
   _onOpen = (e: Event) => {
     logger.trace('Connected');
-    this._opened = true;
+    this._openTs = new Date().getTime();
     if (this.onConnect != null) {
       this.onConnect();
     }

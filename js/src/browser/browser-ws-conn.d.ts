@@ -21,8 +21,8 @@ export declare class WebSocketConnection extends Connection {
     _dataReceiveCount: number;
     onPingTimer: () => void;
     requireSend(): void;
-    _opened: boolean;
-    get opened(): boolean;
+    _openTs: number;
+    get openTs(): number;
     _onOpen: (e: Event) => void;
     _msgCommand: {
         [key: string]: any;

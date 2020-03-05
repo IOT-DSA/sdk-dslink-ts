@@ -106,7 +106,7 @@ export class BrowserUserLink extends ClientLink {
       // connection is closed
       return;
     }
-    if (this._wsConnection._opened) {
+    if (new Date().getTime() - this._wsConnection._openTs > 1000) { // has been connected for more than 1 second
       this._wsDelay = 1;
       this.initWebsocket(false);
     } else if (reconnect) {
