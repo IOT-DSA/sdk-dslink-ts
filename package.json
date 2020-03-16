@@ -47,6 +47,9 @@
     "ws": "^7.2.1",
     "yargs": "^15.1.0"
   },
+  "resolutions": {
+    "**/minimist": "^1.2.5"
+  },
   "scripts": {
     "js-example": "parcel example/browser/basic.html --out-dir temp --open --no-source-maps ",
     "query-example": "parcel example/query-react/react-hook.html --out-dir temp --open --no-source-maps ",
