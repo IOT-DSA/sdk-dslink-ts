@@ -2,23 +2,24 @@
 const {DSLink} = require('../../js/node');
 
 const q = {
-  '*': {
-    '*': {
-      '?value': 'snapshot'
-    }
+  '?children': 'live',
+  'aaa': {
+    '?value': 'live'
   }
 };
 
-
 async function main() {
-  let link = new DSLink('requester', {isRequester: true}, ['-b', 'ws://localhost:8181/dsbroker/conn','-l','trace']);
+  let link = new DSLink('requester', {isRequester: true}, [
+    '-b',
+    'ws://localhost:8181/dsbroker/conn',
+    '--log',
+    'trace'
+  ]);
   await link.connect();
 
   let {requester} = link;
 
-  requester.query('/downstream/services/main/Job service', q, (n) =>
-    console.log(n.children.get('Job-1258').children.keys())
-  );
+  requester.query('/local/Preference Service/global', q, (n) => console.log([...n.children.keys()].sort()));
 }
 
 main();

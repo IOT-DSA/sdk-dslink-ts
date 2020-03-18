@@ -36,6 +36,9 @@ export class Query extends Stream<NodeQueryResult> {
   path: string;
   filter: QueryFilter;
 
+  // used on named child query. parent should know if children node exist or not
+  exists = true;
+
   valueMode?: 'live' | 'snapshot';
   childrenMode?: 'live' | 'snapshot';
   // fixed children will stay in memory even when parent node is filtered out
@@ -140,7 +143,7 @@ export class Query extends Stream<NodeQueryResult> {
 
       let children: Map<string, NodeQueryResult> = new Map<string, NodeQueryResult>();
       for (let [key, query] of this.fixedChildren) {
-        if (query._filterMatched && query._value && !query.disconnected) {
+        if (query.exists && query._filterMatched && query._value && !query.disconnected) {
           children.set(key, query._value);
         }
       }
@@ -324,6 +327,13 @@ export class Query extends Stream<NodeQueryResult> {
           this.dynamicChildren.set(key, childQuery);
           childQuery.start();
         }
+      }
+    }
+    for (let [name, child] of this.fixedChildren) {
+      let exists = update.node.children.has(name);
+      if (exists !== child.exists) {
+        child.exists = exists;
+        this.scheduleOutput();
       }
     }
     this.setListReady(true);

@@ -16,6 +16,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     requester: Requester;
     path: string;
     filter: QueryFilter;
+    exists: boolean;
     valueMode?: 'live' | 'snapshot';
     childrenMode?: 'live' | 'snapshot';
     fixedChildren: Map<string, Query>;

@@ -22,6 +22,8 @@ function copyMapWithFilter(m, filter) {
 class Query extends async_1.Stream {
     constructor(parent, path, query) {
         super(null, parent.onAllCancel, null, true);
+        // used on named child query. parent should know if children node exist or not
+        this.exists = true;
         // fixed children will stay in memory even when parent node is filtered out
         // once fixed children is started, they will keep running until parent is destroyed
         this.fixedChildren = new Map();
@@ -43,7 +45,7 @@ class Query extends async_1.Stream {
                 }
                 let children = new Map();
                 for (let [key, query] of this.fixedChildren) {
-                    if (query._filterMatched && query._value && !query.disconnected) {
+                    if (query.exists && query._filterMatched && query._value && !query.disconnected) {
                         children.set(key, query._value);
                     }
                 }
@@ -132,6 +134,13 @@ class Query extends async_1.Stream {
                         this.dynamicChildren.set(key, childQuery);
                         childQuery.start();
                     }
+                }
+            }
+            for (let [name, child] of this.fixedChildren) {
+                let exists = update.node.children.has(name);
+                if (exists !== child.exists) {
+                    child.exists = exists;
+                    this.scheduleOutput();
                 }
             }
             this.setListReady(true);
