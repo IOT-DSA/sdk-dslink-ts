@@ -132,11 +132,13 @@ class LocalNode extends node_1.Node {
             }
         }
         catch (e) {
-            if (e instanceof Error) {
-                response.close(new interfaces_1.DsError('failed', { msg: e.message }));
-            }
-            else {
-                response.close(new interfaces_1.DsError('failed'));
+            if (response) {
+                if (e instanceof Error) {
+                    response.close(new interfaces_1.DsError('failed', { msg: e.message }));
+                }
+                else {
+                    response.close(new interfaces_1.DsError('failed'));
+                }
             }
         }
     }

@@ -46,6 +46,13 @@ export class TestValueNode extends ValueNode {
     this.setConfig('$config1', 'hello');
     this.createChild('valAct', TestActionNode);
   }
+
+  onValueChange(newVal: any): boolean {
+    if (newVal == null) {
+      throw new Error("value can't be null");
+    }
+    return super.onValueChange(newVal);
+  }
 }
 
 export class TestRootNode extends RootNode {

@@ -7,6 +7,7 @@ export interface RequestUpdater {
     onReconnect(): void;
 }
 export declare class RequesterUpdate {
-    readonly streamStatus: StreamStatus;
-    constructor(streamStatus: StreamStatus);
+    streamStatus: StreamStatus;
+    error?: DsError;
+    constructor(streamStatus: StreamStatus, error?: DsError);
 }

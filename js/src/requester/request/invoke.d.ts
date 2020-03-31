@@ -16,7 +16,6 @@ export declare class RequesterInvokeUpdate extends RequesterUpdate {
      * Raw updates received from responder
      */
     updates: any[];
-    error: DsError;
     meta: {
         [key: string]: any;
     };

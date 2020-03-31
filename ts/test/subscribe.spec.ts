@@ -62,19 +62,26 @@ describe('subscribe', function() {
     await shouldHappen(() => updates[0] === 123);
     await requester.set(resolve('val'), 456);
     await shouldHappen(() => updates[1] === 456);
-    rootNode.val.setValue(null);
-    await shouldHappen(() => updates[2] === null);
 
     subscription.close();
     rootNode.val.setValue(789);
     await sleep(10);
-    assert.equal(updates.length, 3); // should not receive new update after close() subscription;
+    assert.equal(updates.length, 2); // should not receive new update after close() subscription;
   });
 
   it('subscribeOnce', async function() {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
     await sleep();
     assert.equal(requester._subscription.subscriptions.size, 0); // everything should be unsubscribed
+  });
+
+  it('set invalid value', async function() {
+    assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
+
+    let resp = await requester.set(resolve('val'), null);
+    assert.equal(resp.error.msg, "value can't be null");
+
+    assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
   });
 
   it('lazy value load', async function() {
@@ -87,7 +94,7 @@ describe('subscribe', function() {
     setTimeout(() => rootNode.createChild('lazy2', TestLazyValue), 10);
     // subscribe before value node gets created
     assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, null);
-    
+
     await new Promise((resolve) => setTimeout(resolve, 30));
     assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, 'ready');
   });

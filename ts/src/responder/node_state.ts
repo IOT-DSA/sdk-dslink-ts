@@ -164,10 +164,12 @@ export class LocalNode extends Node<LocalNode> {
         response.close();
       }
     } catch (e) {
-      if (e instanceof Error) {
-        response.close(new DsError('failed', {msg: e.message}));
-      } else {
-        response.close(new DsError('failed'));
+      if (response) {
+        if (e instanceof Error) {
+          response.close(new DsError('failed', {msg: e.message}));
+        } else {
+          response.close(new DsError('failed'));
+        }
       }
     }
   }

@@ -6,7 +6,7 @@ const table_1 = require("../../common/table");
 const interface_1 = require("../interface");
 class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
     constructor(updates, rawColumns, columns, streamStatus, meta, error) {
-        super(streamStatus);
+        super(streamStatus, error);
         this.updates = updates;
         if (rawColumns) {
             this.rawColumns = rawColumns;
@@ -16,7 +16,6 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
             this.columns = columns;
         }
         this.meta = meta;
-        this.error = error;
     }
     get rows() {
         let colLen = -1;

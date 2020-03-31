@@ -9,9 +9,5 @@ export interface RequestUpdater {
 }
 
 export class RequesterUpdate {
-  readonly streamStatus: StreamStatus;
-
-  constructor(streamStatus: StreamStatus) {
-    this.streamStatus = streamStatus;
-  }
+  constructor(public streamStatus: StreamStatus, public error?: DsError) {}
 }

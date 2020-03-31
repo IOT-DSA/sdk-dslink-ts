@@ -25,7 +25,7 @@ class SetController {
     }
     onUpdate(status, updates, columns, meta, error) {
         // TODO implement error
-        this.completer.complete(new interface_1.RequesterUpdate(status));
+        this.completer.complete(new interface_1.RequesterUpdate(status, error));
     }
     onDisconnect() { }
     onReconnect() { }

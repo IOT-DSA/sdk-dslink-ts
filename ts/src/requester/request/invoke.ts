@@ -18,7 +18,6 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
    * Raw updates received from responder
    */
   updates: any[];
-  error: DsError;
   meta: {[key: string]: any};
 
   constructor(
@@ -29,7 +28,7 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
     meta: {[key: string]: any},
     error?: DsError
   ) {
-    super(streamStatus);
+    super(streamStatus, error);
     this.updates = updates;
     if (rawColumns) {
       this.rawColumns = rawColumns;
@@ -39,7 +38,6 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
     }
 
     this.meta = meta;
-    this.error = error;
   }
 
   /** @ignore */

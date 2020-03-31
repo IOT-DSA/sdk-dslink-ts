@@ -38,7 +38,7 @@ export class SetController implements RequestUpdater {
 
   onUpdate(status: StreamStatus, updates: any[], columns: any[], meta: object, error: DsError) {
     // TODO implement error
-    this.completer.complete(new RequesterUpdate(status));
+    this.completer.complete(new RequesterUpdate(status, error));
   }
 
   onDisconnect() {}
