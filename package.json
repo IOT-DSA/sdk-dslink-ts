@@ -1,7 +1,7 @@
 {
   "name": "dslink",
   "license": "Apache-2.0",
-  "version": "2.1.17",
+  "version": "2.1.18",
   "main": "js/node.js",
   "repository": {
     "type": "git",
