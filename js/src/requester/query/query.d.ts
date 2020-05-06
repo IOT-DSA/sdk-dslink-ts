@@ -12,6 +12,7 @@ interface AbstractQuery {
     onAllCancel?: () => void;
 }
 export declare class Query extends Stream<NodeQueryResult> {
+    summary?: RemoteNode;
     parent: AbstractQuery;
     requester: Requester;
     path: string;
@@ -25,7 +26,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     configFilter: string[];
     attributeFilter: string[];
     actionFilter: string[];
-    constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure);
+    constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, summary?: RemoteNode);
     isQueryReadyAsChild(): boolean | NodeQueryResult;
     isNodeReady(): boolean;
     _scheduleOutputTimeout: any;

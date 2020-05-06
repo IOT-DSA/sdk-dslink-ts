@@ -20,8 +20,9 @@ function copyMapWithFilter(m, filter) {
     return result;
 }
 class Query extends async_1.Stream {
-    constructor(parent, path, query) {
+    constructor(parent, path, query, summary) {
         super(null, parent.onAllCancel, null, true);
+        this.summary = summary;
         // used on named child query. parent should know if children node exist or not
         this.exists = true;
         // fixed children will stay in memory even when parent node is filtered out
@@ -130,7 +131,7 @@ class Query extends async_1.Stream {
                                 continue;
                             }
                         }
-                        let childQuery = new Query(this, node_1.Path.concat(this.path, key), this.dynamicQuery);
+                        let childQuery = new Query(this, node_1.Path.concat(this.path, key), this.dynamicQuery, child);
                         this.dynamicChildren.set(key, childQuery);
                         childQuery.start();
                     }
@@ -183,7 +184,7 @@ class Query extends async_1.Stream {
             this.childrenMode = 'snapshot';
         }
         if (query['?filter']) {
-            this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter']);
+            this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary);
         }
     }
     isQueryReadyAsChild() {

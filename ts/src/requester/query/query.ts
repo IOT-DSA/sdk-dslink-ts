@@ -53,7 +53,7 @@ export class Query extends Stream<NodeQueryResult> {
   // null means no action required
   actionFilter: string[];
 
-  constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure) {
+  constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, public summary?: RemoteNode) {
     super(null, parent.onAllCancel, null, true);
     this.parent = parent;
     this.requester = parent.requester;
@@ -89,13 +89,14 @@ export class Query extends Stream<NodeQueryResult> {
       this.childrenMode = 'snapshot';
     }
     if (query['?filter']) {
-      this.filter = QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter']);
+      this.filter = QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary);
     }
   }
 
   isQueryReadyAsChild() {
     return this._filterReady && (this._value || !this._filterMatched);
   }
+
   isNodeReady() {
     if (!this._filterReady || !this._filterMatched) {
       return false;
@@ -120,11 +121,13 @@ export class Query extends Stream<NodeQueryResult> {
   }
 
   _scheduleOutputTimeout: any;
+
   scheduleOutput() {
     if (!this._scheduleOutputTimeout) {
       this._scheduleOutputTimeout = setTimeout(this.checkGenerateOutput, 0);
     }
   }
+
   checkGenerateOutput = () => {
     if (!this._scheduleOutputTimeout) {
       return;
@@ -177,6 +180,7 @@ export class Query extends Stream<NodeQueryResult> {
   };
 
   _started = false;
+
   start() {
     this._started = true;
     if (this.filter) {
@@ -187,10 +191,12 @@ export class Query extends Stream<NodeQueryResult> {
       this.setFilterReady(true);
     }
   }
+
   pause() {
     this._started = false;
     this.pauseSubscription();
   }
+
   pauseSubscription() {
     if (this.subscribeListener) {
       this.subscribeListener.close();
@@ -212,6 +218,7 @@ export class Query extends Stream<NodeQueryResult> {
       this.dynamicChildren.clear();
     }
   }
+
   checkFilterTimer: any;
   onFilterUpdate = () => {
     if (this.filter && !this.checkFilterTimer) {
@@ -220,6 +227,7 @@ export class Query extends Stream<NodeQueryResult> {
   };
 
   _filterReady = false;
+
   setFilterReady(val: boolean) {
     if (val !== this._filterReady) {
       this._filterReady = val;
@@ -239,6 +247,7 @@ export class Query extends Stream<NodeQueryResult> {
     }
   };
   _filterMatched = false;
+
   setFilterMatched(val: boolean) {
     if (val !== this._filterMatched) {
       this._filterMatched = val;
@@ -274,12 +283,14 @@ export class Query extends Stream<NodeQueryResult> {
   }
 
   _subscribeReady = false;
+
   setSubscribeReady(val: boolean) {
     if (val !== this._subscribeReady) {
       this._subscribeReady = val;
     }
     this.scheduleOutput();
   }
+
   subscribeListener: Closable;
   subscribeResult: any;
   subscribeCallback = (update: ValueUpdate) => {
@@ -292,12 +303,14 @@ export class Query extends Stream<NodeQueryResult> {
   };
 
   _listReady = false;
+
   setListReady(val: boolean) {
     if (val !== this._listReady) {
       this._listReady = val;
     }
     this.scheduleOutput();
   }
+
   listListener: Closable;
   listResult: RemoteNode;
   disconnected: boolean;
@@ -323,7 +336,7 @@ export class Query extends Stream<NodeQueryResult> {
               continue;
             }
           }
-          let childQuery = new Query(this, Path.concat(this.path, key), this.dynamicQuery);
+          let childQuery = new Query(this, Path.concat(this.path, key), this.dynamicQuery, child as RemoteNode);
           this.dynamicChildren.set(key, childQuery);
           childQuery.start();
         }

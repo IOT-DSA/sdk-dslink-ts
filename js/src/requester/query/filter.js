@@ -10,8 +10,9 @@ const operationMap = {
     '>=': (filter) => new GreaterEqualFilter(filter),
     '<=': (filter) => new LessEqualFilter(filter)
 };
+const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
 class QueryFilter {
-    static create(requester, path, onChange, filter) {
+    static create(requester, path, onChange, filter, summary) {
         let result;
         for (let op in operationMap) {
             if (op in filter) {
@@ -23,6 +24,7 @@ class QueryFilter {
             result.requester = requester;
             result.path = path;
             result.onChange = onChange;
+            result.summary = summary;
         }
         return result;
     }
@@ -67,7 +69,14 @@ class ValueFilter extends QueryFilter {
                 this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
             }
             else if (this.field.startsWith('@') || this.field.startsWith('$')) {
-                this.listener = this.requester.list(this.path, this.listCallback);
+                if (this.summary && summaryConfigs.includes(this.field)) {
+                    this.value = this.summary.getConfig(this.field);
+                    this._ready = true;
+                    this.onChange();
+                }
+                else {
+                    this.listener = this.requester.list(this.path, this.listCallback);
+                }
             }
             else if (!this.field.startsWith('?')) {
                 this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback);

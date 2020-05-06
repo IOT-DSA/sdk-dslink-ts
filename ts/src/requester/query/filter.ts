@@ -3,6 +3,7 @@ import {Requester} from '../requester';
 import {ValueUpdate} from '../../common/value';
 import {Closable} from '../../utils/async';
 import {RequesterListUpdate} from '../request/list';
+import {RemoteNode} from '../node_cache';
 
 type Operation = 'all' | 'any' | '=' | '!=' | '>' | '<' | '>=' | '<=';
 const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = {
@@ -16,8 +17,16 @@ const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = 
   '<=': (filter: FilterStructure) => new LessEqualFilter(filter)
 };
 
+const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
+
 export abstract class QueryFilter {
-  static create(requester: Requester, path: string, onChange: () => void, filter: FilterStructure): QueryFilter {
+  static create(
+    requester: Requester,
+    path: string,
+    onChange: () => void,
+    filter: FilterStructure,
+    summary?: RemoteNode
+  ): QueryFilter {
     let result: QueryFilter;
     for (let op in operationMap) {
       if (op in filter) {
@@ -29,11 +38,14 @@ export abstract class QueryFilter {
       result.requester = requester;
       result.path = path;
       result.onChange = onChange;
+      result.summary = summary;
     }
     return result;
   }
+
   requester: Requester;
   path: string;
+  summary: RemoteNode;
   onChange: () => void;
 
   abstract start(): void;
@@ -60,6 +72,7 @@ abstract class ValueFilter extends QueryFilter {
     this.field = filter.field;
     this.live = filter.mode === 'live';
   }
+
   start() {
     if (!this.field) {
       this._invalid = true;
@@ -70,7 +83,13 @@ abstract class ValueFilter extends QueryFilter {
       if (this.field === '?value') {
         this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
       } else if (this.field.startsWith('@') || this.field.startsWith('$')) {
-        this.listener = this.requester.list(this.path, this.listCallback);
+        if (this.summary && summaryConfigs.includes(this.field)) {
+          this.value = this.summary.getConfig(this.field);
+          this._ready = true;
+          this.onChange();
+        } else {
+          this.listener = this.requester.list(this.path, this.listCallback);
+        }
       } else if (!this.field.startsWith('?')) {
         this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback);
       }
@@ -213,6 +232,7 @@ abstract class MultiFilter extends QueryFilter {
       filter.start();
     }
   }
+
   destroy(): void {
     for (let filter of this.filters) {
       filter.destroy();
@@ -227,6 +247,7 @@ class AllFilter extends MultiFilter {
       this.filterData = filter.all;
     }
   }
+
   check(): [boolean, boolean] {
     let matched = true;
     for (let filter of this.filters) {
@@ -251,6 +272,7 @@ class AnyFilter extends MultiFilter {
       this.filterData = filter.any;
     }
   }
+
   check(): [boolean, boolean] {
     for (let filter of this.filters) {
       let [m, r] = filter.check();

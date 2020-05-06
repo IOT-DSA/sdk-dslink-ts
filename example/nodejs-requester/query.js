@@ -1,15 +1,15 @@
 // const {DSLink} = require("dslink");
-const {DSLink} = require('../../js/node');
+const { DSLink } = require('../../js/node');
 
 const q = {
   '?children': 'live',
-  'aaa': {
-    '?value': 'live'
+  '*': {
+    '?value': 'snapshot', '?filter': { 'field': '$type', '=': 'bool' }
   }
 };
 
 async function main() {
-  let link = new DSLink('requester', {isRequester: true}, [
+  let link = new DSLink('requester', { isRequester: true }, [
     '-b',
     'ws://localhost:8181/dsbroker/conn',
     '--log',
@@ -17,9 +17,16 @@ async function main() {
   ]);
   await link.connect();
 
-  let {requester} = link;
+  let { requester } = link;
 
-  requester.query('/local/Preference Service/global', q, (n) => console.log([...n.children.keys()].sort()));
+  requester.query('/local/Package Management/Repositories/0/18', q, (n) => {
+    if (n.children.size) {
+      console.log(n.children.keys());
+    } else {
+      console.log('--');
+    }
+
+  });
 }
 
 main();
