@@ -9,7 +9,6 @@ import { NodeQueryResult } from './result';
 interface AbstractQuery {
     requester: Requester;
     scheduleOutput: () => void;
-    onAllCancel?: () => void;
 }
 export declare class Query extends Stream<NodeQueryResult> {
     summary?: RemoteNode;

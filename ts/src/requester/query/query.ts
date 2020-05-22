@@ -27,7 +27,6 @@ function copyMapWithFilter(m: Map<string, any>, filter: string[]) {
 interface AbstractQuery {
   requester: Requester;
   scheduleOutput: () => void;
-  onAllCancel?: () => void;
 }
 
 export class Query extends Stream<NodeQueryResult> {
@@ -54,7 +53,7 @@ export class Query extends Stream<NodeQueryResult> {
   actionFilter: string[];
 
   constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, public summary?: RemoteNode) {
-    super(null, parent.onAllCancel, null, true);
+    super(null, null, null, true);
     this.parent = parent;
     this.requester = parent.requester;
     this.path = path;

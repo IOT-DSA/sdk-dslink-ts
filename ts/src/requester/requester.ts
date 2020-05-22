@@ -322,6 +322,7 @@ export class Requester extends ConnectionHandler {
     queryStruct = {...queryStruct};
     delete queryStruct.$filter; // make sure root node has no filter;
     let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct);
+    query._onAllCancel = () => query.destroy();
     query.start();
     return query.listen(callback);
   }

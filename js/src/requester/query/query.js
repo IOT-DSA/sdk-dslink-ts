@@ -21,7 +21,7 @@ function copyMapWithFilter(m, filter) {
 }
 class Query extends async_1.Stream {
     constructor(parent, path, query, summary) {
-        super(null, parent.onAllCancel, null, true);
+        super(null, null, null, true);
         this.summary = summary;
         // used on named child query. parent should know if children node exist or not
         this.exists = true;
