@@ -16,7 +16,7 @@ import {LocalNode, NodeProvider} from '../responder/node_state';
 
 import {logger as mainLogger} from '../utils/logger';
 import {getKeyFromFile, NodeSerializer} from './serialize';
-import {initEncryptionSecret} from "../utils/encrypt";
+import {initEncryptionSecret} from '../utils/encrypt';
 
 /** @ignore */
 let logger = mainLogger.tag('link');

@@ -54,7 +54,10 @@ class HourInterval extends Interval {
       .valueOf();
     if (this.nextTs < ts) {
       // protection on day light saving special cases
-      this.nextTs = this.current.clone().add(this.hour + 1, 'hour').valueOf();
+      this.nextTs = this.current
+        .clone()
+        .add(this.hour + 1, 'hour')
+        .valueOf();
     }
     return result;
   }

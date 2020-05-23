@@ -223,8 +223,7 @@ describe('invoke', function() {
     assert.equal(count, 1000);
   });
 
-  it('split rows in response', async function () {
-
+  it('split rows in response', async function() {
     let updates: any[];
     requester.invoke(resolve('act'), {value: 1001}, (update: RequesterInvokeUpdate) => {
       updates = update.updates;
