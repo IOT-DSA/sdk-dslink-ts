@@ -1,7 +1,7 @@
 import { BrowserUserLink } from './src/browser/browser-user-link';
 import { NodeQueryStructure } from './src/requester/query/query-structure';
-import { Listener } from './src/utils/async';
 import { NodeQueryResult } from './src/requester/query/result';
+declare type QueryCallback = (value: NodeQueryResult, json?: any) => void;
 /**
  * Query a node and its children
  * @param link
@@ -15,7 +15,7 @@ import { NodeQueryResult } from './src/requester/query/result';
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
  * @param delay
  */
-export declare function useDsaQuery(link: BrowserUserLink, path: string, query: NodeQueryStructure, callback?: Listener<NodeQueryResult>, delay?: number): NodeQueryResult;
+export declare function useDsaQuery(link: BrowserUserLink, path: string, query: NodeQueryStructure, callback?: QueryCallback, delay?: number): NodeQueryResult;
 /**
  * @deprecated
  * Query a child node and its children
@@ -27,4 +27,5 @@ export declare function useDsaQuery(link: BrowserUserLink, path: string, query: 
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
  */
-export declare function useDsaChildQuery(node: NodeQueryResult, callback?: Listener<NodeQueryResult>): NodeQueryResult;
+export declare function useDsaChildQuery(node: NodeQueryResult, callback?: QueryCallback): NodeQueryResult;
+export {};

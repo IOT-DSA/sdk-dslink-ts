@@ -21,10 +21,10 @@ export declare class NodeQueryResult extends Node<NodeQueryResult> {
         attributes: Map<string, any>;
         children: Map<string, NodeQueryResult>;
     }): boolean;
-    actionCallbacks: Map<string, (params: {
+    actionCallback: (params: {
         [key: string]: any;
-    }) => Promise<RequesterInvokeUpdate>>;
-    getActionCallback(key: string): (params: {
+    }) => Promise<RequesterInvokeUpdate>;
+    getActionCallback(): (params: {
         [key: string]: any;
     }) => Promise<RequesterInvokeUpdate>;
     toObject(): any;

@@ -12,22 +12,32 @@ const ChildComponent = ({node}) => {
   return <div>data out: {node.value}</div>;
 };
 const MainComponent = ({link}) => {
-  let node = useDsaQuery(link, '/', {
-    sys: {
-      '?configs': '*',
-      '*': {'?value': 'live', '?filter': {'field': '$type', '!=': null}}
-    }
-  }, null, 3000);
-  if (!node) {
+  const [nodeObj, setNodeObj] = useState(null);
+  useDsaQuery(
+    link,
+    '/',
+    {
+      sys: {
+        '?configs': '*',
+        '?actions': '*',
+        '*': {},
+      },
+    },
+    (update, json) => {
+      setNodeObj(json);
+    },
+    3000
+  );
+  if (!nodeObj) {
     return <div />;
   }
 
-  let sysNode = node.getChild('sys');
+  let sysNode = nodeObj['sys'];
 
   return (
     <div>
-      <div>data in: {sysNode.getChild('dataInPerSecond').value}</div>
-      <div>data in: {sysNode.getChild('dataOutPerSecond').value}</div>
+      <div>data in: {sysNode['dataInPerSecond']}</div>
+      <div>data in: {sysNode['dataOutPerSecond']}</div>
     </div>
   );
 };

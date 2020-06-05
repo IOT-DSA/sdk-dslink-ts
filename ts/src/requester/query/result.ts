@@ -71,19 +71,21 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
     return true;
   }
 
-  actionCallbacks: Map<string, (params: {[key: string]: any}) => Promise<RequesterInvokeUpdate>> = new Map();
-  getActionCallback(key: string) {
-    if (this.actionCallbacks.has(key)) {
-      return this.actionCallbacks.get(key);
+  actionCallback: (params: {[key: string]: any}) => Promise<RequesterInvokeUpdate>;
+  getActionCallback() {
+    if (this.actionCallback) {
+      return this.actionCallback;
     }
-    const actionPath = `${this.path}/${key}`;
-    let callback = (params: {[key: string]: any}) => this.nodeQuery.requester.invokeOnce(actionPath, params);
-    this.actionCallbacks.set(key, callback);
+    let callback = (params: {[key: string]: any}) => this.nodeQuery.requester.invokeOnce(this.path, params);
+    this.actionCallback = callback;
     return callback;
   }
 
   toObject() {
-    let {query} = this.nodeQuery;
+    let {query, summary} = this.nodeQuery;
+    if (this.getConfig('$invokable') || summary?.getConfig('$invokable')) {
+      return this.getActionCallback();
+    }
     let returnSimpleValue = true;
     for (let key of Object.keys(query)) {
       if (key !== '?value' && key !== '?filter') {
@@ -102,11 +104,7 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
       result[key] = value;
     }
     for (let [key, value] of this.children) {
-      if (value.getConfig('$invokable')) {
-        result[key] = this.getActionCallback(key);
-      } else {
-        result[key] = value.toObject();
-      }
+      result[key] = value.toObject();
     }
     if (this.value !== undefined) {
       result['?value'] = this.value;

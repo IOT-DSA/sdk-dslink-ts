@@ -108,7 +108,7 @@ export function useDsaQuery(
   link: BrowserUserLink,
   path: string,
   query: NodeQueryStructure,
-  callback?: Listener<NodeQueryResult>,
+  callback?: QueryCallback,
   delay?: number
 ) {
   return useRawDsaQuery(link, path, query, callback, delay);
@@ -125,7 +125,7 @@ export function useDsaQuery(
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
  */
-export function useDsaChildQuery(node: NodeQueryResult, callback?: Listener<NodeQueryResult>) {
+export function useDsaChildQuery(node: NodeQueryResult, callback?: QueryCallback) {
   return useRawDsaQuery(null, node, null, callback);
 }
 
