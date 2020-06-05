@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RootMockNode = exports.MockNode = void 0;
 const base_local_node_1 = require("../responder/base-local-node");
 const action_node_1 = require("../responder/node/action-node");
 const MockAction_1 = require("./MockAction");

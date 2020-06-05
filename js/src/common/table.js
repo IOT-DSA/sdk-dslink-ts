@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TableMetadata = exports.TableColumns = exports.Table = exports.TableColumn = void 0;
 class TableColumn {
     constructor(name, type, defaultValue) {
         this.name = name;

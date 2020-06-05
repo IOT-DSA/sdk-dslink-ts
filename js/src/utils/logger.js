@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = exports.TaggedLogger = exports.Logger = exports.getTs = void 0;
 const TRACE = 1;
 const DEBUG = 2;
 const INFO = 4;

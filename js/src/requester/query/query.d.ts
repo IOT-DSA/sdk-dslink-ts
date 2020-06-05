@@ -11,6 +11,7 @@ interface AbstractQuery {
     scheduleOutput: () => void;
 }
 export declare class Query extends Stream<NodeQueryResult> {
+    query: NodeQueryStructure;
     summary?: RemoteNode;
     parent: AbstractQuery;
     requester: Requester;

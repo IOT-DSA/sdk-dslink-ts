@@ -1,6 +1,7 @@
 "use strict";
 // part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ValueSubscriber = exports.SubscribeResponse = void 0;
 const value_1 = require("../../common/value");
 const response_1 = require("../response");
 const connection_handler_1 = require("../../common/connection-handler");

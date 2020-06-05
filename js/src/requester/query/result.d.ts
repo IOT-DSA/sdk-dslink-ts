@@ -1,10 +1,12 @@
 import { Node } from '../../common/node';
-import { Listener, Stream, StreamSubscription } from '../../utils/async';
+import { Listener, StreamSubscription } from '../../utils/async';
+import type { Query } from './query';
+import { RequesterInvokeUpdate } from '../request/invoke';
 export declare class NodeQueryResult extends Node<NodeQueryResult> {
     path: string;
-    stream: Stream<NodeQueryResult>;
+    nodeQuery: Query;
     value: any;
-    constructor(path: string, stream: Stream<NodeQueryResult>, value: any, configs: Map<string, any>, attributes: Map<string, any>, children: Map<string, NodeQueryResult>);
+    constructor(path: string, nodeQuery: Query, value: any, configs: Map<string, any>, attributes: Map<string, any>, children: Map<string, NodeQueryResult>);
     listen(listener: Listener<NodeQueryResult>, useCache?: boolean): StreamSubscription<NodeQueryResult>;
     updateNode(node: {
         value: any;
@@ -19,5 +21,12 @@ export declare class NodeQueryResult extends Node<NodeQueryResult> {
         attributes: Map<string, any>;
         children: Map<string, NodeQueryResult>;
     }): boolean;
+    actionCallbacks: Map<string, (params: {
+        [key: string]: any;
+    }) => Promise<RequesterInvokeUpdate>>;
+    getActionCallback(key: string): (params: {
+        [key: string]: any;
+    }) => Promise<RequesterInvokeUpdate>;
+    objectCache: any;
     toObject(): any;
 }

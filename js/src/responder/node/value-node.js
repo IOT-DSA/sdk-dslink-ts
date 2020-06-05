@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ValueNode = void 0;
 const base_local_node_1 = require("../base-local-node");
 const permission_1 = require("../../common/permission");
 /**

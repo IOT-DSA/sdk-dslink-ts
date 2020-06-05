@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sleep = exports.Completer = exports.StreamSubscription = exports.Stream = void 0;
 /** @ignore */
 class Stream {
     constructor(onStartListen, onAllCancel, onListen, cached = false) {

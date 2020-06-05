@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeSerializer = exports.getKeyFromFile = void 0;
 const pk_1 = require("../crypto/pk");
 const fs_1 = __importDefault(require("fs"));
 const codec_1 = require("../utils/codec");

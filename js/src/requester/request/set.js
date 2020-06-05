@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SetController = void 0;
 const async_1 = require("../../utils/async");
 const permission_1 = require("../../common/permission");
 const interface_1 = require("../interface");

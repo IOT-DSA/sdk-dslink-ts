@@ -12,12 +12,13 @@ class BasicActionNode extends ActionNode {
 
   initialize() {
     // input parameters (optional)
-    this.setConfig('$params', [{name: 'input', type: 'number', default: 3}]);
+    this.setConfig('$params', [{name: 'input', type: 'map', default: 3}]);
     // output structure
     this.setConfig('$columns', [{name: 'output', type: 'string'}]);
   }
 
   onInvoke(params) {
+    console.log(params);
     let {input} = params;
     if (input === 3) {
       return [['correct']];
@@ -35,13 +36,15 @@ class TableActionNode extends ActionNode {
     // let requester know the result could be more than one row
     this.setConfig('$result', 'table');
     // input parameters (optional)
-    this.setConfig('$params', [{name: 'input', type: 'number'}]);
+    this.setConfig('$params', [{name: 'input', type: 'number'},{name: 'enabled', type: 'bool'},{name: 'invoke', type: 'number'}]);
     // output structure
     this.setConfig('$columns', [{name: 'output', type: 'number'}]);
   }
 
   onInvoke(params) {
     let {input} = params;
+    console.log(params.enabled);
+    console.log(params.invoke);
     return [[input], [input * input]];
   }
 }

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PassiveChannel = void 0;
 const async_1 = require("../utils/async");
 class PassiveChannel {
     constructor(conn, connected = false) {

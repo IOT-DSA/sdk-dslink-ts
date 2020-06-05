@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RemoveController = void 0;
 const async_1 = require("../../utils/async");
 const interface_1 = require("../interface");
 /** @ignore */

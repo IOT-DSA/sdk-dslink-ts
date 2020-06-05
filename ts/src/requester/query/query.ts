@@ -52,7 +52,7 @@ export class Query extends Stream<NodeQueryResult> {
   // null means no action required
   actionFilter: string[];
 
-  constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, public summary?: RemoteNode) {
+  constructor(parent: AbstractQuery, path: string, public query: NodeQueryStructure, public summary?: RemoteNode) {
     super(null, null, null, true);
     this.parent = parent;
     this.requester = parent.requester;

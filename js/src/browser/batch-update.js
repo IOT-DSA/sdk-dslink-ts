@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isBatchUpdating = exports.addBatchUpdateCallback = exports.endBatchUpdate = exports.startBatchUpdate = void 0;
 const callbacks = new Set();
 let updating = false;
 function startBatchUpdate() {

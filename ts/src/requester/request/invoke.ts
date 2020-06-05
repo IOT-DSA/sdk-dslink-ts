@@ -158,7 +158,7 @@ export class InvokeController implements RequestUpdater {
     let reqMap: any = {
       method: 'invoke',
       path: node.remotePath,
-      params: params
+      params
     };
 
     if (maxPermission !== Permission.CONFIG) {

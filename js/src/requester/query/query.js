@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Query = void 0;
 const filter_1 = require("./filter");
 const async_1 = require("../../utils/async");
 const result_1 = require("./result");
@@ -22,6 +23,7 @@ function copyMapWithFilter(m, filter) {
 class Query extends async_1.Stream {
     constructor(parent, path, query, summary) {
         super(null, null, null, true);
+        this.query = query;
         this.summary = summary;
         // used on named child query. parent should know if children node exist or not
         this.exists = true;

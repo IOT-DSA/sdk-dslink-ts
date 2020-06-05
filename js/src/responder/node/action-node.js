@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ActionNode = void 0;
 const node_state_1 = require("../node_state");
 const permission_1 = require("../../common/permission");
 const interfaces_1 = require("../../common/interfaces");

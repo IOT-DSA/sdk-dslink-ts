@@ -23,7 +23,7 @@ const mockData = {
   'v': {
     '?value': 'hello',
     '$type': 'string',
-    '$writable': 'write'
+    '$writable': 'write',
   },
   '?repeat': {
     count: 3,
@@ -44,14 +44,14 @@ const mockData = {
           '$type': 'string',
           '$writable': 'write',
           '$sub': () => ['on', 'off', 'auto'][++count4 % 3],
-          '@sub': () => ++count5 % 2 === 0
-        }
-      }
-    }
-  }
+          '@sub': () => ++count5 % 2 === 0,
+        },
+      },
+    },
+  },
 };
 
-describe('query', function() {
+describe('query', function () {
   let broker = new MockBroker();
   logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
@@ -89,7 +89,7 @@ describe('query', function() {
     rootNode.destroy();
   });
 
-  it('simple query', async function() {
+  it('simple query', async function () {
     let data: any;
     let query = requester.query(
       '/',
@@ -99,30 +99,33 @@ describe('query', function() {
       }
     );
     await shouldHappen(() => data);
+    let addCallback = data.add;
+    assert.isFunction(addCallback);
+    delete data.add;
     assert.deepEqual(data, {
-      add: {
-        $invokable: 'write',
-        $is: 'node'
-      },
+      // add: {
+      //   $invokable: 'write',
+      //   $is: 'node',
+      // },
       node0: {
         '?value': 1,
-        '@att': false
+        '@att': false,
       },
       node1: {
         '?value': 5,
-        '@att': true
+        '@att': true,
       },
       node2: {
         '?value': 9,
-        '@att': false
+        '@att': false,
       },
       v: {
-        '?value': 'hello'
-      }
+        '?value': 'hello',
+      },
     });
   });
 
-  it('with filter', async function() {
+  it('with filter', async function () {
     let data: any;
     let query = requester.query(
       '/',
@@ -134,15 +137,15 @@ describe('query', function() {
     await shouldHappen(() => data);
     assert.deepEqual(data, {
       node0: {'?value': 1},
-      node2: {'?value': 9}
+      node2: {'?value': 9},
     });
   });
-  it('live update filter', async function() {
+  it('live update filter', async function () {
     let data: any;
     let q = requester.query(
       '/',
       {
-        '*': {'?value': 'snapshot', '?children': 'snapshot', '?filter': {'field': '?value', '>': 1, 'mode': 'live'}}
+        '*': {'?value': 'snapshot', '?children': 'snapshot', '?filter': {'field': '?value', '>': 1, 'mode': 'live'}},
       },
       (n) => {
         data = n.toObject();
@@ -151,7 +154,7 @@ describe('query', function() {
     await shouldHappen(() => data);
     assert.deepEqual(data, {
       node1: {'?value': 5},
-      node2: {'?value': 9}
+      node2: {'?value': 9},
     });
     data = null;
     rootNode.getChild('node0').setValue(5);
@@ -160,12 +163,12 @@ describe('query', function() {
     await shouldHappen(() => data);
     assert.deepEqual(data, {
       node0: {'?value': 5},
-      node1: {'?value': 5} // unchanged, because of snapshot
+      node1: {'?value': 5}, // unchanged, because of snapshot
     });
     q.close();
   });
 
-  it('live update nested children', async function() {
+  it('live update nested children', async function () {
     let data: any;
     let q = requester.query(
       '/',
@@ -173,8 +176,8 @@ describe('query', function() {
         '?children': 'live',
         '*': {
           '?value': 'live',
-          '*': {'?value': 'live', '?filter': {'field': '?value', '<': 4, 'mode': 'live'}}
-        }
+          '*': {'?value': 'live', '?filter': {'field': '?value', '<': 4, 'mode': 'live'}},
+        },
       },
       (n) => {
         data = n.toObject();
@@ -184,9 +187,9 @@ describe('query', function() {
 
     assert.deepEqual(data, {
       v: {'?value': 'hello'},
-      node0: {'str0': {'?value': '2'}, 'str1': {'?value': '3'}, '?value': 1},
+      node0: {'str0': '2', 'str1': '3', '?value': 1},
       node1: {'?value': 5},
-      node2: {'?value': 9}
+      node2: {'?value': 9},
     });
 
     requester.invoke('/reduce', {});

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebSocketConnection = void 0;
 const ws_1 = __importDefault(require("ws"));
 const interfaces_1 = require("../common/interfaces");
 const connection_channel_1 = require("../common/connection-channel");

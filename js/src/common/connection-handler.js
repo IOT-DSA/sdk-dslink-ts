@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConnectionHandler = exports.DSA_CONFIG = void 0;
 const interfaces_1 = require("./interfaces");
 exports.DSA_CONFIG = {
     ackWaitCount: 16,

@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeQueryResult = void 0;
 const node_1 = require("../../common/node");
 class NodeQueryResult extends node_1.Node {
-    constructor(path, stream, value, configs, attributes, children) {
+    constructor(path, nodeQuery, value, configs, attributes, children) {
         super();
         this.path = path;
-        this.stream = stream;
+        this.nodeQuery = nodeQuery;
+        this.actionCallbacks = new Map();
         this.updateNode({ value, configs, attributes, children });
     }
     listen(listener, useCache = true) {
-        return this.stream.listen(listener, useCache);
+        return this.nodeQuery.listen(listener, useCache);
     }
     updateNode(node) {
         this.value = node.value;
@@ -18,7 +20,7 @@ class NodeQueryResult extends node_1.Node {
         this.children = node.children;
     }
     clone() {
-        return new NodeQueryResult(this.path, this.stream, this.value, this.configs, this.attributes, this.children);
+        return new NodeQueryResult(this.path, this.nodeQuery, this.value, this.configs, this.attributes, this.children);
     }
     isSame(node) {
         const { value, configs, attributes, children } = node;
@@ -45,21 +47,52 @@ class NodeQueryResult extends node_1.Node {
         }
         return true;
     }
+    getActionCallback(key) {
+        if (this.actionCallbacks.has(key)) {
+            return this.actionCallbacks.get(key);
+        }
+        const actionPath = `${this.path}/${key}`;
+        let callback = (params) => this.nodeQuery.requester.invokeOnce(actionPath, params);
+        this.actionCallbacks.set(key, callback);
+        return callback;
+    }
     toObject() {
-        let result = {};
-        for (let [key, value] of this.configs) {
-            result[key] = value;
+        // if (this.objectCache != null) {
+        //   return this.objectCache;
+        // }
+        let { query } = this.nodeQuery;
+        let returnSimpleValue = true;
+        for (let key of Object.keys(query)) {
+            if (key !== '?value' && key !== '?filter') {
+                returnSimpleValue = false;
+                break;
+            }
         }
-        for (let [key, value] of this.attributes) {
-            result[key] = value;
+        if (returnSimpleValue) {
+            this.objectCache = this.value;
         }
-        for (let [key, value] of this.children) {
-            result[key] = value.toObject();
+        else {
+            let result = {};
+            for (let [key, value] of this.configs) {
+                result[key] = value;
+            }
+            for (let [key, value] of this.attributes) {
+                result[key] = value;
+            }
+            for (let [key, value] of this.children) {
+                if (value.getConfig('$invokable')) {
+                    result[key] = this.getActionCallback(key);
+                }
+                else {
+                    result[key] = value.toObject();
+                }
+            }
+            if (this.value !== undefined) {
+                result['?value'] = this.value;
+            }
+            this.objectCache = result;
         }
-        if (this.value !== undefined) {
-            result['?value'] = this.value;
-        }
-        return result;
+        return this.objectCache;
     }
 }
 exports.NodeQueryResult = NodeQueryResult;

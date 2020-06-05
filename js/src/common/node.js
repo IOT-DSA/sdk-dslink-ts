@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Path = exports.Node = void 0;
 /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
 class Node {

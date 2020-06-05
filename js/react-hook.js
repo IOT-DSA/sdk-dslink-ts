@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.useDsaChildQuery = exports.useDsaQuery = void 0;
 const react_1 = require("react");
 const react_dom_1 = __importDefault(require("react-dom"));
 const result_1 = require("./src/requester/query/result");
@@ -18,8 +19,15 @@ function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0) {
     const [, forceUpdate] = react_1.useState(1);
     const watchingNodes = react_1.useRef(new WeakSet());
     const executeCallback = react_1.useCallback(() => {
+        var _a;
         if (callbackRef.current) {
-            callbackRef.current(rootNodeCache.current);
+            if (callbackRef.current.length >= 2) {
+                let obj = (_a = rootNodeCache.current) === null || _a === void 0 ? void 0 : _a.toObject();
+                callbackRef.current(rootNodeCache.current, obj);
+            }
+            else {
+                callbackRef.current(rootNodeCache.current);
+            }
         }
         else {
             // force a state change to render

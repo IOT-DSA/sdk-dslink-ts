@@ -3,9 +3,7 @@ const { DSLink } = require('../../js/node');
 
 const q = {
   '?children': 'live',
-  '*': {
-    '?value': 'snapshot', '?filter': { 'field': '$type', '=': 'bool' }
-  }
+  '?value': 'live'
 };
 
 async function main() {
@@ -19,13 +17,8 @@ async function main() {
 
   let { requester } = link;
 
-  requester.query('/local/Package Management/Repositories/0/18', q, (n) => {
-    if (n.children.size) {
-      console.log(n.children.keys());
-    } else {
-      console.log('--');
-    }
-
+  requester.query('/local/Preference Service/global/c.d', q, (n) => {
+    console.log('update: ' + n.value);
   });
 }
 

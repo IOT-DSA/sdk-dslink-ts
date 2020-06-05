@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Responder = void 0;
 /// a responder for one connection
 const connection_handler_1 = require("../common/connection-handler");
 const permission_1 = require("../common/permission");

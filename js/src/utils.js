@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DSA_VERSION = exports.buildEnumType = void 0;
 function buildEnumType(values) {
     return `enum[${values.join(',')}]`;
 }

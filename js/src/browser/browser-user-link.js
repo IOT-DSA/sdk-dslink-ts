@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BrowserUserLink = void 0;
 /// a client link for both http and ws
 const interfaces_1 = require("../common/interfaces");
 const async_1 = require("../utils/async");

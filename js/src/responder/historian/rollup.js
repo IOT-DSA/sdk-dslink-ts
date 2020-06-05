@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRollup = void 0;
 // avg,min,max,sum,first,last,and,or,count,auto]
 class AvgRollup {
     constructor() {

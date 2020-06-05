@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebSocketConnection = void 0;
 const interfaces_1 = require("../common/interfaces");
 const connection_channel_1 = require("../common/connection-channel");
 const async_1 = require("../utils/async");

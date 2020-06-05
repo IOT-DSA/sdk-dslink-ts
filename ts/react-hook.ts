@@ -6,15 +6,17 @@ import {Closable, Listener} from './src/utils/async';
 import {NodeQueryResult} from './src/requester/query/result';
 import {addBatchUpdateCallback, isBatchUpdating} from './src/browser/batch-update';
 
+type QueryCallback = (value: NodeQueryResult, json?: any) => void;
+
 /** @ignore */
 function useRawDsaQuery(
   link: BrowserUserLink,
   pathOrNode: string | NodeQueryResult,
   query: NodeQueryStructure,
-  callback?: Listener<NodeQueryResult>,
+  callback?: QueryCallback,
   delay = 0
 ): NodeQueryResult {
-  const callbackRef = useRef<Listener<NodeQueryResult>>();
+  const callbackRef = useRef<QueryCallback>();
   callbackRef.current = callback;
   const delayRef = useRef<number>();
   delayRef.current = Math.max(delay, 0); // delay must >= 0
@@ -26,7 +28,12 @@ function useRawDsaQuery(
 
   const executeCallback = useCallback(() => {
     if (callbackRef.current) {
-      callbackRef.current(rootNodeCache.current);
+      if (callbackRef.current.length >= 2) {
+        let obj = rootNodeCache.current?.toObject();
+        callbackRef.current(rootNodeCache.current, obj);
+      } else {
+        callbackRef.current(rootNodeCache.current);
+      }
     } else {
       // force a state change to render
       forceUpdate((v) => -v);

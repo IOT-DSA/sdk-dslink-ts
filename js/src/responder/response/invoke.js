@@ -1,6 +1,7 @@
 "use strict";
 // part of dslink.responder;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InvokeResponse = void 0;
 const response_1 = require("../response");
 const table_1 = require("../../common/table");
 class InvokeResponseUpdate {

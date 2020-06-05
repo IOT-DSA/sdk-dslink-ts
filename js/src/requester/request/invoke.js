@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InvokeController = exports.RequesterInvokeStream = exports.RequesterInvokeUpdate = void 0;
 const async_1 = require("../../utils/async");
 const permission_1 = require("../../common/permission");
 const table_1 = require("../../common/table");
@@ -120,7 +121,7 @@ class InvokeController {
         let reqMap = {
             method: 'invoke',
             path: node.remotePath,
-            params: params
+            params
         };
         if (maxPermission !== permission_1.Permission.CONFIG) {
             reqMap['permit'] = permission_1.Permission.names[maxPermission];

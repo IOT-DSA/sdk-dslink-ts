@@ -1,6 +1,7 @@
 "use strict";
 // part of dslink.common;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.defaultProfileMap = void 0;
 const utils_1 = require("../utils");
 exports.defaultProfileMap = {
     node: {},

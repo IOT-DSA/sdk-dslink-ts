@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MockActionNode = void 0;
 const base_local_node_1 = require("../responder/base-local-node");
 const permission_1 = require("../common/permission");
 const interfaces_1 = require("../common/interfaces");

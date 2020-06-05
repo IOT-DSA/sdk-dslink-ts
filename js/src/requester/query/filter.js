@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.QueryFilter = void 0;
 const operationMap = {
     '=': (filter) => new EqualsFilter(filter),
     'all': (filter) => new AllFilter(filter),
