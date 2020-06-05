@@ -82,11 +82,7 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
     return callback;
   }
 
-  objectCache: any;
   toObject() {
-    // if (this.objectCache != null) {
-    //   return this.objectCache;
-    // }
     let {query} = this.nodeQuery;
     let returnSimpleValue = true;
     for (let key of Object.keys(query)) {
@@ -96,27 +92,25 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
       }
     }
     if (returnSimpleValue) {
-      this.objectCache = this.value;
-    } else {
-      let result: any = {};
-      for (let [key, value] of this.configs) {
-        result[key] = value;
-      }
-      for (let [key, value] of this.attributes) {
-        result[key] = value;
-      }
-      for (let [key, value] of this.children) {
-        if (value.getConfig('$invokable')) {
-          result[key] = this.getActionCallback(key);
-        } else {
-          result[key] = value.toObject();
-        }
-      }
-      if (this.value !== undefined) {
-        result['?value'] = this.value;
-      }
-      this.objectCache = result;
+      return this.value;
     }
-    return this.objectCache;
+    let result: any = {};
+    for (let [key, value] of this.configs) {
+      result[key] = value;
+    }
+    for (let [key, value] of this.attributes) {
+      result[key] = value;
+    }
+    for (let [key, value] of this.children) {
+      if (value.getConfig('$invokable')) {
+        result[key] = this.getActionCallback(key);
+      } else {
+        result[key] = value.toObject();
+      }
+    }
+    if (this.value !== undefined) {
+      result['?value'] = this.value;
+    }
+    return result;
   }
 }

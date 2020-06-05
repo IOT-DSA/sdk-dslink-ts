@@ -27,6 +27,5 @@ export declare class NodeQueryResult extends Node<NodeQueryResult> {
     getActionCallback(key: string): (params: {
         [key: string]: any;
     }) => Promise<RequesterInvokeUpdate>;
-    objectCache: any;
     toObject(): any;
 }
