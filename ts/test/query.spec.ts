@@ -108,19 +108,19 @@ describe('query', function () {
       //   $is: 'node',
       // },
       node0: {
-        '?value': 1,
+        '$value': 1,
         '@att': false,
       },
       node1: {
-        '?value': 5,
+        '$value': 5,
         '@att': true,
       },
       node2: {
-        '?value': 9,
+        '$value': 9,
         '@att': false,
       },
       v: {
-        '?value': 'hello',
+        $value: 'hello',
       },
     });
   });
@@ -136,8 +136,8 @@ describe('query', function () {
     );
     await shouldHappen(() => data);
     assert.deepEqual(data, {
-      node0: {'?value': 1},
-      node2: {'?value': 9},
+      node0: {$value: 1},
+      node2: {$value: 9},
     });
   });
   it('live update filter', async function () {
@@ -153,8 +153,8 @@ describe('query', function () {
     );
     await shouldHappen(() => data);
     assert.deepEqual(data, {
-      node1: {'?value': 5},
-      node2: {'?value': 9},
+      node1: {$value: 5},
+      node2: {$value: 9},
     });
     data = null;
     rootNode.getChild('node0').setValue(5);
@@ -162,8 +162,8 @@ describe('query', function () {
     rootNode.getChild('node2').setValue(-1);
     await shouldHappen(() => data);
     assert.deepEqual(data, {
-      node0: {'?value': 5},
-      node1: {'?value': 5}, // unchanged, because of snapshot
+      node0: {$value: 5},
+      node1: {$value: 5}, // unchanged, because of snapshot
     });
     q.close();
   });
@@ -186,10 +186,10 @@ describe('query', function () {
     await shouldHappen(() => data);
 
     assert.deepEqual(data, {
-      v: {'?value': 'hello'},
-      node0: {'str0': '2', 'str1': '3', '?value': 1},
-      node1: {'?value': 5},
-      node2: {'?value': 9},
+      v: {$value: 'hello'},
+      node0: {str0: {$value: '2'}, str1: {$value: '3'}, $value: 1},
+      node1: {$value: 5},
+      node2: {$value: 9},
     });
 
     requester.invoke('/reduce', {});

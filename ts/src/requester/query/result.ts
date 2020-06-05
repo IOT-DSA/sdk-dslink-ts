@@ -86,16 +86,6 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
     if (this.getConfig('$invokable') || summary?.getConfig('$invokable')) {
       return this.getActionCallback();
     }
-    let returnSimpleValue = true;
-    for (let key of Object.keys(query)) {
-      if (key !== '?value' && key !== '?filter') {
-        returnSimpleValue = false;
-        break;
-      }
-    }
-    if (returnSimpleValue) {
-      return this.value;
-    }
     let result: any = {};
     for (let [key, value] of this.configs) {
       result[key] = value;
@@ -107,7 +97,7 @@ export class NodeQueryResult extends Node<NodeQueryResult> {
       result[key] = value.toObject();
     }
     if (this.value !== undefined) {
-      result['?value'] = this.value;
+      result['$value'] = this.value;
     }
     return result;
   }
