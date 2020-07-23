@@ -156,6 +156,7 @@ export class HttpClientLink extends ClientLink {
     let delay = this._connDelay * 500;
     if (!delay) delay = 20;
     if (!this._connDelayTimer) {
+      this.onReconnect.add(new Date().getTime() + delay);
       this._connDelayTimer = setTimeout(() => {
         this._connDelayTimer = null;
         this._connect();
@@ -305,6 +306,7 @@ export class HttpClientLink extends ClientLink {
         let delay = this._wsDelay * 500;
         if (!delay) delay = 20;
         if (!this._wsDelayTimer) {
+          this.onReconnect.add(new Date().getTime() + delay);
           this._wsDelayTimer = setTimeout(() => {
             this._wsDelayTimer = null;
             this._connect();

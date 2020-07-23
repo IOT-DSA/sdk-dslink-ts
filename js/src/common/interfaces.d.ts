@@ -87,6 +87,7 @@ export declare abstract class ClientLink extends BaseLink {
     onDisconnect: Stream<boolean>;
     /** @ignore */
     _onDisconnect: () => void;
+    onReconnect: Stream<number>;
     connect(): Promise<any>;
 }
 export interface ServerLinkManager {

@@ -107,6 +107,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         if (!delay)
             delay = 20;
         if (!this._connDelayTimer) {
+            this.onReconnect.add(new Date().getTime() + delay);
             this._connDelayTimer = setTimeout(() => {
                 this._connDelayTimer = null;
                 this._connect();
@@ -230,6 +231,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 if (!delay)
                     delay = 20;
                 if (!this._wsDelayTimer) {
+                    this.onReconnect.add(new Date().getTime() + delay);
                     this._wsDelayTimer = setTimeout(() => {
                         this._wsDelayTimer = null;
                         this._connect();

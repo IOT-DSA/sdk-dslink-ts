@@ -206,6 +206,7 @@ export abstract class ClientLink extends BaseLink {
       this.onConnect.reset();
     }
   };
+  onReconnect: Stream<number> = new Stream();
 
   async connect() {
     this._connect();

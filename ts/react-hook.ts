@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserUserLink} from './src/browser/browser-user-link';
 import {NodeQueryStructure} from './src/requester/query/query-structure';
-import {Closable, Listener} from './src/utils/async';
+import {Closable, Listener, StreamSubscription} from './src/utils/async';
 import {NodeQueryResult} from './src/requester/query/result';
 import {addBatchUpdateCallback, isBatchUpdating} from './src/browser/batch-update';
 
@@ -149,3 +149,36 @@ function mergedBatchUpdate() {
 }
 
 addBatchUpdateCallback(mergedBatchUpdate);
+
+export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect = false) {
+  const [connected, setConnected] = useState(link.onConnect._value === true);
+  const [nextReconnectTS, setNextReconnectTS] = useState<number>(null);
+  useEffect(() => {
+    const connectListener = link.onConnect.listen(() => {
+      setConnected(true);
+      setNextReconnectTS(null);
+    });
+    const disconnectListener = link.onDisconnect.listen(() => {
+      setConnected(false);
+    });
+    let reconnectListener: StreamSubscription<number>;
+    if (checkNextReconnect) {
+      reconnectListener = link.onReconnect.listen((ts: number) => {
+        setConnected(false);
+        setNextReconnectTS(ts);
+      });
+    }
+
+    return () => {
+      connectListener.close();
+      disconnectListener.close();
+      if (reconnectListener) {
+        reconnectListener.close();
+      }
+    };
+  }, [link]);
+  return {
+    connected,
+    nextReconnectTS,
+  };
+}

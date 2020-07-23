@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useDsaChildQuery = exports.useDsaQuery = void 0;
+exports.useDsaConnectionStatus = exports.useDsaChildQuery = exports.useDsaQuery = void 0;
 const react_1 = require("react");
 const react_dom_1 = __importDefault(require("react-dom"));
 const result_1 = require("./src/requester/query/result");
@@ -135,4 +135,36 @@ function mergedBatchUpdate() {
     mergedBatchUpdateTimeout = null;
 }
 batch_update_1.addBatchUpdateCallback(mergedBatchUpdate);
+function useDsaConnectionStatus(link, checkNextReconnect = false) {
+    const [connected, setConnected] = react_1.useState(link.onConnect._value === true);
+    const [nextReconnectTS, setNextReconnectTS] = react_1.useState(null);
+    react_1.useEffect(() => {
+        const connectListener = link.onConnect.listen(() => {
+            setConnected(true);
+            setNextReconnectTS(null);
+        });
+        const disconnectListener = link.onDisconnect.listen(() => {
+            setConnected(false);
+        });
+        let reconnectListener;
+        if (checkNextReconnect) {
+            reconnectListener = link.onReconnect.listen((ts) => {
+                setConnected(false);
+                setNextReconnectTS(ts);
+            });
+        }
+        return () => {
+            connectListener.close();
+            disconnectListener.close();
+            if (reconnectListener) {
+                reconnectListener.close();
+            }
+        };
+    }, [link]);
+    return {
+        connected,
+        nextReconnectTS,
+    };
+}
+exports.useDsaConnectionStatus = useDsaConnectionStatus;
 //# sourceMappingURL=react-hook.js.map

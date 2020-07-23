@@ -108,6 +108,7 @@ class ClientLink extends BaseLink {
                 this.onConnect.reset();
             }
         };
+        this.onReconnect = new async_1.Stream();
     }
     /** @ignore */
     get logName() {

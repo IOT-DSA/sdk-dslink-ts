@@ -68,6 +68,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
     initWebsocketLater(ms) {
         if (this._initSocketTimer)
             return;
+        this.onReconnect.add(new Date().getTime() + ms);
         this._initSocketTimer = setTimeout(this.initWebsocket, ms);
     }
     onDisConnect(reconnect) {
@@ -109,7 +110,5 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 }
 exports.BrowserUserLink = BrowserUserLink;
 /** @ignore */
-BrowserUserLink.session = Math.random()
-    .toString(16)
-    .substr(2, 8);
+BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
 //# sourceMappingURL=browser-user-link.js.map

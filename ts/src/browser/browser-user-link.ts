@@ -17,9 +17,7 @@ export class BrowserUserLink extends ClientLink {
   }
 
   /** @ignore */
-  static session: string = Math.random()
-    .toString(16)
-    .substr(2, 8);
+  static session: string = Math.random().toString(16).substr(2, 8);
   readonly requester: Requester = new Requester();
   //  readonly responder: Responder;
 
@@ -67,6 +65,7 @@ export class BrowserUserLink extends ClientLink {
   /** @ignore */
   initWebsocketLater(ms: number) {
     if (this._initSocketTimer) return;
+    this.onReconnect.add(new Date().getTime() + ms);
     this._initSocketTimer = setTimeout(this.initWebsocket, ms);
   }
 

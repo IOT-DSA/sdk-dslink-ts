@@ -28,4 +28,8 @@ export declare function useDsaQuery(link: BrowserUserLink, path: string, query: 
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
  */
 export declare function useDsaChildQuery(node: NodeQueryResult, callback?: QueryCallback): NodeQueryResult;
+export declare function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect?: boolean): {
+    connected: boolean;
+    nextReconnectTS: number;
+};
 export {};
