@@ -151,21 +151,23 @@ function mergedBatchUpdate() {
 addBatchUpdateCallback(mergedBatchUpdate);
 
 export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect = false) {
-  const [connected, setConnected] = useState(link.onConnect._value === true);
-  const [nextReconnectTS, setNextReconnectTS] = useState<number>(null);
+  const [result, setResult] = useState<{connected: boolean; nextReconnectTS: number}>({
+    connected: link.onConnect._value === true,
+    nextReconnectTS: null,
+  });
   useEffect(() => {
     const connectListener = link.onConnect.listen(() => {
-      setConnected(true);
-      setNextReconnectTS(null);
+      setResult({connected: true, nextReconnectTS: null});
     });
     const disconnectListener = link.onDisconnect.listen(() => {
-      setConnected(false);
+      setResult((result) => {
+        return {...result, connected: false};
+      });
     });
     let reconnectListener: StreamSubscription<number>;
     if (checkNextReconnect) {
       reconnectListener = link.onReconnect.listen((ts: number) => {
-        setConnected(false);
-        setNextReconnectTS(ts);
+        setResult({connected: false, nextReconnectTS: ts});
       });
     }
 
@@ -177,8 +179,5 @@ export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect
       }
     };
   }, [link]);
-  return {
-    connected,
-    nextReconnectTS,
-  };
+  return result;
 }

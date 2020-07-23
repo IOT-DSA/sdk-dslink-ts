@@ -136,21 +136,23 @@ function mergedBatchUpdate() {
 }
 batch_update_1.addBatchUpdateCallback(mergedBatchUpdate);
 function useDsaConnectionStatus(link, checkNextReconnect = false) {
-    const [connected, setConnected] = react_1.useState(link.onConnect._value === true);
-    const [nextReconnectTS, setNextReconnectTS] = react_1.useState(null);
+    const [result, setResult] = react_1.useState({
+        connected: link.onConnect._value === true,
+        nextReconnectTS: null,
+    });
     react_1.useEffect(() => {
         const connectListener = link.onConnect.listen(() => {
-            setConnected(true);
-            setNextReconnectTS(null);
+            setResult({ connected: true, nextReconnectTS: null });
         });
         const disconnectListener = link.onDisconnect.listen(() => {
-            setConnected(false);
+            setResult((result) => {
+                return Object.assign(Object.assign({}, result), { connected: false });
+            });
         });
         let reconnectListener;
         if (checkNextReconnect) {
             reconnectListener = link.onReconnect.listen((ts) => {
-                setConnected(false);
-                setNextReconnectTS(ts);
+                setResult({ connected: false, nextReconnectTS: ts });
             });
         }
         return () => {
@@ -161,10 +163,7 @@ function useDsaConnectionStatus(link, checkNextReconnect = false) {
             }
         };
     }, [link]);
-    return {
-        connected,
-        nextReconnectTS,
-    };
+    return result;
 }
 exports.useDsaConnectionStatus = useDsaConnectionStatus;
 //# sourceMappingURL=react-hook.js.map
