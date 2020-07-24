@@ -99,10 +99,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
      *   - 0: allow value skipping as long as the last update is received
      *   - 1: no value skipping
      */
-    subscribe(path, callback, qos = 0) {
-        let node = this.nodeCache.getRemoteNode(path);
-        node._subscribe(this, callback, qos);
-        return new subscribe_1.ReqSubscribeListener(this, path, callback);
+    subscribe(path, callback, qos = 0, timeout = 15000) {
+        return new subscribe_1.ReqSubscribeListener(this, path, callback, qos, timeout);
     }
     /**
      * Unsubscribe the callback

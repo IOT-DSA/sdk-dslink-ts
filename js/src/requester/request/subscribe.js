@@ -6,14 +6,33 @@ const value_1 = require("../../common/value");
 const connection_handler_1 = require("../../common/connection-handler");
 class ReqSubscribeListener {
     /** @ignore */
-    constructor(requester, path, callback) {
+    constructor(requester, path, callback, qos, timeout) {
         this.requester = requester;
         this.path = path;
         this.callback = callback;
+        this.onTimeOut = () => {
+            this.timeout = null;
+            this.callback(new value_1.ValueUpdate(null, null, { status: 'unknown' }));
+        };
+        let node = requester.nodeCache.getRemoteNode(path);
+        if (timeout) {
+            this.timeout = setTimeout(this.onTimeOut, timeout);
+            this.callbackWrapper = (value) => {
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                    this.timeout = null;
+                }
+                this.callback(value);
+            };
+        }
+        else {
+            this.callbackWrapper = callback;
+        }
+        node._subscribe(requester, this.callbackWrapper, qos);
     }
     close() {
         if (this.callback != null) {
-            this.requester.unsubscribe(this.path, this.callback);
+            this.requester.unsubscribe(this.path, this.callbackWrapper);
             this.callback = null;
         }
     }

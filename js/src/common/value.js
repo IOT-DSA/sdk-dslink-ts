@@ -109,6 +109,9 @@ class ValueUpdate {
         if (this.count !== 1) {
             m['count'] = this.count;
         }
+        if (this.status) {
+            m['status'] = this.status;
+        }
         return m;
     }
     cloneForAckQueue() {
@@ -118,7 +121,7 @@ class ValueUpdate {
         }
         return new ValueUpdate(this.value, this.ts, {
             status: this.status,
-            count: this.count
+            count: this.count,
         });
     }
 }

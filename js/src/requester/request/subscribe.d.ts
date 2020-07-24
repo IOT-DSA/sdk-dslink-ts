@@ -6,11 +6,14 @@ import { ValueUpdate, ValueUpdateCallback } from '../../common/value';
 import { RemoteNode } from '../node_cache';
 import { RequestUpdater } from '../interface';
 export declare class ReqSubscribeListener implements Closable {
-    callback: ValueUpdateCallback;
     requester: Requester;
     path: string;
+    callback: ValueUpdateCallback;
+    callbackWrapper: ValueUpdateCallback;
+    timeout: any;
     /** @ignore */
-    constructor(requester: Requester, path: string, callback: ValueUpdateCallback);
+    constructor(requester: Requester, path: string, callback: ValueUpdateCallback, qos: number, timeout: number);
+    onTimeOut: () => void;
     close(): void;
 }
 /** @ignore */

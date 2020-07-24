@@ -8,20 +8,42 @@ import {DSA_CONFIG} from '../../common/connection-handler';
 import {RequestUpdater} from '../interface';
 
 export class ReqSubscribeListener implements Closable {
-  callback: ValueUpdateCallback;
-  requester: Requester;
-  path: string;
+  callbackWrapper: ValueUpdateCallback;
+  timeout: any;
 
   /** @ignore */
-  constructor(requester: Requester, path: string, callback: ValueUpdateCallback) {
-    this.requester = requester;
-    this.path = path;
-    this.callback = callback;
+  constructor(
+    public requester: Requester,
+    public path: string,
+    public callback: ValueUpdateCallback,
+    qos: number,
+    timeout: number
+  ) {
+    let node: RemoteNode = requester.nodeCache.getRemoteNode(path);
+
+    if (timeout) {
+      this.timeout = setTimeout(this.onTimeOut, timeout);
+      this.callbackWrapper = (value: ValueUpdate) => {
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+          this.timeout = null;
+        }
+        this.callback(value);
+      };
+    } else {
+      this.callbackWrapper = callback;
+    }
+    node._subscribe(requester, this.callbackWrapper, qos);
   }
+
+  onTimeOut = () => {
+    this.timeout = null;
+    this.callback(new ValueUpdate(null, null, {status: 'unknown'}));
+  };
 
   close() {
     if (this.callback != null) {
-      this.requester.unsubscribe(this.path, this.callback);
+      this.requester.unsubscribe(this.path, this.callbackWrapper);
       this.callback = null;
     }
   }

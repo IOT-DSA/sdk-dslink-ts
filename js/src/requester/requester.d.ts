@@ -53,7 +53,7 @@ export declare class Requester extends ConnectionHandler {
      *   - 0: allow value skipping as long as the last update is received
      *   - 1: no value skipping
      */
-    subscribe(path: string, callback: (update: ValueUpdate) => void, qos?: number): ReqSubscribeListener;
+    subscribe(path: string, callback: (update: ValueUpdate) => void, qos?: number, timeout?: number): ReqSubscribeListener;
     /**
      * Unsubscribe the callback
      */
