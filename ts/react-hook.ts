@@ -150,7 +150,7 @@ function mergedBatchUpdate() {
 
 addBatchUpdateCallback(mergedBatchUpdate);
 
-export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect = false) {
+export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect: boolean = true) {
   const [result, setResult] = useState<{connected: boolean; nextReconnectTS: number}>({
     connected: link.onConnect._value === true,
     nextReconnectTS: null,

@@ -135,7 +135,7 @@ function mergedBatchUpdate() {
     mergedBatchUpdateTimeout = null;
 }
 batch_update_1.addBatchUpdateCallback(mergedBatchUpdate);
-function useDsaConnectionStatus(link, checkNextReconnect = false) {
+function useDsaConnectionStatus(link, checkNextReconnect = true) {
     const [result, setResult] = react_1.useState({
         connected: link.onConnect._value === true,
         nextReconnectTS: null,
