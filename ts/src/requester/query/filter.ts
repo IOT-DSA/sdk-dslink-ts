@@ -14,7 +14,7 @@ const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = 
   '>': (filter: FilterStructure) => new GreaterFilter(filter),
   '<': (filter: FilterStructure) => new LessFilter(filter),
   '>=': (filter: FilterStructure) => new GreaterEqualFilter(filter),
-  '<=': (filter: FilterStructure) => new LessEqualFilter(filter)
+  '<=': (filter: FilterStructure) => new LessEqualFilter(filter),
 };
 
 const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
@@ -25,7 +25,8 @@ export abstract class QueryFilter {
     path: string,
     onChange: () => void,
     filter: FilterStructure,
-    summary?: RemoteNode
+    summary?: RemoteNode,
+    timeoutMs?: number
   ): QueryFilter {
     let result: QueryFilter;
     for (let op in operationMap) {
@@ -39,6 +40,7 @@ export abstract class QueryFilter {
       result.path = path;
       result.onChange = onChange;
       result.summary = summary;
+      result.timeoutMs = timeoutMs;
     }
     return result;
   }
@@ -47,6 +49,7 @@ export abstract class QueryFilter {
   path: string;
   summary: RemoteNode;
   onChange: () => void;
+  timeoutMs: number;
 
   abstract start(): void;
 
@@ -81,17 +84,22 @@ abstract class ValueFilter extends QueryFilter {
     }
     if (!this.listener) {
       if (this.field === '?value') {
-        this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
+        this.listener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
       } else if (this.field.startsWith('@') || this.field.startsWith('$')) {
         if (this.summary && summaryConfigs.includes(this.field)) {
           this.value = this.summary.getConfig(this.field);
           this._ready = true;
           this.onChange();
         } else {
-          this.listener = this.requester.list(this.path, this.listCallback);
+          this.listener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
         }
       } else if (!this.field.startsWith('?')) {
-        this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback);
+        this.listener = this.requester.subscribe(
+          `${this.path}/${this.field}`,
+          this.subscribeCallback,
+          0,
+          this.timeoutMs
+        );
       }
     }
   }
@@ -221,7 +229,7 @@ abstract class MultiFilter extends QueryFilter {
   initFilters() {
     if (this.filters.length === 0) {
       for (let filter of this.filterData) {
-        this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter));
+        this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter, null, this.timeoutMs));
       }
     }
   }

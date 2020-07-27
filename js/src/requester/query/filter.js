@@ -9,11 +9,11 @@ const operationMap = {
     '>': (filter) => new GreaterFilter(filter),
     '<': (filter) => new LessFilter(filter),
     '>=': (filter) => new GreaterEqualFilter(filter),
-    '<=': (filter) => new LessEqualFilter(filter)
+    '<=': (filter) => new LessEqualFilter(filter),
 };
 const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
 class QueryFilter {
-    static create(requester, path, onChange, filter, summary) {
+    static create(requester, path, onChange, filter, summary, timeoutMs) {
         let result;
         for (let op in operationMap) {
             if (op in filter) {
@@ -26,6 +26,7 @@ class QueryFilter {
             result.path = path;
             result.onChange = onChange;
             result.summary = summary;
+            result.timeoutMs = timeoutMs;
         }
         return result;
     }
@@ -67,7 +68,7 @@ class ValueFilter extends QueryFilter {
         }
         if (!this.listener) {
             if (this.field === '?value') {
-                this.listener = this.requester.subscribe(this.path, this.subscribeCallback);
+                this.listener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
             }
             else if (this.field.startsWith('@') || this.field.startsWith('$')) {
                 if (this.summary && summaryConfigs.includes(this.field)) {
@@ -76,11 +77,11 @@ class ValueFilter extends QueryFilter {
                     this.onChange();
                 }
                 else {
-                    this.listener = this.requester.list(this.path, this.listCallback);
+                    this.listener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
                 }
             }
             else if (!this.field.startsWith('?')) {
-                this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback);
+                this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback, 0, this.timeoutMs);
             }
         }
     }
@@ -175,7 +176,7 @@ class MultiFilter extends QueryFilter {
     initFilters() {
         if (this.filters.length === 0) {
             for (let filter of this.filterData) {
-                this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter));
+                this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter, null, this.timeoutMs));
             }
         }
     }

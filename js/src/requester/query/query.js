@@ -21,10 +21,13 @@ function copyMapWithFilter(m, filter) {
     return result;
 }
 class Query extends async_1.Stream {
-    constructor(parent, path, query, summary) {
+    constructor(parent, path, query, summary, timeoutMs) {
         super(null, null, null, true);
+        this.parent = parent;
+        this.path = path;
         this.query = query;
         this.summary = summary;
+        this.timeoutMs = timeoutMs;
         // used on named child query. parent should know if children node exist or not
         this.exists = true;
         // fixed children will stay in memory even when parent node is filtered out
@@ -148,9 +151,10 @@ class Query extends async_1.Stream {
             }
             this.setListReady(true);
         };
-        this.parent = parent;
         this.requester = parent.requester;
-        this.path = path;
+        if (this.timeoutMs == null) {
+            this.timeoutMs = parent.timeoutMs;
+        }
         this.valueMode = query['?value'];
         this.childrenMode = query['?children'];
         if (Array.isArray(query['?configs'])) {
@@ -186,7 +190,7 @@ class Query extends async_1.Stream {
             this.childrenMode = 'snapshot';
         }
         if (query['?filter']) {
-            this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary);
+            this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary, this.timeoutMs);
         }
     }
     isQueryReadyAsChild() {
@@ -279,7 +283,7 @@ class Query extends async_1.Stream {
         if (this.valueMode) {
             if (!this.subscribeListener) {
                 this.setSubscribeReady(false);
-                this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback);
+                this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
             }
         }
         else {
@@ -288,7 +292,7 @@ class Query extends async_1.Stream {
         if (this.childrenMode) {
             if (!this.listListener) {
                 this.setListReady(false);
-                this.listListener = this.requester.list(this.path, this.listCallback);
+                this.listListener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
             }
         }
         else {

@@ -9,13 +9,15 @@ import { NodeQueryResult } from './result';
 interface AbstractQuery {
     requester: Requester;
     scheduleOutput: () => void;
+    timeoutMs?: number;
 }
 export declare class Query extends Stream<NodeQueryResult> {
+    parent: AbstractQuery;
+    path: string;
     query: NodeQueryStructure;
     summary?: RemoteNode;
-    parent: AbstractQuery;
+    timeoutMs?: number;
     requester: Requester;
-    path: string;
     filter: QueryFilter;
     exists: boolean;
     valueMode?: 'live' | 'snapshot';
@@ -26,7 +28,7 @@ export declare class Query extends Stream<NodeQueryResult> {
     configFilter: string[];
     attributeFilter: string[];
     actionFilter: string[];
-    constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, summary?: RemoteNode);
+    constructor(parent: AbstractQuery, path: string, query: NodeQueryStructure, summary?: RemoteNode, timeoutMs?: number);
     isQueryReadyAsChild(): boolean | NodeQueryResult;
     isNodeReady(): boolean;
     _scheduleOutputTimeout: any;

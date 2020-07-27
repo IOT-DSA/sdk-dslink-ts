@@ -9,7 +9,7 @@ const react_dom_1 = __importDefault(require("react-dom"));
 const result_1 = require("./src/requester/query/result");
 const batch_update_1 = require("./src/browser/batch-update");
 /** @ignore */
-function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0) {
+function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0, timeout = 5000) {
     const callbackRef = react_1.useRef();
     callbackRef.current = callback;
     const delayRef = react_1.useRef();
@@ -71,7 +71,7 @@ function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0) {
     react_1.useEffect(() => {
         let subscription;
         if (typeof pathOrNode === 'string') {
-            subscription = link.requester.query(pathOrNode, query, rootCallback);
+            subscription = link.requester.query(pathOrNode, query, rootCallback, timeout);
         }
         else if (pathOrNode instanceof result_1.NodeQueryResult) {
             pathOrNode.listen(rootCallback);
@@ -95,10 +95,11 @@ function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0) {
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
- * @param delay
+ * @param delay Delay the callback to merge changes into less update, in milliseconds.
+ * @param timeout Timeout on requests that might stuck because node doesn't exist or permission denied, in milliseconds.
  */
-function useDsaQuery(link, path, query, callback, delay) {
-    return useRawDsaQuery(link, path, query, callback, delay);
+function useDsaQuery(link, path, query, callback, delay, timeout = 5000) {
+    return useRawDsaQuery(link, path, query, callback, delay, timeout);
 }
 exports.useDsaQuery = useDsaQuery;
 /**

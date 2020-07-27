@@ -27,12 +27,11 @@ function copyMapWithFilter(m: Map<string, any>, filter: string[]) {
 interface AbstractQuery {
   requester: Requester;
   scheduleOutput: () => void;
+  timeoutMs?: number;
 }
 
 export class Query extends Stream<NodeQueryResult> {
-  parent: AbstractQuery;
   requester: Requester;
-  path: string;
   filter: QueryFilter;
 
   // used on named child query. parent should know if children node exist or not
@@ -52,11 +51,18 @@ export class Query extends Stream<NodeQueryResult> {
   // null means no action required
   actionFilter: string[];
 
-  constructor(parent: AbstractQuery, path: string, public query: NodeQueryStructure, public summary?: RemoteNode) {
+  constructor(
+    public parent: AbstractQuery,
+    public path: string,
+    public query: NodeQueryStructure,
+    public summary?: RemoteNode,
+    public timeoutMs?: number
+  ) {
     super(null, null, null, true);
-    this.parent = parent;
     this.requester = parent.requester;
-    this.path = path;
+    if (this.timeoutMs == null) {
+      this.timeoutMs = parent.timeoutMs;
+    }
     this.valueMode = query['?value'];
     this.childrenMode = query['?children'];
     if (Array.isArray(query['?configs'])) {
@@ -88,7 +94,14 @@ export class Query extends Stream<NodeQueryResult> {
       this.childrenMode = 'snapshot';
     }
     if (query['?filter']) {
-      this.filter = QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary);
+      this.filter = QueryFilter.create(
+        this.requester,
+        path,
+        this.onFilterUpdate,
+        query['?filter'],
+        this.summary,
+        this.timeoutMs
+      );
     }
   }
 
@@ -266,7 +279,7 @@ export class Query extends Stream<NodeQueryResult> {
     if (this.valueMode) {
       if (!this.subscribeListener) {
         this.setSubscribeReady(false);
-        this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback);
+        this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
       }
     } else {
       this.setSubscribeReady(true);
@@ -274,7 +287,7 @@ export class Query extends Stream<NodeQueryResult> {
     if (this.childrenMode) {
       if (!this.listListener) {
         this.setListReady(false);
-        this.listListener = this.requester.list(this.path, this.listCallback);
+        this.listListener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
       }
     } else {
       this.setListReady(true);
