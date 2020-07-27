@@ -1,9 +1,21 @@
 import { Requester } from '../requester';
 import { Request } from '../request';
-import { Stream, StreamSubscription } from '../../utils/async';
+import { Closable, Listener, Stream, StreamSubscription } from '../../utils/async';
 import { ConnectionProcessor, DsError, StreamStatus } from '../../common/interfaces';
 import { RemoteNode } from '../node_cache';
 import { RequesterUpdate, RequestUpdater } from '../interface';
+export declare class ReqListListener implements Closable {
+    requester: Requester;
+    path: string;
+    callback: Listener<RequesterListUpdate>;
+    callbackWrapper: Listener<RequesterListUpdate>;
+    timeout: any;
+    listener: StreamSubscription<RequesterListUpdate>;
+    /** @ignore */
+    constructor(requester: Requester, path: string, callback: Listener<RequesterListUpdate>, timeout: number);
+    onTimeOut: () => void;
+    close(): void;
+}
 export declare class RequesterListUpdate extends RequesterUpdate {
     /**
      * This is only a list of changed fields.
@@ -18,7 +30,7 @@ export declare class RequesterListUpdate extends RequesterUpdate {
 export declare class ListDefListener {
     readonly node: RemoteNode;
     readonly requester: Requester;
-    listener: StreamSubscription<any>;
+    listener: ReqListListener;
     ready: boolean;
     constructor(node: RemoteNode, requester: Requester, callback: (update: RequesterListUpdate) => void);
     close(): void;

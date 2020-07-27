@@ -46,6 +46,9 @@ export class ReqSubscribeListener implements Closable {
       this.requester.unsubscribe(this.path, this.callbackWrapper);
       this.callback = null;
     }
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
   }
 }
 

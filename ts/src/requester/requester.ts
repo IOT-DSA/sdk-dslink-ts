@@ -6,7 +6,7 @@ import {RemoteNode, RemoteNodeCache} from './node_cache';
 import {ReqSubscribeListener, SubscribeRequest} from './request/subscribe';
 import {DsError, ProcessorResult, StreamStatus} from '../common/interfaces';
 import {ValueUpdate} from '../common/value';
-import {ListController, RequesterListUpdate} from './request/list';
+import {ListController, ReqListListener, RequesterListUpdate} from './request/list';
 import {Permission} from '../common/permission';
 import {RequesterInvokeStream, RequesterInvokeUpdate} from './request/invoke';
 import {SetController} from './request/set';
@@ -121,9 +121,9 @@ export class Requester extends ConnectionHandler {
     path: string,
     callback: (update: ValueUpdate) => void,
     qos: number = 0,
-    timeout: number = 15000
+    timeoutMs?: number
   ): ReqSubscribeListener {
-    return new ReqSubscribeListener(this, path, callback, qos, timeout);
+    return new ReqSubscribeListener(this, path, callback, qos, timeoutMs);
   }
 
   /**
@@ -163,46 +163,41 @@ export class Requester extends ConnectionHandler {
   /**
    * Subscribe and get value update only once, subscription will be closed automatically when an update is received
    */
-  subscribeOnce(path: string, timeoutMs: number = 0): Promise<ValueUpdate> {
+  subscribeOnce(path: string, timeoutMs?: number): Promise<ValueUpdate> {
     return new Promise((resolve, reject) => {
-      let timer: any;
-      let listener = this.subscribe(path, (update: ValueUpdate) => {
-        resolve(update);
+      let listener = this.subscribe(
+        path,
+        (update: ValueUpdate) => {
+          resolve(update);
 
-        if (listener != null) {
-          listener.close();
-          listener = null;
-        }
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-      });
-      if (timeoutMs > 0) {
-        timer = setTimeout(() => {
-          timer = null;
-          if (listener) {
+          if (listener != null) {
             listener.close();
             listener = null;
           }
-          reject(new Error(`failed to receive value, timeout: ${timeoutMs}ms`));
-        }, timeoutMs);
-      }
+        },
+        0,
+        timeoutMs
+      );
     });
   }
 
   /**
    * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
    */
-  listOnce(path: string): Promise<RemoteNode> {
+  listOnce(path: string, timeoutMs?: number): Promise<RemoteNode> {
     return new Promise((resolve, reject) => {
-      let sub = this.list(path, (update) => {
-        resolve(update.node);
+      let listener = this.list(
+        path,
+        (update) => {
+          resolve(update.node);
 
-        if (sub != null) {
-          sub.close();
-        }
-      });
+          if (listener != null) {
+            listener.close();
+            listener = null;
+          }
+        },
+        timeoutMs
+      );
     });
   }
 
@@ -213,9 +208,8 @@ export class Requester extends ConnectionHandler {
    * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
    */
 
-  list(path: string, callback: Listener<RequesterListUpdate>): StreamSubscription<RequesterListUpdate> {
-    let node: RemoteNode = this.nodeCache.getRemoteNode(path);
-    return node._list(this).listen(callback);
+  list(path: string, callback: Listener<RequesterListUpdate>, timeoutMs?: number): ReqListListener {
+    return new ReqListListener(this, path, callback, timeoutMs);
   }
 
   /**
@@ -316,15 +310,17 @@ export class Requester extends ConnectionHandler {
    *  - value of config that matches ?configs is changed
    *  - value of attribute that matches ?attributes is changed
    *  - child is removed or new child is added when wildcard children match * is defined
+   * @param timeoutMs Timeout of the list and subscribe request used by the query
    */
   query(
     path: string,
     queryStruct: NodeQueryStructure,
-    callback?: Listener<NodeQueryResult>
+    callback?: Listener<NodeQueryResult>,
+    timeoutMs?: number
   ): StreamSubscription<NodeQueryResult> {
     queryStruct = {...queryStruct};
     delete queryStruct.$filter; // make sure root node has no filter;
-    let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct);
+    let query = new Query({requester: this, scheduleOutput: () => {}}, path, queryStruct, null, timeoutMs);
     query._onAllCancel = () => query.destroy();
     query.start();
     return query.listen(callback);

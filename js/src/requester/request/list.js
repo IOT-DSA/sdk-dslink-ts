@@ -1,10 +1,46 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ListController = exports.ListDefListener = exports.RequesterListUpdate = void 0;
+exports.ListController = exports.ListDefListener = exports.RequesterListUpdate = exports.ReqListListener = void 0;
 const async_1 = require("../../utils/async");
 const node_cache_1 = require("../node_cache");
-const value_1 = require("../../common/value");
 const interface_1 = require("../interface");
+const value_1 = require("../../common/value");
+class ReqListListener {
+    /** @ignore */
+    constructor(requester, path, callback, timeout) {
+        this.requester = requester;
+        this.path = path;
+        this.callback = callback;
+        this.onTimeOut = () => {
+            this.timeout = null;
+            let remoteNode = new node_cache_1.RemoteNode(this.path);
+            remoteNode.configs.set('$disconnectedTs', value_1.ValueUpdate.getTs());
+            this.callback(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
+        };
+        if (timeout) {
+            this.timeout = setTimeout(this.onTimeOut, timeout);
+            this.callbackWrapper = (value) => {
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                    this.timeout = null;
+                }
+                this.callback(value);
+            };
+        }
+        else {
+            this.callbackWrapper = callback;
+        }
+        let node = requester.nodeCache.getRemoteNode(path);
+        this.listener = node._list(requester).listen(callback);
+    }
+    close() {
+        this.listener.close();
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+    }
+}
+exports.ReqListListener = ReqListListener;
 class RequesterListUpdate extends interface_1.RequesterUpdate {
     /** @ignore */
     constructor(node, changes, streamStatus) {
@@ -271,6 +307,6 @@ ListController._ignoreProfileProps = [
     '$is',
     // '$permission',
     // '$settings',
-    '$disconnectedTs'
+    '$disconnectedTs',
 ];
 //# sourceMappingURL=list.js.map

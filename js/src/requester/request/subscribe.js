@@ -35,6 +35,9 @@ class ReqSubscribeListener {
             this.requester.unsubscribe(this.path, this.callbackWrapper);
             this.callback = null;
         }
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
     }
 }
 exports.ReqSubscribeListener = ReqSubscribeListener;

@@ -14,7 +14,8 @@ function useRawDsaQuery(
   pathOrNode: string | NodeQueryResult,
   query: NodeQueryStructure,
   callback?: QueryCallback,
-  delay = 0
+  delay: number = 0,
+  timeout: number = 5000
 ): NodeQueryResult {
   const callbackRef = useRef<QueryCallback>();
   callbackRef.current = callback;
@@ -77,7 +78,7 @@ function useRawDsaQuery(
   useEffect(() => {
     let subscription: Closable;
     if (typeof pathOrNode === 'string') {
-      subscription = link.requester.query(pathOrNode, query, rootCallback);
+      subscription = link.requester.query(pathOrNode, query, rootCallback, timeout);
     } else if (pathOrNode instanceof NodeQueryResult) {
       pathOrNode.listen(rootCallback);
     }
@@ -102,16 +103,18 @@ function useRawDsaQuery(
  *  - value of attribute that matches ?attributes is changed
  *  - child is removed or new child is added when wildcard children match * is defined
  *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
- * @param delay
+ * @param delay Delay the callback to merge changes into less update, in milliseconds.
+ * @param timeout Timeout on requests that might stuck because node doesn't exist or permission denied, in milliseconds.
  */
 export function useDsaQuery(
   link: BrowserUserLink,
   path: string,
   query: NodeQueryStructure,
   callback?: QueryCallback,
-  delay?: number
+  delay?: number,
+  timeout: number = 5000
 ) {
-  return useRawDsaQuery(link, path, query, callback, delay);
+  return useRawDsaQuery(link, path, query, callback, delay, timeout);
 }
 
 /**

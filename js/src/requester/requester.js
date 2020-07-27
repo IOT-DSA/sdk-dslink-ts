@@ -99,8 +99,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
      *   - 0: allow value skipping as long as the last update is received
      *   - 1: no value skipping
      */
-    subscribe(path, callback, qos = 0, timeout = 15000) {
-        return new subscribe_1.ReqSubscribeListener(this, path, callback, qos, timeout);
+    subscribe(path, callback, qos = 0, timeoutMs) {
+        return new subscribe_1.ReqSubscribeListener(this, path, callback, qos, timeoutMs);
     }
     /**
      * Unsubscribe the callback
@@ -130,43 +130,29 @@ class Requester extends connection_handler_1.ConnectionHandler {
     /**
      * Subscribe and get value update only once, subscription will be closed automatically when an update is received
      */
-    subscribeOnce(path, timeoutMs = 0) {
+    subscribeOnce(path, timeoutMs) {
         return new Promise((resolve, reject) => {
-            let timer;
             let listener = this.subscribe(path, (update) => {
                 resolve(update);
                 if (listener != null) {
                     listener.close();
                     listener = null;
                 }
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                }
-            });
-            if (timeoutMs > 0) {
-                timer = setTimeout(() => {
-                    timer = null;
-                    if (listener) {
-                        listener.close();
-                        listener = null;
-                    }
-                    reject(new Error(`failed to receive value, timeout: ${timeoutMs}ms`));
-                }, timeoutMs);
-            }
+            }, 0, timeoutMs);
         });
     }
     /**
      * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
      */
-    listOnce(path) {
+    listOnce(path, timeoutMs) {
         return new Promise((resolve, reject) => {
-            let sub = this.list(path, (update) => {
+            let listener = this.list(path, (update) => {
                 resolve(update.node);
-                if (sub != null) {
-                    sub.close();
+                if (listener != null) {
+                    listener.close();
+                    listener = null;
                 }
-            });
+            }, timeoutMs);
         });
     }
     /**
@@ -175,9 +161,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
      *
      * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
      */
-    list(path, callback) {
-        let node = this.nodeCache.getRemoteNode(path);
-        return node._list(this).listen(callback);
+    list(path, callback, timeoutMs) {
+        return new list_1.ReqListListener(this, path, callback, timeoutMs);
     }
     /**
      * Invoke a node action, and receive updates.
@@ -256,11 +241,12 @@ class Requester extends connection_handler_1.ConnectionHandler {
      *  - value of config that matches ?configs is changed
      *  - value of attribute that matches ?attributes is changed
      *  - child is removed or new child is added when wildcard children match * is defined
+     * @param timeoutMs Timeout of the list and subscribe request used by the query
      */
-    query(path, queryStruct, callback) {
+    query(path, queryStruct, callback, timeoutMs) {
         queryStruct = Object.assign({}, queryStruct);
         delete queryStruct.$filter; // make sure root node has no filter;
-        let query = new query_1.Query({ requester: this, scheduleOutput: () => { } }, path, queryStruct);
+        let query = new query_1.Query({ requester: this, scheduleOutput: () => { } }, path, queryStruct, null, timeoutMs);
         query._onAllCancel = () => query.destroy();
         query.start();
         return query.listen(callback);

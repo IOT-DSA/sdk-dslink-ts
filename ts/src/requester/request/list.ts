@@ -1,11 +1,53 @@
 import {Requester} from '../requester';
 import {Request} from '../request';
-import {Completer, Stream, StreamSubscription} from '../../utils/async';
-import {Permission} from '../../common/permission';
+import {Closable, Completer, Listener, Stream, StreamSubscription} from '../../utils/async';
 import {ConnectionProcessor, DsError, StreamStatus} from '../../common/interfaces';
 import {RemoteNode} from '../node_cache';
-import {ValueUpdate} from '../../common/value';
 import {RequesterUpdate, RequestUpdater} from '../interface';
+import {ValueUpdate} from '../../common/value';
+
+export class ReqListListener implements Closable {
+  callbackWrapper: Listener<RequesterListUpdate>;
+  timeout: any;
+  listener: StreamSubscription<RequesterListUpdate>;
+
+  /** @ignore */
+  constructor(
+    public requester: Requester,
+    public path: string,
+    public callback: Listener<RequesterListUpdate>,
+    timeout: number
+  ) {
+    if (timeout) {
+      this.timeout = setTimeout(this.onTimeOut, timeout);
+      this.callbackWrapper = (value: RequesterListUpdate) => {
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+          this.timeout = null;
+        }
+        this.callback(value);
+      };
+    } else {
+      this.callbackWrapper = callback;
+    }
+    let node: RemoteNode = requester.nodeCache.getRemoteNode(path);
+    this.listener = node._list(requester).listen(callback);
+  }
+
+  onTimeOut = () => {
+    this.timeout = null;
+    let remoteNode = new RemoteNode(this.path);
+    remoteNode.configs.set('$disconnectedTs', ValueUpdate.getTs());
+    this.callback(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
+  };
+
+  close() {
+    this.listener.close();
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+  }
+}
 
 export class RequesterListUpdate extends RequesterUpdate {
   /**
@@ -28,7 +70,7 @@ export class ListDefListener {
   readonly node: RemoteNode;
   readonly requester: Requester;
 
-  listener: StreamSubscription<any>;
+  listener: ReqListListener;
 
   ready: boolean = false;
 
@@ -194,7 +236,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     '$is',
     // '$permission',
     // '$settings',
-    '$disconnectedTs'
+    '$disconnectedTs',
   ];
 
   _onProfileUpdate = (update: RequesterListUpdate) => {

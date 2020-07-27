@@ -6,7 +6,7 @@ import { RemoteNode, RemoteNodeCache } from './node_cache';
 import { ReqSubscribeListener, SubscribeRequest } from './request/subscribe';
 import { DsError, ProcessorResult } from '../common/interfaces';
 import { ValueUpdate } from '../common/value';
-import { RequesterListUpdate } from './request/list';
+import { ReqListListener, RequesterListUpdate } from './request/list';
 import { RequesterInvokeStream, RequesterInvokeUpdate } from './request/invoke';
 import { NodeQueryStructure } from './query/query-structure';
 import { NodeQueryResult } from './query/result';
@@ -53,7 +53,7 @@ export declare class Requester extends ConnectionHandler {
      *   - 0: allow value skipping as long as the last update is received
      *   - 1: no value skipping
      */
-    subscribe(path: string, callback: (update: ValueUpdate) => void, qos?: number, timeout?: number): ReqSubscribeListener;
+    subscribe(path: string, callback: (update: ValueUpdate) => void, qos?: number, timeoutMs?: number): ReqSubscribeListener;
     /**
      * Unsubscribe the callback
      */
@@ -67,14 +67,14 @@ export declare class Requester extends ConnectionHandler {
     /**
      * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
      */
-    listOnce(path: string): Promise<RemoteNode>;
+    listOnce(path: string, timeoutMs?: number): Promise<RemoteNode>;
     /**
      * List a path and get the node metadata as well as a summary of children nodes.
      * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
      *
      * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
      */
-    list(path: string, callback: Listener<RequesterListUpdate>): StreamSubscription<RequesterListUpdate>;
+    list(path: string, callback: Listener<RequesterListUpdate>, timeoutMs?: number): ReqListListener;
     /**
      * Invoke a node action, and receive updates.
      * Usually an action stream will be closed on server side,
@@ -113,8 +113,9 @@ export declare class Requester extends ConnectionHandler {
      *  - value of config that matches ?configs is changed
      *  - value of attribute that matches ?attributes is changed
      *  - child is removed or new child is added when wildcard children match * is defined
+     * @param timeoutMs Timeout of the list and subscribe request used by the query
      */
-    query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeQueryResult>): StreamSubscription<NodeQueryResult>;
+    query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeQueryResult>, timeoutMs?: number): StreamSubscription<NodeQueryResult>;
     /** @ignore */
     closeRequest(request: Request): void;
     /** @ignore */
