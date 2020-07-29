@@ -31,7 +31,7 @@ class ReqListListener {
             this.callbackWrapper = callback;
         }
         let node = requester.nodeCache.getRemoteNode(path);
-        this.listener = node._list(requester).listen(callback);
+        this.listener = node._list(requester).listen(this.callbackWrapper);
     }
     close() {
         this.listener.close();

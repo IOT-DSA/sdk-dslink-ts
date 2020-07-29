@@ -31,7 +31,7 @@ export class ReqListListener implements Closable {
       this.callbackWrapper = callback;
     }
     let node: RemoteNode = requester.nodeCache.getRemoteNode(path);
-    this.listener = node._list(requester).listen(callback);
+    this.listener = node._list(requester).listen(this.callbackWrapper);
   }
 
   onTimeOut = () => {
