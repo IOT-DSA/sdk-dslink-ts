@@ -3,7 +3,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const {DSLink} = require('../../js/web');
-const {useDsaQuery, useDsaChildQuery} = require('../../js/react-hook');
+const {useDsaQuery, useDsaConnectionStatus} = require('../../js/react-hook');
 
 const {useState} = React;
 
@@ -17,10 +17,11 @@ const MainComponent = ({link}) => {
     link,
     '/',
     {
-      sys: {
+      downstream: {
         '?configs': '*',
         '?actions': '*',
-        '*': {},
+        '?children': 'live',
+        '*': {'?configs': '*'},
       },
     },
     (update, json) => {
@@ -28,16 +29,22 @@ const MainComponent = ({link}) => {
     },
     3000
   );
+  let connectStatus = useDsaConnectionStatus(link, true);
+  console.log(connectStatus);
+
   if (!nodeObj) {
     return <div />;
   }
 
-  let sysNode = nodeObj['sys'];
-
+  let node1 = nodeObj['downstream'];
+  let node2 = nodeObj['sys'];
+  console.log(node1, node2);
   return (
     <div>
-      <div>data in: {sysNode['dataInPerSecond']}</div>
-      <div>data in: {sysNode['dataOutPerSecond']}</div>
+      downstream:
+      <pre>{JSON.stringify(node1, null, 1)}</pre>
+      sys:
+      <pre>{JSON.stringify(node2, null, 1)}</pre>
     </div>
   );
 };
