@@ -84,19 +84,31 @@ describe('subscribe', function() {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
   });
 
-  it('lazy value load', async function() {
-    let lazy = rootNode.createChild('lazy', TestLazyValue);
+
+  it("lazy value load", async function () {
+    let lazy = rootNode.createChild("lazy", TestLazyValue);
     assert.isUndefined(lazy._value);
 
     // value exist only after subscription
-    assert.equal((await requester.subscribeOnce(resolve('lazy'))).value, 'ready');
+    assert.equal(
+      (await requester.subscribeOnce(resolve("lazy"))).value,
+      "ready"
+    );
 
-    setTimeout(() => rootNode.createChild('lazy2', TestLazyValue), 10);
+    setTimeout(() => rootNode.createChild("lazy2", TestLazyValue), 50);
     // subscribe before value node gets created
-    assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, null);
+    let lastUpdate: ValueUpdate;
+    requester.subscribe(resolve("lazy2"), (update) => {
+      lastUpdate = update;
+    });
+    await shouldHappen(
+      () =>
+        lastUpdate &&
+        lastUpdate.value == null &&
+        lastUpdate.status === "unknown"
+    );
 
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    assert.equal((await requester.subscribeOnce(resolve('lazy2'))).value, 'ready');
+    await shouldHappen(() => lastUpdate && lastUpdate.value === "ready");
   });
 
   it('qos 0', async function() {
