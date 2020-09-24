@@ -233,23 +233,32 @@ class Query extends async_1.Stream {
             this.setFilterReady(true);
         }
     }
-    pause() {
+    pause(destroyed = false) {
         this._started = false;
-        this.pauseSubscription();
+        this.pauseSubscription(destroyed);
     }
-    pauseSubscription() {
+    pauseSubscription(destroyed = false) {
         if (this.subscribeListener) {
             this.subscribeListener.close();
             this.subscribeListener = null;
-            this.setSubscribeReady(false);
+            if (!destroyed) {
+                this.setSubscribeReady(false);
+            }
         }
         if (this.listListener) {
             this.listListener.close();
             this.listListener = null;
-            this.setListReady(false);
+            if (!destroyed) {
+                this.setListReady(false);
+            }
         }
         for (let [key, query] of this.fixedChildren) {
-            query.pause();
+            if (destroyed) {
+                query.destroy();
+            }
+            else {
+                query.pause();
+            }
         }
         if (this.dynamicChildren) {
             for (let [key, query] of this.dynamicChildren) {
@@ -321,10 +330,7 @@ class Query extends async_1.Stream {
         if (this.filter) {
             this.filter.destroy();
         }
-        this.pause();
-        for (let [key, query] of this.fixedChildren) {
-            query.destroy();
-        }
+        this.pause(true);
     }
 }
 exports.Query = Query;
