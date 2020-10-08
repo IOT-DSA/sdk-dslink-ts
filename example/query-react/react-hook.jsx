@@ -23,6 +23,9 @@ const MainComponent = ({link}) => {
         '?children': 'live',
         '*': {'?configs': '*'},
       },
+      sys:{
+        '?actions': '*',
+      }
     },
     (update, json) => {
       setNodeObj(json);

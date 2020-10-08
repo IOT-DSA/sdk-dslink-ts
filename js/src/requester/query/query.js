@@ -5,6 +5,7 @@ const filter_1 = require("./filter");
 const async_1 = require("../../utils/async");
 const result_1 = require("./result");
 const node_1 = require("../../common/node");
+const actionSubQuery = { '?configs': '*' };
 function copyMapWithFilter(m, filter) {
     if (!filter) {
         return new Map();
@@ -131,14 +132,18 @@ class Query extends async_1.Stream {
                 }
                 for (let [key, child] of update.node.children) {
                     if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+                        let subQueryInput = this.dynamicQuery;
                         if (child.configs.has('$invokable')) {
                             if (!this.actionFilter || (!this.actionFilter.includes(key) && this.actionFilter[0] !== '*')) {
                                 continue;
                             }
+                            subQueryInput = actionSubQuery;
                         }
-                        let childQuery = new Query(this, node_1.Path.concat(this.path, key), this.dynamicQuery, child);
-                        this.dynamicChildren.set(key, childQuery);
-                        childQuery.start();
+                        if (subQueryInput) {
+                            let childQuery = new Query(this, node_1.Path.concat(this.path, key), subQueryInput, child);
+                            this.dynamicChildren.set(key, childQuery);
+                            childQuery.start();
+                        }
                     }
                 }
             }
@@ -175,18 +180,20 @@ class Query extends async_1.Stream {
         else if (query['?actions'] === '*') {
             this.actionFilter = ['*'];
         }
+        if (query.hasOwnProperty('*') || query.hasOwnProperty('?actions')) {
+            this.dynamicChildren = new Map();
+        }
         for (let key in query) {
             if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
                 if (key === '*') {
                     this.dynamicQuery = query[key];
-                    this.dynamicChildren = new Map();
                 }
                 else {
                     this.fixedChildren.set(key, new Query(this, node_1.Path.concat(this.path, key), query[key]));
                 }
             }
         }
-        if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.dynamicQuery)) {
+        if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.actionFilter || this.dynamicQuery)) {
             this.childrenMode = 'snapshot';
         }
         if (query['?filter']) {

@@ -8,6 +8,8 @@ import {RemoteNode} from '../node_cache';
 import {NodeQueryResult} from './result';
 import {Path} from '../../common/node';
 
+const actionSubQuery: NodeQueryStructure = {'?configs': '*'};
+
 function copyMapWithFilter(m: Map<string, any>, filter: string[]) {
   if (!filter) {
     return new Map();
@@ -80,17 +82,19 @@ export class Query extends Stream<NodeQueryResult> {
     } else if (query['?actions'] === '*') {
       this.actionFilter = ['*'];
     }
+    if (query.hasOwnProperty('*') || query.hasOwnProperty('?actions')) {
+      this.dynamicChildren = new Map();
+    }
     for (let key in query) {
       if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
         if (key === '*') {
           this.dynamicQuery = query[key];
-          this.dynamicChildren = new Map();
         } else {
           this.fixedChildren.set(key, new Query(this, Path.concat(this.path, key), query[key]));
         }
       }
     }
-    if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.dynamicQuery)) {
+    if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.actionFilter || this.dynamicQuery)) {
       this.childrenMode = 'snapshot';
     }
     if (query['?filter']) {
@@ -351,14 +355,18 @@ export class Query extends Stream<NodeQueryResult> {
       }
       for (let [key, child] of update.node.children) {
         if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+          let subQueryInput = this.dynamicQuery;
           if (child.configs.has('$invokable')) {
             if (!this.actionFilter || (!this.actionFilter.includes(key) && this.actionFilter[0] !== '*')) {
               continue;
             }
+            subQueryInput = actionSubQuery;
           }
-          let childQuery = new Query(this, Path.concat(this.path, key), this.dynamicQuery, child as RemoteNode);
-          this.dynamicChildren.set(key, childQuery);
-          childQuery.start();
+          if (subQueryInput) {
+            let childQuery = new Query(this, Path.concat(this.path, key), subQueryInput, child as RemoteNode);
+            this.dynamicChildren.set(key, childQuery);
+            childQuery.start();
+          }
         }
       }
     }
