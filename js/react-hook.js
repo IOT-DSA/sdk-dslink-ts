@@ -136,9 +136,16 @@ function mergedBatchUpdate() {
     mergedBatchUpdateTimeout = null;
 }
 batch_update_1.addBatchUpdateCallback(mergedBatchUpdate);
+/**
+ * Listen the DSA connection and returns the status.
+ * (connected=undefined means no connection was  attempted.)
+ * @param link link
+ * @param checkNextReconnect Set true to check next reconnect. (default = true)
+ */
 function useDsaConnectionStatus(link, checkNextReconnect = true) {
+    // connected is initialized with undefined to indicate that no connection was attempted.
     const [result, setResult] = react_1.useState({
-        connected: link.onConnect._value === true,
+        connected: undefined,
         nextReconnectTS: null,
     });
     react_1.useEffect(() => {

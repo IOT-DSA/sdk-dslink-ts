@@ -153,9 +153,16 @@ function mergedBatchUpdate() {
 
 addBatchUpdateCallback(mergedBatchUpdate);
 
+/**
+ * Listen the DSA connection and returns the status. 
+ * (connected=undefined means no connection was  attempted.)
+ * @param link link
+ * @param checkNextReconnect Set true to check next reconnect. (default = true)
+ */
 export function useDsaConnectionStatus(link: BrowserUserLink, checkNextReconnect: boolean = true) {
-  const [result, setResult] = useState<{connected: boolean; nextReconnectTS: number}>({
-    connected: link.onConnect._value === true,
+  // connected is initialized with undefined to indicate that no connection was attempted.
+  const [result, setResult] = useState<{connected?: boolean; nextReconnectTS: number}>({
+    connected: undefined,
     nextReconnectTS: null,
   });
   useEffect(() => {
