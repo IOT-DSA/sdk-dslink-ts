@@ -4,40 +4,39 @@ exports.ReqSubscribeController = exports.SubscribeRequest = exports.SubscribeCon
 const request_1 = require("../request");
 const value_1 = require("../../common/value");
 const connection_handler_1 = require("../../common/connection-handler");
+const UNSUBSCRIBE_DELAY_MS = 3000;
 class ReqSubscribeListener {
     /** @ignore */
     constructor(requester, path, callback, qos, timeout) {
         this.requester = requester;
         this.path = path;
         this.callback = callback;
+        this.callbackWrapper = (value) => {
+            var _a;
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+        };
         this.onTimeOut = () => {
             this.timeout = null;
-            this.callback(new value_1.ValueUpdate(null, null, { status: 'unknown' }));
+            this.callbackWrapper(new value_1.ValueUpdate(null, null, { status: 'unknown' }));
         };
         let node = requester.nodeCache.getRemoteNode(path);
         if (timeout) {
             this.timeout = setTimeout(this.onTimeOut, timeout);
-            this.callbackWrapper = (value) => {
-                if (this.timeout) {
-                    clearTimeout(this.timeout);
-                    this.timeout = null;
-                }
-                this.callback(value);
-            };
-        }
-        else {
-            this.callbackWrapper = callback;
         }
         node._subscribe(requester, this.callbackWrapper, qos);
     }
     close() {
-        if (this.callback != null) {
-            this.requester.unsubscribe(this.path, this.callbackWrapper);
-            this.callback = null;
-        }
         if (this.timeout) {
             clearTimeout(this.timeout);
         }
+        this.callback = null;
+        setTimeout(() => {
+            this.requester.unsubscribe(this.path, this.callbackWrapper);
+        }, UNSUBSCRIBE_DELAY_MS);
     }
 }
 exports.ReqSubscribeListener = ReqSubscribeListener;

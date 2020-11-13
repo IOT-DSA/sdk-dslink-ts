@@ -7,8 +7,9 @@ import {RemoteNode} from '../node_cache';
 import {DSA_CONFIG} from '../../common/connection-handler';
 import {RequestUpdater} from '../interface';
 
+const UNSUBSCRIBE_DELAY_MS = 3000;
+
 export class ReqSubscribeListener implements Closable {
-  callbackWrapper: ValueUpdateCallback;
   timeout: any;
 
   /** @ignore */
@@ -23,32 +24,31 @@ export class ReqSubscribeListener implements Closable {
 
     if (timeout) {
       this.timeout = setTimeout(this.onTimeOut, timeout);
-      this.callbackWrapper = (value: ValueUpdate) => {
-        if (this.timeout) {
-          clearTimeout(this.timeout);
-          this.timeout = null;
-        }
-        this.callback(value);
-      };
-    } else {
-      this.callbackWrapper = callback;
     }
     node._subscribe(requester, this.callbackWrapper, qos);
   }
 
+  callbackWrapper = (value: ValueUpdate) => {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+    this.callback?.(value);
+  };
+
   onTimeOut = () => {
     this.timeout = null;
-    this.callback(new ValueUpdate(null, null, {status: 'unknown'}));
+    this.callbackWrapper(new ValueUpdate(null, null, {status: 'unknown'}));
   };
 
   close() {
-    if (this.callback != null) {
-      this.requester.unsubscribe(this.path, this.callbackWrapper);
-      this.callback = null;
-    }
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
+    this.callback = null;
+    setTimeout(() => {
+      this.requester.unsubscribe(this.path, this.callbackWrapper);
+    }, UNSUBSCRIBE_DELAY_MS);
   }
 }
 

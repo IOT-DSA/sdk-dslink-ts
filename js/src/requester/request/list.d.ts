@@ -8,11 +8,11 @@ export declare class ReqListListener implements Closable {
     requester: Requester;
     path: string;
     callback: Listener<RequesterListUpdate>;
-    callbackWrapper: Listener<RequesterListUpdate>;
     timeout: any;
     listener: StreamSubscription<RequesterListUpdate>;
     /** @ignore */
     constructor(requester: Requester, path: string, callback: Listener<RequesterListUpdate>, timeout: number);
+    callbackWrapper: (value: RequesterListUpdate) => void;
     onTimeOut: () => void;
     close(): void;
 }

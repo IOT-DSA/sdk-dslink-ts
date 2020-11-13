@@ -5,39 +5,41 @@ const async_1 = require("../../utils/async");
 const node_cache_1 = require("../node_cache");
 const interface_1 = require("../interface");
 const value_1 = require("../../common/value");
+const UNLIST_DELAY_MS = 3000;
 class ReqListListener {
     /** @ignore */
     constructor(requester, path, callback, timeout) {
         this.requester = requester;
         this.path = path;
         this.callback = callback;
+        this.callbackWrapper = (value) => {
+            var _a;
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+        };
         this.onTimeOut = () => {
             this.timeout = null;
             let remoteNode = new node_cache_1.RemoteNode(this.path);
             remoteNode.configs.set('$disconnectedTs', value_1.ValueUpdate.getTs());
-            this.callback(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
+            this.callbackWrapper(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
         };
         if (timeout) {
             this.timeout = setTimeout(this.onTimeOut, timeout);
-            this.callbackWrapper = (value) => {
-                if (this.timeout) {
-                    clearTimeout(this.timeout);
-                    this.timeout = null;
-                }
-                this.callback(value);
-            };
-        }
-        else {
-            this.callbackWrapper = callback;
         }
         let node = requester.nodeCache.getRemoteNode(path);
         this.listener = node._list(requester).listen(this.callbackWrapper);
     }
     close() {
-        this.listener.close();
         if (this.timeout) {
             clearTimeout(this.timeout);
         }
+        this.callback = null;
+        setTimeout(() => {
+            this.listener.close();
+        }, UNLIST_DELAY_MS);
     }
 }
 exports.ReqListListener = ReqListListener;
@@ -287,7 +289,8 @@ class ListController {
         this.request = this.requester._sendRequest({ method: 'list', path: this.node.remotePath }, this);
         this.waitToSend = false;
     }
-    ackReceived(receiveAckId, startTime, currentTime) { }
+    ackReceived(receiveAckId, startTime, currentTime) {
+    }
     _destroy() {
         this.waitToSend = false;
         if (this._profileLoader != null) {

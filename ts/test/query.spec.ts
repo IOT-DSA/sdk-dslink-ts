@@ -98,7 +98,7 @@ describe('query', function () {
         data = n.toObject();
       }
     );
-    await shouldHappen(() => data);
+    await shouldHappen(() => data, 200);
     let addCallback = data.add;
     assert.isFunction(addCallback);
     delete data.add;
@@ -134,7 +134,7 @@ describe('query', function () {
         data = n.toObject();
       }
     );
-    await shouldHappen(() => data);
+    await shouldHappen(() => data, 500);
     assert.deepEqual(data, {
       node0: {$value: 1},
       node2: {$value: 9},
@@ -151,7 +151,7 @@ describe('query', function () {
         data = n.toObject();
       }
     );
-    await shouldHappen(() => data);
+    await shouldHappen(() => data, 500);
     assert.deepEqual(data, {
       node1: {$value: 5},
       node2: {$value: 9},
@@ -183,7 +183,7 @@ describe('query', function () {
         data = n.toObject();
       }
     );
-    await shouldHappen(() => data);
+    await shouldHappen(() => data, 500);
 
     assert.deepEqual(data, {
       v: {$value: 'hello'},

@@ -9,10 +9,10 @@ export declare class ReqSubscribeListener implements Closable {
     requester: Requester;
     path: string;
     callback: ValueUpdateCallback;
-    callbackWrapper: ValueUpdateCallback;
     timeout: any;
     /** @ignore */
     constructor(requester: Requester, path: string, callback: ValueUpdateCallback, qos: number, timeout: number);
+    callbackWrapper: (value: ValueUpdate) => void;
     onTimeOut: () => void;
     close(): void;
 }

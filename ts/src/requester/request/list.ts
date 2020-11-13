@@ -6,8 +6,9 @@ import {RemoteNode} from '../node_cache';
 import {RequesterUpdate, RequestUpdater} from '../interface';
 import {ValueUpdate} from '../../common/value';
 
+const UNLIST_DELAY_MS = 3000;
+
 export class ReqListListener implements Closable {
-  callbackWrapper: Listener<RequesterListUpdate>;
   timeout: any;
   listener: StreamSubscription<RequesterListUpdate>;
 
@@ -20,32 +21,34 @@ export class ReqListListener implements Closable {
   ) {
     if (timeout) {
       this.timeout = setTimeout(this.onTimeOut, timeout);
-      this.callbackWrapper = (value: RequesterListUpdate) => {
-        if (this.timeout) {
-          clearTimeout(this.timeout);
-          this.timeout = null;
-        }
-        this.callback(value);
-      };
-    } else {
-      this.callbackWrapper = callback;
     }
     let node: RemoteNode = requester.nodeCache.getRemoteNode(path);
     this.listener = node._list(requester).listen(this.callbackWrapper);
   }
 
+  callbackWrapper = (value: RequesterListUpdate) => {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+    this.callback?.(value);
+  };
+
   onTimeOut = () => {
     this.timeout = null;
     let remoteNode = new RemoteNode(this.path);
     remoteNode.configs.set('$disconnectedTs', ValueUpdate.getTs());
-    this.callback(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
+    this.callbackWrapper(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
   };
 
   close() {
-    this.listener.close();
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
+    this.callback = null;
+    setTimeout(() => {
+      this.listener.close();
+    }, UNLIST_DELAY_MS);
   }
 }
 
@@ -305,7 +308,8 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     this.waitToSend = false;
   }
 
-  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {}
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
+  }
 
   _onListen = (callback: (update: RequesterListUpdate) => void) => {
     if (this._ready && this.request != null) {
