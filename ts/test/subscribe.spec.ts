@@ -62,11 +62,13 @@ describe('subscribe', function() {
     await shouldHappen(() => updates[0] === 123);
     await requester.set(resolve('val'), 456);
     await shouldHappen(() => updates[1] === 456);
+    await requester.set(resolve('val'), NaN);
+    await shouldHappen(() => isNaN(updates[2]));
 
     subscription.close();
     rootNode.val.setValue(789);
     await sleep(10);
-    assert.equal(updates.length, 2); // should not receive new update after close() subscription;
+    assert.equal(updates.length, 3); // should not receive new update after close() subscription;
   });
 
   it('subscribeOnce', async function() {

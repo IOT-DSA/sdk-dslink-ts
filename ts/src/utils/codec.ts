@@ -87,18 +87,39 @@ export class DsJsonCodecImpl extends DsCodec implements DsJson {
   }
 
   static reviver(key: string, value: any): any {
-    if (typeof value === 'string' && value.startsWith('\u001Bbytes:')) {
-      try {
-        return Base64.decode(value.substring(7));
-      } catch (err) {
-        return null;
+    if (typeof value === 'string' && value.startsWith('\u001B')) {
+      if (value.startsWith('\u001Bbytes:')) {
+        try {
+          return Base64.decode(value.substring(7));
+        } catch (err) {
+          return null;
+        }
+      } else {
+        switch (value) {
+          case '\u001BNaN':
+            return NaN;
+          case '\u001BInfinity':
+            return Infinity;
+          case '\u001B-Infinity':
+            return -Infinity;
+        }
       }
     }
     return value;
   }
 
   static replacer(key: string, value: any): any {
-    if (value instanceof Uint8Array) {
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value)) {
+        if (value !== value) {
+          return '\u001BNaN';
+        } else if (value === Infinity) {
+          return '\u001BInfinity';
+        } else if (value === -Infinity) {
+          return '\u001B-Infinity';
+        }
+      }
+    } else if (value instanceof Uint8Array) {
       return `\u001Bbytes:${Base64.encode(value)}`;
     }
     return value;
@@ -138,7 +159,7 @@ export class DsMsgPackCodecImpl extends DsCodec {
 
 DsCodec._codecs = {
   json: DsJson.instance,
-  msgpack: DsMsgPackCodecImpl.instance
+  msgpack: DsMsgPackCodecImpl.instance,
 };
 
 DsCodec.defaultCodec = DsJson.instance;

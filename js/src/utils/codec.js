@@ -67,18 +67,43 @@ class DsJsonCodecImpl extends DsCodec {
         return this.decodeStringFrame(toBuffer(bytes).toString());
     }
     static reviver(key, value) {
-        if (typeof value === 'string' && value.startsWith('\u001Bbytes:')) {
-            try {
-                return base64_1.default.decode(value.substring(7));
+        if (typeof value === 'string' && value.startsWith('\u001B')) {
+            if (value.startsWith('\u001Bbytes:')) {
+                try {
+                    return base64_1.default.decode(value.substring(7));
+                }
+                catch (err) {
+                    return null;
+                }
             }
-            catch (err) {
-                return null;
+            else {
+                switch (value) {
+                    case '\u001BNaN':
+                        return NaN;
+                    case '\u001BInfinity':
+                        return Infinity;
+                    case '\u001B-Infinity':
+                        return -Infinity;
+                }
             }
         }
         return value;
     }
     static replacer(key, value) {
-        if (value instanceof Uint8Array) {
+        if (typeof value === 'number') {
+            if (!Number.isFinite(value)) {
+                if (value !== value) {
+                    return '\u001BNaN';
+                }
+                else if (value === Infinity) {
+                    return '\u001BInfinity';
+                }
+                else if (value === -Infinity) {
+                    return '\u001B-Infinity';
+                }
+            }
+        }
+        else if (value instanceof Uint8Array) {
             return `\u001Bbytes:${base64_1.default.encode(value)}`;
         }
         return value;
@@ -112,7 +137,7 @@ exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
 DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 DsCodec._codecs = {
     json: DsJson.instance,
-    msgpack: DsMsgPackCodecImpl.instance
+    msgpack: DsMsgPackCodecImpl.instance,
 };
 DsCodec.defaultCodec = DsJson.instance;
 //# sourceMappingURL=codec.js.map
