@@ -6,7 +6,8 @@ import {RemoteNode} from '../node_cache';
 import {RequesterUpdate, RequestUpdater} from '../interface';
 import {ValueUpdate} from '../../common/value';
 
-const UNLIST_DELAY_MS = 3000;
+// delay 3s for web appilcation and 50ms for nodejs
+const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 
 export class ReqListListener implements Closable {
   timeout: any;
@@ -308,8 +309,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
     this.waitToSend = false;
   }
 
-  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {
-  }
+  ackReceived(receiveAckId: number, startTime: number, currentTime: number) {}
 
   _onListen = (callback: (update: RequesterListUpdate) => void) => {
     if (this._ready && this.request != null) {

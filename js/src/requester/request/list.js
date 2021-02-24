@@ -5,7 +5,8 @@ const async_1 = require("../../utils/async");
 const node_cache_1 = require("../node_cache");
 const interface_1 = require("../interface");
 const value_1 = require("../../common/value");
-const UNLIST_DELAY_MS = 3000;
+// delay 3s for web appilcation and 50ms for nodejs
+const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 class ReqListListener {
     /** @ignore */
     constructor(requester, path, callback, timeout) {
@@ -289,8 +290,7 @@ class ListController {
         this.request = this.requester._sendRequest({ method: 'list', path: this.node.remotePath }, this);
         this.waitToSend = false;
     }
-    ackReceived(receiveAckId, startTime, currentTime) {
-    }
+    ackReceived(receiveAckId, startTime, currentTime) { }
     _destroy() {
         this.waitToSend = false;
         if (this._profileLoader != null) {

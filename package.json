@@ -1,7 +1,7 @@
 {
   "name": "dslink",
   "license": "Apache-2.0",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "main": "js/node.js",
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
   },
   "scripts": {
     "js-example": "parcel example/browser/basic.html --out-dir temp --open --no-source-maps ",
+    "node-example": "node ./example/nodejs-requester/list.js",
     "query-example": "parcel example/query-react/react-hook.html --out-dir temp --open --no-source-maps ",
     "buildWeb": "parcel build ts/web.ts --no-minify",
     "buildDoc": "typedoc --options ./typedocconfig.js",

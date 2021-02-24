@@ -7,7 +7,8 @@ import {RemoteNode} from '../node_cache';
 import {DSA_CONFIG} from '../../common/connection-handler';
 import {RequestUpdater} from '../interface';
 
-const UNSUBSCRIBE_DELAY_MS = 3000;
+// delay 3s for web appilcation and 50ms for nodejs
+const UNSUBSCRIBE_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 
 export class ReqSubscribeListener implements Closable {
   timeout: any;
