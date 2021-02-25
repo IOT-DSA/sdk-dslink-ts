@@ -72,11 +72,10 @@ describe('subscribe', function() {
   });
 
   it('subscribeOnce', async function() {
-    this.timeout(5000);
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
-    await sleep(100);
+    await sleep(20);
     assert.equal(requester._subscription.subscriptions.size, 1); // not unsubsceibed yet
-    await sleep(3000);
+    await sleep(100);
     assert.equal(requester._subscription.subscriptions.size, 0); // everything should be unsubscribed after 3 seconds
   });
 
