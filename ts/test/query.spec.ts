@@ -125,6 +125,35 @@ describe('query', function () {
     });
   });
 
+  it('query once', async function () {
+    let data = (
+      await requester.queryOnce('/', {
+        '*': {'?value': 'snapshot', '?children': 'snapshot', '?attributes': ['*']},
+      })
+    ).toObject();
+    assert.deepEqual(data, {
+      // add: {
+      //   $invokable: 'write',
+      //   $is: 'node',
+      // },
+      node0: {
+        '$value': 1,
+        '@att': false,
+      },
+      node1: {
+        '$value': 5,
+        '@att': true,
+      },
+      node2: {
+        '$value': 9,
+        '@att': false,
+      },
+      v: {
+        $value: 'hello',
+      },
+    });
+  });
+
   it('with filter', async function () {
     let data: any;
     let query = requester.query(

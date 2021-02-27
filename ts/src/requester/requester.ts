@@ -182,6 +182,17 @@ export class Requester extends ConnectionHandler {
   }
 
   /**
+   * List a path and get the node metadata as well as a summary of children nodes.
+   * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
+   *
+   * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
+   */
+
+  list(path: string, callback: Listener<RequesterListUpdate>, timeoutMs?: number): ReqListListener {
+    return new ReqListListener(this, path, callback, timeoutMs);
+  }
+
+  /**
    * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
    */
   listOnce(path: string, timeoutMs?: number): Promise<RemoteNode> {
@@ -199,17 +210,6 @@ export class Requester extends ConnectionHandler {
         timeoutMs
       );
     });
-  }
-
-  /**
-   * List a path and get the node metadata as well as a summary of children nodes.
-   * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
-   *
-   * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
-   */
-
-  list(path: string, callback: Listener<RequesterListUpdate>, timeoutMs?: number): ReqListListener {
-    return new ReqListListener(this, path, callback, timeoutMs);
   }
 
   /**
@@ -324,6 +324,27 @@ export class Requester extends ConnectionHandler {
     query._onAllCancel = () => query.destroy();
     query.start();
     return query.listen(callback);
+  }
+
+  /**
+   * Query and get update only once, query will be closed automatically when an update is received
+   */
+  queryOnce(path: string, queryStruct: NodeQueryStructure, timeoutMs?: number): Promise<NodeQueryResult> {
+    return new Promise((resolve, reject) => {
+      let listener = this.query(
+        path,
+        queryStruct,
+        (update: NodeQueryResult) => {
+          resolve(update);
+
+          if (listener != null) {
+            listener.close();
+            listener = null;
+          }
+        },
+        timeoutMs
+      );
+    });
   }
 
   /// close the request from requester side and notify responder

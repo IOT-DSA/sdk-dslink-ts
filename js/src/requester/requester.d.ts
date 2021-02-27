@@ -65,16 +65,16 @@ export declare class Requester extends ConnectionHandler {
      */
     subscribeOnce(path: string, timeoutMs?: number): Promise<ValueUpdate>;
     /**
-     * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
-     */
-    listOnce(path: string, timeoutMs?: number): Promise<RemoteNode>;
-    /**
      * List a path and get the node metadata as well as a summary of children nodes.
      * This method will keep a stream and continue to get updates. If you only need to get the current value once, use [[listOnce]] instead.
      *
      * A Subscription should be closed with [[StreamSubscription.close]] when it's no longer needed.
      */
     list(path: string, callback: Listener<RequesterListUpdate>, timeoutMs?: number): ReqListListener;
+    /**
+     * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
+     */
+    listOnce(path: string, timeoutMs?: number): Promise<RemoteNode>;
     /**
      * Invoke a node action, and receive updates.
      * Usually an action stream will be closed on server side,
@@ -116,6 +116,10 @@ export declare class Requester extends ConnectionHandler {
      * @param timeoutMs Timeout of the list and subscribe request used by the query
      */
     query(path: string, queryStruct: NodeQueryStructure, callback?: Listener<NodeQueryResult>, timeoutMs?: number): StreamSubscription<NodeQueryResult>;
+    /**
+     * Query and get update only once, query will be closed automatically when an update is received
+     */
+    queryOnce(path: string, queryStruct: NodeQueryStructure, timeoutMs?: number): Promise<NodeQueryResult>;
     /** @ignore */
     closeRequest(request: Request): void;
     /** @ignore */
