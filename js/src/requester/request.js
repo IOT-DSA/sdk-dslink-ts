@@ -16,6 +16,7 @@ class Request {
     }
     /// resend the data if previous sending failed
     resend() {
+        this.streamStatus = 'initialize';
         this.requester.addToSendList(this.data);
     }
     _update(m) {
