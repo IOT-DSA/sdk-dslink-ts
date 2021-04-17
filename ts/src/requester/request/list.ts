@@ -201,7 +201,9 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
         }
       }
     }
-    this.node._listed = this.request.streamStatus !== 'initialize';
+    if (this.request.streamStatus !== 'initialize') {
+      this.node._listed = true;
+    }
     if (this._pendingRemoveDef) {
       this._checkRemoveDef();
     }

@@ -123,11 +123,14 @@ class Query extends async_1.Stream {
             this.listResult = update.node;
             this.disconnected = Boolean(this.listResult.getConfig('$disconnectedTs'));
             if (this.dynamicChildren) {
-                for (let [key, child] of this.dynamicChildren) {
-                    if (!update.node.children.has(key)) {
-                        child.destroy();
-                        this.dynamicChildren.delete(key);
-                        this.scheduleOutput();
+                if (this.requester._connected) {
+                    // do not remove existing nodes when link is disconnected
+                    for (let [key, child] of this.dynamicChildren) {
+                        if (!update.node.children.has(key)) {
+                            this.dynamicChildren.delete(key);
+                            child.destroy();
+                            this.scheduleOutput();
+                        }
                     }
                 }
                 for (let [key, child] of update.node.children) {
@@ -296,7 +299,7 @@ class Query extends async_1.Stream {
         for (let [key, query] of this.fixedChildren) {
             query.start();
         }
-        if (this.valueMode) {
+        if (this.valueMode && (this.summary == null || this.summary.getConfig('$type'))) {
             if (!this.subscribeListener) {
                 this.setSubscribeReady(false);
                 this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
