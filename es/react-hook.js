@@ -1,0 +1,168 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { NodeQueryResult } from './src/requester/query/result';
+import { addBatchUpdateCallback, isBatchUpdating } from './src/browser/batch-update';
+/** @ignore */
+function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0, timeout = 5000) {
+    const callbackRef = useRef();
+    callbackRef.current = callback;
+    const delayRef = useRef();
+    delayRef.current = Math.max(delay, 0); // delay must >= 0
+    const callbackTimerRef = useRef(false);
+    const rootNodeCache = useRef();
+    const [, forceUpdate] = useState(1);
+    const watchingNodes = useRef(new WeakSet());
+    const executeCallback = useCallback(() => {
+        var _a;
+        if (callbackRef.current) {
+            if (callbackRef.current.length >= 2) {
+                let obj = (_a = rootNodeCache.current) === null || _a === void 0 ? void 0 : _a.toObject();
+                callbackRef.current(rootNodeCache.current, obj);
+            }
+            else {
+                callbackRef.current(rootNodeCache.current);
+            }
+        }
+        else {
+            // force a state change to render
+            forceUpdate((v) => -v);
+        }
+        callbackTimerRef.current = null;
+    }, []);
+    const delayedCallback = useCallback(() => {
+        if (callbackTimerRef.current) {
+            return;
+        }
+        if (callbackTimerRef.current === false && rootNodeCache.current) {
+            // when === false, it's the initial callback
+            batchUpdate(executeCallback);
+        }
+        else {
+            callbackTimerRef.current = setTimeout(batchUpdate, delayRef.current, executeCallback);
+        }
+    }, []);
+    const childCallback = useCallback((node) => {
+        for (let [name, child] of node.children) {
+            if (!watchingNodes.current.has(child)) {
+                watchingNodes.current.add(child);
+                child.listen(childCallback, false);
+                childCallback(child);
+            }
+        }
+        delayedCallback();
+    }, []);
+    const rootCallback = useCallback((node) => {
+        rootNodeCache.current = node;
+        for (let [name, child] of node.children) {
+            if (!watchingNodes.current.has(child)) {
+                watchingNodes.current.add(child);
+                child.listen(childCallback, false);
+                childCallback(child);
+            }
+        }
+        delayedCallback();
+    }, []);
+    useEffect(() => {
+        let subscription;
+        if (typeof pathOrNode === 'string') {
+            subscription = link.requester.query(pathOrNode, query, rootCallback, timeout);
+        }
+        else if (pathOrNode instanceof NodeQueryResult) {
+            pathOrNode.listen(rootCallback);
+        }
+        return () => {
+            if (subscription) {
+                subscription.close();
+            }
+        };
+    }, [link, pathOrNode]);
+    return rootNodeCache.current;
+}
+/**
+ * Query a node and its children
+ * @param link
+ * @param path The node path to be queried.
+ * @param query
+ * @param callback The callback will be called only when
+ *  - node value changed if ?value is defined
+ *  - value of config that matches ?configs is changed
+ *  - value of attribute that matches ?attributes is changed
+ *  - child is removed or new child is added when wildcard children match * is defined
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ * @param delay Delay the callback to merge changes into less update, in milliseconds.
+ * @param timeout Timeout on requests that might stuck because node doesn't exist or permission denied, in milliseconds.
+ */
+export function useDsaQuery(link, path, query, callback, delay, timeout = 5000) {
+    return useRawDsaQuery(link, path, query, callback, delay, timeout);
+}
+/**
+ * @deprecated
+ * Query a child node and its children
+ * @param node The node from a result of a parent query.
+ * @param callback The callback will be called only when
+ *  - node value changed if ?value is defined
+ *  - value of config that matches ?configs is changed
+ *  - value of attribute that matches ?attributes is changed
+ *  - child is removed or new child is added when wildcard children match * is defined
+ *  - a child has updated internally (same as the above condition), and the child is defined in watchChildren
+ */
+export function useDsaChildQuery(node, callback) {
+    return useRawDsaQuery(null, node, null, callback);
+}
+const callbacks = new Set();
+let mergedBatchUpdateTimeout;
+function batchUpdate(callback) {
+    callbacks.add(callback);
+    if (!isBatchUpdating() && !mergedBatchUpdateTimeout) {
+        // when query callback triggered without incoming dsa response, use a timer
+        mergedBatchUpdateTimeout = setTimeout(mergedBatchUpdate, 0);
+    }
+}
+function mergedBatchUpdate() {
+    ReactDOM.unstable_batchedUpdates(() => {
+        for (let callback of callbacks) {
+            callback();
+        }
+        callbacks.clear();
+    });
+    mergedBatchUpdateTimeout = null;
+}
+addBatchUpdateCallback(mergedBatchUpdate);
+/**
+ * Listen the DSA connection and returns the status.
+ * (connected=undefined means no connection was  attempted.)
+ * @param link link
+ * @param checkNextReconnect Set true to check next reconnect. (default = true)
+ */
+export function useDsaConnectionStatus(link, checkNextReconnect = true) {
+    // connected is initialized with undefined to indicate that no connection was attempted.
+    const [result, setResult] = useState({
+        connected: undefined,
+        nextReconnectTS: null,
+    });
+    useEffect(() => {
+        const connectListener = link.onConnect.listen(() => {
+            setResult({ connected: true, nextReconnectTS: null });
+        });
+        const disconnectListener = link.onDisconnect.listen(() => {
+            setResult((result) => {
+                return Object.assign(Object.assign({}, result), { connected: false });
+            });
+        });
+        let reconnectListener;
+        if (checkNextReconnect) {
+            reconnectListener = link.onReconnect.listen((ts) => {
+                setResult({ connected: false, nextReconnectTS: ts });
+            });
+        }
+        return () => {
+            connectListener.close();
+            disconnectListener.close();
+            if (reconnectListener) {
+                reconnectListener.close();
+            }
+        };
+    }, [link]);
+    return result;
+}
+//# sourceMappingURL=react-hook.js.map

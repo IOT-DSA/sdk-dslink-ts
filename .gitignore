@@ -12,6 +12,10 @@ node_modules
 /js/ts
 /js/test
 /js/**/spec
+/es/typedocconfig.js
+/es/ts
+/es/test
+/es/**/spec
 /.nyc_output
 /coverage
 .dslink.key

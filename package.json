@@ -3,6 +3,7 @@
   "license": "Apache-2.0",
   "version": "2.2.10",
   "main": "js/node.js",
+  "module": "es/node.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/IOT-DSA/sdk-dslink-ts.git"
@@ -60,6 +61,7 @@
     "test-nyc": "nyc --skip-full mocha 'js/**/*.spec.js' && nyc report --reporter=text-lcov | coveralls",
     "test-karma": "karma start",
     "prettier-check": "prettier --check \"ts/**/*.+(ts|tsx)\"",
-    "prettier-write": "prettier --write \"ts/**/*.+(ts|tsx)\""
+    "prettier-write": "prettier --write \"ts/**/*.+(ts|tsx)\"",
+    "build-es": "tsc --module es2020 --outDir ./es"
   }
 }
