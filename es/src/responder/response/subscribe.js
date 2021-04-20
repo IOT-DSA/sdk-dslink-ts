@@ -2,6 +2,7 @@
 import { ValueUpdate } from '../../common/value';
 import { Response } from '../response';
 import { DSA_CONFIG } from '../../common/connection-handler';
+import Denque from 'denque';
 export class SubscribeResponse extends Response {
     constructor(responder, rid) {
         super(responder, rid, 'subscribe');

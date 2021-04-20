@@ -2,7 +2,7 @@ import { ValueUpdate } from '../../common/value';
 import { Response } from '../response';
 import { NodeState } from '../node_state';
 import { Responder } from '../responder';
-import Denque = require('denque');
+import Denque from 'denque';
 interface ISubscriptionNodeStorage {
 }
 export declare class SubscribeResponse extends Response {

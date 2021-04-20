@@ -1,11 +1,14 @@
 "use strict";
 // part of dslink.responder;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValueSubscriber = exports.SubscribeResponse = void 0;
 const value_1 = require("../../common/value");
 const response_1 = require("../response");
 const connection_handler_1 = require("../../common/connection-handler");
-const Denque = require("denque");
+const denque_1 = __importDefault(require("denque"));
 class SubscribeResponse extends response_1.Response {
     constructor(responder, rid) {
         super(responder, rid, 'subscribe');
@@ -156,7 +159,7 @@ class ValueSubscriber {
         }
         this._qosLevel = v;
         if (this.waitingValues == null && this._qosLevel > 0) {
-            this.waitingValues = new Denque();
+            this.waitingValues = new denque_1.default();
         }
         this.caching = v > 0;
         this.cachingQueue = v > 1;
