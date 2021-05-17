@@ -15,24 +15,19 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._onRequestReadyCompleter = new async_1.Completer();
         this._onDisconnectedCompleter = new async_1.Completer();
         this._onDoneHandled = false;
-        /// set to true when data is sent, reset the flag every 20 seconds
-        /// since the previous ping message will cause the next 20 seoncd to have a message
-        /// max interval between 2 ping messages is 40 seconds
-        this._dataSent = false;
-        /// add this count every 20 seconds, set to 0 when receiving data
-        /// when the count is 3, disconnect the link
-        this._dataReceiveCount = 0;
+        this._dataReceiveTs = new Date().getTime();
+        this._dataSentTs = this._dataReceiveTs;
         this.onPingTimer = () => {
-            if (this._dataReceiveCount >= 3) {
+            let currentTs = new Date().getTime();
+            if (currentTs - this._dataReceiveTs >= 65000) {
+                // close the connection if no message received in the last 65 seconds
                 close();
                 return;
             }
-            this._dataReceiveCount++;
-            if (this._dataSent) {
-                this._dataSent = false;
-                return;
+            if (currentTs - this._dataSentTs > 21000) {
+                // add message if no data was sent in the last 21 seconds
+                this.addConnCommand(null, null);
             }
-            this.addConnCommand(null, null);
         };
         this._openTs = Infinity;
         this._onOpen = (e) => {
@@ -53,7 +48,7 @@ class WebSocketConnection extends interfaces_1.Connection {
             if (!this._onRequestReadyCompleter.isCompleted) {
                 this._onRequestReadyCompleter.complete(this._requesterChannel);
             }
-            this._dataReceiveCount = 0;
+            this._dataReceiveTs = new Date().getTime();
             let m;
             batch_update_1.startBatchUpdate();
             if (e.data instanceof ArrayBuffer) {
@@ -61,6 +56,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                     let bytes = new Uint8Array(e.data);
                     m = this.codec.decodeBinaryFrame(bytes);
                     logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
+                    this.checkBrowserThrottling();
                     if (typeof m['salt'] === 'string') {
                         this.clientLink.updateSalt(m['salt']);
                     }
@@ -98,6 +94,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 try {
                     m = this.codec.decodeStringFrame(e.data);
                     logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
+                    this.checkBrowserThrottling();
                     let needAck = false;
                     if (Array.isArray(m['responses']) && m['responses'].length > 0) {
                         needAck = true;
@@ -200,6 +197,18 @@ class WebSocketConnection extends interfaces_1.Connection {
             }, 0);
         }
     }
+    // sometimes setTimeout and setInterval is not run due to browser throttling
+    checkBrowserThrottling() {
+        let currentTs = new Date().getTime();
+        if (currentTs - this._dataSentTs > 25000) {
+            logger.trace('Throttling detected');
+            // timer is supposed to be run every 20 seconds, if that passes 25 seconds, force it to run
+            this.onPingTimer();
+            if (this._sending) {
+                this._send();
+            }
+        }
+    }
     get openTs() {
         return this._openTs;
     }
@@ -276,7 +285,7 @@ class WebSocketConnection extends interfaces_1.Connection {
                 console.error('Unable to send on socket', e);
                 this.close();
             }
-            this._dataSent = true;
+            this._dataSentTs = new Date().getTime();
         }
     }
     close() {
