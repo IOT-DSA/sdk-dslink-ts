@@ -17,10 +17,11 @@ export declare class WebSocketConnection extends Connection {
     _onDoneHandled: boolean;
     constructor(socket: WebSocket, clientLink: ClientLink, onConnect: Function, useCodec: DsCodec);
     pingTimer: any;
-    _dataSent: boolean;
-    _dataReceiveCount: number;
+    _dataReceiveTs: number;
+    _dataSentTs: number;
     onPingTimer: () => void;
     requireSend(): void;
+    checkBrowserThrottling(): void;
     _openTs: number;
     get openTs(): number;
     _onOpen: (e: Event) => void;
