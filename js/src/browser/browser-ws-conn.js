@@ -199,6 +199,9 @@ class WebSocketConnection extends interfaces_1.Connection {
     }
     // sometimes setTimeout and setInterval is not run due to browser throttling
     checkBrowserThrottling() {
+        if (!WebSocketConnection.checkBrowserThrottling) {
+            return;
+        }
         let currentTs = new Date().getTime();
         if (currentTs - this._dataSentTs > 25000) {
             logger.trace('Throttling detected');
@@ -296,4 +299,5 @@ class WebSocketConnection extends interfaces_1.Connection {
     }
 }
 exports.WebSocketConnection = WebSocketConnection;
+WebSocketConnection.checkBrowserThrottling = true;
 //# sourceMappingURL=browser-ws-conn.js.map

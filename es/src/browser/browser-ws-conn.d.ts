@@ -3,6 +3,7 @@ import { PassiveChannel } from '../common/connection-channel';
 import { Completer } from '../utils/async';
 import { DsCodec } from '../utils/codec';
 export declare class WebSocketConnection extends Connection {
+    static checkBrowserThrottling: boolean;
     _responderChannel: PassiveChannel;
     get responderChannel(): ConnectionChannel;
     _requesterChannel: PassiveChannel;
