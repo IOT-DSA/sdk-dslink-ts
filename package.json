@@ -44,7 +44,7 @@
     "denque": "^1.4.1",
     "moment-timezone": "^0.5.28",
     "msgpack-lite": "^0.1.26",
-    "ws": "^7.2.3",
+    "ws": "^7.4.6",
     "yargs": "^15.3.1"
   },
   "resolutions": {
