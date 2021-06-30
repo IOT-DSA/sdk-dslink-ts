@@ -71,22 +71,22 @@ export class RequesterInvokeUpdate extends RequesterUpdate {
     }
     /**
      * Convert the update to a simple js Object
-     * If there are multiple rows, only the first row is returned
+     * If there are multiple rows, only the last row is returned
      */
     get result() {
         let rows = this.rows;
         if (rows.length) {
-            let firstRow = rows[0];
-            if (this.rawColumns && this.rawColumns.length >= firstRow.length) {
+            let lastRow = rows[rows.length - 1];
+            if (this.columns && this.columns.length >= lastRow.length) {
                 let result = {};
-                for (let i = 0; i < firstRow.length; ++i) {
-                    let col = this.rawColumns[i].name;
-                    result[col] = firstRow[i];
+                for (let i = 0; i < lastRow.length; ++i) {
+                    let col = this.columns[i].name;
+                    result[col] = lastRow[i];
                 }
                 return result;
             }
             else {
-                return firstRow;
+                return lastRow;
             }
         }
         else {

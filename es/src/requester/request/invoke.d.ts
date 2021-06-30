@@ -27,7 +27,7 @@ export declare class RequesterInvokeUpdate extends RequesterUpdate {
     get rows(): any[][];
     /**
      * Convert the update to a simple js Object
-     * If there are multiple rows, only the first row is returned
+     * If there are multiple rows, only the last row is returned
      */
     get result(): any;
 }
