@@ -68,6 +68,9 @@ export class HttpClientLink extends ClientLink {
   _conn: string;
 
   /** @ignore */
+  _connectionHeaders: {[key: string]: string};
+
+  /** @ignore */
   linkData: {[key: string]: any};
 
   /** @ignore
@@ -91,6 +94,7 @@ export class HttpClientLink extends ClientLink {
       token?: string;
       linkData?: {[key: string]: any};
       format?: string[] | string;
+      connectionHeaders?: {[key: string]: string};
     } = {}
   ) {
     super();
@@ -103,6 +107,7 @@ export class HttpClientLink extends ClientLink {
     initEncryptionSecret(this.privateKey.ecPrivateKey);
 
     this.linkData = options.linkData;
+    this._connectionHeaders = options.connectionHeaders;
     if (options.format) {
       if (Array.isArray(options.format)) {
         this.formats = options.format;
@@ -197,13 +202,17 @@ export class HttpClientLink extends ClientLink {
         isResponder: this.responder != null,
         formats: this.formats,
         version: DSA_VERSION,
-        enableWebSocketCompression: true
+        enableWebSocketCompression: true,
       };
       if (this.linkData != null) {
         requestJson['linkData'] = this.linkData;
       }
 
-      let connResponse = await axios.post(connUrl, requestJson, {timeout: 60000});
+      let connResponse = await axios.post(connUrl, requestJson, {
+        timeout: 60000, headers: {
+          post: this._connectionHeaders
+        }
+      });
 
       let serverConfig: {[key: string]: any} = connResponse.data;
 
@@ -270,7 +279,7 @@ export class HttpClientLink extends ClientLink {
         wsUrl = `${wsUrl}${this.tokenHash}`;
       }
 
-      let socket = new WebSocket(wsUrl);
+      let socket = new WebSocket(wsUrl, {headers: this._connectionHeaders});
 
       this._wsConnection = new WebSocketConnection(socket, this, this._onConnect, DsCodec.getCodec(this.format));
 

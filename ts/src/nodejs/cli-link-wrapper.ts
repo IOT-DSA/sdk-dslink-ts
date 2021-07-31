@@ -12,6 +12,7 @@ interface DSLinkOption {
   token?: string;
   linkData?: {[key: string]: any};
   format?: string[] | string;
+  connectionHeader?: {[key: string]: string};
 }
 
 export class DSLink extends HttpClientLink {

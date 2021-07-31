@@ -11,6 +11,9 @@ interface DSLinkOption {
         [key: string]: any;
     };
     format?: string[] | string;
+    connectionHeaders?: {
+        [key: string]: string;
+    };
 }
 export declare class DSLink extends HttpClientLink {
     constructor(name: string, options: DSLinkOption, args?: string[]);
