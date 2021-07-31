@@ -33,6 +33,10 @@ export declare class HttpClientLink extends ClientLink {
     /** @ignore */
     _conn: string;
     /** @ignore */
+    _connectionHeaders: {
+        [key: string]: string;
+    };
+    /** @ignore */
     linkData: {
         [key: string]: any;
     };
@@ -54,6 +58,9 @@ export declare class HttpClientLink extends ClientLink {
             [key: string]: any;
         };
         format?: string[] | string;
+        connectionHeaders?: {
+            [key: string]: string;
+        };
     });
     /** @ignore */
     _connDelay: number;

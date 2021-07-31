@@ -51,6 +51,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
         }
         encrypt_1.initEncryptionSecret(this.privateKey.ecPrivateKey);
         this.linkData = options.linkData;
+        this._connectionHeaders = options.connectionHeaders;
         if (options.format) {
             if (Array.isArray(options.format)) {
                 this.formats = options.format;
@@ -143,12 +144,16 @@ class HttpClientLink extends interfaces_1.ClientLink {
                 isResponder: this.responder != null,
                 formats: this.formats,
                 version: utils_1.DSA_VERSION,
-                enableWebSocketCompression: true
+                enableWebSocketCompression: true,
             };
             if (this.linkData != null) {
                 requestJson['linkData'] = this.linkData;
             }
-            let connResponse = await axios_1.default.post(connUrl, requestJson, { timeout: 60000 });
+            let connResponse = await axios_1.default.post(connUrl, requestJson, {
+                timeout: 60000, headers: {
+                    post: this._connectionHeaders
+                }
+            });
             let serverConfig = connResponse.data;
             //      logger.finest(formatLogMessage("Handshake Response: ${serverConfig}"));
             // read salt
@@ -198,7 +203,7 @@ class HttpClientLink extends interfaces_1.ClientLink {
             if (this.tokenHash != null) {
                 wsUrl = `${wsUrl}${this.tokenHash}`;
             }
-            let socket = new ws_1.default(wsUrl);
+            let socket = new ws_1.default(wsUrl, { headers: this._connectionHeaders });
             this._wsConnection = new websocket_conn_1.WebSocketConnection(socket, this, this._onConnect, codec_1.DsCodec.getCodec(this.format));
             //      logger.info(formatLogMessage("Connected"));
             // delays: Reset, we've successfully connected.
