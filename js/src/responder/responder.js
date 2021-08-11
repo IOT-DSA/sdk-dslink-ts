@@ -62,7 +62,7 @@ class Responder extends connection_handler_1.ConnectionHandler {
                 return;
             }
             else {
-                if (this._responses.hasOwnProperty(m['rid'])) {
+                if (this._responses.has(m['rid'])) {
                     if (method === 'close') {
                         this.close(m);
                     }
