@@ -11,7 +11,7 @@ interface DSLinkOption {
         [key: string]: any;
     };
     format?: string[] | string;
-    connectionHeaders?: {
+    connectionHeader?: {
         [key: string]: string;
     };
 }

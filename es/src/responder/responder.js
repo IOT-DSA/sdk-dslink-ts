@@ -59,7 +59,7 @@ export class Responder extends ConnectionHandler {
                 return;
             }
             else {
-                if (this._responses.hasOwnProperty(m['rid'])) {
+                if (this._responses.has(m['rid'])) {
                     if (method === 'close') {
                         this.close(m);
                     }
