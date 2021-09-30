@@ -1,5 +1,5 @@
 import './src/responder/node/static-node';
-export { encodeNodeName } from './src/utils/node-name';
+export { encodeNodeName, decodeNodeName } from './src/utils/node-name';
 export { HttpClientLink } from './src/nodejs/client-link';
 export { DSLink } from './src/nodejs/cli-link-wrapper';
 export { Table, TableColumn } from './src/common/table';
