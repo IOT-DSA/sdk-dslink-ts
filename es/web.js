@@ -1,4 +1,5 @@
 import { BrowserUserLink } from './src/browser/browser-user-link';
+export { encodeNodeName } from './src/utils/node-name';
 if (Object.isExtensible(window)) {
     window.DSLink = BrowserUserLink;
 }

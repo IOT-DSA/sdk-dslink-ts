@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./src/responder/node/static-node");
+var node_name_1 = require("./src/utils/node-name");
+Object.defineProperty(exports, "encodeNodeName", { enumerable: true, get: function () { return node_name_1.encodeNodeName; } });
 var client_link_1 = require("./src/nodejs/client-link");
 Object.defineProperty(exports, "HttpClientLink", { enumerable: true, get: function () { return client_link_1.HttpClientLink; } });
 var cli_link_wrapper_1 = require("./src/nodejs/cli-link-wrapper");
