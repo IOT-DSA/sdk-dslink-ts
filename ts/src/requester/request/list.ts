@@ -312,7 +312,7 @@ export class ListController implements RequestUpdater, ConnectionProcessor {
   ackReceived(receiveAckId: number, startTime: number, currentTime: number) {}
 
   _onListen = (callback: (update: RequesterListUpdate) => void) => {
-    if (this._ready && this.request != null) {
+    if (this._ready && this.node._listed && this.request != null) {
       setTimeout(() => {
         if (this.request == null) {
           return;

@@ -200,6 +200,10 @@ export class Requester extends ConnectionHandler {
       let listener = this.list(
         path,
         (update) => {
+          if (update.streamStatus === 'initialize') {
+            return;
+          }
+
           resolve(update.node);
 
           if (listener != null) {
