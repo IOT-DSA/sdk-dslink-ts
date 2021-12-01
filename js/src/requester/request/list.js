@@ -116,7 +116,7 @@ class ListController {
         };
         this.waitToSend = false;
         this._onListen = (callback) => {
-            if (this._ready && this.request != null) {
+            if (this._ready && this.node._listed && this.request != null) {
                 setTimeout(() => {
                     if (this.request == null) {
                         return;

@@ -153,6 +153,9 @@ export class Requester extends ConnectionHandler {
     listOnce(path, timeoutMs) {
         return new Promise((resolve, reject) => {
             let listener = this.list(path, (update) => {
+                if (update.streamStatus === 'initialize') {
+                    return;
+                }
                 resolve(update.node);
                 if (listener != null) {
                     listener.close();
