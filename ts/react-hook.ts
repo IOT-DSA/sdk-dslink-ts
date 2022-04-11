@@ -87,7 +87,7 @@ function useRawDsaQuery(
         subscription.close();
       }
     };
-  }, [link, pathOrNode]);
+  }, [link, pathOrNode, query]);
 
   return rootNodeCache.current;
 }
@@ -154,7 +154,7 @@ function mergedBatchUpdate() {
 addBatchUpdateCallback(mergedBatchUpdate);
 
 /**
- * Listen the DSA connection and returns the status. 
+ * Listen the DSA connection and returns the status.
  * (connected=undefined means no connection was  attempted.)
  * @param link link
  * @param checkNextReconnect Set true to check next reconnect. (default = true)

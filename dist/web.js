@@ -622,6 +622,7 @@ module.exports = Denque;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.sleep = exports.Completer = exports.StreamSubscription = exports.Stream = void 0;
 /** @ignore */
 
 class Stream {
@@ -641,7 +642,7 @@ class Stream {
     this._cached = cached;
   }
 
-  listen(listener) {
+  listen(listener, useCache = true) {
     this._listeners.add(listener);
 
     if (this._onStartListen && this._listeners.size === 1) {
@@ -652,9 +653,13 @@ class Stream {
       this._onListen(listener);
     }
 
-    if (this._value !== undefined && !this._updating) {
+    if (useCache && this._value !== undefined && !this._updating) {
       // skip extra update if it's already in updating iteration
-      listener(this._value);
+      setTimeout(() => {
+        if (this._listeners.has(listener) && this._value !== undefined) {
+          listener(this._value);
+        }
+      }, 0);
     }
 
     return new StreamSubscription(this, listener);
@@ -849,7 +854,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -1033,7 +1039,7 @@ var global = arguments[3];
 /*!
  * The buffer module from node.js, for the browser.
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
  */
 /* eslint-disable no-proto */
@@ -2876,7 +2882,7 @@ function from(value) {
   return Array.prototype.slice.call(value);
 }
 
-},{"./bufferish":"/pso"}],"JxGr":[function(require,module,exports) {
+},{"./bufferish":"psoK"}],"JxGr":[function(require,module,exports) {
 
 // bufferish-buffer.js
 
@@ -2925,7 +2931,7 @@ function from(value) {
   }
 }
 
-},{"./bufferish":"/pso"}],"v8cf":[function(require,module,exports) {
+},{"./bufferish":"psoK"}],"v8cf":[function(require,module,exports) {
 // bufferish-uint8array.js
 
 var Bufferish = require("./bufferish");
@@ -2978,7 +2984,7 @@ function from(value) {
   return new Uint8Array(value);
 }
 
-},{"./bufferish":"/pso"}],"wZ7Y":[function(require,module,exports) {
+},{"./bufferish":"psoK"}],"wZ7Y":[function(require,module,exports) {
 // buffer-lite.js
 
 var MAXBUFLEN = 8192;
@@ -3203,7 +3209,7 @@ function gen(method) {
   }
 }
 
-},{"./buffer-lite":"wZ7Y","./bufferish":"/pso"}],"/pso":[function(require,module,exports) {
+},{"./buffer-lite":"wZ7Y","./bufferish":"psoK"}],"psoK":[function(require,module,exports) {
 
 // bufferish.js
 
@@ -3326,7 +3332,7 @@ function ExtBuffer(buffer, type) {
   this.type = type;
 }
 
-},{"./bufferish":"/pso"}],"83P4":[function(require,module,exports) {
+},{"./bufferish":"psoK"}],"P4yY":[function(require,module,exports) {
 
 // ext-packer.js
 
@@ -3407,7 +3413,7 @@ function packError(value) {
   return out;
 }
 
-},{"./bufferish":"/pso","./encode":"bz2C"}],"dpz9":[function(require,module,exports) {
+},{"./bufferish":"psoK","./encode":"bz2C"}],"dpz9":[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 // int64-buffer.js
 
@@ -3949,7 +3955,7 @@ function writeDoubleBE(value, offset) {
   ieee754.write(this, value, offset, false, 52, 8);
 }
 
-},{"ieee754":"JgNJ","int64-buffer":"dpz9","./write-uint8":"fpjG","./bufferish":"/pso"}],"tNhd":[function(require,module,exports) {
+},{"ieee754":"JgNJ","int64-buffer":"dpz9","./write-uint8":"fpjG","./bufferish":"psoK"}],"tNhd":[function(require,module,exports) {
 // write-type.js
 
 var IS_ARRAY = require("isarray");
@@ -4220,7 +4226,7 @@ function getWriteType(options) {
   }
 }
 
-},{"isarray":"REa7","int64-buffer":"dpz9","./bufferish":"/pso","./bufferish-proto":"GNC6","./write-token":"k6wB","./write-uint8":"fpjG","./ext-buffer":"tfA6"}],"69st":[function(require,module,exports) {
+},{"isarray":"REa7","int64-buffer":"dpz9","./bufferish":"psoK","./bufferish-proto":"GNC6","./write-token":"k6wB","./write-uint8":"fpjG","./ext-buffer":"tfA6"}],"stV7":[function(require,module,exports) {
 // codec-base.js
 
 var IS_ARRAY = require("isarray");
@@ -4289,7 +4295,7 @@ function createCodec(options) {
 
 exports.preset = createCodec({preset: true});
 
-},{"isarray":"REa7","./bufferish":"/pso"}],"K4KL":[function(require,module,exports) {
+},{"isarray":"REa7","./bufferish":"psoK"}],"K4KL":[function(require,module,exports) {
 // write-core.js
 
 var ExtBuffer = require("./ext-buffer").ExtBuffer;
@@ -4360,7 +4366,7 @@ function getExtPacker(value) {
   }
 }
 
-},{"./ext-buffer":"tfA6","./ext-packer":"83P4","./write-type":"tNhd","./codec-base":"69st"}],"knv5":[function(require,module,exports) {
+},{"./ext-buffer":"tfA6","./ext-packer":"P4yY","./write-type":"tNhd","./codec-base":"stV7"}],"knv5":[function(require,module,exports) {
 // flex-buffer.js
 
 exports.FlexDecoder = FlexDecoder;
@@ -4556,7 +4562,7 @@ function mixinFactory(source) {
   }
 }
 
-},{"./bufferish":"/pso"}],"2IMA":[function(require,module,exports) {
+},{"./bufferish":"psoK"}],"IMAQ":[function(require,module,exports) {
 // encode-buffer.js
 
 exports.EncodeBuffer = EncodeBuffer;
@@ -4598,7 +4604,7 @@ function encode(input, options) {
   return encoder.read();
 }
 
-},{"./encode-buffer":"2IMA"}],"n9cF":[function(require,module,exports) {
+},{"./encode-buffer":"IMAQ"}],"n9cF":[function(require,module,exports) {
 
 // ext-unpacker.js
 
@@ -4682,7 +4688,7 @@ function unpackArrayBuffer(value) {
   return (new Uint8Array(value)).buffer;
 }
 
-},{"./bufferish":"/pso","./decode":"0408"}],"m9Xw":[function(require,module,exports) {
+},{"./bufferish":"psoK","./decode":"y9Iy"}],"m9Xw":[function(require,module,exports) {
 // read-format.js
 
 var ieee754 = require("ieee754");
@@ -4864,7 +4870,7 @@ function readFloatBE(start) {
 function readDoubleBE(start) {
   return ieee754.read(this, start, false, 52, 8);
 }
-},{"ieee754":"JgNJ","int64-buffer":"dpz9","./bufferish":"/pso","./bufferish-proto":"GNC6"}],"enJ2":[function(require,module,exports) {
+},{"ieee754":"JgNJ","int64-buffer":"dpz9","./bufferish":"psoK","./bufferish-proto":"GNC6"}],"enJ2":[function(require,module,exports) {
 // read-token.js
 
 var ReadFormat = require("./read-format");
@@ -5081,7 +5087,7 @@ function getExtUnpacker(type) {
   }
 }
 
-},{"./ext-buffer":"tfA6","./ext-unpacker":"n9cF","./read-format":"m9Xw","./read-token":"enJ2","./codec-base":"69st"}],"z19W":[function(require,module,exports) {
+},{"./ext-buffer":"tfA6","./ext-unpacker":"n9cF","./read-format":"m9Xw","./read-token":"enJ2","./codec-base":"stV7"}],"z19W":[function(require,module,exports) {
 // decode-buffer.js
 
 exports.DecodeBuffer = DecodeBuffer;
@@ -5110,7 +5116,7 @@ DecodeBuffer.prototype.fetch = function() {
   return this.codec.decode(this);
 };
 
-},{"./read-core":"GUXC","./flex-buffer":"knv5"}],"0408":[function(require,module,exports) {
+},{"./read-core":"GUXC","./flex-buffer":"knv5"}],"y9Iy":[function(require,module,exports) {
 // decode.js
 
 exports.decode = decode;
@@ -5332,7 +5338,7 @@ Encoder.prototype.end = function(chunk) {
   this.emit("end");
 };
 
-},{"event-lite":"OX9O","./encode-buffer":"2IMA"}],"m6p9":[function(require,module,exports) {
+},{"event-lite":"OX9O","./encode-buffer":"IMAQ"}],"m6p9":[function(require,module,exports) {
 // decoder.js
 
 exports.Decoder = Decoder;
@@ -5363,7 +5369,7 @@ Decoder.prototype.end = function(chunk) {
   this.emit("end");
 };
 
-},{"event-lite":"OX9O","./decode-buffer":"z19W"}],"2S1v":[function(require,module,exports) {
+},{"event-lite":"OX9O","./decode-buffer":"z19W"}],"S1v6":[function(require,module,exports) {
 // ext.js
 
 // load both interfaces
@@ -5372,7 +5378,7 @@ require("./write-core");
 
 exports.createCodec = require("./codec-base").createCodec;
 
-},{"./read-core":"GUXC","./write-core":"K4KL","./codec-base":"69st"}],"cGed":[function(require,module,exports) {
+},{"./read-core":"GUXC","./write-core":"K4KL","./codec-base":"stV7"}],"cGed":[function(require,module,exports) {
 // codec.js
 
 // load both interfaces
@@ -5386,7 +5392,7 @@ exports.codec = {
   preset: require("./codec-base").preset
 };
 
-},{"./read-core":"GUXC","./write-core":"K4KL","./codec-base":"69st"}],"mwm5":[function(require,module,exports) {
+},{"./read-core":"GUXC","./write-core":"K4KL","./codec-base":"stV7"}],"mwm5":[function(require,module,exports) {
 // browser.js
 
 exports.encode = require("./encode").encode;
@@ -5398,7 +5404,7 @@ exports.Decoder = require("./decoder").Decoder;
 exports.createCodec = require("./ext").createCodec;
 exports.codec = require("./codec").codec;
 
-},{"./encode":"bz2C","./decode":"0408","./encoder":"XcL0","./decoder":"m6p9","./ext":"2S1v","./codec":"cGed"}],"ZvoB":[function(require,module,exports) {
+},{"./encode":"bz2C","./decode":"y9Iy","./encoder":"XcL0","./decoder":"m6p9","./ext":"S1v6","./codec":"cGed"}],"ZvoB":[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
@@ -5453,6 +5459,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.DsMsgPackCodecImpl = exports.DsJsonCodecImpl = exports.DsJson = exports.DsCodec = exports.toBuffer = void 0;
 
 const msgpack_lite_1 = __importDefault(require("msgpack-lite"));
 
@@ -5536,11 +5543,24 @@ class DsJsonCodecImpl extends DsCodec {
   }
 
   static reviver(key, value) {
-    if (typeof value === 'string' && value.startsWith("\u001Bbytes:")) {
-      try {
-        return base64_1.default.decode(value.substring(7));
-      } catch (err) {
-        return null;
+    if (typeof value === 'string' && value.startsWith('\u001B')) {
+      if (value.startsWith('\u001Bbytes:')) {
+        try {
+          return base64_1.default.decode(value.substring(7));
+        } catch (err) {
+          return null;
+        }
+      } else {
+        switch (value) {
+          case '\u001BNaN':
+            return NaN;
+
+          case '\u001BInfinity':
+            return Infinity;
+
+          case '\u001B-Infinity':
+            return -Infinity;
+        }
       }
     }
 
@@ -5548,7 +5568,17 @@ class DsJsonCodecImpl extends DsCodec {
   }
 
   static replacer(key, value) {
-    if (value instanceof Uint8Array) {
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value)) {
+        if (value !== value) {
+          return '\u001BNaN';
+        } else if (value === Infinity) {
+          return '\u001BInfinity';
+        } else if (value === -Infinity) {
+          return '\u001B-Infinity';
+        }
+      }
+    } else if (value instanceof Uint8Array) {
       return `\u001Bbytes:${base64_1.default.encode(value)}`;
     }
 
@@ -5590,11 +5620,11 @@ class DsMsgPackCodecImpl extends DsCodec {
 
 }
 
-DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 exports.DsMsgPackCodecImpl = DsMsgPackCodecImpl;
+DsMsgPackCodecImpl.instance = new DsMsgPackCodecImpl();
 DsCodec._codecs = {
-  "json": DsJson.instance,
-  "msgpack": DsMsgPackCodecImpl.instance
+  json: DsJson.instance,
+  msgpack: DsMsgPackCodecImpl.instance
 };
 DsCodec.defaultCodec = DsJson.instance;
 },{"msgpack-lite":"mwm5","./base64":"ZvoB","buffer":"dskh"}],"sxdr":[function(require,module,exports) {
@@ -5603,6 +5633,7 @@ DsCodec.defaultCodec = DsJson.instance;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.logger = exports.TaggedLogger = exports.Logger = exports.getTs = void 0;
 const TRACE = 1;
 const DEBUG = 2;
 const INFO = 4;
@@ -5731,12 +5762,12 @@ class Logger {
 
 }
 
+exports.Logger = Logger;
 Logger.TRACE = TRACE;
 Logger.DEBUG = DEBUG;
 Logger.INFO = INFO;
 Logger.WARN = WARN;
 Logger.ERROR = ERROR;
-exports.Logger = Logger;
 
 class TaggedLogger {
   constructor(logger, tag) {
@@ -5780,6 +5811,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.DsError = exports.ErrorPhase = exports.ClientLink = exports.ServerLink = exports.BaseLink = exports.ConnectionAckGroup = exports.ProcessorResult = exports.Connection = exports.DummyECDH = exports.ECDH = void 0;
 
 const denque_1 = __importDefault(require("denque"));
 
@@ -5801,7 +5833,7 @@ exports.ECDH = ECDH;
 
 class DummyECDH {
   constructor() {
-    this.encodedPublicKey = "";
+    this.encodedPublicKey = '';
   }
 
   hashSalt(salt) {
@@ -5913,6 +5945,8 @@ class ClientLink extends BaseLink {
         this.onConnect.reset();
       }
     };
+
+    this.onReconnect = new async_1.Stream();
   }
   /** @ignore */
 
@@ -5948,9 +5982,9 @@ exports.ClientLink = ClientLink;
 
 class ErrorPhase {}
 
-ErrorPhase.request = "request";
-ErrorPhase.response = "response";
 exports.ErrorPhase = ErrorPhase;
+ErrorPhase.request = 'request';
+ErrorPhase.response = 'response';
 
 class DsError {
   constructor(type, options = {}) {
@@ -5969,24 +6003,24 @@ class DsError {
   static fromMap(m) {
     let error = new DsError('');
 
-    if (typeof m["type"] === 'string') {
-      error.type = m["type"];
+    if (typeof m['type'] === 'string') {
+      error.type = m['type'];
     }
 
-    if (typeof m["msg"] === 'string') {
-      error.msg = m["msg"];
+    if (typeof m['msg'] === 'string') {
+      error.msg = m['msg'];
     }
 
-    if (typeof m["path"] === 'string') {
-      error.path = m["path"];
+    if (typeof m['path'] === 'string') {
+      error.path = m['path'];
     }
 
-    if (typeof m["phase"] === 'string') {
-      error.phase = m["phase"];
+    if (typeof m['phase'] === 'string') {
+      error.phase = m['phase'];
     }
 
-    if (typeof m["detail"] === 'string') {
-      error.detail = m["detail"];
+    if (typeof m['detail'] === 'string') {
+      error.detail = m['detail'];
     }
 
     return error;
@@ -6002,30 +6036,30 @@ class DsError {
       return this.type;
     }
 
-    return "Error";
+    return 'Error';
   }
 
   serialize() {
     let rslt = {};
 
     if (this.msg != null) {
-      rslt["msg"] = this.msg;
+      rslt['msg'] = this.msg;
     }
 
     if (this.type != null) {
-      rslt["type"] = this.type;
+      rslt['type'] = this.type;
     }
 
     if (this.path != null) {
-      rslt["path"] = this.path;
+      rslt['path'] = this.path;
     }
 
     if (this.phase === ErrorPhase.request) {
-      rslt["phase"] = ErrorPhase.request;
+      rslt['phase'] = ErrorPhase.request;
     }
 
     if (this.detail != null) {
-      rslt["detail"] = this.detail;
+      rslt['detail'] = this.detail;
     }
 
     return rslt;
@@ -6033,31 +6067,32 @@ class DsError {
 
 }
 
-DsError.PERMISSION_DENIED = new DsError("permissionDenied");
-DsError.INVALID_METHOD = new DsError("invalidMethod");
-DsError.NOT_IMPLEMENTED = new DsError("notImplemented");
-DsError.INVALID_PATH = new DsError("invalidPath");
-DsError.INVALID_PATHS = new DsError("invalidPaths");
-DsError.INVALID_VALUE = new DsError("invalidValue");
-DsError.INVALID_PARAMETER = new DsError("invalidParameter");
-DsError.DISCONNECTED = new DsError("disconnected", {
+exports.DsError = DsError;
+DsError.PERMISSION_DENIED = new DsError('permissionDenied');
+DsError.INVALID_METHOD = new DsError('invalidMethod');
+DsError.NOT_IMPLEMENTED = new DsError('notImplemented');
+DsError.INVALID_PATH = new DsError('invalidPath');
+DsError.INVALID_PATHS = new DsError('invalidPaths');
+DsError.INVALID_VALUE = new DsError('invalidValue');
+DsError.INVALID_PARAMETER = new DsError('invalidParameter');
+DsError.DISCONNECTED = new DsError('disconnected', {
   phase: ErrorPhase.request
 });
-DsError.FAILED = new DsError("failed");
-exports.DsError = DsError;
+DsError.FAILED = new DsError('failed');
 },{"denque":"DPC0","../utils/async":"bajV","../utils/codec":"TRmg","../utils/logger":"sxdr"}],"wg7F":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Request = void 0;
 
 const interfaces_1 = require("../common/interfaces");
 
 class Request {
   constructor(requester, rid, updater, data) {
     this._isClosed = false;
-    this.streamStatus = "initialize";
+    this.streamStatus = 'initialize';
     this.requester = requester;
     this.rid = rid;
     this.updater = updater;
@@ -6070,39 +6105,40 @@ class Request {
 
 
   resend() {
+    this.streamStatus = 'initialize';
     this.requester.addToSendList(this.data);
   }
 
   _update(m) {
-    if (typeof m["stream"] === 'string') {
-      this.streamStatus = m["stream"];
+    if (typeof m['stream'] === 'string') {
+      this.streamStatus = m['stream'];
     }
 
     let updates;
     let columns;
     let meta;
 
-    if (Array.isArray(m["updates"])) {
-      updates = m["updates"];
+    if (Array.isArray(m['updates'])) {
+      updates = m['updates'];
     }
 
-    if (Array.isArray(m["columns"])) {
-      columns = m["columns"];
+    if (Array.isArray(m['columns'])) {
+      columns = m['columns'];
     }
 
-    if (m["meta"] instanceof Object) {
-      meta = m["meta"];
+    if (m['meta'] instanceof Object) {
+      meta = m['meta'];
     } // remove the request from global object
 
 
-    if (this.streamStatus === "closed") {
+    if (this.streamStatus === 'closed') {
       this.requester._requests.delete(this.rid);
     }
 
     let error;
 
-    if (m.hasOwnProperty("error") && m["error"] instanceof Object) {
-      error = interfaces_1.DsError.fromMap(m["error"]);
+    if (m.hasOwnProperty('error') && m['error'] instanceof Object) {
+      error = interfaces_1.DsError.fromMap(m['error']);
       this.requester.onError.add(error);
     }
 
@@ -6111,9 +6147,9 @@ class Request {
 
 
   _close(error) {
-    if (this.streamStatus != "closed") {
-      this.streamStatus = "closed";
-      this.updater.onUpdate("closed", null, null, null, error);
+    if (this.streamStatus != 'closed') {
+      this.streamStatus = 'closed';
+      this.updater.onUpdate('closed', null, null, null, error);
     }
   } /// close the request from the client side
 
@@ -6132,6 +6168,7 @@ exports.Request = Request;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ConnectionHandler = exports.DSA_CONFIG = void 0;
 
 const interfaces_1 = require("./interfaces");
 
@@ -6242,7 +6279,15 @@ class ConnectionHandler {
   getSendingData(currentTime, waitingAckId) {
     this._pendingSend = false;
     let processors = this._processors;
-    this._processors = [];
+
+    if (processors.length > 32) {
+      processors = this._processors.slice(0, 32);
+      this._processors = this._processors.slice(32);
+
+      this._conn.sendWhenReady(this);
+    } else {
+      this._processors = [];
+    }
 
     for (let proc of processors) {
       proc.startSendingData(currentTime, waitingAckId);
@@ -6268,7 +6313,8 @@ exports.ConnectionHandler = ConnectionHandler;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-}); /// Base Class for any and all nodes in the SDK.
+});
+exports.Path = exports.Node = void 0; /// Base Class for any and all nodes in the SDK.
 /// If you are writing a link, please look at the [dslink.responder.SimpleNode] class.
 
 class Node {
@@ -6553,7 +6599,7 @@ class Path {
 
 
   child(name) {
-    return new Path((this.path.endsWith("/") ? this.path.substring(0, this.path.length - 1) : this.path) + "/" + (name.startsWith("/") ? name.substring(1) : name));
+    return new Path((this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path) + '/' + (name.startsWith('/') ? name.substring(1) : name));
   }
   /** @ignore */
 
@@ -6648,23 +6694,41 @@ class Path {
     }
   }
 
-} /// Regular Expression for invalid characters in paths.
+}
+
+exports.Path = Path; /// Regular Expression for invalid characters in paths.
 
 /** @ignore */
-
 
 Path.invalidChar = /[\\\?\*|"<>:]/; /// Regular Expression for invalid characters in names.
 
 /** @ignore */
 
 Path.invalidNameChar = /[\/\\\?\*|"<>:]/;
-exports.Path = Path;
+},{}],"wq45":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RequesterUpdate = void 0;
+
+class RequesterUpdate {
+  constructor(streamStatus, error) {
+    this.streamStatus = streamStatus;
+    this.error = error;
+  }
+
+}
+
+exports.RequesterUpdate = RequesterUpdate;
 },{}],"Re02":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ValueUpdate = exports.timeZone = void 0;
 
 let _lastTZStr;
 
@@ -6674,11 +6738,11 @@ function timeZone(date) {
   let timeZoneOffset = date.getTimezoneOffset();
 
   if (timeZoneOffset !== _lastTZ) {
-    let s = "+";
+    let s = '+';
 
     if (timeZoneOffset < 0) {
       timeZoneOffset = -timeZoneOffset;
-      s = "-";
+      s = '-';
     }
 
     let hhstr = `${timeZoneOffset / 60 | 0}`.padStart(2, '0');
@@ -6791,12 +6855,16 @@ class ValueUpdate {
 
   toMap() {
     let m = {
-      "ts": this.ts,
-      "value": this.value
+      ts: this.ts,
+      value: this.value
     };
 
     if (this.count !== 1) {
-      m["count"] = this.count;
+      m['count'] = this.count;
+    }
+
+    if (this.status) {
+      m['status'] = this.status;
     }
 
     return m;
@@ -6816,37 +6884,74 @@ class ValueUpdate {
 
 }
 
-ValueUpdate._lastTs = 0;
 exports.ValueUpdate = ValueUpdate;
-},{}],"wq45":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-class RequesterUpdate {
-  constructor(streamStatus) {
-    this.streamStatus = streamStatus;
-  }
-
-}
-
-exports.RequesterUpdate = RequesterUpdate;
+ValueUpdate._lastTs = 0;
 },{}],"duux":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ListController = exports.ListDefListener = exports.RequesterListUpdate = exports.ReqListListener = void 0;
 
 const async_1 = require("../../utils/async");
 
 const node_cache_1 = require("../node_cache");
 
-const value_1 = require("../../common/value");
-
 const interface_1 = require("../interface");
+
+const value_1 = require("../../common/value"); // delay 3s for web appilcation and 50ms for nodejs
+
+
+const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
+
+class ReqListListener {
+  /** @ignore */
+  constructor(requester, path, callback, timeout) {
+    this.requester = requester;
+    this.path = path;
+    this.callback = callback;
+
+    this.callbackWrapper = value => {
+      var _a;
+
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+        this.timeout = null;
+      }
+
+      (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+    };
+
+    this.onTimeOut = () => {
+      this.timeout = null;
+      let remoteNode = new node_cache_1.RemoteNode(this.path);
+      remoteNode.configs.set('$disconnectedTs', value_1.ValueUpdate.getTs());
+      this.callbackWrapper(new RequesterListUpdate(remoteNode, ['$disconnectedTs'], 'open'));
+    };
+
+    if (timeout) {
+      this.timeout = setTimeout(this.onTimeOut, timeout);
+    }
+
+    let node = requester.nodeCache.getRemoteNode(path);
+    this.listener = node._list(requester).listen(this.callbackWrapper);
+  }
+
+  close() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+
+    this.callback = null;
+    setTimeout(() => {
+      this.listener.close();
+    }, UNLIST_DELAY_MS);
+  }
+
+}
+
+exports.ReqListListener = ReqListListener;
 
 class RequesterListUpdate extends interface_1.RequesterUpdate {
   /** @ignore */
@@ -6867,7 +6972,7 @@ class ListDefListener {
     this.node = node;
     this.requester = requester;
     this.listener = requester.list(node.remotePath, update => {
-      this.ready = update.streamStatus !== "initialize";
+      this.ready = update.streamStatus !== 'initialize';
 
       if (update.node.configs.has('$disconnectedTs')) {
         update.node.configs.delete('$disconnectedTs');
@@ -6937,7 +7042,7 @@ class ListController {
     this.waitToSend = false;
 
     this._onListen = callback => {
-      if (this._ready && this.request != null) {
+      if (this._ready && this.node._listed && this.request != null) {
         setTimeout(() => {
           if (this.request == null) {
             return;
@@ -6973,7 +7078,7 @@ class ListController {
   }
 
   get initialized() {
-    return this.request != null && this.request.streamStatus !== "initialize";
+    return this.request != null && this.request.streamStatus !== 'initialize';
   }
 
   onDisconnect() {
@@ -6993,89 +7098,91 @@ class ListController {
   onUpdate(streamStatus, updates, columns, meta, error) {
     let reseted = false;
 
-    if (error && !updates) {
-      updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+    if (!updates) {
+      if (error) {
+        updates = [['$disconnectedTs', value_1.ValueUpdate.getTs()]];
+      } else {
+        updates = [];
+      }
     }
 
-    if (updates) {
-      for (let update of updates) {
-        let name;
-        let value;
-        let removed = false;
+    for (let update of updates) {
+      let name;
+      let value;
+      let removed = false;
 
-        if (Array.isArray(update)) {
-          if (update.length > 0 && typeof update[0] === 'string') {
-            name = update[0];
+      if (Array.isArray(update)) {
+        if (update.length > 0 && typeof update[0] === 'string') {
+          name = update[0];
 
-            if (update.length > 1) {
-              value = update[1];
-            }
-          } else {
-            continue; // invalid response
-          }
-        } else if (update != null && update instanceof Object) {
-          if (typeof update['name'] === 'string') {
-            name = update['name'];
-          } else {
-            continue; // invalid response
-          }
-
-          if (update['change'] === 'remove') {
-            removed = true;
-          } else {
-            value = update['value'];
+          if (update.length > 1) {
+            value = update[1];
           }
         } else {
           continue; // invalid response
         }
-
-        if (name.startsWith('$')) {
-          if (!reseted && (name === '$is' || name === '$base' || name === '$disconnectedTs' && typeof value === 'string')) {
-            reseted = true;
-            this.node.resetNodeCache();
-          }
-
-          if (name === '$is') {
-            this.loadProfile(value);
-          }
-
-          this.changes.add(name);
-
-          if (removed) {
-            this.node.configs.delete(name);
-          } else {
-            this.node.configs.set(name, value);
-          }
-        } else if (name.startsWith('@')) {
-          this.changes.add(name);
-
-          if (removed) {
-            this.node.attributes.delete(name);
-          } else {
-            this.node.attributes.set(name, value);
-          }
+      } else if (update != null && update instanceof Object) {
+        if (typeof update['name'] === 'string') {
+          name = update['name'];
         } else {
-          this.changes.add(name);
+          continue; // invalid response
+        }
 
-          if (removed) {
-            this.node.children.delete(name);
-          } else if (value != null && value instanceof Object) {
-            // TODO, also wait for children $is
-            this.node.children.set(name, this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
-          }
+        if (update['change'] === 'remove') {
+          removed = true;
+        } else {
+          value = update['value'];
+        }
+      } else {
+        continue; // invalid response
+      }
+
+      if (name.startsWith('$')) {
+        if (!reseted && (name === '$is' || name === '$base' || name === '$disconnectedTs' && typeof value === 'string')) {
+          reseted = true;
+          this.node.resetNodeCache();
+        }
+
+        if (name === '$is') {
+          this.loadProfile(value);
+        }
+
+        this.changes.add(name);
+
+        if (removed) {
+          this.node.configs.delete(name);
+        } else {
+          this.node.configs.set(name, value);
+        }
+      } else if (name.startsWith('@')) {
+        this.changes.add(name);
+
+        if (removed) {
+          this.node.attributes.delete(name);
+        } else {
+          this.node.attributes.set(name, value);
+        }
+      } else {
+        this.changes.add(name);
+
+        if (removed) {
+          this.node.children.delete(name);
+        } else if (value != null && value instanceof Object) {
+          // TODO, also wait for children $is
+          this.node.children.set(name, this.requester.nodeCache.updateRemoteChildNode(this.node, name, value));
         }
       }
-
-      if (this.request.streamStatus !== "initialize") {
-        this.node._listed = true;
-      }
-
-      if (this._pendingRemoveDef) {
-        this._checkRemoveDef();
-      }
-
-      this.onProfileUpdated();
     }
+
+    if (this.request.streamStatus !== 'initialize') {
+      this.node._listed = true;
+    }
+
+    if (this._pendingRemoveDef) {
+      this._checkRemoveDef();
+    }
+
+    this.onProfileUpdated();
   }
 
   loadProfile(defName) {
@@ -7110,12 +7217,12 @@ class ListController {
 
   onProfileUpdated() {
     if (this._ready) {
-      if (this.request.streamStatus !== "initialize") {
+      if (this.request.streamStatus !== 'initialize') {
         this.stream.add(new RequesterListUpdate(this.node, Array.from(this.changes), this.request.streamStatus));
         this.changes.clear();
       }
 
-      if (this.request && this.request.streamStatus === "closed") {
+      if (this.request && this.request.streamStatus === 'closed') {
         this.stream.close();
       }
     }
@@ -7131,8 +7238,8 @@ class ListController {
     }
 
     this.request = this.requester._sendRequest({
-      'method': 'list',
-      'path': this.node.remotePath
+      method: 'list',
+      path: this.node.remotePath
     }, this);
     this.waitToSend = false;
   }
@@ -7159,36 +7266,70 @@ class ListController {
 
 }
 
+exports.ListController = ListController;
 ListController._ignoreProfileProps = ['$is', // '$permission',
 // '$settings',
 '$disconnectedTs'];
-exports.ListController = ListController;
-},{"../../utils/async":"bajV","../node_cache":"jg7K","../../common/value":"Re02","../interface":"wq45"}],"YpSC":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../node_cache":"jg7K","../interface":"wq45","../../common/value":"Re02"}],"YpSC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ReqSubscribeController = exports.SubscribeRequest = exports.SubscribeController = exports.ReqSubscribeListener = void 0;
 
 const request_1 = require("../request");
 
 const value_1 = require("../../common/value");
 
-const connection_handler_1 = require("../../common/connection-handler");
+const connection_handler_1 = require("../../common/connection-handler"); // delay 3s for web appilcation and 50ms for nodejs
+
+
+const UNSUBSCRIBE_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 
 class ReqSubscribeListener {
   /** @ignore */
-  constructor(requester, path, callback) {
+  constructor(requester, path, callback, qos, timeout) {
     this.requester = requester;
     this.path = path;
     this.callback = callback;
+
+    this.callbackWrapper = value => {
+      var _a;
+
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+        this.timeout = null;
+      }
+
+      (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+    };
+
+    this.onTimeOut = () => {
+      this.timeout = null;
+      this.callbackWrapper(new value_1.ValueUpdate(null, null, {
+        status: 'unknown'
+      }));
+    };
+
+    let node = requester.nodeCache.getRemoteNode(path);
+
+    if (timeout) {
+      this.timeout = setTimeout(this.onTimeOut, timeout);
+    }
+
+    node._subscribe(requester, this.callbackWrapper, qos);
   }
 
   close() {
-    if (this.callback != null) {
-      this.requester.unsubscribe(this.path, this.callback);
-      this.callback = null;
+    if (this.timeout) {
+      clearTimeout(this.timeout);
     }
+
+    this.callback = null;
+    setTimeout(() => {
+      this.requester.unsubscribe(this.path, this.callbackWrapper);
+    }, UNSUBSCRIBE_DELAY_MS);
   }
 
 }
@@ -7230,7 +7371,7 @@ class SubscribeRequest extends request_1.Request {
 
   getNextSid() {
     do {
-      if (this.lastSid < 0x7FFFFFFF) {
+      if (this.lastSid < 0x7fffffff) {
         ++this.lastSid;
       } else {
         this.lastSid = 1;
@@ -7348,14 +7489,32 @@ class SubscribeRequest extends request_1.Request {
 
     let toAdd = [];
     let processingPaths = this._changedPaths;
-    this._changedPaths = new Set();
+
+    if (processingPaths.size > 32) {
+      processingPaths = new Set();
+      let pendingPaths = new Set();
+      let count = 0;
+
+      for (let path of this._changedPaths) {
+        if (++count > 32) {
+          pendingPaths.add(path);
+        } else {
+          processingPaths.add(path);
+        }
+      }
+
+      this._changedPaths = pendingPaths;
+      this.prepareSending();
+    } else {
+      this._changedPaths = new Set();
+    }
 
     for (let path of processingPaths) {
       if (this.subscriptions.has(path)) {
         let sub = this.subscriptions.get(path);
         let m = {
-          'path': path,
-          'sid': sub.sid
+          path,
+          sid: sub.sid
         };
 
         if (sub.currentQos > 0) {
@@ -7368,8 +7527,8 @@ class SubscribeRequest extends request_1.Request {
 
     if (toAdd.length > 0) {
       this.requester._sendRequest({
-        'method': 'subscribe',
-        'paths': toAdd
+        method: 'subscribe',
+        paths: toAdd
       }, null);
     }
 
@@ -7377,6 +7536,11 @@ class SubscribeRequest extends request_1.Request {
       let removeSids = [];
 
       for (let [sid, sub] of this.toRemove) {
+        if (removeSids.length >= 32) {
+          this.prepareSending();
+          break;
+        }
+
         if (sub.callbacks.size === 0) {
           removeSids.push(sid);
           this.subscriptions.delete(sub.node.remotePath);
@@ -7384,14 +7548,14 @@ class SubscribeRequest extends request_1.Request {
 
           sub._destroy();
         }
+
+        this.toRemove.delete(sid);
       }
 
       this.requester._sendRequest({
-        'method': 'unsubscribe',
-        'sids': removeSids
+        method: 'unsubscribe',
+        sids: removeSids
       }, null);
-
-      this.toRemove.clear();
     }
   }
 
@@ -7457,7 +7621,11 @@ class ReqSubscribeController {
       }
 
       if (this._lastUpdate != null) {
-        callback(this._lastUpdate);
+        setTimeout(() => {
+          if (this.callbacks.has(callback) && this._lastUpdate != null) {
+            callback(this._lastUpdate);
+          }
+        }, 0);
       }
     }
 
@@ -7516,6 +7684,7 @@ exports.ReqSubscribeController = ReqSubscribeController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Permission = void 0;
 
 class Permission {
   static parse(obj, defaultVal = Permission.NEVER) {
@@ -7526,8 +7695,9 @@ class Permission {
     return defaultVal;
   }
 
-} /// now allowed to do anything
+}
 
+exports.Permission = Permission; /// now allowed to do anything
 
 Permission.NONE = 0; /// list node
 
@@ -7542,20 +7712,20 @@ Permission.CONFIG = 4; /// something that can never happen
 Permission.NEVER = 5;
 Permission.names = ['none', 'list', 'read', 'write', 'config', 'never'];
 Permission.nameParser = {
-  'none': Permission.NONE,
-  'list': Permission.LIST,
-  'read': Permission.READ,
-  'write': Permission.WRITE,
-  'config': Permission.CONFIG,
-  'never': Permission.NEVER
+  none: Permission.NONE,
+  list: Permission.LIST,
+  read: Permission.READ,
+  write: Permission.WRITE,
+  config: Permission.CONFIG,
+  never: Permission.NEVER
 };
-exports.Permission = Permission;
-},{}],"q+mg":[function(require,module,exports) {
+},{}],"qMgR":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.TableMetadata = exports.TableColumns = exports.Table = exports.TableColumn = void 0;
 
 class TableColumn {
   constructor(name, type, defaultValue) {
@@ -7566,12 +7736,12 @@ class TableColumn {
 
   getData() {
     let rslt = {
-      "type": this.type,
-      "name": this.name
+      type: this.type,
+      name: this.name
     };
 
     if (this.defaultValue != null) {
-      rslt["default"] = this.defaultValue;
+      rslt['default'] = this.defaultValue;
     }
 
     return rslt;
@@ -7599,14 +7769,14 @@ class TableColumn {
     let rslt = [];
 
     for (let m of list) {
-      if (m != null && m instanceof Object && typeof m["name"] === 'string') {
-        let type = "string";
+      if (m != null && m instanceof Object && typeof m['name'] === 'string') {
+        let type = 'string';
 
-        if (typeof m["type"] === 'string') {
-          type = m["type"];
+        if (typeof m['type'] === 'string') {
+          type = m['type'];
         }
 
-        rslt.push(new TableColumn(m["name"], type, m["default"]));
+        rslt.push(new TableColumn(m['name'], type, m['default']));
       } else if (m instanceof TableColumn) {
         rslt.push(m);
       } else {
@@ -7654,12 +7824,13 @@ class TableMetadata {
 }
 
 exports.TableMetadata = TableMetadata;
-},{}],"+yD6":[function(require,module,exports) {
+},{}],"yD6V":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.InvokeController = exports.RequesterInvokeStream = exports.RequesterInvokeUpdate = void 0;
 
 const async_1 = require("../../utils/async");
 
@@ -7671,7 +7842,7 @@ const interface_1 = require("../interface");
 
 class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
   constructor(updates, rawColumns, columns, streamStatus, meta, error) {
-    super(streamStatus);
+    super(streamStatus, error);
     this.updates = updates;
 
     if (rawColumns) {
@@ -7682,7 +7853,6 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
     }
 
     this.meta = meta;
-    this.error = error;
   }
 
   get rows() {
@@ -7724,7 +7894,7 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
 
           if (this.columns == null) {
             let keys = obj.keys;
-            this.columns = keys.map(x => new table_1.TableColumn(x, "dynamic"));
+            this.columns = keys.map(x => new table_1.TableColumn(x, 'dynamic'));
           }
 
           if (this.columns != null) {
@@ -7746,7 +7916,7 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
   }
   /**
    * Convert the update to a simple js Object
-   * If there are multiple rows, only the first row is returned
+   * If there are multiple rows, only the last row is returned
    */
 
 
@@ -7754,19 +7924,19 @@ class RequesterInvokeUpdate extends interface_1.RequesterUpdate {
     let rows = this.rows;
 
     if (rows.length) {
-      let firstRow = rows[0];
+      let lastRow = rows[rows.length - 1];
 
-      if (this.rawColumns && this.rawColumns.length >= firstRow.length) {
+      if (this.columns && this.columns.length >= lastRow.length) {
         let result = {};
 
-        for (let i = 0; i < firstRow.length; ++i) {
-          let col = this.rawColumns[i].name;
-          result[col] = firstRow[i];
+        for (let i = 0; i < lastRow.length; ++i) {
+          let col = this.columns[i].name;
+          result[col] = lastRow[i];
         }
 
         return result;
       } else {
-        return firstRow;
+        return lastRow;
       }
     } else {
       return null;
@@ -7780,8 +7950,8 @@ exports.RequesterInvokeUpdate = RequesterInvokeUpdate;
 class RequesterInvokeStream extends async_1.Stream {
   addReqParams(m) {
     this.request.requester.addToSendList({
-      'rid': this.request.rid,
-      'params': m
+      rid: this.request.rid,
+      params: m
     });
   }
 
@@ -7793,10 +7963,10 @@ exports.RequesterInvokeStream = RequesterInvokeStream;
 class InvokeController {
   constructor(node, requester, params, maxPermission = permission_1.Permission.CONFIG) {
     this.mode = 'stream';
-    this.lastStatus = "initialize";
+    this.lastStatus = 'initialize';
 
     this._onUnsubscribe = obj => {
-      if (this._request != null && this._request.streamStatus !== "closed") {
+      if (this._request != null && this._request.streamStatus !== 'closed') {
         this._request.close();
       }
     };
@@ -7806,9 +7976,9 @@ class InvokeController {
     this._stream = new RequesterInvokeStream();
     this._stream._onClose = this._onUnsubscribe;
     let reqMap = {
-      'method': 'invoke',
-      'path': node.remotePath,
-      'params': params
+      method: 'invoke',
+      path: node.remotePath,
+      params
     };
 
     if (maxPermission !== permission_1.Permission.CONFIG) {
@@ -7854,7 +8024,7 @@ class InvokeController {
     }
 
     if (error != null) {
-      streamStatus = "closed";
+      streamStatus = 'closed';
 
       this._stream.add(new RequesterInvokeUpdate(null, null, null, streamStatus, meta, error));
     } else if (updates != null || meta != null || streamStatus !== this.lastStatus) {
@@ -7863,7 +8033,7 @@ class InvokeController {
 
     this.lastStatus = streamStatus;
 
-    if (streamStatus === "closed") {
+    if (streamStatus === 'closed') {
       this._stream.close();
     }
   }
@@ -7875,12 +8045,13 @@ class InvokeController {
 }
 
 exports.InvokeController = InvokeController;
-},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/table":"q+mg","../interface":"wq45"}],"4Uld":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../../common/permission":"nCNP","../../common/table":"qMgR","../interface":"wq45"}],"UldJ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.DSA_VERSION = exports.buildEnumType = void 0;
 
 function buildEnumType(values) {
   return `enum[${values.join(',')}]`;
@@ -7893,7 +8064,8 @@ exports.DSA_VERSION = '1.1.2';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-}); /// manage cached nodes for requester
+});
+exports.DefaultDefNodes = exports.RemoteDefNode = exports.RemoteNode = exports.RemoteNodeCache = void 0; /// manage cached nodes for requester
 
 const node_1 = require("../common/node");
 
@@ -7923,7 +8095,7 @@ class RemoteNodeCache {
       if (this._nodes.size % 1000 === 0) {//        logger.fine("Node Cache hit ${this._nodes.length} nodes in size.");
       }
 
-      if (path.startsWith("defs")) {
+      if (path.startsWith('defs')) {
         node = new RemoteDefNode(path);
 
         this._nodes.set(path, node);
@@ -8154,8 +8326,8 @@ class RemoteNode extends node_1.Node {
     }
 
     if (includeValue && this._subscribeController != null && this._subscribeController._lastUpdate != null) {
-      map["?value"] = this._subscribeController._lastUpdate.value;
-      map["?value_timestamp"] = this._subscribeController._lastUpdate.ts;
+      map['?value'] = this._subscribeController._lastUpdate.value;
+      map['?value_timestamp'] = this._subscribeController._lastUpdate.ts;
     }
 
     return map;
@@ -8178,32 +8350,33 @@ exports.RemoteDefNode = RemoteDefNode;
 
 class DefaultDefNodes {}
 
+exports.DefaultDefNodes = DefaultDefNodes;
 DefaultDefNodes._defaultDefs = {
-  "node": {},
-  "static": {},
-  "getHistory": {
-    "$invokable": "read",
-    "$result": "table",
-    "$params": [{
-      "name": "Timerange",
-      "type": "string",
-      "edito": "daterange"
+  node: {},
+  static: {},
+  getHistory: {
+    $invokable: 'read',
+    $result: 'table',
+    $params: [{
+      name: 'Timerange',
+      type: 'string',
+      edito: 'daterange'
     }, {
-      "name": "Interval",
-      "type": "enum",
-      "default": "none",
-      "edito": utils_1.buildEnumType(["default", "none", "1Y", "3N", "1N", "1W", "1D", "12H", "6H", "4H", "3H", "2H", "1H", "30M", "15M", "10M", "5M", "1M", "30S", "15S", "10S", "5S", "1S"])
+      name: 'Interval',
+      type: 'enum',
+      default: 'none',
+      edito: utils_1.buildEnumType(['default', 'none', '1Y', '3N', '1N', '1W', '1D', '12H', '6H', '4H', '3H', '2H', '1H', '30M', '15M', '10M', '5M', '1M', '30S', '15S', '10S', '5S', '1S'])
     }, {
-      "name": "Rollup",
-      "default": "none",
-      "type": utils_1.buildEnumType(["none", "avg", "min", "max", "sum", "first", "last", "count", "delta"])
+      name: 'Rollup',
+      default: 'none',
+      type: utils_1.buildEnumType(['none', 'avg', 'min', 'max', 'sum', 'first', 'last', 'count', 'delta'])
     }],
-    "$columns": [{
-      "name": "timestamp",
-      "type": "time"
+    $columns: [{
+      name: 'timestamp',
+      type: 'time'
     }, {
-      "name": "value",
-      "type": "dynamic"
+      name: 'value',
+      type: 'dynamic'
     }]
   }
 };
@@ -8246,14 +8419,13 @@ DefaultDefNodes.pathMap = function () {
 
   return rslt;
 }();
-
-exports.DefaultDefNodes = DefaultDefNodes;
-},{"../common/node":"QClj","./request/list":"duux","./request/subscribe":"YpSC","../common/permission":"nCNP","./request/invoke":"+yD6","../utils":"4Uld"}],"wdMm":[function(require,module,exports) {
+},{"../common/node":"QClj","./request/list":"duux","./request/subscribe":"YpSC","../common/permission":"nCNP","./request/invoke":"yD6V","../utils":"UldJ"}],"wdMm":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.SetController = void 0;
 
 const async_1 = require("../../utils/async");
 
@@ -8270,9 +8442,9 @@ class SetController {
     this.path = path;
     this.value = value;
     let reqMap = {
-      'method': 'set',
-      'path': path,
-      'value': value
+      method: 'set',
+      path: path,
+      value: value
     };
 
     if (maxPermission !== permission_1.Permission.CONFIG) {
@@ -8288,7 +8460,7 @@ class SetController {
 
   onUpdate(status, updates, columns, meta, error) {
     // TODO implement error
-    this.completer.complete(new interface_1.RequesterUpdate(status));
+    this.completer.complete(new interface_1.RequesterUpdate(status, error));
   }
 
   onDisconnect() {}
@@ -8304,6 +8476,7 @@ exports.SetController = SetController;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.RemoveController = void 0;
 
 const async_1 = require("../../utils/async");
 
@@ -8317,8 +8490,8 @@ class RemoveController {
     this.requester = requester;
     this.path = path;
     let reqMap = {
-      'method': 'remove',
-      'path': path
+      method: 'remove',
+      path: path
     };
     this._request = requester._sendRequest(reqMap, this);
   }
@@ -8339,12 +8512,852 @@ class RemoveController {
 }
 
 exports.RemoveController = RemoveController;
-},{"../../utils/async":"bajV","../interface":"wq45"}],"9L6c":[function(require,module,exports) {
+},{"../../utils/async":"bajV","../interface":"wq45"}],"wp3k":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.QueryFilter = void 0;
+const operationMap = {
+  '=': filter => new EqualsFilter(filter),
+  'all': filter => new AllFilter(filter),
+  'any': filter => new AnyFilter(filter),
+  '!=': filter => new NotEqualsFilter(filter),
+  '>': filter => new GreaterFilter(filter),
+  '<': filter => new LessFilter(filter),
+  '>=': filter => new GreaterEqualFilter(filter),
+  '<=': filter => new LessEqualFilter(filter)
+};
+const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
+
+class QueryFilter {
+  static create(requester, path, onChange, filter, summary, timeoutMs) {
+    let result;
+
+    for (let op in operationMap) {
+      if (op in filter) {
+        result = operationMap[op](filter);
+        break;
+      }
+    }
+
+    if (result) {
+      result.requester = requester;
+      result.path = path;
+      result.onChange = onChange;
+      result.summary = summary;
+      result.timeoutMs = timeoutMs;
+    }
+
+    return result;
+  }
+
+}
+
+exports.QueryFilter = QueryFilter;
+
+class ValueFilter extends QueryFilter {
+  constructor(filter) {
+    super();
+    this._ready = false;
+    this._invalid = false;
+
+    this.subscribeCallback = update => {
+      this.value = update.value; // TODO maintain list of error state
+
+      this._invalid = Boolean(update.status);
+      this._ready = true;
+      this.onChange();
+
+      if (!this.live && this.listener) {
+        this.listener.close();
+        this.listener = null;
+      }
+    };
+
+    this.listCallback = update => {
+      this.value = update.node.get(this.field);
+      this._ready = true;
+      this.onChange();
+
+      if (!this.live && this.listener) {
+        this.listener.close();
+        this.listener = null;
+      }
+    };
+
+    this.field = filter.field;
+    this.live = filter.mode === 'live';
+  }
+
+  start() {
+    if (!this.field) {
+      this._invalid = true;
+      this._ready = true;
+      return;
+    }
+
+    if (!this.listener) {
+      if (this.field === '?value') {
+        this.listener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
+      } else if (this.field.startsWith('@') || this.field.startsWith('$')) {
+        if (this.summary && summaryConfigs.includes(this.field)) {
+          this.value = this.summary.getConfig(this.field);
+          this._ready = true;
+          this.onChange();
+        } else {
+          this.listener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
+        }
+      } else if (!this.field.startsWith('?')) {
+        this.listener = this.requester.subscribe(`${this.path}/${this.field}`, this.subscribeCallback, 0, this.timeoutMs);
+      }
+    }
+  }
+
+  check() {
+    if (!this._ready) {
+      return [false, false];
+    }
+
+    if (this._invalid) {
+      return [false, true];
+    }
+
+    return [this.compare(), true];
+  }
+
+  destroy() {
+    if (this.listener) {
+      this.listener.close();
+      this.listener = null;
+    }
+  }
+
+}
+
+class EqualsFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['='];
+  }
+
+  compare() {
+    if (this.target == null) {
+      // null and undefined should be treated as equal
+      return this.value == null;
+    } else {
+      return this.value === this.target;
+    }
+  }
+
+}
+
+class NotEqualsFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['!='];
+  }
+
+  compare() {
+    if (this.target == null) {
+      // null and undefined should be treated as equal
+      return this.value != null;
+    } else {
+      return this.value !== this.target;
+    }
+  }
+
+}
+
+class GreaterFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['>'];
+  }
+
+  compare() {
+    return this.value > this.target;
+  }
+
+}
+
+class LessFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['<'];
+  }
+
+  compare() {
+    return this.value < this.target;
+  }
+
+}
+
+class GreaterEqualFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['>='];
+  }
+
+  compare() {
+    return this.value >= this.target;
+  }
+
+}
+
+class LessEqualFilter extends ValueFilter {
+  constructor(filter) {
+    super(filter);
+    this.target = filter['<='];
+  }
+
+  compare() {
+    return this.value <= this.target;
+  }
+
+}
+
+class MultiFilter extends QueryFilter {
+  constructor() {
+    super(...arguments);
+    this.filterData = [];
+    this.filters = [];
+  }
+
+  initFilters() {
+    if (this.filters.length === 0) {
+      for (let filter of this.filterData) {
+        this.filters.push(QueryFilter.create(this.requester, this.path, this.onChange, filter, null, this.timeoutMs));
+      }
+    }
+  }
+
+  start() {
+    this.initFilters();
+
+    for (let filter of this.filters) {
+      filter.start();
+    }
+  }
+
+  destroy() {
+    for (let filter of this.filters) {
+      filter.destroy();
+    }
+  }
+
+}
+
+class AllFilter extends MultiFilter {
+  constructor(filter) {
+    super();
+
+    if (Array.isArray(filter.all)) {
+      this.filterData = filter.all;
+    }
+  }
+
+  check() {
+    let matched = true;
+
+    for (let filter of this.filters) {
+      let [m, r] = filter.check();
+
+      if (r) {
+        if (!m) {
+          matched = false;
+        }
+      } else {
+        // not ready
+        return [false, false];
+      }
+    }
+
+    return [matched, true];
+  }
+
+}
+
+class AnyFilter extends MultiFilter {
+  constructor(filter) {
+    super();
+
+    if (Array.isArray(filter.any)) {
+      this.filterData = filter.any;
+    }
+  }
+
+  check() {
+    for (let filter of this.filters) {
+      let [m, r] = filter.check();
+
+      if (r) {
+        if (m) {
+          return [true, true];
+        }
+      } else {
+        // not ready
+        return [false, false];
+      }
+    }
+
+    return [false, true];
+  }
+
+}
+},{}],"kDc5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NodeQueryResult = void 0;
+
+const node_1 = require("../../common/node");
+
+class NodeQueryResult extends node_1.Node {
+  constructor(path, nodeQuery, value, configs, attributes, children) {
+    super();
+    this.path = path;
+    this.nodeQuery = nodeQuery;
+    this.updateNode({
+      value,
+      configs,
+      attributes,
+      children
+    });
+  }
+
+  listen(listener, useCache = true) {
+    return this.nodeQuery.listen(listener, useCache);
+  }
+
+  updateNode(node) {
+    this.value = node.value;
+    this.configs = node.configs;
+    this.attributes = node.attributes;
+    this.children = node.children;
+  }
+
+  clone() {
+    return new NodeQueryResult(this.path, this.nodeQuery, this.value, this.configs, this.attributes, this.children);
+  }
+
+  isSame(node) {
+    const {
+      value,
+      configs,
+      attributes,
+      children
+    } = node;
+
+    if (value !== this.value || configs.size !== this.configs.size || attributes.size !== this.attributes.size || children.size !== this.children.size) {
+      return false;
+    }
+
+    for (let [key, value] of this.configs) {
+      if (configs.get(key) !== value) {
+        return false;
+      }
+    }
+
+    for (let [key, value] of this.attributes) {
+      if (attributes.get(key) !== value) {
+        return false;
+      }
+    }
+
+    for (let [key, value] of this.children) {
+      if (children.get(key) !== value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  getActionCallback() {
+    if (this.actionCallback) {
+      return this.actionCallback;
+    }
+
+    let callback = params => this.nodeQuery.requester.invokeOnce(this.path, params);
+
+    this.actionCallback = callback;
+    return callback;
+  }
+
+  toObject() {
+    let {
+      query,
+      summary
+    } = this.nodeQuery;
+
+    if (this.getConfig('$invokable') || (summary === null || summary === void 0 ? void 0 : summary.getConfig('$invokable'))) {
+      return this.getActionCallback();
+    }
+
+    let result = {};
+
+    for (let [key, value] of this.configs) {
+      result[key] = value;
+    }
+
+    for (let [key, value] of this.attributes) {
+      result[key] = value;
+    }
+
+    for (let [key, value] of this.children) {
+      result[key] = value.toObject();
+    }
+
+    if (this.value !== undefined) {
+      result['$value'] = this.value;
+    }
+
+    return result;
+  }
+
+}
+
+exports.NodeQueryResult = NodeQueryResult;
+},{"../../common/node":"QClj"}],"DE2K":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Query = void 0;
+
+const filter_1 = require("./filter");
+
+const async_1 = require("../../utils/async");
+
+const result_1 = require("./result");
+
+const node_1 = require("../../common/node");
+
+const actionSubQuery = {
+  '?configs': '*'
+};
+
+function copyMapWithFilter(m, filter) {
+  if (!filter) {
+    return new Map();
+  }
+
+  if (filter[0] === '*') {
+    return new Map(m[Symbol.iterator]());
+  }
+
+  const result = new Map();
+
+  for (let [key, value] of m) {
+    if (filter.includes(key)) {
+      result.set(key, value);
+    }
+  }
+
+  return result;
+}
+
+class Query extends async_1.Stream {
+  constructor(parent, path, query, summary, timeoutMs) {
+    super(null, null, null, true);
+    this.parent = parent;
+    this.path = path;
+    this.query = query;
+    this.summary = summary;
+    this.timeoutMs = timeoutMs; // used on named child query. parent should know if children node exist or not
+
+    this.exists = true; // fixed children will stay in memory even when parent node is filtered out
+    // once fixed children is started, they will keep running until parent is destroyed
+
+    this.fixedChildren = new Map();
+
+    this.checkGenerateOutput = () => {
+      if (!this._scheduleOutputTimeout) {
+        return;
+      }
+
+      this._scheduleOutputTimeout = null;
+
+      if (this.isNodeReady()) {
+        let configs;
+        let attributes;
+
+        if (this.listResult) {
+          configs = copyMapWithFilter(this.listResult.configs, this.configFilter);
+          attributes = copyMapWithFilter(this.listResult.attributes, this.attributeFilter);
+        } else {
+          configs = new Map();
+          attributes = new Map();
+        }
+
+        let children = new Map();
+
+        for (let [key, query] of this.fixedChildren) {
+          if (query.exists && query._filterMatched && query._value && !query.disconnected) {
+            children.set(key, query._value);
+          }
+        }
+
+        if (this.dynamicChildren) {
+          for (let [key, query] of this.dynamicChildren) {
+            if (query._filterMatched && query._value) {
+              children.set(key, query._value);
+            }
+          }
+        }
+
+        let newNode = new result_1.NodeQueryResult(this.path, this, this.subscribeResult, configs, attributes, children);
+
+        if (this._value) {
+          if (this._value.isSame(newNode)) {
+            return;
+          }
+
+          this._value.updateNode(newNode);
+
+          this.add(this._value);
+        } else {
+          this.add(newNode);
+          this.parent.scheduleOutput();
+        }
+      } else {
+        if (!this._filterMatched && this._value != null) {
+          this._listeners.clear(); // ignore all previous listeners when node is filtered out
+
+
+          this.add(null);
+        }
+
+        if (this._filterReady) {
+          this.parent.scheduleOutput();
+        }
+      }
+    };
+
+    this._started = false;
+
+    this.onFilterUpdate = () => {
+      if (this.filter && !this.checkFilterTimer) {
+        this.checkFilterTimer = setTimeout(this.checkFilter, 0);
+      }
+    };
+
+    this._filterReady = false;
+
+    this.checkFilter = () => {
+      if (!this.checkFilterTimer) {
+        return;
+      }
+
+      this.checkFilterTimer = null;
+
+      if (this.filter) {
+        let [matched, ready] = this.filter.check();
+        this.setFilterMatched(matched && this._started);
+        this.setFilterReady(ready);
+      }
+    };
+
+    this._filterMatched = false;
+    this._subscribeReady = false;
+
+    this.subscribeCallback = update => {
+      if (this.valueMode === 'snapshot') {
+        this.subscribeListener.close();
+        this.subscribeListener = null;
+      }
+
+      this.subscribeResult = update.value;
+      this.setSubscribeReady(true);
+    };
+
+    this._listReady = false;
+
+    this.listCallback = update => {
+      if (this.childrenMode === 'snapshot') {
+        this.listListener.close();
+        this.listListener = null;
+      }
+
+      this.listResult = update.node;
+      this.disconnected = Boolean(this.listResult.getConfig('$disconnectedTs'));
+
+      if (this.dynamicChildren) {
+        if (this.requester._connected) {
+          // do not remove existing nodes when link is disconnected
+          for (let [key, child] of this.dynamicChildren) {
+            if (!update.node.children.has(key)) {
+              this.dynamicChildren.delete(key);
+              child.destroy();
+              this.scheduleOutput();
+            }
+          }
+        }
+
+        for (let [key, child] of update.node.children) {
+          if (!this.fixedChildren.has(key) && !this.dynamicChildren.has(key)) {
+            let subQueryInput = this.dynamicQuery;
+
+            if (child.configs.has('$invokable')) {
+              if (!this.actionFilter || !this.actionFilter.includes(key) && this.actionFilter[0] !== '*') {
+                continue;
+              }
+
+              subQueryInput = actionSubQuery;
+            }
+
+            if (subQueryInput) {
+              let childQuery = new Query(this, node_1.Path.concat(this.path, key), subQueryInput, child);
+              this.dynamicChildren.set(key, childQuery);
+              childQuery.start();
+            }
+          }
+        }
+      }
+
+      for (let [name, child] of this.fixedChildren) {
+        let exists = update.node.children.has(name);
+
+        if (exists !== child.exists) {
+          child.exists = exists;
+          this.scheduleOutput();
+        }
+      }
+
+      this.setListReady(true);
+    };
+
+    this.requester = parent.requester;
+
+    if (this.timeoutMs == null) {
+      this.timeoutMs = parent.timeoutMs;
+    }
+
+    this.valueMode = query['?value'];
+    this.childrenMode = query['?children'];
+
+    if (Array.isArray(query['?configs'])) {
+      this.configFilter = query['?configs'];
+    } else if (query['?configs'] === '*') {
+      this.configFilter = ['*'];
+    }
+
+    if (Array.isArray(query['?attributes'])) {
+      this.attributeFilter = query['?attributes'];
+    } else if (query['?attributes'] === '*') {
+      this.attributeFilter = ['*'];
+    }
+
+    if (Array.isArray(query['?actions'])) {
+      this.actionFilter = query['?actions'];
+    } else if (query['?actions'] === '*') {
+      this.actionFilter = ['*'];
+    }
+
+    if (query.hasOwnProperty('*') || query.hasOwnProperty('?actions')) {
+      this.dynamicChildren = new Map();
+    }
+
+    for (let key in query) {
+      if (!(key.startsWith('$') || key.startsWith('@') || key.startsWith('?')) && query[key] instanceof Object) {
+        if (key === '*') {
+          this.dynamicQuery = query[key];
+        } else {
+          this.fixedChildren.set(key, new Query(this, node_1.Path.concat(this.path, key), query[key]));
+        }
+      }
+    }
+
+    if (!this.childrenMode && (this.configFilter || this.attributeFilter || this.actionFilter || this.dynamicQuery)) {
+      this.childrenMode = 'snapshot';
+    }
+
+    if (query['?filter']) {
+      this.filter = filter_1.QueryFilter.create(this.requester, path, this.onFilterUpdate, query['?filter'], this.summary, this.timeoutMs);
+    }
+  }
+
+  isQueryReadyAsChild() {
+    return this._filterReady && (this._value || !this._filterMatched);
+  }
+
+  isNodeReady() {
+    if (!this._filterReady || !this._filterMatched) {
+      return false;
+    }
+
+    if (!this._subscribeReady || !this._listReady) {
+      return false;
+    }
+
+    for (let [key, query] of this.fixedChildren) {
+      if (!query.isQueryReadyAsChild()) {
+        return false;
+      }
+    }
+
+    if (this.dynamicChildren) {
+      for (let [key, query] of this.dynamicChildren) {
+        if (!query.isQueryReadyAsChild()) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  scheduleOutput() {
+    if (!this._scheduleOutputTimeout) {
+      this._scheduleOutputTimeout = setTimeout(this.checkGenerateOutput, 0);
+    }
+  }
+
+  start() {
+    this._started = true;
+
+    if (this.filter) {
+      this.filter.start();
+      this.checkFilter();
+    } else {
+      this.setFilterMatched(true);
+      this.setFilterReady(true);
+    }
+  }
+
+  pause(destroyed = false) {
+    this._started = false;
+    this.pauseSubscription(destroyed);
+  }
+
+  pauseSubscription(destroyed = false) {
+    if (this.subscribeListener) {
+      this.subscribeListener.close();
+      this.subscribeListener = null;
+
+      if (!destroyed) {
+        this.setSubscribeReady(false);
+      }
+    }
+
+    if (this.listListener) {
+      this.listListener.close();
+      this.listListener = null;
+
+      if (!destroyed) {
+        this.setListReady(false);
+      }
+    }
+
+    for (let [key, query] of this.fixedChildren) {
+      if (destroyed) {
+        query.destroy();
+      } else {
+        query.pause();
+      }
+    }
+
+    if (this.dynamicChildren) {
+      for (let [key, query] of this.dynamicChildren) {
+        query.destroy();
+      }
+
+      this.dynamicChildren.clear();
+    }
+  }
+
+  setFilterReady(val) {
+    if (val !== this._filterReady) {
+      this._filterReady = val;
+      this.scheduleOutput();
+    }
+  }
+
+  setFilterMatched(val) {
+    if (val !== this._filterMatched) {
+      this._filterMatched = val;
+
+      if (val) {
+        this.startSubscription();
+      } else {
+        this.pauseSubscription();
+      }
+
+      this.scheduleOutput();
+    }
+  }
+
+  startSubscription() {
+    for (let [key, query] of this.fixedChildren) {
+      query.start();
+    }
+
+    if (this.valueMode && (this.summary == null || this.summary.getConfig('$type'))) {
+      if (!this.subscribeListener) {
+        this.setSubscribeReady(false);
+        this.subscribeListener = this.requester.subscribe(this.path, this.subscribeCallback, 0, this.timeoutMs);
+      }
+    } else {
+      this.setSubscribeReady(true);
+    }
+
+    if (this.childrenMode) {
+      if (!this.listListener) {
+        this.setListReady(false);
+        this.listListener = this.requester.list(this.path, this.listCallback, this.timeoutMs);
+      }
+    } else {
+      this.setListReady(true);
+    }
+  }
+
+  setSubscribeReady(val) {
+    if (val !== this._subscribeReady) {
+      this._subscribeReady = val;
+    }
+
+    this.scheduleOutput();
+  }
+
+  setListReady(val) {
+    if (val !== this._listReady) {
+      this._listReady = val;
+    }
+
+    this.scheduleOutput();
+  }
+
+  destroy() {
+    if (this.checkFilterTimer) {
+      clearTimeout(this.checkFilterTimer);
+    }
+
+    if (this._scheduleOutputTimeout) {
+      clearTimeout(this._scheduleOutputTimeout);
+    }
+
+    if (this.filter) {
+      this.filter.destroy();
+    }
+
+    this.pause(true);
+  }
+
+}
+
+exports.Query = Query;
+},{"./filter":"wp3k","../../utils/async":"bajV","./result":"kDc5","../../common/node":"QClj"}],"L6cl":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Requester = void 0;
 
 const async_1 = require("../utils/async");
 
@@ -8367,6 +9380,8 @@ const invoke_1 = require("./request/invoke");
 const set_1 = require("./request/set");
 
 const remove_1 = require("./request/remove");
+
+const query_1 = require("./query/query");
 
 class Requester extends connection_handler_1.ConnectionHandler {
   constructor(cache) {
@@ -8421,7 +9436,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
   getNextRid() {
     do {
-      if (this.lastRid < 0x7FFFFFFF) {
+      if (this.lastRid < 0x7fffffff) {
         ++this.lastRid;
       } else {
         this.lastRid = 1;
@@ -8480,12 +9495,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
    */
 
 
-  subscribe(path, callback, qos = 0) {
-    let node = this.nodeCache.getRemoteNode(path);
-
-    node._subscribe(this, callback, qos);
-
-    return new subscribe_1.ReqSubscribeListener(this, path, callback);
+  subscribe(path, callback, qos = 0, timeoutMs) {
+    return new subscribe_1.ReqSubscribeListener(this, path, callback, qos, timeoutMs);
   }
   /**
    * Unsubscribe the callback
@@ -8522,9 +9533,8 @@ class Requester extends connection_handler_1.ConnectionHandler {
    */
 
 
-  subscribeOnce(path, timeoutMs = 0) {
+  subscribeOnce(path, timeoutMs) {
     return new Promise((resolve, reject) => {
-      let timer;
       let listener = this.subscribe(path, update => {
         resolve(update);
 
@@ -8532,41 +9542,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
           listener.close();
           listener = null;
         }
-
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-      });
-
-      if (timeoutMs > 0) {
-        timer = setTimeout(() => {
-          timer = null;
-
-          if (listener) {
-            listener.close();
-            listener = null;
-          }
-
-          reject(new Error(`failed to receive value, timeout: ${timeoutMs}ms`));
-        }, timeoutMs);
-      }
-    });
-  }
-  /**
-   * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
-   */
-
-
-  listOnce(path) {
-    return new Promise((resolve, reject) => {
-      let sub = this.list(path, update => {
-        resolve(update.node);
-
-        if (sub != null) {
-          sub.close();
-        }
-      });
+      }, 0, timeoutMs);
     });
   }
   /**
@@ -8577,9 +9553,29 @@ class Requester extends connection_handler_1.ConnectionHandler {
    */
 
 
-  list(path, callback) {
-    let node = this.nodeCache.getRemoteNode(path);
-    return node._list(this).listen(callback);
+  list(path, callback, timeoutMs) {
+    return new list_1.ReqListListener(this, path, callback, timeoutMs);
+  }
+  /**
+   * List and get node metadata and children summary only once, subscription will be closed automatically when an update is received
+   */
+
+
+  listOnce(path, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      let listener = this.list(path, update => {
+        if (update.streamStatus === 'initialize') {
+          return;
+        }
+
+        resolve(update.node);
+
+        if (listener != null) {
+          listener.close();
+          listener = null;
+        }
+      }, timeoutMs);
+    });
   }
   /**
    * Invoke a node action, and receive updates.
@@ -8623,7 +9619,7 @@ class Requester extends connection_handler_1.ConnectionHandler {
     let stream = this.invoke(path, params, null, maxPermission);
     return new Promise((resolve, reject) => {
       stream.listen(update => {
-        if (update.streamStatus !== "closed") {
+        if (update.streamStatus !== 'closed') {
           stream.close();
         }
 
@@ -8667,6 +9663,50 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
   remove(path) {
     return new remove_1.RemoveController(this, path).future;
+  }
+  /**
+   * Query the node
+   * @param path
+   * @param queryStruct
+   * @param callback The callback will be called only when
+   *  - node value changed if ?value is defined
+   *  - value of config that matches ?configs is changed
+   *  - value of attribute that matches ?attributes is changed
+   *  - child is removed or new child is added when wildcard children match * is defined
+   * @param timeoutMs Timeout of the list and subscribe request used by the query
+   */
+
+
+  query(path, queryStruct, callback, timeoutMs) {
+    queryStruct = Object.assign({}, queryStruct);
+    delete queryStruct.$filter; // make sure root node has no filter;
+
+    let query = new query_1.Query({
+      requester: this,
+      scheduleOutput: () => {}
+    }, path, queryStruct, null, timeoutMs);
+
+    query._onAllCancel = () => query.destroy();
+
+    query.start();
+    return query.listen(callback);
+  }
+  /**
+   * Query and get update only once, query will be closed automatically when an update is received
+   */
+
+
+  queryOnce(path, queryStruct, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      let listener = this.query(path, queryStruct, update => {
+        resolve(update);
+
+        if (listener != null) {
+          listener.close();
+          listener = null;
+        }
+      }, timeoutMs);
+    });
   } /// close the request from requester side and notify responder
 
   /** @ignore */
@@ -8674,10 +9714,10 @@ class Requester extends connection_handler_1.ConnectionHandler {
 
   closeRequest(request) {
     if (this._requests.has(request.rid)) {
-      if (request.streamStatus !== "closed") {
+      if (request.streamStatus !== 'closed') {
         this.addToSendList({
-          'method': 'close',
-          'rid': request.rid
+          method: 'close',
+          rid: request.rid
         });
       }
 
@@ -8723,12 +9763,13 @@ class Requester extends connection_handler_1.ConnectionHandler {
 }
 
 exports.Requester = Requester;
-},{"../utils/async":"bajV","./request":"wg7F","../common/connection-handler":"T61P","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/invoke":"+yD6","./request/set":"wdMm","./request/remove":"Eaoe"}],"BI8/":[function(require,module,exports) {
+},{"../utils/async":"bajV","./request":"wg7F","../common/connection-handler":"T61P","./node_cache":"jg7K","./request/subscribe":"YpSC","../common/interfaces":"N9NG","./request/list":"duux","../common/permission":"nCNP","./request/invoke":"yD6V","./request/set":"wdMm","./request/remove":"Eaoe","./query/query":"DE2K"}],"BI8Z":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.PassiveChannel = void 0;
 
 const async_1 = require("../utils/async");
 
@@ -8784,12 +9825,54 @@ class PassiveChannel {
 }
 
 exports.PassiveChannel = PassiveChannel;
-},{"../utils/async":"bajV"}],"IISz":[function(require,module,exports) {
+},{"../utils/async":"bajV"}],"ZVYQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.isBatchUpdating = exports.addBatchUpdateCallback = exports.endBatchUpdate = exports.startBatchUpdate = void 0;
+const callbacks = new Set();
+let updating = false;
+
+function startBatchUpdate() {
+  updating = true;
+}
+
+exports.startBatchUpdate = startBatchUpdate;
+
+function endBatchUpdate() {
+  for (let callback of callbacks) {
+    try {
+      callback();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  updating = false;
+}
+
+exports.endBatchUpdate = endBatchUpdate;
+
+function addBatchUpdateCallback(callback) {
+  callbacks.add(callback);
+}
+
+exports.addBatchUpdateCallback = addBatchUpdateCallback;
+
+function isBatchUpdating() {
+  return updating;
+}
+
+exports.isBatchUpdating = isBatchUpdating;
+},{}],"IISz":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WebSocketConnection = void 0;
 
 const interfaces_1 = require("../common/interfaces");
 
@@ -8797,7 +9880,11 @@ const connection_channel_1 = require("../common/connection-channel");
 
 const async_1 = require("../utils/async");
 
+const codec_1 = require("../utils/codec");
+
 const logger_1 = require("../utils/logger");
+
+const batch_update_1 = require("./batch-update");
 
 let logger = logger_1.logger.tag('ws');
 
@@ -8807,36 +9894,30 @@ class WebSocketConnection extends interfaces_1.Connection {
     super();
     this._onRequestReadyCompleter = new async_1.Completer();
     this._onDisconnectedCompleter = new async_1.Completer();
-    this._onDoneHandled = false; /// set to true when data is sent, reset the flag every 20 seconds
-    /// since the previous ping message will cause the next 20 seoncd to have a message
-    /// max interval between 2 ping messages is 40 seconds
-
-    this._dataSent = false; /// add this count every 20 seconds, set to 0 when receiving data
-    /// when the count is 3, disconnect the link
-
-    this._dataReceiveCount = 0;
+    this._onDoneHandled = false;
+    this._dataReceiveTs = new Date().getTime();
+    this._dataSentTs = this._dataReceiveTs;
 
     this.onPingTimer = () => {
-      if (this._dataReceiveCount >= 3) {
+      let currentTs = new Date().getTime();
+
+      if (currentTs - this._dataReceiveTs >= 65000) {
+        // close the connection if no message received in the last 65 seconds
         close();
         return;
       }
 
-      this._dataReceiveCount++;
-
-      if (this._dataSent) {
-        this._dataSent = false;
-        return;
+      if (currentTs - this._dataSentTs > 21000) {
+        // add message if no data was sent in the last 21 seconds
+        this.addConnCommand(null, null);
       }
-
-      this.addConnCommand(null, null);
     };
 
-    this._opened = false;
+    this._openTs = Infinity;
 
     this._onOpen = e => {
-      logger.trace("Connected");
-      this._opened = true;
+      logger.trace('Connected');
+      this._openTs = new Date().getTime();
 
       if (this.onConnect != null) {
         this.onConnect();
@@ -8859,81 +9940,89 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._onRequestReadyCompleter.complete(this._requesterChannel);
       }
 
-      this._dataReceiveCount = 0;
+      this._dataReceiveTs = new Date().getTime();
       let m;
+      batch_update_1.startBatchUpdate();
 
       if (e.data instanceof ArrayBuffer) {
         try {
           let bytes = new Uint8Array(e.data);
-          m = this.codec.decodeBinaryFrame(bytes); //        logger.fine("$m");
+          m = this.codec.decodeBinaryFrame(bytes);
+          logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
+          this.checkBrowserThrottling();
 
-          if (typeof m["salt"] === 'string') {
-            this.clientLink.updateSalt(m["salt"]);
+          if (typeof m['salt'] === 'string') {
+            this.clientLink.updateSalt(m['salt']);
           }
 
           let needAck = false;
 
-          if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+          if (Array.isArray(m['responses']) && m['responses'].length > 0) {
             needAck = true; // send responses to requester channel
 
-            this._requesterChannel.onReceive.add(m["responses"]);
+            this._requesterChannel.onReceive.add(m['responses']);
           }
 
-          if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+          if (Array.isArray(m['requests']) && m['requests'].length > 0) {
             needAck = true; // send requests to responder channel
 
-            this._responderChannel.onReceive.add(m["requests"]);
+            this._responderChannel.onReceive.add(m['requests']);
           }
 
-          if (typeof m["ack"] === 'number') {
-            this.ack(m["ack"]);
+          if (typeof m['ack'] === 'number') {
+            this.ack(m['ack']);
           }
 
           if (needAck) {
-            let msgId = m["msg"];
+            let msgId = m['msg'];
 
             if (msgId != null) {
-              this.addConnCommand("ack", msgId);
+              this.addConnCommand('ack', msgId);
             }
           }
         } catch (err) {
-          console.error("error in onData", err);
+          console.error('error in onData', err);
           this.close();
           return;
+        } finally {
+          batch_update_1.endBatchUpdate();
         }
       } else if (typeof e.data === 'string') {
         try {
-          m = this.codec.decodeStringFrame(e.data); //        logger.fine("$m");
-
+          m = this.codec.decodeStringFrame(e.data);
+          logger.trace(() => 'receive' + codec_1.DsJson.encode(m));
+          this.checkBrowserThrottling();
           let needAck = false;
 
-          if (Array.isArray(m["responses"]) && m["responses"].length > 0) {
+          if (Array.isArray(m['responses']) && m['responses'].length > 0) {
             needAck = true; // send responses to requester channel
 
-            this._requesterChannel.onReceive.add(m["responses"]);
+            this._requesterChannel.onReceive.add(m['responses']);
           }
 
-          if (Array.isArray(m["requests"]) && m["requests"].length > 0) {
+          if (Array.isArray(m['requests']) && m['requests'].length > 0) {
             needAck = true; // send requests to responder channel
 
-            this._responderChannel.onReceive.add(m["requests"]);
+            this._responderChannel.onReceive.add(m['requests']);
           }
 
-          if (typeof m["ack"] === "number") {
-            this.ack(m["ack"]);
+          if (typeof m['ack'] === 'number') {
+            this.ack(m['ack']);
           }
 
           if (needAck) {
-            let msgId = m["msg"];
+            let msgId = m['msg'];
 
             if (msgId != null) {
-              this.addConnCommand("ack", msgId);
+              this.addConnCommand('ack', msgId);
             }
           }
         } catch (err) {
           console.error(err);
           this.close();
           return;
+        } finally {
+          batch_update_1.endBatchUpdate();
         }
       }
     };
@@ -8992,7 +10081,7 @@ class WebSocketConnection extends interfaces_1.Connection {
       this.codec = useCodec;
     }
 
-    socket.binaryType = "arraybuffer";
+    socket.binaryType = 'arraybuffer';
     this._responderChannel = new connection_channel_1.PassiveChannel(this);
     this._requesterChannel = new connection_channel_1.PassiveChannel(this);
     socket.onmessage = this._onData;
@@ -9025,10 +10114,29 @@ class WebSocketConnection extends interfaces_1.Connection {
         this._send();
       }, 0);
     }
+  } // sometimes setTimeout and setInterval is not run due to browser throttling
+
+
+  checkBrowserThrottling() {
+    if (!WebSocketConnection.checkBrowserThrottling) {
+      return;
+    }
+
+    let currentTs = new Date().getTime();
+
+    if (currentTs - this._dataSentTs > 25000) {
+      logger.trace('Throttling detected'); // timer is supposed to be run every 20 seconds, if that passes 25 seconds, force it to run
+
+      this.onPingTimer();
+
+      if (this._sending) {
+        this._send();
+      }
+    }
   }
 
-  get opened() {
-    return this._opened;
+  get openTs() {
+    return this._openTs;
   } /// add server command, will be called only when used as server connection
 
 
@@ -9074,7 +10182,7 @@ class WebSocketConnection extends interfaces_1.Connection {
 
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["responses"] = rslt.messages;
+        m['responses'] = rslt.messages;
         needSend = true;
       }
 
@@ -9087,7 +10195,7 @@ class WebSocketConnection extends interfaces_1.Connection {
 
     if (rslt != null) {
       if (rslt.messages.length > 0) {
-        m["requests"] = rslt.messages;
+        m['requests'] = rslt.messages;
         needSend = true;
       }
 
@@ -9102,16 +10210,16 @@ class WebSocketConnection extends interfaces_1.Connection {
           this.pendingAcks.push(new interfaces_1.ConnectionAckGroup(this.nextMsgId, ts, pendingAck));
         }
 
-        m["msg"] = this.nextMsgId;
+        m['msg'] = this.nextMsgId;
 
-        if (this.nextMsgId < 0x7FFFFFFF) {
+        if (this.nextMsgId < 0x7fffffff) {
           ++this.nextMsgId;
         } else {
           this.nextMsgId = 1;
         }
-      } //      logger.fine("send: $m");
+      }
 
-
+      logger.trace(() => 'send' + codec_1.DsJson.encode(m));
       let encoded = this.codec.encodeFrame(m);
 
       try {
@@ -9121,7 +10229,7 @@ class WebSocketConnection extends interfaces_1.Connection {
         this.close();
       }
 
-      this._dataSent = true;
+      this._dataSentTs = new Date().getTime();
     }
   }
 
@@ -9136,12 +10244,14 @@ class WebSocketConnection extends interfaces_1.Connection {
 }
 
 exports.WebSocketConnection = WebSocketConnection;
-},{"../common/interfaces":"N9NG","../common/connection-channel":"BI8/","../utils/async":"bajV","../utils/logger":"sxdr"}],"w9XK":[function(require,module,exports) {
+WebSocketConnection.checkBrowserThrottling = true;
+},{"../common/interfaces":"N9NG","../common/connection-channel":"BI8Z","../utils/async":"bajV","../utils/codec":"TRmg","../utils/logger":"sxdr","./batch-update":"ZVYQ"}],"w9XK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
-}); /// a client link for both http and ws
+});
+exports.BrowserUserLink = void 0; /// a client link for both http and ws
 
 const interfaces_1 = require("../common/interfaces");
 
@@ -9198,15 +10308,15 @@ class BrowserUserLink extends interfaces_1.ClientLink {
       });
     };
 
-    if (wsUpdateUri.startsWith("http")) {
+    if (wsUpdateUri.startsWith('http')) {
       wsUpdateUri = `ws${wsUpdateUri.substring(4)}`;
     }
 
     this.wsUpdateUri = wsUpdateUri;
     this.format = format;
 
-    if (window.location.hash.includes("dsa_json")) {
-      this.format = "json";
+    if (window.location.hash.includes('dsa_json')) {
+      this.format = 'json';
     }
   }
 
@@ -9228,6 +10338,7 @@ class BrowserUserLink extends interfaces_1.ClientLink {
 
   initWebsocketLater(ms) {
     if (this._initSocketTimer) return;
+    this.onReconnect.add(new Date().getTime() + ms);
     this._initSocketTimer = setTimeout(this.initWebsocket, ms);
   }
 
@@ -9239,7 +10350,8 @@ class BrowserUserLink extends interfaces_1.ClientLink {
       return;
     }
 
-    if (this._wsConnection._opened) {
+    if (new Date().getTime() - this._wsConnection._openTs > 1000) {
+      // has been connected for more than 1 second
       this._wsDelay = 1;
       this.initWebsocket(false);
     } else if (reconnect) {
@@ -9271,24 +10383,82 @@ class BrowserUserLink extends interfaces_1.ClientLink {
   }
 
 }
+
+exports.BrowserUserLink = BrowserUserLink;
 /** @ignore */
 
-
 BrowserUserLink.session = Math.random().toString(16).substr(2, 8);
-exports.BrowserUserLink = BrowserUserLink;
-},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"9L6c","./browser-ws-conn":"IISz","../utils/codec":"TRmg"}],"txRo":[function(require,module,exports) {
+},{"../common/interfaces":"N9NG","../utils/async":"bajV","../requester/requester":"L6cl","./browser-ws-conn":"IISz","../utils/codec":"TRmg"}],"vwPC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.decodeEnums = exports.decodeNodeName = exports.encodeNodeName = void 0; // need this table to encode string in upper case
+
+const ENCODE_TABLE = '0123456789ABCDEF'.split('');
+
+function escapeNodeName(match) {
+  let code = match.charCodeAt(0);
+  return `%${ENCODE_TABLE[code / 16 >> 0]}${ENCODE_TABLE[code % 16]}`;
+}
+
+function encodeNodeName(name) {
+  return name.replace(/[\u0000-\u001f/\\?*:|"<>%,\u007f]/g, escapeNodeName);
+}
+
+exports.encodeNodeName = encodeNodeName;
+
+function decodeNodeName(name) {
+  return decodeURIComponent(name);
+}
+
+exports.decodeNodeName = decodeNodeName;
+/**
+ * decode dsa enum string in the format of [optionA,optionB,optionC]
+ * @param enums
+ */
+
+function decodeEnums(enums) {
+  let targetString = enums;
+
+  if (targetString.startsWith('[') && targetString.endsWith(']')) {
+    targetString = targetString.substring(1, targetString.length - 1);
+  }
+
+  return targetString.split(',').map(s => decodeNodeName(s));
+}
+
+exports.decodeEnums = decodeEnums;
+},{}],"txRo":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DSLink = void 0;
 
 const browser_user_link_1 = require("./src/browser/browser-user-link");
+
+var node_name_1 = require("./src/utils/node-name");
+
+Object.defineProperty(exports, "encodeNodeName", {
+  enumerable: true,
+  get: function () {
+    return node_name_1.encodeNodeName;
+  }
+});
+Object.defineProperty(exports, "decodeNodeName", {
+  enumerable: true,
+  get: function () {
+    return node_name_1.decodeNodeName;
+  }
+});
 
 if (Object.isExtensible(window)) {
   window.DSLink = browser_user_link_1.BrowserUserLink;
 }
 
 exports.DSLink = browser_user_link_1.BrowserUserLink;
-},{"./src/browser/browser-user-link":"w9XK"}]},{},["txRo"], null)
+},{"./src/browser/browser-user-link":"w9XK","./src/utils/node-name":"vwPC"}]},{},["txRo"], null)
 //# sourceMappingURL=/web.js.map

@@ -75,7 +75,7 @@ function useRawDsaQuery(link, pathOrNode, query, callback, delay = 0, timeout = 
                 subscription.close();
             }
         };
-    }, [link, pathOrNode]);
+    }, [link, pathOrNode, query]);
     return rootNodeCache.current;
 }
 /**
