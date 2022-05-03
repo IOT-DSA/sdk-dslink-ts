@@ -17,7 +17,7 @@ const operationMap: {[key: string]: (filter: FilterStructure) => QueryFilter} = 
   '<=': (filter: FilterStructure) => new LessEqualFilter(filter),
 };
 
-const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
+const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result', '$control'];
 
 export abstract class QueryFilter {
   static create(

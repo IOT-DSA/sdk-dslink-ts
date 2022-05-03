@@ -11,7 +11,7 @@ const operationMap = {
     '>=': (filter) => new GreaterEqualFilter(filter),
     '<=': (filter) => new LessEqualFilter(filter),
 };
-const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result'];
+const summaryConfigs = ['$is', '$type', '$invokable', '$writable', '$params', '$columns', '$result', '$control'];
 class QueryFilter {
     static create(requester, path, onChange, filter, summary, timeoutMs) {
         let result;
