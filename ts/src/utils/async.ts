@@ -1,4 +1,5 @@
 import {RequesterListUpdate} from '../requester/request/list';
+import {logError} from './error-callback';
 
 /** @ignore */
 export type Listener<T> = (value: T) => void;
@@ -73,7 +74,11 @@ export class Stream<T> {
   protected _dispatch(): void {
     this._updating = true;
     for (let listener of this._listeners) {
-      listener(this._value);
+      try {
+        listener(this._value);
+      } catch (e) {
+        logError(e);
+      }
     }
     this._updating = false;
     if (!this._cached) {
@@ -144,14 +149,24 @@ export class Completer<T> {
 
   complete(val: T) {
     if (this._resolve) {
-      this._resolve(val);
+      try {
+        this._resolve(val);
+      } catch (e) {
+        logError(e);
+      }
     }
     this.isCompleted = true;
   }
 
   completeError(val: any) {
     if (this._reject) {
-      this._reject(val);
+      if (this._resolve) {
+        try {
+          this._reject(val);
+        } catch (e) {
+          logError(e);
+        }
+      }
     }
   }
 }

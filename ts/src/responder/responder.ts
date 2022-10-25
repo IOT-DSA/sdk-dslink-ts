@@ -8,6 +8,7 @@ import {DsError, StreamStatus} from '../common/interfaces';
 import {Path} from '../common/node';
 import {ListResponse} from './response/list';
 import {InvokeResponse} from './response/invoke';
+import {logError} from '../utils/error-callback';
 
 export class Responder extends ConnectionHandler {
   /** @ignore
@@ -75,38 +76,42 @@ export class Responder extends ConnectionHandler {
   _onReceiveRequest(m: any) {
     let method = m['method'];
     if (typeof m['rid'] === 'number') {
-      if (method == null) {
-        this.updateInvoke(m);
-        return;
-      } else {
-        if (this._responses.has(m['rid'])) {
-          if (method === 'close') {
-            this.close(m);
-          }
-          // when rid is invalid, nothing needs to be sent back
+      try {
+        if (method == null) {
+          this.updateInvoke(m);
           return;
-        }
+        } else {
+          if (this._responses.has(m['rid'])) {
+            if (method === 'close') {
+              this.close(m);
+            }
+            // when rid is invalid, nothing needs to be sent back
+            return;
+          }
 
-        switch (method) {
-          case 'list':
-            this.list(m);
-            return;
-          case 'subscribe':
-            this.subscribe(m);
-            return;
-          case 'unsubscribe':
-            this.unsubscribe(m);
-            return;
-          case 'invoke':
-            this.invoke(m);
-            return;
-          case 'set':
-            this.set(m);
-            return;
-          case 'remove':
-            this.remove(m);
-            return;
+          switch (method) {
+            case 'list':
+              this.list(m);
+              return;
+            case 'subscribe':
+              this.subscribe(m);
+              return;
+            case 'unsubscribe':
+              this.unsubscribe(m);
+              return;
+            case 'invoke':
+              this.invoke(m);
+              return;
+            case 'set':
+              this.set(m);
+              return;
+            case 'remove':
+              this.remove(m);
+              return;
+          }
         }
+      } catch (err) {
+        logError(err);
       }
     }
     this.closeResponse(m['rid'], null, DsError.INVALID_METHOD);

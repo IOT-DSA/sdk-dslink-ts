@@ -5,6 +5,7 @@ import {ConnectionProcessor, DsError, StreamStatus} from '../../common/interface
 import {RemoteNode} from '../node_cache';
 import {RequesterUpdate, RequestUpdater} from '../interface';
 import {ValueUpdate} from '../../common/value';
+import {logError} from '../../utils/error-callback';
 
 // delay 3s for web appilcation and 50ms for nodejs
 const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
@@ -32,7 +33,11 @@ export class ReqListListener implements Closable {
       clearTimeout(this.timeout);
       this.timeout = null;
     }
-    this.callback?.(value);
+    try {
+      this.callback?.(value);
+    } catch (e) {
+      logError(e);
+    }
   };
 
   onTimeOut = () => {

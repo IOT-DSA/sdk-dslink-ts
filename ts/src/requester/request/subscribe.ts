@@ -6,6 +6,7 @@ import {ValueUpdate, ValueUpdateCallback} from '../../common/value';
 import {RemoteNode} from '../node_cache';
 import {DSA_CONFIG} from '../../common/connection-handler';
 import {RequestUpdater} from '../interface';
+import {logError} from '../../utils/error-callback';
 
 // delay 3s for web appilcation and 50ms for nodejs
 const UNSUBSCRIBE_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
@@ -34,7 +35,11 @@ export class ReqSubscribeListener implements Closable {
       clearTimeout(this.timeout);
       this.timeout = null;
     }
-    this.callback?.(value);
+    try {
+      this.callback?.(value);
+    } catch (e) {
+      logError(e);
+    }
   };
 
   onTimeOut = () => {
