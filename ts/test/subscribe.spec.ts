@@ -10,6 +10,7 @@ import {Path} from '../src/common/node';
 import {sleep} from '../src/utils/async';
 import {ValueNode} from '../src/responder/node/value-node';
 import {NodeProvider, Subscriber} from '../src/responder/node_state';
+import {setErrorCallback} from '../src/utils/error-callback';
 
 class TestLazyValue extends ValueNode {
   constructor(path: string, provider: NodeProvider) {
@@ -23,7 +24,7 @@ class TestLazyValue extends ValueNode {
   }
 }
 
-describe('subscribe', function() {
+describe('subscribe', function () {
   let broker = new MockBroker();
   logger.setLevel(Logger.WARN);
   // logger.setLevel(Logger.TRACE);
@@ -54,7 +55,7 @@ describe('subscribe', function() {
     responderClient.close();
   });
 
-  it('subscribe', async function() {
+  it('subscribe', async function () {
     let updates: any[] = [];
     let subscription = requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
@@ -71,7 +72,7 @@ describe('subscribe', function() {
     assert.equal(updates.length, 3); // should not receive new update after close() subscription;
   });
 
-  it('subscribeOnce', async function() {
+  it('subscribeOnce', async function () {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
     await sleep(20);
     assert.equal(requester._subscription.subscriptions.size, 1); // not unsubsceibed yet
@@ -79,7 +80,7 @@ describe('subscribe', function() {
     assert.equal(requester._subscription.subscriptions.size, 0); // everything should be unsubscribed after 3 seconds
   });
 
-  it('set invalid value', async function() {
+  it('set invalid value', async function () {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
 
     let resp = await requester.set(resolve('val'), null);
@@ -88,34 +89,25 @@ describe('subscribe', function() {
     assert.equal((await requester.subscribeOnce(resolve('val'))).value, 123);
   });
 
-
-  it("lazy value load", async function () {
-    let lazy = rootNode.createChild("lazy", TestLazyValue);
+  it('lazy value load', async function () {
+    let lazy = rootNode.createChild('lazy', TestLazyValue);
     assert.isUndefined(lazy._value);
 
     // value exist only after subscription
-    assert.equal(
-      (await requester.subscribeOnce(resolve("lazy"))).value,
-      "ready"
-    );
+    assert.equal((await requester.subscribeOnce(resolve('lazy'))).value, 'ready');
 
-    setTimeout(() => rootNode.createChild("lazy2", TestLazyValue), 50);
+    setTimeout(() => rootNode.createChild('lazy2', TestLazyValue), 50);
     // subscribe before value node gets created
     let lastUpdate: ValueUpdate;
-    requester.subscribe(resolve("lazy2"), (update) => {
+    requester.subscribe(resolve('lazy2'), (update) => {
       lastUpdate = update;
     });
-    await shouldHappen(
-      () =>
-        lastUpdate &&
-        lastUpdate.value == null &&
-        lastUpdate.status === "unknown"
-    );
+    await shouldHappen(() => lastUpdate && lastUpdate.value == null && lastUpdate.status === 'unknown');
 
-    await shouldHappen(() => lastUpdate && lastUpdate.value === "ready");
+    await shouldHappen(() => lastUpdate && lastUpdate.value === 'ready');
   });
 
-  it('qos 0', async function() {
+  it('qos 0', async function () {
     let updates: any[] = [];
     requester.subscribe(resolve('val'), (update: ValueUpdate) => {
       updates.push(update.value);
@@ -130,7 +122,7 @@ describe('subscribe', function() {
     assert.isTrue(updates.length === 2);
   });
 
-  it('qos 1', async function() {
+  it('qos 1', async function () {
     let updates: any[] = [];
     requester.subscribe(
       resolve('val'),
@@ -149,7 +141,7 @@ describe('subscribe', function() {
     assert.isTrue(updates.length === 11);
   });
 
-  it('qos 2', async function() {
+  it('qos 2', async function () {
     let updates: any[] = [];
     requester.subscribe(
       resolve('val'),
@@ -178,5 +170,14 @@ describe('subscribe', function() {
     }
     await shouldHappen(() => updates[updates.length - 1] === 9);
     assert.isTrue(updates.length === 10);
+  });
+
+  it('error handling', async function () {
+    let callbackObject: any;
+    setErrorCallback((e: any) => (callbackObject = e));
+    requester.subscribe(resolve('val'), (update: ValueUpdate) => {
+      throw new Error('error in subscribe callback');
+    });
+    await shouldHappen(() => callbackObject instanceof Error);
   });
 });

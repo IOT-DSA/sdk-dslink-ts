@@ -1,4 +1,4 @@
-export function shouldHappen(callback: () => any, timeoutMs: number = 100): Promise<any> {
+export function shouldHappen(callback: () => any, timeoutMs: number = 200): Promise<any> {
   // prepare a Error first to maintain the original call stack
   let error = new Error('timeout');
 
