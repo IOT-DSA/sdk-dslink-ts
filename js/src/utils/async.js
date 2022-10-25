@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sleep = exports.Completer = exports.StreamSubscription = exports.Stream = void 0;
+const error_callback_1 = require("./error-callback");
 /** @ignore */
 class Stream {
     constructor(onStartListen, onAllCancel, onListen, cached = false) {
@@ -52,7 +53,12 @@ class Stream {
     _dispatch() {
         this._updating = true;
         for (let listener of this._listeners) {
-            listener(this._value);
+            try {
+                listener(this._value);
+            }
+            catch (e) {
+                error_callback_1.logError(e);
+            }
         }
         this._updating = false;
         if (!this._cached) {
@@ -106,13 +112,25 @@ class Completer {
     }
     complete(val) {
         if (this._resolve) {
-            this._resolve(val);
+            try {
+                this._resolve(val);
+            }
+            catch (e) {
+                error_callback_1.logError(e);
+            }
         }
         this.isCompleted = true;
     }
     completeError(val) {
         if (this._reject) {
-            this._reject(val);
+            if (this._resolve) {
+                try {
+                    this._reject(val);
+                }
+                catch (e) {
+                    error_callback_1.logError(e);
+                }
+            }
         }
     }
 }

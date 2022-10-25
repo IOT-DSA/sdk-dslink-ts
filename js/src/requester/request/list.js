@@ -5,6 +5,7 @@ const async_1 = require("../../utils/async");
 const node_cache_1 = require("../node_cache");
 const interface_1 = require("../interface");
 const value_1 = require("../../common/value");
+const error_callback_1 = require("../../utils/error-callback");
 // delay 3s for web appilcation and 50ms for nodejs
 const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 class ReqListListener {
@@ -19,7 +20,12 @@ class ReqListListener {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            try {
+                (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            }
+            catch (e) {
+                error_callback_1.logError(e);
+            }
         };
         this.onTimeOut = () => {
             this.timeout = null;

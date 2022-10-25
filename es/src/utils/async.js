@@ -1,3 +1,4 @@
+import { logError } from './error-callback';
 /** @ignore */
 export class Stream {
     constructor(onStartListen, onAllCancel, onListen, cached = false) {
@@ -49,7 +50,12 @@ export class Stream {
     _dispatch() {
         this._updating = true;
         for (let listener of this._listeners) {
-            listener(this._value);
+            try {
+                listener(this._value);
+            }
+            catch (e) {
+                logError(e);
+            }
         }
         this._updating = false;
         if (!this._cached) {
@@ -101,13 +107,25 @@ export class Completer {
     }
     complete(val) {
         if (this._resolve) {
-            this._resolve(val);
+            try {
+                this._resolve(val);
+            }
+            catch (e) {
+                logError(e);
+            }
         }
         this.isCompleted = true;
     }
     completeError(val) {
         if (this._reject) {
-            this._reject(val);
+            if (this._resolve) {
+                try {
+                    this._reject(val);
+                }
+                catch (e) {
+                    logError(e);
+                }
+            }
         }
     }
 }

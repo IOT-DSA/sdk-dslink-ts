@@ -2,6 +2,7 @@ import { Stream } from '../../utils/async';
 import { RemoteNode } from '../node_cache';
 import { RequesterUpdate } from '../interface';
 import { ValueUpdate } from '../../common/value';
+import { logError } from '../../utils/error-callback';
 // delay 3s for web appilcation and 50ms for nodejs
 const UNLIST_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 export class ReqListListener {
@@ -16,7 +17,12 @@ export class ReqListListener {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            try {
+                (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            }
+            catch (e) {
+                logError(e);
+            }
         };
         this.onTimeOut = () => {
             this.timeout = null;

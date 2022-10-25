@@ -1,6 +1,7 @@
 import { Request } from '../request';
 import { ValueUpdate } from '../../common/value';
 import { DSA_CONFIG } from '../../common/connection-handler';
+import { logError } from '../../utils/error-callback';
 // delay 3s for web appilcation and 50ms for nodejs
 const UNSUBSCRIBE_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 export class ReqSubscribeListener {
@@ -15,7 +16,12 @@ export class ReqSubscribeListener {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            try {
+                (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            }
+            catch (e) {
+                logError(e);
+            }
         };
         this.onTimeOut = () => {
             this.timeout = null;

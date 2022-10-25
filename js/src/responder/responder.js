@@ -10,6 +10,7 @@ const interfaces_1 = require("../common/interfaces");
 const node_1 = require("../common/node");
 const list_1 = require("./response/list");
 const invoke_1 = require("./response/invoke");
+const error_callback_1 = require("../utils/error-callback");
 class Responder extends connection_handler_1.ConnectionHandler {
     constructor(nodeProvider) {
         super();
@@ -57,38 +58,43 @@ class Responder extends connection_handler_1.ConnectionHandler {
     _onReceiveRequest(m) {
         let method = m['method'];
         if (typeof m['rid'] === 'number') {
-            if (method == null) {
-                this.updateInvoke(m);
-                return;
-            }
-            else {
-                if (this._responses.has(m['rid'])) {
-                    if (method === 'close') {
-                        this.close(m);
-                    }
-                    // when rid is invalid, nothing needs to be sent back
+            try {
+                if (method == null) {
+                    this.updateInvoke(m);
                     return;
                 }
-                switch (method) {
-                    case 'list':
-                        this.list(m);
+                else {
+                    if (this._responses.has(m['rid'])) {
+                        if (method === 'close') {
+                            this.close(m);
+                        }
+                        // when rid is invalid, nothing needs to be sent back
                         return;
-                    case 'subscribe':
-                        this.subscribe(m);
-                        return;
-                    case 'unsubscribe':
-                        this.unsubscribe(m);
-                        return;
-                    case 'invoke':
-                        this.invoke(m);
-                        return;
-                    case 'set':
-                        this.set(m);
-                        return;
-                    case 'remove':
-                        this.remove(m);
-                        return;
+                    }
+                    switch (method) {
+                        case 'list':
+                            this.list(m);
+                            return;
+                        case 'subscribe':
+                            this.subscribe(m);
+                            return;
+                        case 'unsubscribe':
+                            this.unsubscribe(m);
+                            return;
+                        case 'invoke':
+                            this.invoke(m);
+                            return;
+                        case 'set':
+                            this.set(m);
+                            return;
+                        case 'remove':
+                            this.remove(m);
+                            return;
+                    }
                 }
+            }
+            catch (err) {
+                error_callback_1.logError(err);
             }
         }
         this.closeResponse(m['rid'], null, interfaces_1.DsError.INVALID_METHOD);

@@ -4,6 +4,7 @@ exports.ReqSubscribeController = exports.SubscribeRequest = exports.SubscribeCon
 const request_1 = require("../request");
 const value_1 = require("../../common/value");
 const connection_handler_1 = require("../../common/connection-handler");
+const error_callback_1 = require("../../utils/error-callback");
 // delay 3s for web appilcation and 50ms for nodejs
 const UNSUBSCRIBE_DELAY_MS = typeof window === 'undefined' ? 50 : 3000;
 class ReqSubscribeListener {
@@ -18,7 +19,12 @@ class ReqSubscribeListener {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            try {
+                (_a = this.callback) === null || _a === void 0 ? void 0 : _a.call(this, value);
+            }
+            catch (e) {
+                error_callback_1.logError(e);
+            }
         };
         this.onTimeOut = () => {
             this.timeout = null;
